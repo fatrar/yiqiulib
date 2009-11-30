@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<weathers>
+  <head>
+    <title value="未来72小时预报" color="0xFF5500" bgcolor="0x00ff00" titSize="14"/>
+    <subtitle value="体工大队田径馆" color="0xffffff" bgcolor="0x00ff00" titSize="14"/>
+    <rows color="0xffffff" bgcolor="0xB9B9B9">
+      <row value="日  期" unit="" display="1" color="0xffffff" bgcolor="0xECE6E6"underLine="1"/>
+      <row value="天  气" unit="" display="1" color="0xffffff" bgcolor="0xF8F5F5"underLine="1"/>
+      <row value="时间" unit="(h)" display="1" color="0xffffff" bgcolor="0xECE6E6"underLine="1"/>
+      <row value="湿度" unit="(%)" display="1" color="0xffffff" bgcolor="0x00ff00"underLine="0"/>
+    </rows>
+    <alert>
+      <max strname="最高湿度" display="true" value="23" unit="(%)" color="0x006600" bgcolor="0x006600" size="10" />
+      <min strname="最低湿度" display="true" value="0.5" unit="(%)" color="0x006600" size="10" />
+      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="20" minval="2" size="10"/>
+      <link href="http://www.baidu.com" strname="天气实况" display="true" color="0x2754BB" bgcolor="0x00ff00" size="10" />
+    </alert>
+  </head>
+  <body altercolor="0xCC0000" defaultcolor="0x006600">
+    <day date="11月19日" weather="zhenyu">
+      <data head="12" value="10"/>
+      <data head="15" value="12"/>
+      <data head="18" value="12.5"/>
+      <data head="21" value="13"/>
+    </day>
+    <day date="11月20日" weather="leizhenyu">
+      <data head="00" value="12"/>
+      <data head="03" value="12"/>
+      <data head="06" value="12"/>
+      <data head="09" value="12.5"/>
+      <data head="12" value="11"/>
+      <data head="15" value="12.5"/>
+      <data head="18" value="10"/>
+      <data head="21" value="13"/>
+    </day>
+    <day date="11月21日" weather="wu">
+      <data head="00" value="10"/>
+      <data head="03" value="23"/>
+      <data head="06" value="11.5"/>
+      <data head="09" value="20"/>
+      <data head="12" value="11.5"/>
+      <data head="15" value="14.5"/>
+      <data head="18" value="12"/>
+      <data head="21" value="11"/>
+    </day>
+  </body>
+</weathers>

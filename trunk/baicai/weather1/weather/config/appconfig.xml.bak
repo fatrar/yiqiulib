@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <weathers>
+    <weather strname="qing" msg="晴" src="icos/01.swf"/>
+    <weather strname="duoyun" msg="多云" src="icos/02.swf"/>
+    <weather strname="yin" msg="阴" src="icos/03.swf"/>
+    <weather strname="zhenyu" msg="阵雨" src="icos/04.swf"/>
+    <weather strname="leizhenyu" msg="雷阵雨" src="icos/05.swf"/>
+    <weather strname="wu" msg="雾" src="icos/06.swf"/>
+    <weather strname="xiaoyu" msg="小雨" src="icos/07.swf"/>
+    <weather strname="zhongyu" msg="中雨" src="icos/08.swf"/>
+    <weather strname="dayu" msg="大雨" src="icos/09.swf"/>
+    <weather strname="baoyu" msg="暴雨" src="icos/10.swf"/>
+    <weather strname="zhenxue" msg="阵雪" src="icos/11.swf"/>
+    <weather strname="xiaoxue" msg="小雪" src="icos/12.swf"/>
+    <weather strname="zhongxue" msg="中雪" src="icos/13.swf"/>
+    <weather strname="daxue" msg="大雪" src="icos/14.swf"/>
+    <weather strname="shachenbao" msg="沙尘暴" src="icos/15.swf"/>
+    <weather strname="qiangshachenbao" msg="强沙尘暴" src="icos/16.swf"/>
+    <weather strname="fuchen" msg="浮尘" src="icos/17.swf"/>
+    <weather strname="yangsha" msg="扬沙" src="icos/18.swf"/>
+  </weathers>
+  <winds>
+    <wind strname="dong" msg="东风" val="270"/>
+    <wind strname="dongnan" msg="东南风" val="315"/>
+    <wind strname="nan" msg="南风" val="360"/>
+    <wind strname="xinan" msg="西南风" val="45"/>
+    <wind strname="xi" msg="西风" val="90"/>
+    <wind strname="xibei" msg="西北风" val="135"/>
+    <wind strname="bei" msg="北风" val="180"/>
+    <wind strname="dongbei" msg="东北风" val="225"/>
+  </winds>
+  <buttons>
+    <button parametername="wind" eventclass="com.vanwins.chart.panel.Column" text="风向风速" bgcolor="0x00ffff" sbgcolor="0x00ff00" sfontcolor="0x00ff00" fontcolor="0x004D99" defaultselect="1"/>
+    <button parametername="rainfall" eventclass="com.vanwins.chart.panel.Column" text="降雨量" bgcolor="0x00ff00" sbgcolor="0x00ff00" sfontcolor="0x00ff00" fontcolor="0x004D99" defaultselect="0"/>
+    <button parametername="temperature" eventclass="com.vanwins.chart.panel.Dotted" text="气温" bgcolor="0x00ffff" sbgcolor="0x00ff00" sfontcolor="0x00ff00" fontcolor="0x004D99" defaultselect="0"/>
+    <button parametername="relativehumidity" eventclass="com.vanwins.chart.panel.Dotted" text="相对湿度" bgcolor="0x00ffff" sbgcolor="0x00ff00" sfontcolor="0x00ff00" fontcolor="0x004D99" defaultselect="0"/>
+  </buttons>
+</config>
