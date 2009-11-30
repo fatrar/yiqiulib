@@ -27,7 +27,7 @@ package com.vanwins.chart.panel
 		private var startY:int=49;
 		private var endY:int=326;
 		private var endX:int=735;
-		private var betweenX:int;
+		private var betweenX:Number;
 		private var picArr:Array=[];
 		private var betweenUnderY:int;
 		//画背景线的行数
@@ -137,6 +137,8 @@ package com.vanwins.chart.panel
 			addChild(backRoute);
 			var betweenUnderY=(endY-startY-valueDisplayNum*betweenY)/(backRow);
 			var betweenUnderX=(endX-startDataX)/(dataNum);
+			var abc=endX-startDataX;
+			trace(betweenUnderX);
 			backRoute.graphics.lineStyle(1,0xCCCCCC);
 			for(j=1;j<=backRow;j++)
 			{
@@ -156,9 +158,11 @@ package com.vanwins.chart.panel
 			}
 			for(j=0;j<=dataNum;j++)
 			{
-				backRoute.graphics.moveTo(startDataX+betweenX*j,startY+valueDisplayNum*betweenY);
-				backRoute.graphics.lineTo(startDataX+betweenX*j,endY);
+				backRoute.graphics.moveTo(Math.round(startDataX+betweenUnderX*j),startY+valueDisplayNum*betweenY);
+				backRoute.graphics.lineTo(Math.round(startDataX+betweenUnderX*j),endY);
+				
 			}
+			
 			//k用来计每一天的data数
 			var k:int=0;
 			for(i=0;i<Wea.GetBody().days.length;i++)
@@ -210,16 +214,19 @@ package com.vanwins.chart.panel
 						var shape:Shape=new Shape();
 						shape.graphics.lineStyle(1,0xFFFFFF);
 						//需要继续调式，需要知道长条的长度来算出准确的endX
-						shape.graphics.moveTo(startDataX+betweenX*k+betweenX/4,startY);
-						shape.graphics.lineTo(startDataX+betweenX*k+betweenX/4,startY+betweenY*4);
+						shape.graphics.moveTo(startDataX+betweenX*k,startY);
+						shape.graphics.lineTo(startDataX+betweenX*k,startY+betweenY*valueDisplayNum);
 						addChild(shape);
 					}
 					
-					/*var shape1:Shape=new Shape();
+					var shape1:Shape=new Shape();
 					shape1.graphics.lineStyle(1,0xFF00FF);
 					shape1.graphics.moveTo(endX,startY);
 					shape1.graphics.lineTo(endX,startY+betweenY*4);
-					addChild(shape1);*/
+					shape1.graphics.moveTo(startDataX,startY);
+					shape1.graphics.lineTo(startDataX,startY+betweenY*4);
+					addChild(shape1);
+					trace("endX"+startDataX);
 					
 					var dotX=startDataX+betweenX*(k-1)+betweenX/2;
 					var tmp_x = (endY-startY-valueDisplayNum*betweenY);
