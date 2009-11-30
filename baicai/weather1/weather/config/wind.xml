@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<weathers>
+  <head>
+    <title value="未来72小时预报" color="0xFF5500" bgcolor="0x00ff00" titSize="15"/>
+    <subtitle value="体工大队田径馆" color="0xffffff" bgcolor="0x00ff00" titSize="12"/>
+    <rows color="0xffffff" bgcolor="0xB9B9B9">
+		<row value="日  期" unit="" display="1" color="0xffffff" bgcolor="0xE3E3E3" underLine="1"/>
+		<row value="天  气" unit="" display="1" color="0xffffff" bgcolor="0xEFEFEF" underLine="1"/>
+		<row value="时间" unit="(h)" display="1" color="0xffffff" bgcolor="0xE3E3E3" underLine="1"/>
+		<row value="风  向" unit="" display="1" color="0xffffff" bgcolor="0xEFEFEF" underLine="1"/>
+		<row value="风  速" unit="(m/s)" display="1" color="0xffffff" bgcolor="0xffffff" underLine="0"/>
+	</rows>
+    <alert>
+      <max strname="最高风速" display="true" value="23" unit="(m/s)" color="0x006600" bgcolor="0x00ff00" size="10"/>
+      <min strname="最低风速" display="true" value="0.5" unit="(m/s)" color="0x006600" bgcolor="0x00ff00" size="10"/>
+      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="20" minval="2" size="10"/>
+      <link href="http://www.baidu.com" strname="天气实况" display="true" color="0x2754BB" bgcolor="0x00ff00"  size="10"/>
+    </alert>
+  </head>
+  <body altercolor="0xCC0000" defaultcolor="0x3366BB">
+    <day date="11月19日" weather="fuchen">
+      <data head="12" value="1" val4="don"/>
+      <data head="15" value="12" val4="don"/>
+      <data head="18" value="12.5" val4="don"/>
+      <data head="21" value="13" val4="don"/>
+    </day>
+    <day date="11月20日" weather="shachenbao">
+      <data head="00" value="12" val4="donnan"/>
+      <data head="03" value="12" val4="don"/>
+      <data head="06" value="12" val4="don"/>
+      <data head="09" value="12.5" val4="don"/>
+      <data head="12" value="11" val4="don"/>
+      <data head="15" value="12.5" val4="don"/>
+      <data head="18" value="10" val4="don"/>
+      <data head="21" value="13" val4="don"/>
+    </day>
+    <day date="11月21日" weather="daxue">
+      <data head="00" value="1" val4="don"/>
+      <data head="03" value="1" val4="bei"/>
+      <data head="06" value="1" val4="don"/>
+      <data head="09" value="2" val4="don"/>
+      <data head="12" value="1" val4="don"/>
+      <data head="15" value="1" val4="don"/>
+      <data head="18" value="1" val4="don"/>
+      <data head="21" value="1" val4="don"/>
+    </day>
+  </body>
+</weathers>
+
