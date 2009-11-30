@@ -32,7 +32,7 @@
 		private var startY:int=49;
 		private var endY:int=326;
 		private var endX:int=735;
-		private var betweenX:int;
+		private var betweenX:Number;
 		private var IsDisplayArrow:Boolean=false;
 		
 		
@@ -180,16 +180,10 @@
 						var shape:Shape=new Shape();
 						shape.graphics.lineStyle(1,0xFFFFFF);
 						//需要继续调式，需要知道长条的长度来算出准确的endX
-						shape.graphics.moveTo(startDataX+betweenX*k+betweenX/4,startY);
-						shape.graphics.lineTo(startDataX+betweenX*k+betweenX/4,startY+betweenY*4);
+						shape.graphics.moveTo(startDataX+betweenX*k,startY);
+						shape.graphics.lineTo(startDataX+betweenX*k,startY+betweenY*4);
 						addChild(shape);
 					}
-					
-					/*var shape1:Shape=new Shape();
-					shape1.graphics.lineStyle(1,0xFF00FF);
-					shape1.graphics.moveTo(endX,startY);
-					shape1.graphics.lineTo(endX,startY+betweenY*4);
-					addChild(shape1);*/
 					
 					//添加风标
 					var _wind:arrow= new arrow();
