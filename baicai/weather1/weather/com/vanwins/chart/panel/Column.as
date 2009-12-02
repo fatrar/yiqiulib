@@ -1,12 +1,6 @@
-﻿package com.vanwins.chart.panel 
+﻿//画柱形图
+package com.vanwins.chart.panel 
 {
-/*	import com.vanwins.chart.bean.Link;
-	import com.vanwins.chart.bean.Min;
-	import com.vanwins.chart.bean.Max;
-	import com.vanwins.chart.bean.Inappropriate;
-	import com.vanwins.chart.bean.Rows;
-	import com.vanwins.chart.bean.Row;
-	import com.vanwins.chart.bean.Day;*/
 	import com.vanwins.chart.bean.*;
 	import com.vanwins.chart.config.*;	
 	
@@ -18,30 +12,41 @@
 	import flash.display.MovieClip;
 	
 	import flash.text.TextField;
-	
+	import flash.text.TextFieldAutoSize;
 	import flash.geom.ColorTransform;
 	
 	public class Column extends BasePanel 
 	{
-		private var dayLen:int;
-		private var dataLen:int;
-		
+		//中间界面最左边的x值
 		private var startRowX:int=20;
+		//中间界面显示日期数据的左边的x值
 		private var startDataX:int=79;
+		//中间界面日期，时间等的y轴间隔值
 		private var betweenY:int=29;
+		//中间界面最上部的y值
 		private var startY:int=49;
+		//中间界面最下部的y值
 		private var endY:int=326;
+		//中间界面最右边的x值
 		private var endX:int=735;
+		//中间界面时间等的x轴间隔值
 		private var betweenX:Number;
+		//是否显示风标
 		private var IsDisplayArrow:Boolean=false;
+		//前一天有多少个时间数目
+		private var lastDataX:Number=0;
+		//之前天数总共有多少个时间数目
+		private var allLastDataX:Number=0;
 		
 		
 		public function Column()
 		{
 			
 		}
+		//进行构造面板
 		public override function paint():void 
 		{
+			
 			//添加右下角链接
 			var _link:Link=Wea.GetHead().alert.link;
 			_link.paint();
@@ -83,7 +88,7 @@
 			//添加右边的行集合
 			//添加除最后一个的所有行背景和线条
 			var rowLen:int=Wea.GetHead().rows.values.length;
-			//valueDisplayNum为Wea.GetHead().rows.values[i].isdisplay的num数
+			//valueDisplayNum为Wea.GetHead().rows.values[i].isdisplay的num-1数
 			var valueDisplayNum:int=0;
 			for (var i:int=0;i<rowLen-1;i++)
 			{
@@ -104,7 +109,6 @@
 				}
 			}
 			//trace(valueDisplayNum);
-			//trace("valueDisplayNum");
 			
 			//添加最后一个的行背景和线条
 			var _rowLast:Row=Wea.GetHead().rows.values[rowLen-1];
@@ -142,6 +146,7 @@
 				//添加day的值，即日期一栏
 				var _day:Day=Wea.GetBody().days[i];
 				_day.paint();
+				_day.mouseChildren=false;
 				
 				//添加swf
 				var _loader:Loader= new Loader();
@@ -153,14 +158,20 @@
 					//trace(app.GetWeathers()[j].src);
 					{
 						 _loader.load( new URLRequest( app.GetWeathers()[j].src ) );
+						 //添加一个遮罩，放在swf上面，右边有txt本文框，将对应的天气信息写入文本，可见度设为false
+						 //cover为fla中的影片剪辑导出的类
+						 var _cover:cover=new cover();
+						 addChild(_cover);
+						 _cover.txt.text=app.GetWeathers()[j].msg;
+						 _cover.txt.visible=false;
+						 _cover.addEventListener(MouseEvent.MOUSE_OVER,showWeather);
+						 _cover.addEventListener(MouseEvent.MOUSE_OUT,showWeather);
 					}
 				}
-				_loader.x=startDataX+betweenX*k+betweenX/2;
+				//_loader.x=startDataX+betweenX*k+betweenX/2;
 				_loader.y=startY+betweenY-5;
 				_loader.scaleX=0.6;
 				_loader.scaleY=0.6;
-				//_loader.width=betweenY;
-				//_loader.height=betweenY;
 				
 				//遍历每一天中的data
 				for(j=0;j<Wea.GetBody().days[i].datas.length;j++)
@@ -169,8 +180,9 @@
 					var _data:Data=Wea.GetBody().days[i].datas[j];
 					_data.paint();
 					addChild(_data);
+					_data.mouseChildren=false;
 					
-					_data.x=startDataX+betweenX*k+betweenX/2;
+					_data.x=startDataX+betweenX*k+betweenX/2-8;
 					_data.y=startY+4+betweenY*2;
 					k++;
 					
@@ -179,26 +191,43 @@
 					{
 						var shape:Shape=new Shape();
 						shape.graphics.lineStyle(1,0xFFFFFF);
-						//需要继续调式，需要知道长条的长度来算出准确的endX
 						shape.graphics.moveTo(startDataX+betweenX*k,startY);
-						shape.graphics.lineTo(startDataX+betweenX*k,startY+betweenY*4);
+						shape.graphics.lineTo(startDataX+betweenX*k,startY+betweenY*valueDisplayNum);
 						addChild(shape);
+						lastDataX+=j+1;
 					}
 					
 					//添加风标
 					var _wind:arrow= new arrow();
+					//var _coverWind:coverWind=new coverWind();
+					trace(IsDisplayArrow,i,j);
 					if (IsDisplayArrow)
+					{
 						addChild( _wind );
+					}
 					for (var m=0;m<app.GetWinds().length;m++)
 					{
-						//trace(app.GetWinds()[m].strname);
+						trace(app.GetWinds()[m].strname);
 						if(app.GetWinds()[m].strname==_data.val4)
 						{
+							trace("app.GetWinds()[m].strname"+app.GetWinds()[m].strname);
 							_wind.rotation=app.GetWinds()[m].val;
+							//添加一个遮罩，放在风标图上面，下边有txt本文框，将对应的风向信息写入文本，可见度设为false
+							//coverWind为fla中的影片剪辑导出的类
+							var _coverWind:coverWind=new coverWind();
+							_coverWind.mouseChildren=false;
+							_coverWind.txt.text=app.GetWinds()[m].msg;
+						 	_coverWind.txt.visible=false;
+							_coverWind.addEventListener(MouseEvent.MOUSE_OVER,showWind);
+							_coverWind.addEventListener(MouseEvent.MOUSE_OUT,showWind);
+							addChild(_coverWind);
+							_coverWind.x=startDataX+betweenX*(k-1)+betweenX/2;
+							_coverWind.y=startY+15+betweenY*3;
 						}						
 					}
 					_wind.x=startDataX+betweenX*(k-1)+betweenX/2;
 					_wind.y=startY+15+betweenY*3;
+					
 					
 					//添加柱形
 					var _rect:rect=new rect();
@@ -207,26 +236,23 @@
 					_rect.x=startDataX+betweenX*(k-1)+betweenX/2;
 					_rect.y=endY;
 					
-					//trace(_data.isvalue);
-					//trace("_data.isvalue");
-					
-					var tmp_x = (endY-startY-valueDisplayNum*betweenY)*(_data.isvalue-Inapp.minval+5);
-					var tmp_y = (Inapp.maxval-Inapp.minval+10);
-					_rect.scaleY= tmp_x/tmp_y ;//+ endY;
+					var tmp_x = (endY-startY-valueDisplayNum*betweenY)*(_data.isvalue-_min.isvalue+5);
+					var tmp_y = (_max.isvalue-_min.isvalue+10);
+					_rect.scaleY= tmp_x/tmp_y ;
 					_rect.width=betweenX-8;
 					
+					//添加柱形提示信息
 					var _dataInfo:TextField=new TextField();
+					_dataInfo.autoSize = TextFieldAutoSize.CENTER;
 					_dataInfo.text=String(_data.isvalue);
-					_dataInfo.x=_rect.x;
+					_dataInfo.x=_rect.x-8;
 					_dataInfo.y=endY-tmp_x/tmp_y-15;
 					addChild(_dataInfo);
+					//_dataInfo.mouseChildren=false;
 					//_rect.addEventListener(MouseEvent.MOUSE_OVER,showData);
 					//_rect.addEventListener(MouseEvent.MOUSE_OUT,showData);
-					
-					
-					
-					
-					//改变颜色
+										
+					//如为不适合比赛时段，柱形和风标改变颜色
 					var colorInfo:ColorTransform;
 					colorInfo=_wind.transform.colorTransform;
 					colorInfo=_rect.transform.colorTransform;
@@ -248,18 +274,45 @@
 				
 					
 				
-				//当data值大于2时，显示日期，否则不显示
-				if(k>=2)
+				//当data值大于2或者总共长度大于66时，显示日期，否则不显示
+				if(k>=2||betweenX*k>66)
 				{
 					addChild(_day);
 				}
-				_day.x=startRowX+(endX-startDataX)/6+i*(endX-startDataX)/3;
-				_day.y=startY+4;//+betweenY/2;
-				
+				_day.x=startDataX+betweenX*allLastDataX+(lastDataX-allLastDataX)*betweenX/2-50;
+				_loader.x=_day.x+30;
+				_cover.x=_loader.x;
+				_cover.y=_loader.y;
+				_day.y=startY+4;
+				trace(allLastDataX,lastDataX);
+				allLastDataX+=lastDataX-allLastDataX;
 			}
-
 		}
-
 		
+		private function showWeather(e:MouseEvent):void
+		{			
+			//鼠标移上swf文件时显示天气信息
+			if(e.type=="mouseOver")
+			{
+				e.target.txt.visible=true;
+			}
+			else if (e.type=="mouseOut")
+			{
+				e.target.txt.visible=false;
+			}
+		}		
+		private function showWind(e:MouseEvent):void
+		{
+			//鼠标移上风标图像时显示风向信息
+			if(e.type=="mouseOver")
+			{
+				e.target.txt.visible=true;
+				//trace(e.target.txt.text);
+			}
+			else if (e.type=="mouseOut")
+			{
+				e.target.txt.visible=false;
+			}
+		}
 	}
 }

@@ -1,16 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Head.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:17
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-
-/**
- * ͷ²¿ÐÅϢ
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:17
- */
+﻿//构造面板的头部
  package com.vanwins.chart.bean
 {
 	

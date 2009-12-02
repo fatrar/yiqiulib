@@ -1,4 +1,5 @@
-﻿package com.vanwins.chart.panel
+﻿//使用类发射来确定按钮的类
+package com.vanwins.chart.panel
 {
 	import flash.utils.*;
 	import com.vanwins.chart.panel.Column;
@@ -6,8 +7,6 @@
 	
 	public class PanelFactory
 	{
-		
-		
 		public static function newInstance(classpath:String):BasePanel
 		{
 			trace("........."+classpath);

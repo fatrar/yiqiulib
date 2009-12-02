@@ -1,15 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Title.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:18
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-/**
- * ±êÌâÀà
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:18
- */
+﻿//构造title的函数
 package com.vanwins.chart.bean
 {
 	import flash.text.TextField;

@@ -3,6 +3,8 @@
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
 	import flash.display.DisplayObject;
+
+	//import com.vanwins.chart.config.WeatherXmlLoader;
 	import com.vanwins.chart.bean.*;
 	import com.vanwins.chart.config.*;
 	import com.vanwins.chart.panel.*;
@@ -10,7 +12,7 @@
 	import flash.events.*;
 	import flash.events.MouseEvent;
 	import cn.cold37.app.*;
-
+	
 	
 	public class main extends Sprite
 	{
@@ -28,7 +30,7 @@
 		{
 			super();
 			//stop();
-			//添加时间条进度
+			
 			__loadclip=new Loading;
 			addChild(__loadclip);
 			__loadclip.x=stage.stageWidth/2-120;
@@ -60,37 +62,45 @@
 		
 		private function showto()
 		{
-			//遍历app.GetButtons，找出defaultselect项，再根据defaultselect进行加载
+			
+			//trace("Wea.GetBody().days.datas");
+			//trace(Wea.GetBody().days.length);
+			//trace(Wea.GetBody().days[0].datas[0].head);
+			//trace(Wea.GetBody().days[0].datas.length);
+			/*var _subtitle:BigTitle=Wea.GetHead().subtitle;
+			_subtitle.paint();
+			_subtitle.x=18;
+			_subtitle.y=16;
+			addChild(_subtitle);
+			var _istitle:BigTitle=Wea.GetHead().istitle;
+			_istitle.paint();
+			_istitle.x=119;
+			_istitle.y=15;
+			_istitle.width=115;
+			addChild(_istitle);*/
+			
 			var buttons:Array = app.GetButtons();
 			for (var i:Number = 0; i < buttons.length; i++ ) 
 			{
+				/*var btn:SupperMyButton = buttons[i];
+				btn.paint();
+				btn.x = 710-(buttons.length-i)*63;
+				btn.y=10
+				btn.mouseChildren = false;
+				btn.addEventListener(MouseEvent.CLICK, butclick);
+				addChild(btn);
+*/
 				if(buttons[i].defaultselect==1)
 				{
+					//btn.btnR.gotoAndStop(2);
 					Wea = new WeatherXmlLoader(this.loaderInfo.parameters[buttons[i].parametername],startto1);
-					
 					//this.loaderInfo.parameters["wind"]
-					//从网页传值，可用以下方法进行测试
-					//var txt:TextField=new TextField();
-//					txt.text = this.loaderInfo.parameters[buttons[i].parametername];
-//					addChild(txt);
-//					txt.x=100;
-//					txt.y=100;
-
 					panel = PanelFactory.newInstance(buttons[i].eventclass);
-				
-					panel.app = app;
-					panel.Wea = Wea;
-					
-					
-					
 				}				
 			}
-			
 		}
-		
 		private function startto1()
 		{
-			//添加head中的title,button等
 			var _subtitle:BigTitle=Wea.GetHead().subtitle;
 			_subtitle.paint();
 			_subtitle.x=18;
@@ -104,19 +114,18 @@
 			addChild(_istitle);
 			
 			var buttons:Array = app.GetButtons();
-			for (var j:Number = 0; j < buttons.length; j++ ) 
+			for (var i:Number = 0; i < buttons.length; i++ ) 
 			{
-				var btn:SupperMyButton = buttons[j];
+				var btn:SupperMyButton = buttons[i];
 				btn.paint();
-				btn.x = 710-(buttons.length-j)*63;
+				btn.x = 710-(buttons.length-i)*63;
 				btn.y=10
 				btn.mouseChildren = false;
 				btn.addEventListener(MouseEvent.CLICK, butclick);
 				addChild(btn);
 
-				if(buttons[j].defaultselect==1)
+				if(buttons[i].defaultselect==1)
 				{
-					//将默认选择的按钮的背景跳到第二帧
 					btn.btnR.gotoAndStop(2);
 					//Wea = new WeatherXmlLoader(this.loaderInfo.parameters[buttons[i].parametername],startto1);
 					//this.loaderInfo.parameters["wind"]
@@ -124,6 +133,8 @@
 				}				
 			}
 			
+			panel.app = app;
+			panel.Wea = Wea;
 			panel.paint();
 			addChild(panel);
 		}

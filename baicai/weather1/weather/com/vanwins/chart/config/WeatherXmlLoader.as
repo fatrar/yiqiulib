@@ -1,4 +1,5 @@
-﻿package com.vanwins.chart.config
+﻿//解析weather/config中的除appconfig.xml以外的四个风向，湿度等的xml文件
+package com.vanwins.chart.config
 {
 	import flash.events.*;
 	import flash.text.*;

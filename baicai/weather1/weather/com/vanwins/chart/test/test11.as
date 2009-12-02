@@ -21,17 +21,11 @@
 		public  var Wea:WeatherXmlLoader;
 		public var stageHead:MovieClip;
 		public var panel:BasePanel;
-//		private var panel1:BasePanel;
+
 		public function test11()
 		{
 			app = new AppConfig("config/appconfig.xml",startto);
 			Wea = new WeatherXmlLoader("config/wind.xml",startto);
-			
-			/*Rain= new WeatherXmlLoader("config/rainfall.xml",startto);
-			Rel = new WeatherXmlLoader("config/relativehumidity.xml",startto);
-			Temp= new WeatherXmlLoader("config/temperature.xml",startto);*/
-			
-			//Wea = new WeatherXmlLoader("config/temperature.xml",startto);			
 		}
 		private function startto()
 		{
@@ -60,8 +54,6 @@
 				btn.paint();
 				btn.x = 710-(buttons.length-i)*63;
 				btn.y=10
-				//btn.txt.text=buttons[i].istext;
-				//btn.txt.defaultTextFormat.bold=true;
 				btn.mouseChildren = false;
 				btn.addEventListener(MouseEvent.CLICK, butclick);
 				
@@ -76,7 +68,6 @@
 			//trace(Wea.GetBody().days.length);
 			//trace(Wea.GetBody().days[0].datas[0].head);
 			//trace(Wea.GetBody().days[0].datas.length);
-			
 			panel = PanelFactory.newInstance("com.vanwins.chart.panel.Column");
 			panel.app = app;
 			panel.Wea = Wea;
@@ -93,11 +84,7 @@
 		private function butclick(e:MouseEvent)
 		{
 			removeChild(panel);
-			
-			//trace("@@@@@@@@_name  config/"+e.target.parametername+".xml");
-			
 			panel = PanelFactory.newInstance(e.target.eventclass);
-			//trace("aaaaaaaaaaa"+e.target.eventclass);
 			panel.app = app;
 			for(i=0;i<panel.app.GetButtons().length;i++)
 			{
@@ -108,6 +95,7 @@
 				else
 					panel.app.GetButtons()[i].btnR.gotoAndStop(1);
 			}
+
 			panel.Wea = new WeatherXmlLoader("config/"+e.target.parametername+".xml",startto2);	
 		}
 		
@@ -120,19 +108,5 @@
 				removeChildAt(k);		
 			}
 		}
-		/*function loadedapp(){
-			//wea = new WeatherXmlLoader("config/wind.xml",loaded);
-			//panel1 = PanelFactory.newInstance(app.getButtons()[0]);
-			//panel1.appConfig = app;
-			
-		}
-		function loaded()
-		{
-			//m_head=new Head;
-			//trace(app.GetBody().days[1].date);
-			//trace(app.GetHead().istitle.isvalue);
-		}*/
-		
-		
 	}
 }

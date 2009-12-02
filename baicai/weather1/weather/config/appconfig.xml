@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<!--  --><?xml version="1.0" encoding="utf-8" ?>
 <config>
   <weathers>
     <weather strname="qing" msg="晴" src="icos/01.swf"/>

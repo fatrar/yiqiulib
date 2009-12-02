@@ -1,15 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Max.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:20
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-/**
- * AlertÊôÐԶÔÏó
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:20
- */
+﻿//左下方的最大值
 package com.vanwins.chart.bean
 {
     import flash.display.Sprite;

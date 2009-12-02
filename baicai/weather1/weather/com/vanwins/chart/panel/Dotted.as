@@ -1,4 +1,4 @@
-﻿
+﻿//画点状图
 package com.vanwins.chart.panel 
 {
 	import com.vanwins.chart.bean.*;
@@ -13,36 +13,49 @@ package com.vanwins.chart.panel
 	
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	//import flash.
+
 	
 	import flash.geom.ColorTransform;
 	public class Dotted extends BasePanel 
 	{
-		private var dayLen:int;
-		private var dataLen:int;
-		
+		//中间界面最左边的x值
 		private var startRowX:int=20;
+		//中间界面显示日期数据的左边的x值
 		private var startDataX:int=79;
+		//中间界面日期，时间等的y轴间隔值
 		private var betweenY:int=29;
+		//中间界面最上部的y值
 		private var startY:int=49;
+		//中间界面最下部的y值
 		private var endY:int=326;
+		//中间界面最右边的x值
 		private var endX:int=735;
+		//中间界面时间等的x轴间隔值
 		private var betweenX:Number;
+		//显示每一时间value文本的数据信息
 		private var picArr:Array=[];
-		private var betweenUnderY:int;
+		//下面显示点图刻度的Y轴间隔
+		private var betweenUnderY:Number;
 		//画背景线的行数
 		private var backRow:int=5;
-		//存放点型容器
+		//存放点图容器
 		private var _pic:MovieClip=new MovieClip();
+		//显示每一时间value文本的数据信息的文本框
 		private var _dataInfo:TextField=new TextField();
+		//前一天有多少个时间数目
+		private var lastDataX:Number=0;
+		//之前天数总共有多少个时间数目
+		private var allLastDataX:Number=0;
 		
 		
 		public function Dotted()
 		{
 			
 		}
+		//进行构造面板
 		public override function paint():void 
 		{
+			
 			//添加右下角链接
 			var _link:Link=Wea.GetHead().alert.link;
 			_link.paint();
@@ -59,6 +72,7 @@ package com.vanwins.chart.panel
 			addChild(_min);
 			
 			//添加左下角的最大值
+			//var _ismax=
 			var _max:Max=Wea.GetHead().alert.ismax;
 			_max.paint();
 			_max.x=130;
@@ -100,7 +114,6 @@ package com.vanwins.chart.panel
 			}
 			
 			//trace(valueDisplayNum);
-			//trace("valueDisplayNum");
 			
 			//添加最后一个的行背景和线条
 			var _rowLast:Row=Wea.GetHead().rows.values[rowLen-1];
@@ -131,38 +144,36 @@ package com.vanwins.chart.panel
 			//算出横向的间隔值
 			betweenX=(endX-startDataX)/dataNum;
 			
-			
-			
+			//画出行列的刻度线盒左边刻度的数值
 			var backRoute = new Shape();
 			addChild(backRoute);
 			var betweenUnderY=(endY-startY-valueDisplayNum*betweenY)/(backRow);
 			var betweenUnderX=(endX-startDataX)/(dataNum);
-			var abc=endX-startDataX;
-			trace(betweenUnderX);
 			backRoute.graphics.lineStyle(1,0xCCCCCC);
+			//画行和左边刻度值
 			for(j=1;j<=backRow;j++)
 			{
 				backRoute.graphics.moveTo(startDataX,startY+valueDisplayNum*betweenY+betweenUnderY*j);
 				backRoute.graphics.lineTo(endX,startY+valueDisplayNum*betweenY+betweenUnderY*j);
 				var kedutxt:TextField=new TextField();
 				
-			var format:TextFormat = new TextFormat();
-			format.font="Tahoma";
-			format.color =0x444444;
-			format.size = 12;
-			kedutxt.defaultTextFormat = format;
-				kedutxt.text=String(Math.round(Inapp.maxval+5-(Inapp.maxval-Inapp.minval+10)/backRow*j));
+				var format:TextFormat = new TextFormat();
+				format.font="Tahoma";
+				format.color =0x444444;
+				format.size = 12;
+				kedutxt.defaultTextFormat = format;
+				kedutxt.text=String(Math.round(_max.isvalue+5-(_max.isvalue-_min.isvalue+10)/backRow*j));
+				trace(kedutxt.text);
 				kedutxt.x=startDataX-7;
 				kedutxt.y=startY+valueDisplayNum*betweenY+betweenUnderY*j-15;
 				addChild(kedutxt);
 			}
+			//画列
 			for(j=0;j<=dataNum;j++)
 			{
-				backRoute.graphics.moveTo(Math.round(startDataX+betweenUnderX*j),startY+valueDisplayNum*betweenY);
-				backRoute.graphics.lineTo(Math.round(startDataX+betweenUnderX*j),endY);
-				
+				backRoute.graphics.moveTo(startDataX+betweenX*j,startY+valueDisplayNum*betweenY);
+				backRoute.graphics.lineTo(startDataX+betweenX*j,endY);
 			}
-			
 			//k用来计每一天的data数
 			var k:int=0;
 			for(i=0;i<Wea.GetBody().days.length;i++)
@@ -182,15 +193,22 @@ package com.vanwins.chart.panel
 					if(app.GetWeathers()[j].strname==_day.weather)
 					{
 						 _loader.load( new URLRequest( app.GetWeathers()[j].src ) );
-						 _loader.addEventListener(MouseEvent.MOUSE_OVER,showWeather);
-						 _loader.addEventListener(MouseEvent.MOUSE_OUT,showWeather);
+						 //添加一个遮罩，放在swf上面，右边有txt本文框，将对应的天气信息写入文本，可见度设为false
+						 //cover为fla中的影片剪辑导出的类
+						 var _cover:cover=new cover();
+						 addChild(_cover);
+						 _cover.mouseChildren=false;
+						 _cover.txt.text=app.GetWeathers()[j].msg;
+						 _cover.txt.visible=false;
+						 _cover.addEventListener(MouseEvent.MOUSE_OVER,showWeather);
+						 _cover.addEventListener(MouseEvent.MOUSE_OUT,showWeather);
 						// showWeather.text=app.GetWeathers()[j].msg;
 					}
-				}
-				_loader.x=startDataX+betweenX*k+betweenX/2;
+				}				
 				_loader.y=startY+betweenY-5;
 				_loader.scaleX=0.6;
 				_loader.scaleY=0.6;
+				 
 				//_loader.width=betweenY;
 				//_loader.height=betweenY;
 				
@@ -204,7 +222,7 @@ package com.vanwins.chart.panel
 					//将显示文本数值排入数组
 					picArr.push(_data.isvalue);
 					addChild(_data);
-					_data.x=startDataX+betweenX*k+betweenX/2;
+					_data.x=startDataX+betweenX*k+betweenX/2-8;
 					_data.y=startY+4+betweenY*2;
 					k++;
 					
@@ -213,25 +231,17 @@ package com.vanwins.chart.panel
 					{
 						var shape:Shape=new Shape();
 						shape.graphics.lineStyle(1,0xFFFFFF);
-						//需要继续调式，需要知道长条的长度来算出准确的endX
 						shape.graphics.moveTo(startDataX+betweenX*k,startY);
 						shape.graphics.lineTo(startDataX+betweenX*k,startY+betweenY*valueDisplayNum);
 						addChild(shape);
+						lastDataX+=j+1;
 					}
 					
-					var shape1:Shape=new Shape();
-					shape1.graphics.lineStyle(1,0xFF00FF);
-					shape1.graphics.moveTo(endX,startY);
-					shape1.graphics.lineTo(endX,startY+betweenY*4);
-					shape1.graphics.moveTo(startDataX,startY);
-					shape1.graphics.lineTo(startDataX,startY+betweenY*4);
-					addChild(shape1);
-					trace("endX"+startDataX);
-					
+					//添加点型实例和画点之间的连线
 					var dotX=startDataX+betweenX*(k-1)+betweenX/2;
 					var tmp_x = (endY-startY-valueDisplayNum*betweenY);
-					var tmp_z=(_data.isvalue-Inapp.minval+5);
-					var tmp_y = (Inapp.maxval-Inapp.minval+10);
+					var tmp_z=(_data.isvalue-_min.isvalue+5);
+					var tmp_y = (_max.isvalue-_min.isvalue+10);
 					var dotY=-tmp_x*tmp_z/tmp_y+ endY;
 					var _line:Shape=new Shape();
 					if(j!=Wea.GetBody().days[i].datas.length-1)
@@ -239,7 +249,7 @@ package com.vanwins.chart.panel
 						
 						_line.graphics.lineStyle(2,0xCCCCCC);
 						_line.graphics.moveTo(dotX,dotY);
-						_line.graphics.lineTo(dotX+betweenX,-tmp_x*(Wea.GetBody().days[i].datas[j+1].isvalue-Inapp.minval+5)/tmp_y+ endY);
+						_line.graphics.lineTo(dotX+betweenX,-tmp_x*(Wea.GetBody().days[i].datas[j+1].isvalue-_min.isvalue+5)/tmp_y+ endY);
 						addChild(_line);
 					}
 					else if(i!=Wea.GetBody().days.length-1)
@@ -247,7 +257,7 @@ package com.vanwins.chart.panel
 						
 						_line.graphics.lineStyle(2,0xCCCCCC);
 						_line.graphics.moveTo(dotX,dotY);
-						_line.graphics.lineTo(dotX+betweenX,-tmp_x*(Wea.GetBody().days[i+1].datas[0].isvalue-Inapp.minval+5)/tmp_y+ endY);
+						_line.graphics.lineTo(dotX+betweenX,-tmp_x*(Wea.GetBody().days[i+1].datas[0].isvalue-_min.isvalue+5)/tmp_y+ endY);
 						addChildAt(_line,10);
 					}
 					else
@@ -261,7 +271,7 @@ package com.vanwins.chart.panel
 					
 					_dot.y= dotY;
 										
-					//改变颜色
+					//如为不适合比赛时段，点状改变颜色
 					var colorInfo:ColorTransform;
 					
 					colorInfo=_dot.transform.colorTransform;
@@ -285,37 +295,39 @@ package com.vanwins.chart.panel
 				
 					
 				
-				//当data值大于2时，显示日期，否则不显示
-				if(k>=2)
+				//当data值大于2或者总共长度大于66时，显示日期，否则不显示
+				if(k>=2||betweenX*k>66)
 				{
 					addChild(_day);
 				}
-				_day.x=startRowX+(endX-startDataX)/6+i*(endX-startDataX)/3;
-				_day.y=startY+4;//+betweenY/2;
-				
+				_day.x=startDataX+betweenX*allLastDataX+(lastDataX-allLastDataX)*betweenX/2-50;
+				_loader.x=_day.x+30;
+				_cover.x=_loader.x;
+				_cover.y=_loader.y;
+				_day.y=startY+4;
+				allLastDataX+=lastDataX-allLastDataX;				
 			}
+			
 			//添加_pic和显示时间数据文字
 			addChild(_pic);
-			
 		}
+		
 		private function showWeather(e:MouseEvent):void
 		{
-			
-			//getChildByName(DisplayObject(e.target)
+			//鼠标移上swf文件时显示天气信息
 			if(e.type=="mouseOver")
 			{
-				trace(e.target);
-				//trace("e.targete.targete.target"+getChildIndex(e.target));
+				e.target.txt.visible=true;
 			}
 			else if (e.type=="mouseOut")
 			{
-				
+				e.target.txt.visible=false;
 			}
 		}
 		
 		private function showData(e:MouseEvent):void
 		{
-			
+			//鼠标移上点状时显示此一时间的数值信息
 			var i=_pic.getChildIndex(DisplayObject(e.target));
 			_dataInfo.text=picArr[i];
 			_dataInfo.mouseEnabled=false;
@@ -329,10 +341,11 @@ package com.vanwins.chart.panel
 			}
 			else if (e.type=="mouseOut")
 			{
-				//_dataInfo.visible=false;
+				
 				removeChild(_dataInfo);
-				//removeChild(_dataInfo);
+				
 			}
 		}
+		
 	}
 }
