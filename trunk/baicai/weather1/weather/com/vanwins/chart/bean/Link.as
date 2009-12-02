@@ -1,15 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Link.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:22
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-/**
- * Á´½ÓÀà
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:22
- */
+﻿//右下方的link
  package com.vanwins.chart.bean
 {
     import flash.display.Sprite;

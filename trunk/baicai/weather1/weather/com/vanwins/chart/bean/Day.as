@@ -1,15 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Day.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:23
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-/**
- * ÌìÊý¾Ý
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:23
- */
+﻿//构造每一天的函数
  package com.vanwins.chart.bean
 {
     import flash.display.Sprite;

@@ -1,15 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Row.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:19
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-/**
- * ÐÐÀà
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:19
- */
+﻿//每一行的信息，如行标题，颜色等
 package com.vanwins.chart.bean
 {
 	import flash.text.TextField;

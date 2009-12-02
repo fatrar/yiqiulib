@@ -10,24 +10,24 @@
       <row value="气  温" unit="  (°C)" display="1" color="0xffffff" bgcolor="0x00ff00"underLine="0"/>
     </rows>
     <alert>
-      <max strname="最高气温" display="true" value="23" unit="(°C)" color="0x006600" bgcolor="0x00ff00" size="10" />
-      <min strname="最低气温" display="true" value="0.5" unit="(°C)" color="0x006600" size="10" />
-      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="20" minval="2" size="10"/>
+      <max strname="最高气温" display="true" value="36" unit="(°C)" color="0x006600" bgcolor="0x00ff00" size="10" />
+      <min strname="最低气温" display="true" value="10" unit="(°C)" color="0x006600" size="10" />
+      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="35" minval="10" size="10"/>
       <link href="http://www.baidu.com" strname="天气实况" display="true" color="0x2754BB" bgcolor="0x00ff00"  size="10"/>
     </alert>
   </head>
   <body altercolor="0xCC0000" defaultcolor="0x006600">
     <day date="11月19日" weather="xiaoyu">
-      <data head="12" value="10"/>
+      <data head="12" value="36"/>
       <data head="15" value="12"/>
-      <data head="18" value="12.5"/>
+      <data head="18" value="24"/>
       <data head="21" value="13"/>
     </day>
     <day date="11月20日" weather="yangsha">
       <data head="00" value="12"/>
       <data head="03" value="12"/>
       <data head="06" value="12"/>
-      <data head="09" value="12.5"/>
+      <data head="09" value="25"/>
       <data head="12" value="11"/>
       <data head="15" value="12.5"/>
       <data head="18" value="10"/>
@@ -39,7 +39,7 @@
       <data head="06" value="11.5"/>
       <data head="09" value="20"/>
       <data head="12" value="11.5"/>
-      <data head="15" value="14.5"/>
+      <data head="15" value="33"/>
       <data head="18" value="12"/>
       <data head="21" value="11"/>
     </day>

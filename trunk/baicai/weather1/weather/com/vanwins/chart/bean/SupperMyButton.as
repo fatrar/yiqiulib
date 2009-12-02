@@ -1,4 +1,4 @@
-﻿
+﻿//按钮类，其中添加了fla中的影片剪辑RightBtn
 package com.vanwins.chart.bean
 {
     
@@ -10,7 +10,7 @@ package com.vanwins.chart.bean
  	public class SupperMyButton extends MovieClip
 	{
     	public var bgcolor: Number=0x00ff00;
-    	public var defaultselect: Number = 0;
+    	public var defaultselect: int;
     	public var eventclass: String;
     	public var fontcolor: Number;
     	public var parametername: String;
@@ -43,30 +43,4 @@ package com.vanwins.chart.bean
 			//label.y=-10;
 		}
 	}
-	/*public function paint()
-{
-
-
-}
-
-
-var buttons:Array = app.GetButtons();
-for (var i:Number = 0; i < buttons.length; i++ )
-{
-var btn:SupperMyButton = buttons[i];
-btn.paint();
-btn.x = 730-(buttons.length-i)*63;
-btn.y=20
-//btn.txt.text=buttons[i].istext;
-//btn.txt.defaultTextFormat.bold=true;
-btn.mouseChildren = false;
-btn.addEventListener(MouseEvent.CLICK, butclick);
-addChild(btn);
-if(i==0)
-{
-btn.gotoAndStop(2);
-}
-}
-
-*/
 }

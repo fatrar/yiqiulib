@@ -1,21 +1,9 @@
-﻿///////////////////////////////////////////////////////////
-//  Alert.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:20
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-
-
-/**
- * ÌáʾÐÅϢÀà
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:20
- */
+﻿//构造面板下部的link，inappropriate，ismax，ismin
  package com.vanwins.chart.bean
 {
 	
-	import flash.display.*;
+	import flash.display.Sprite;
+	import flash.display.MovieClip;
 	
 	public class Alert extends MovieClip
 	{
@@ -34,45 +22,5 @@
 			addChild(ismax);
 			addChild(ismin);
 		}
-			/*link=new Link;
-			inappropriate=new Inappropriate;
-			ismax=new Max;
-			ismin=new Min;
-			addChild(link);
-			addChild(inappropriate);
-			addChild(ismax);
-			addChild(ismin);
-		}
-		private function Link()
-		{
-			var label = new TextField();
-			//label.backgroundColor=bgcolor;
-			this.isvalue = val;
-			this.iscolor = colo;
-			this.titSize = sizes;
-			var format:TextFormat = new TextFormat();
-			format.color = iscolor;
-			format.size = titSize;
-			label.defaultTextFormat = format;
-			label.text=isvalue;
-			addChild(label);
-			var txt:TextField=new TextField() ;
-			addChild(txt);
-			txt.x=245;
-			txt.y=198+223*n;
-			txt.htmlText="<a href='"+url+""strname"'></a>";
-		}
-		private function Inappropriate()
-		{
-			
-		}
-		private function Max()
-		{
-			
-		}
-		private function Min()
-		{
-			
-		}*/
 	}
 }

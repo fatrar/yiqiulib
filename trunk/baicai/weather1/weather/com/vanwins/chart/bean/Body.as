@@ -1,15 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Body.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:22
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-/**
- * ÄÚÈÝÖ÷ÌåÀà
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:22
- */
+﻿//构造面板中部和下部
 package com.vanwins.chart.bean
 {
     import flash.display.Sprite;

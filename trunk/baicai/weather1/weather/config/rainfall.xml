@@ -12,7 +12,7 @@
     <alert>
       <max strname="最大降雨量" display="true" value="23" unit="(mm)" color="0x006600" bgcolor="0x00ff00" size="10" />
       <min strname="最小降雨量" display="true" value="0.5" unit="(mm)" color="0x006600" size="10" />
-      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="20" minval="2" size="10"/>
+      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="30" minval="5" size="10"/>
       <link href="http://www.baidu.com" strname="天气实况" display="true" color="0x2754BB" bgcolor="0x00ff00" size="10" />
     </alert>
   </head>

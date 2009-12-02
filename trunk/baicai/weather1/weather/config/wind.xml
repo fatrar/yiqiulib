@@ -12,37 +12,37 @@
 	</rows>
     <alert>
       <max strname="最高风速" display="true" value="23" unit="(m/s)" color="0x006600" bgcolor="0x00ff00" size="10"/>
-      <min strname="最低风速" display="true" value="0.5" unit="(m/s)" color="0x006600" bgcolor="0x00ff00" size="10"/>
+      <min strname="最低风速" display="true" value="1" unit="(m/s)" color="0x006600" bgcolor="0x00ff00" size="10"/>
       <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="20" minval="2" size="10"/>
       <link href="http://www.baidu.com" strname="天气实况" display="true" color="0x2754BB" bgcolor="0x00ff00"  size="10"/>
     </alert>
   </head>
   <body altercolor="0xCC0000" defaultcolor="0x3366BB">
     <day date="11月19日" weather="fuchen">
-      <data head="12" value="1" val4="don"/>
-      <data head="15" value="12" val4="don"/>
-      <data head="18" value="12.5" val4="don"/>
-      <data head="21" value="13" val4="don"/>
+      <data head="12" value="1" val4="dong"/>
+      <data head="15" value="12" val4="dong"/>
+      <data head="18" value="12.5" val4="dong"/>
+      <data head="21" value="13" val4="dong"/>
     </day>
     <day date="11月20日" weather="shachenbao">
-      <data head="00" value="12" val4="donnan"/>
-      <data head="03" value="12" val4="don"/>
-      <data head="06" value="12" val4="don"/>
-      <data head="09" value="12.5" val4="don"/>
-      <data head="12" value="11" val4="don"/>
-      <data head="15" value="12.5" val4="don"/>
-      <data head="18" value="10" val4="don"/>
-      <data head="21" value="13" val4="don"/>
+      <data head="00" value="12" val4="dongnan"/>
+      <data head="03" value="12" val4="xibei"/>
+      <data head="06" value="12" val4="nan"/>
+      <data head="09" value="12.5" val4="xinan"/>
+      <data head="12" value="23" val4="bei"/>
+      <data head="15" value="12.5" val4="xinan"/>
+      <data head="18" value="10" val4="xinan"/>
+      <data head="21" value="13" val4="xinan"/>
     </day>
     <day date="11月21日" weather="daxue">
-      <data head="00" value="1" val4="don"/>
-      <data head="03" value="1" val4="bei"/>
-      <data head="06" value="1" val4="don"/>
-      <data head="09" value="2" val4="don"/>
-      <data head="12" value="1" val4="don"/>
-      <data head="15" value="1" val4="don"/>
-      <data head="18" value="1" val4="don"/>
-      <data head="21" value="1" val4="don"/>
+      <data head="00" value="1" val4="xinan"/>
+      <data head="03" value="1" val4="xinan"/>
+      <data head="06" value="1" val4="xinan"/>
+      <data head="09" value="2" val4="xi"/>
+      <data head="12" value="1" val4="nan"/>
+      <data head="15" value="1" val4="nan"/>
+      <data head="18" value="1" val4="nan"/>
+      <data head="21" value="1" val4="nan"/>
     </day>
   </body>
 </weathers>

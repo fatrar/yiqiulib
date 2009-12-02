@@ -1,4 +1,5 @@
-﻿package com.vanwins.chart.panel 
+﻿//为Column和Dotted的父类
+package com.vanwins.chart.panel 
 {
 	import flash.display.MovieClip;
 	import com.vanwins.chart.config.*;

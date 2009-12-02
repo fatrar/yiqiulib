@@ -10,33 +10,33 @@
       <row value="湿度" unit="(%)" display="1" color="0xffffff" bgcolor="0x00ff00"underLine="0"/>
     </rows>
     <alert>
-      <max strname="最高湿度" display="true" value="23" unit="(%)" color="0x006600" bgcolor="0x006600" size="10" />
-      <min strname="最低湿度" display="true" value="0.5" unit="(%)" color="0x006600" size="10" />
-      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="20" minval="2" size="10"/>
+      <max strname="最高湿度" display="true" value="90" unit="(%)" color="0x006600" bgcolor="0x006600" size="10" />
+      <min strname="最低湿度" display="true" value="11" unit="(%)" color="0x006600" size="10" />
+      <inappropriate strname="不适合比赛时段" display="true" color="0xCC0000" bgcolor="0x00ff00" unit="(m/s)" maxval="80" minval="20" size="10"/>
       <link href="http://www.baidu.com" strname="天气实况" display="true" color="0x2754BB" bgcolor="0x00ff00" size="10" />
     </alert>
   </head>
   <body altercolor="0xCC0000" defaultcolor="0x006600">
     <day date="11月19日" weather="zhenyu">
-      <data head="12" value="10"/>
+      <data head="12" value="15"/>
       <data head="15" value="12"/>
-      <data head="18" value="12.5"/>
-      <data head="21" value="13"/>
+      <data head="18" value="50"/>
+      <data head="21" value="60"/>
     </day>
     <day date="11月20日" weather="leizhenyu">
-      <data head="00" value="12"/>
-      <data head="03" value="12"/>
-      <data head="06" value="12"/>
-      <data head="09" value="12.5"/>
-      <data head="12" value="11"/>
-      <data head="15" value="12.5"/>
-      <data head="18" value="10"/>
-      <data head="21" value="13"/>
+      <data head="00" value="80"/>
+      <data head="03" value="90"/>
+      <data head="06" value="50"/>
+      <data head="09" value="50"/>
+      <data head="12" value="75"/>
+      <data head="15" value="50"/>
+      <data head="18" value="62"/>
+      <data head="21" value="34"/>
     </day>
     <day date="11月21日" weather="wu">
-      <data head="00" value="10"/>
+      <data head="00" value="25"/>
       <data head="03" value="23"/>
-      <data head="06" value="11.5"/>
+      <data head="06" value="28"/>
       <data head="09" value="20"/>
       <data head="12" value="11.5"/>
       <data head="15" value="14.5"/>

@@ -1,15 +1,4 @@
-﻿///////////////////////////////////////////////////////////
-//  Min.as
-//  Created on:      23-ʮһÔÂ-2009 10:31:21
-//  Original author: Administrator
-///////////////////////////////////////////////////////////
-
-/**
- * AlertÊôÐԶÔÏó
- * @author Administrator
- * @version 1.0
- * @created 23-ʮһÔÂ-2009 10:31:21
- */
+﻿//左下方的最小值
 package com.vanwins.chart.bean
 {
     import flash.display.Sprite;
