@@ -1,0 +1,79 @@
+<mockup version="1.0" skin="sketch" measuredW="962" measuredH="629">
+  <controls>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::TitleWindow" x="112" y="12" w="850" h="617" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%20%20%20%20%20%20%20%20%20%20%20Microsoft%20Outlook</text>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Image" x="118" y="18" w="60" h="59" measuredW="171" measuredH="189" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>http%3A//www.allpda.mobi/wp-content/plugins/wp-o-matic/cache/3c430_office_mobile_logo.jpg</src>
+        <filter>true</filter>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::TabBar" x="127" y="54" w="827" h="115" measuredW="215" measuredH="100" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%20%20%20%20%20%20%20%20%20%20Message</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::VerticalScrollBar" x="938" y="255" w="-1" h="342" measuredW="16" measuredH="100" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <value>0</value>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Canvas" x="127" y="255" w="829" h="342" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Paragraph" x="130" y="177" w="826" h="140" measuredW="200" measuredH="140" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>From%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20Balsamiq%20Wireframes%20%5Bcraig@balsamiq.com.au%5D%0ATo%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Craig%0ACc%3A%0ASubject%3A%20%20%20%20%20%20%20%20%20%20%20Balsamiq%20Wireframes%20are%20awesomeness%21</text>
+        <size>11</size>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::IconLabel" x="138" y="98" w="-1" h="-1" measuredW="39" measuredH="49" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Reply</text>
+        <icon>JumpBackIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::IconLabel" x="192" y="97" w="-1" h="-1" measuredW="55" measuredH="49" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Forward</text>
+        <icon>JumpOutIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::IconLabel" x="262" y="97" w="-1" h="-1" measuredW="45" measuredH="49" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Delete</text>
+        <icon>XIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::IconLabel" x="333" y="97" w="-1" h="-1" measuredW="36" measuredH="49" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Print</text>
+        <icon>PrintIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::IconLabel" x="384" y="97" w="-1" h="-1" measuredW="37" measuredH="49" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Move</text>
+        <icon>ArchiveIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="17" controlTypeID="com.balsamiq.mockups::Icon" x="938" y="12" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CircledXIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Icon" x="914" y="12" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CircledMinusIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::IconLabel" x="442" y="97" w="-1" h="-1" measuredW="63" measuredH="49" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Follow%20Up</text>
+        <icon>FlagIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

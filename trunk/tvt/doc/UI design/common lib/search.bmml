@@ -1,0 +1,25 @@
+<mockup version="1.0" skin="sketch">
+  <controls>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Label" x="446" y="127" w="-1" h="-1" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Search</text>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::TextInput" x="499" y="124" w="196" h="-1" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Canvas" x="439" y="118" w="518" h="44" zOrder="0" locked="false" isInGroup="-1"/>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="907" y="125" w="-1" h="-1" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Go</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::ComboBox" x="704" y="127" w="195" h="-1" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Downloads</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

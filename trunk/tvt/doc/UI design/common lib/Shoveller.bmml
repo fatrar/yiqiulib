@@ -1,0 +1,19 @@
+<mockup version="1.0" skin="sketch" measuredW="674" measuredH="184">
+  <controls>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Canvas" x="44" y="32" w="620" h="142" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1"/>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Image" x="108" y="47" w="110" h="112" measuredW="141" measuredH="144" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Image" x="492" y="47" w="110" h="112" measuredW="141" measuredH="144" zOrder="2" locked="false" isInGroup="-1"/>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Image" x="364" y="47" w="110" h="112" measuredW="141" measuredH="144" zOrder="3" locked="false" isInGroup="-1"/>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Image" x="236" y="47" w="110" h="112" measuredW="141" measuredH="144" zOrder="4" locked="false" isInGroup="-1"/>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::Icon" x="49" y="79" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>LeftTriangleIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::Icon" x="609" y="79" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>RightTriangleIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

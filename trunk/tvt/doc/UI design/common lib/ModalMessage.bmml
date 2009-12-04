@@ -1,0 +1,35 @@
+<mockup version="1.0" skin="sketch">
+  <controls>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::ModalScreen" x="168" y="108" w="628" h="459" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="168" y="106" w="628" h="461" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page</text>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="__group__" x="349" y="260" w="-1" h="-1" zOrder="2" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="266" h="181" zOrder="0" locked="false" isInGroup="12">
+          <controlProperties>
+            <color>16448250</color>
+            <borderStyle>square</borderStyle>
+          </controlProperties>
+        </control>
+        <control controlID="9" controlTypeID="com.balsamiq.mockups::Icon" x="9" y="10" w="-1" h="-1" zOrder="1" locked="false" isInGroup="12">
+          <controlProperties>
+            <icon>AlertIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="10" controlTypeID="com.balsamiq.mockups::Paragraph" x="36" y="10" w="215" h="117" zOrder="2" locked="false" isInGroup="12">
+          <controlProperties>
+            <text>This%20could%20be%20used%20as%20an%20error%20message%20to%20say%20that%20something%20is%20wrong.</text>
+          </controlProperties>
+        </control>
+        <control controlID="11" controlTypeID="com.balsamiq.mockups::Button" x="201" y="142" w="50" h="-1" zOrder="3" locked="false" isInGroup="12">
+          <controlProperties>
+            <text>Close</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

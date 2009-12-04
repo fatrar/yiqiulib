@@ -1,0 +1,21 @@
+<mockup version="1.0" skin="sketch" measuredW="210" measuredH="225" mockupW="170" mockupH="184">
+  <controls>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::FieldSet" x="30" y="31" w="170" h="184" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>State</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::DataGrid" x="38" y="45" w="149" h="155" measuredW="148" measuredH="186" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <hasHeader>false</hasHeader>
+        <verticalScrollbar>false</verticalScrollbar>
+        <borderStyle>none</borderStyle>
+        <hLines>false</hLines>
+        <selectedIndex>-1</selectedIndex>
+        <text>%5Bx%5D%2C%5BAlabama%5D%2C%28132%29%0A%5B%5D%2C%5BAlaska%5D%2C%28149%29%0A%5B%5D%2C%5BArizona%5D%2C%2896%29%0A%5Bx%5D%2C%5BArkansas%5D%2C%28322%29%0A%5B%5D%2C%5BCalifornia%5D%2C%28843%29%0A%5B%5D%2C%5BColorado%5D%2C%28511%29</text>
+        <vLines>false</vLines>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::VerticalScrollBar" x="184" y="39" w="-1" h="176" measuredW="16" measuredH="100" zOrder="2" locked="false" isInGroup="-1"/>
+  </controls>
+</mockup>

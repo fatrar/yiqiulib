@@ -1,0 +1,81 @@
+<mockup version="1.0" skin="sketch">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="361" y="115" w="567" h="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <minimize>true</minimize>
+        <bottomheight>52</bottomheight>
+        <maximizeRestore>true</maximizeRestore>
+        <topheight>70</topheight>
+        <text>Open</text>
+        <dragger>true</dragger>
+        <close>true</close>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::ButtonBar" x="464" y="145" w="-1" h="-1" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>1</selectedIndex>
+        <text>%20%20%2C%20%20%2C%20%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::ButtonBar" x="376" y="145" w="-1" h="-1" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>-1</selectedIndex>
+        <text>%20%20%2C%20%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::ComboBox" x="598" y="145" w="179" h="-1" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Desktop</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::SearchBox" x="792" y="145" w="121" h="-1" zOrder="4" locked="false" isInGroup="-1"/>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::DataGrid" x="498" y="181" w="430" h="286" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Name%2C%20Date%20Modified%0Aa%20nice%20little%20file%2C%20Yesterday%5C%2C%203%3A19%20PM%0Adocument.pdf%2C%20Yesterday%5C%2C%207%3A55%20AM%0Aslideshow.ppt%2C%20Friday%5C%2C%20January%202%5C%2C%202009%208%3A24%20AM</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Button" x="750" y="475" w="-1" h="-1" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cancel</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Button" x="830" y="475" w="-1" h="-1" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Select</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Icon" x="386" y="145" w="-1" h="-1" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>LeftTriangleIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Icon" x="425" y="145" w="-1" h="-1" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>RightTriangleIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::Icon" x="515" y="147" w="-1" h="-1" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>TextAlignLeftIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::Icon" x="551" y="145" w="-1" h="-1" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>TableIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::Icon" x="475" y="145" w="-1" h="-1" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>StopIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::Tree" x="361" y="181" w="137" h="286" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>6</selectedIndex>
+        <text>F%20Devices%0A%20-%20My%20Macbook%0A%20-%20Macintosh%20HD%0AF%20Shared%0A%20-%20Time%20Capsule%0AF%20Places%0A%20-%20Desktop%0A%20-%20Home</text>
+        <verticalScrollbar>true</verticalScrollbar>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

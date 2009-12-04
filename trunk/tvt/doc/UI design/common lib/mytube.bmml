@@ -1,0 +1,184 @@
+<mockup version="1.0" skin="sketch" measuredW="787" measuredH="713">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="35" y="29" w="742" h="674" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>myTube%0Awww.mytube.com</text>
+        <verticalScrollbar>true</verticalScrollbar>
+      </controlProperties>
+    </control>
+    <control controlID="65" controlTypeID="com.balsamiq.mockups::Image" x="527" y="269" w="198" h="114" measuredW="141" measuredH="144" zOrder="14" locked="false" isInGroup="-1"/>
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::Label" x="608" y="543" w="-1" h="-1" measuredW="62" measuredH="19" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Views%3A%201%2C234</text>
+        <size>10</size>
+      </controlProperties>
+    </control>
+    <control controlID="67" controlTypeID="com.balsamiq.mockups::Label" x="608" y="528" w="-1" h="-1" measuredW="62" measuredH="20" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BSome%20Video%5D</text>
+        <size>11</size>
+      </controlProperties>
+    </control>
+    <control controlID="68" controlTypeID="com.balsamiq.mockups::IconLabel" x="398" y="559" w="-1" h="-1" measuredW="57" measuredH="24" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Flag</text>
+        <labelPosition>right</labelPosition>
+        <icon>FlagIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="69" controlTypeID="com.balsamiq.mockups::Label" x="119" y="596" w="-1" h="-1" measuredW="318" measuredH="20" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Comments%3A%201%2C722%20%20Favorited%3A%201%2C666%20times%20%20Honors%3A%2021%20%20Links%3A%205</text>
+        <size>11</size>
+      </controlProperties>
+    </control>
+    <control controlID="70" controlTypeID="com.balsamiq.mockups::Label" x="54" y="635" w="-1" h="-1" measuredW="169" measuredH="27" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Comments%20%26%20Responses</text>
+        <size>16</size>
+      </controlProperties>
+    </control>
+    <control controlID="71" controlTypeID="com.balsamiq.mockups::IconLabel" x="267" y="559" w="-1" h="-1" measuredW="121" measuredH="24" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Add%20to%20Playlist</text>
+        <labelPosition>right</labelPosition>
+        <icon>CopyIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::Canvas" x="527" y="398" w="198" h="81" measuredW="100" measuredH="70" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <backgroundAlpha>0.5</backgroundAlpha>
+        <color>6750054</color>
+        <borderStyle>none</borderStyle>
+      </controlProperties>
+    </control>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::IconLabel" x="100" y="559" w="-1" h="-1" measuredW="67" measuredH="24" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Share</text>
+        <labelPosition>right</labelPosition>
+        <icon>EmailIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::Label" x="608" y="595" w="-1" h="-1" measuredW="62" measuredH="19" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Views%3A%201%2C234</text>
+        <size>10</size>
+      </controlProperties>
+    </control>
+    <control controlID="75" controlTypeID="com.balsamiq.mockups::Label" x="608" y="578" w="-1" h="-1" measuredW="96" measuredH="20" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BSome%20Other%20Video%5D</text>
+        <size>11</size>
+      </controlProperties>
+    </control>
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::Image" x="535" y="572" w="71" h="49" measuredW="141" measuredH="144" zOrder="26" locked="false" isInGroup="-1"/>
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::Label" x="608" y="631" w="-1" h="-1" measuredW="96" measuredH="20" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BSome%20Other%20Video%5D</text>
+        <size>11</size>
+      </controlProperties>
+    </control>
+    <control controlID="79" controlTypeID="com.balsamiq.mockups::Image" x="535" y="627" w="71" h="39" measuredW="141" measuredH="144" zOrder="28" locked="false" isInGroup="-1"/>
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::IconLabel" x="177" y="559" w="-1" h="-1" measuredW="80" measuredH="24" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Favorite</text>
+        <labelPosition>right</labelPosition>
+        <icon>StarIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="81" controlTypeID="com.balsamiq.mockups::Label" x="588" y="277" w="-1" h="-1" measuredW="75" measuredH="23" zOrder="33" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>ads%20go%20here</text>
+      </controlProperties>
+    </control>
+    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="608" y="645" w="-1" h="-1" measuredW="62" measuredH="19" zOrder="34" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Views%3A%201%2C234</text>
+        <size>10</size>
+      </controlProperties>
+    </control>
+    <control controlID="80" controlTypeID="com.balsamiq.mockups::Icon" x="550" y="489" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="29" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>DownTriangleIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="47" controlTypeID="com.balsamiq.mockups::Title" x="66" y="92" w="-1" h="-1" measuredW="143" measuredH="56" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>myTube</text>
+      </controlProperties>
+    </control>
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::LinkBar" x="413" y="108" w="-1" h="-1" measuredW="313" measuredH="23" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Hi%20peldi%21%2C%20Account%2C%20History%2C%20Help%2C%20Log%20Out</text>
+      </controlProperties>
+    </control>
+    <control controlID="49" controlTypeID="com.balsamiq.mockups::TabBar" x="54" y="152" w="671" h="82" measuredW="327" measuredH="100" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Home%2C%20Videos%2C%20Channels%2C%20Community</text>
+        <selectedIndex>1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::TextInput" x="167" y="190" w="195" h="-1" measuredW="79" measuredH="29" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::ComboBox" x="362" y="193" w="-1" h="-1" measuredW="69" measuredH="23" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Videos</text>
+      </controlProperties>
+    </control>
+    <control controlID="52" controlTypeID="com.balsamiq.mockups::Button" x="455" y="191" w="-1" h="-1" measuredW="65" measuredH="28" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Search</text>
+      </controlProperties>
+    </control>
+    <control controlID="53" controlTypeID="com.balsamiq.mockups::Button" x="646" y="190" w="-1" h="-1" measuredW="64" measuredH="28" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Upload</text>
+        <state>focused</state>
+      </controlProperties>
+    </control>
+    <control controlID="54" controlTypeID="com.balsamiq.mockups::Title" x="54" y="240" w="-1" h="-1" measuredW="182" measuredH="29" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Video%20Title%20Goes%20Here</text>
+        <size>18</size>
+        <color>8388736</color>
+      </controlProperties>
+    </control>
+    <control controlID="55" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="54" y="268" w="448" h="277" measuredW="300" measuredH="200" zOrder="9" locked="false" isInGroup="-1"/>
+    <control controlID="56" controlTypeID="com.balsamiq.mockups::RoundButton" x="254" y="381" w="48" h="49" measuredW="52" measuredH="52" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>RightTriangleIcon%7Cmedium</icon>
+      </controlProperties>
+    </control>
+    <control controlID="57" controlTypeID="com.balsamiq.mockups::Image" x="535" y="520" w="71" h="49" measuredW="141" measuredH="144" zOrder="23" locked="false" isInGroup="-1"/>
+    <control controlID="58" controlTypeID="com.balsamiq.mockups::Label" x="580" y="490" w="-1" h="-1" measuredW="130" measuredH="23" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>More%20from%20_username_</text>
+      </controlProperties>
+    </control>
+    <control controlID="59" controlTypeID="com.balsamiq.mockups::Canvas" x="527" y="513" w="198" h="164" measuredW="100" measuredH="70" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <verticalScrollbar>true</verticalScrollbar>
+        <borderStyle>none</borderStyle>
+      </controlProperties>
+    </control>
+    <control controlID="61" controlTypeID="com.balsamiq.mockups::Button" x="629" y="438" w="-1" h="-1" measuredW="81" measuredH="28" zOrder="32" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Subscribe</text>
+        <state>focused</state>
+      </controlProperties>
+    </control>
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::Icon" x="535" y="403" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="30" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>EmoticonIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+    <control controlID="63" controlTypeID="com.balsamiq.mockups::Label" x="595" y="406" w="-1" h="-1" measuredW="100" measuredH="23" zOrder="31" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>From%3A%20%5Busername%5D</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

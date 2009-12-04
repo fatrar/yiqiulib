@@ -1,0 +1,234 @@
+<mockup version="1.0" skin="sketch">
+  <controls>
+    <control controlID="15" controlTypeID="__group__" x="269" y="100" w="-1" h="-1" zOrder="0" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="2" y="0" w="69" h="74" zOrder="0" locked="false" isInGroup="15"/>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="15" y="40" w="39" h="25" zOrder="1" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>Votes</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="15" y="10" w="39" h="32" zOrder="2" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>149</text>
+            <size>18</size>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="0" y="77" w="71" h="-1" zOrder="3" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>Vote%20It</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Link" x="83" y="0" w="-1" h="-1" zOrder="4" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>BREAKING%3A%20Balsamiq%20Mockups%20is%20great%21</text>
+            <size>16</size>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="com.balsamiq.mockups::Label" x="83" y="28" w="506" h="52" zOrder="5" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>Use%20Balsamiq%20Mockups%20to%20quickly%20flesh%20out%20your%20interface.%20Don%27t%20get%20caught%20up%20with%20how%20your%20app%20looks.%20Focus%20on%20how%20it%20works%21</text>
+          </controlProperties>
+        </control>
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="113" y="82" w="75" h="20" zOrder="6" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>300%20Comments</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="7" controlTypeID="com.balsamiq.mockups::Icon" x="83" y="80" w="-1" h="-1" zOrder="7" locked="false" isInGroup="15">
+          <controlProperties>
+            <icon>BaloonIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="231" y="82" w="34" h="20" zOrder="8" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>Share</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="9" controlTypeID="com.balsamiq.mockups::Icon" x="205" y="80" w="-1" h="-1" zOrder="9" locked="false" isInGroup="15">
+          <controlProperties>
+            <icon>RightArrowIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="10" controlTypeID="com.balsamiq.mockups::Label" x="303" y="82" w="27" h="20" zOrder="10" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>Bury</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="11" controlTypeID="com.balsamiq.mockups::Icon" x="277" y="80" w="-1" h="-1" zOrder="11" locked="false" isInGroup="15">
+          <controlProperties>
+            <icon>XIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="12" controlTypeID="com.balsamiq.mockups::Image" x="350" y="80" w="25" h="26" zOrder="12" locked="false" isInGroup="15"/>
+        <control controlID="13" controlTypeID="com.balsamiq.mockups::Label" x="383" y="82" w="42" h="20" zOrder="13" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>SitePen</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="14" controlTypeID="com.balsamiq.mockups::Label" x="431" y="82" w="53" h="20" zOrder="14" locked="false" isInGroup="15">
+          <controlProperties>
+            <text>submitted</text>
+            <size>10</size>
+            <color>5000268</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="90" controlTypeID="__group__" x="269" y="267" w="-1" h="-1" zOrder="1" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="70" controlTypeID="com.balsamiq.mockups::Canvas" x="2" y="0" w="69" h="74" zOrder="0" locked="false" isInGroup="90"/>
+        <control controlID="71" controlTypeID="com.balsamiq.mockups::Label" x="15" y="40" w="39" h="25" zOrder="1" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>Votes</text>
+          </controlProperties>
+        </control>
+        <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="15" y="10" w="39" h="32" zOrder="2" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>321</text>
+            <size>18</size>
+          </controlProperties>
+        </control>
+        <control controlID="73" controlTypeID="com.balsamiq.mockups::Button" x="0" y="77" w="71" h="-1" zOrder="3" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>Voted</text>
+            <state>disabled</state>
+          </controlProperties>
+        </control>
+        <control controlID="74" controlTypeID="com.balsamiq.mockups::Link" x="83" y="0" w="-1" h="-1" zOrder="4" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>Balsamiq%20Mockups%20is%20really%20great%21</text>
+            <size>16</size>
+          </controlProperties>
+        </control>
+        <control controlID="75" controlTypeID="com.balsamiq.mockups::Label" x="83" y="28" w="506" h="77" zOrder="5" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>Use%20Balsamiq%20Mockups%20to%20quickly%20flesh%20out%20your%20interface.%20Don%27t%20get%20caught%20up%20with%20how%20your%20app%20looks.%20Focus%20on%20how%20it%20works%21%20For%20example...%20this%20string%20of%20text%20is%20longer.%20What%20does%20that%20mean%3F%20Nothing%20really.</text>
+          </controlProperties>
+        </control>
+        <control controlID="76" controlTypeID="com.balsamiq.mockups::Label" x="113" y="106" w="75" h="20" zOrder="6" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>300%20Comments</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="77" controlTypeID="com.balsamiq.mockups::Icon" x="83" y="104" w="-1" h="-1" zOrder="7" locked="false" isInGroup="90">
+          <controlProperties>
+            <icon>BaloonIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="78" controlTypeID="com.balsamiq.mockups::Label" x="231" y="106" w="34" h="20" zOrder="8" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>Share</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="79" controlTypeID="com.balsamiq.mockups::Icon" x="205" y="104" w="-1" h="-1" zOrder="9" locked="false" isInGroup="90">
+          <controlProperties>
+            <icon>RightArrowIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="80" controlTypeID="com.balsamiq.mockups::Label" x="303" y="106" w="27" h="20" zOrder="10" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>Bury</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="81" controlTypeID="com.balsamiq.mockups::Icon" x="277" y="104" w="-1" h="-1" zOrder="11" locked="false" isInGroup="90">
+          <controlProperties>
+            <icon>XIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="82" controlTypeID="com.balsamiq.mockups::Image" x="350" y="104" w="25" h="26" zOrder="12" locked="false" isInGroup="90"/>
+        <control controlID="83" controlTypeID="com.balsamiq.mockups::Label" x="383" y="106" w="42" h="20" zOrder="13" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>SitePen</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="84" controlTypeID="com.balsamiq.mockups::Label" x="431" y="106" w="96" h="20" zOrder="14" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>made%20popular</text>
+            <size>10</size>
+            <color>5000268</color>
+          </controlProperties>
+        </control>
+        <control controlID="85" controlTypeID="com.balsamiq.mockups::Label" x="499" y="106" w="96" h="20" zOrder="15" locked="false" isInGroup="90">
+          <controlProperties>
+            <text>26%20min%20ago</text>
+            <size>10</size>
+            <color>16711680</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="91" controlTypeID="__group__" x="284" y="455" w="-1" h="-1" zOrder="2" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="66" controlTypeID="com.balsamiq.mockups::Label" x="70" y="52" w="175" h="20" zOrder="0" locked="false" isInGroup="91">
+          <controlProperties>
+            <text>684%20points%20%20posted%206%20hours%20ago%20by</text>
+            <size>10</size>
+            <color>5000268</color>
+          </controlProperties>
+        </control>
+        <control controlID="53" controlTypeID="com.balsamiq.mockups::Label" x="0" y="15" w="39" h="25" zOrder="1" locked="false" isInGroup="91">
+          <controlProperties>
+            <text>1.</text>
+            <size>16</size>
+          </controlProperties>
+        </control>
+        <control controlID="68" controlTypeID="com.balsamiq.mockups::Icon" x="27" y="9" w="-1" h="-1" zOrder="2" locked="false" isInGroup="91">
+          <controlProperties>
+            <icon>UpArrowIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="69" controlTypeID="com.balsamiq.mockups::Icon" x="27" y="35" w="-1" h="-1" zOrder="3" locked="false" isInGroup="91">
+          <controlProperties>
+            <icon>DownArrowIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="86" controlTypeID="com.balsamiq.mockups::Label" x="241" y="52" w="42" h="20" zOrder="4" locked="false" isInGroup="91">
+          <controlProperties>
+            <text>SitePen</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="290" y="52" w="75" h="20" zOrder="5" locked="false" isInGroup="91">
+          <controlProperties>
+            <text>300%20Comments</text>
+            <size>10</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="88" controlTypeID="com.balsamiq.mockups::Label" x="68" y="0" w="506" h="77" zOrder="6" locked="false" isInGroup="91">
+          <controlProperties>
+            <text>Why%20is%20Balsamiq%20Mockups%20so%20great%3F%20It%27s%20about%20the%20simplicity%20stupid%21</text>
+            <size>16</size>
+            <color>255</color>
+            <underline>true</underline>
+          </controlProperties>
+        </control>
+        <control controlID="89" controlTypeID="com.balsamiq.mockups::Label" x="127" y="29" w="175" h="20" zOrder="7" locked="false" isInGroup="91">
+          <controlProperties>
+            <text>%28blog.sitepen.com%29</text>
+            <size>10</size>
+            <color>5000268</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

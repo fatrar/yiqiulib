@@ -1,0 +1,102 @@
+<mockup version="1.0" skin="sketch">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="237" y="22" w="794" h="476" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <close>true</close>
+        <maximizeRestore>true</maximizeRestore>
+        <minimize>true</minimize>
+        <text>Keyboard%20Shortcuts%20and%20Menus</text>
+        <topheight>28</topheight>
+        <dragger>true</dragger>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::TabBar" x="251" y="49" w="765" h="384" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Keyboard%20Shortcuts%2C%20Menus</text>
+        <selectedIndex>0</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::ComboBox" x="374" y="95" w="239" h="-1" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Defaults</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="269" y="95" w="-1" h="-1" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Shortcuts%20For%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::DataGrid" x="271" y="125" w="582" h="212" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Application%20Menu%20Command%2C%20Restricted%20%28Lock%29%2C%20Shortcut%0AFile%2C%20%5B%5D%0AEdit%2C%20%5Bx%5D%0AView%2C%20%5B%5D%0AWindow%2C%20%5B%5D%0ASystem%2C%20%5B%5D%0AHelp%2C%20%5B%5D</text>
+        <verticalScrollbar>true</verticalScrollbar>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="874" y="126" w="118" h="-1" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Accept</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Button" x="874" y="163" w="118" h="-1" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Undo</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Button" x="874" y="199" w="118" h="-1" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Use%20Default</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Button" x="874" y="234" w="118" h="-1" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Add%20Shortcut</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Button" x="874" y="271" w="118" h="-1" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Delete%20Shortcut</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::Button" x="874" y="307" w="118" h="-1" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Summarize...</text>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::Button" x="874" y="439" w="118" h="-1" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>OK</text>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::Button" x="741" y="439" w="118" h="-1" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cancel</text>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::Icon" x="636" y="95" w="-1" h="-1" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>SaveIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::Icon" x="675" y="95" w="-1" h="-1" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>TrashIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::FieldSet" x="270" y="341" w="737" h="83" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Instructions</text>
+      </controlProperties>
+    </control>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::Paragraph" x="301" y="356" w="691" h="75" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>To%20edit%20keyboard%20shortcuts%0A1%29%20Click%20on...%0A2%29%20Click%20on...%0A3%29%20Click%20on...</text>
+        <size>9</size>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
