@@ -1,0 +1,54 @@
+<mockup version="1.0" skin="sketch">
+  <controls>
+    <control controlID="0" controlTypeID="__group__" x="314" y="247" w="-1" h="-1" zOrder="0" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="58" y="0" w="30" h="-1" zOrder="0" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%201</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::TextInput" x="88" y="0" w="33" h="-1" zOrder="1" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%202</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::TextInput" x="121" y="0" w="31" h="-1" zOrder="2" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%203</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="152" y="0" w="-1" h="-1" zOrder="3" locked="false" isInGroup="9">
+          <controlProperties>
+            <size>18</size>
+            <text>...</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::TextInput" x="181" y="0" w="33" h="-1" zOrder="4" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%207</text>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="com.balsamiq.mockups::TextInput" x="214" y="0" w="33" h="-1" zOrder="5" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%208</text>
+          </controlProperties>
+        </control>
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::TextInput" x="247" y="0" w="34" h="-1" zOrder="6" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%209</text>
+          </controlProperties>
+        </control>
+        <control controlID="7" controlTypeID="com.balsamiq.mockups::TextInput" x="0" y="0" w="58" h="-1" zOrder="7" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>%3C%20Prev</text>
+          </controlProperties>
+        </control>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::TextInput" x="281" y="0" w="58" h="-1" zOrder="8" locked="false" isInGroup="9">
+          <controlProperties>
+            <text>Next%20%3E</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

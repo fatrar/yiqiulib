@@ -1,0 +1,312 @@
+<mockup version="1.0" skin="sketch" measuredW="1034" measuredH="778">
+  <controls>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::TextInput" x="200" y="118" w="420" h="-1" measuredW="96" measuredH="29" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>cph%20creatives</text>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="65" controlTypeID="__group__" x="51" y="96" w="-1" h="-1" measuredW="142" measuredH="62" zOrder="8" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="42" controlTypeID="com.balsamiq.mockups::Label" x="125" y="13" w="17" h="25" measuredW="17" measuredH="25" zOrder="0" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>%u2122</text>
+          </controlProperties>
+        </control>
+        <control controlID="43" controlTypeID="com.balsamiq.mockups::Title" x="0" y="0" w="35" h="-1" measuredW="33" measuredH="62" zOrder="1" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>G</text>
+            <align>center</align>
+            <size>40</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="44" controlTypeID="com.balsamiq.mockups::Title" x="24" y="0" w="35" h="-1" measuredW="26" measuredH="62" zOrder="2" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>o</text>
+            <align>center</align>
+            <size>40</size>
+            <color>16711680</color>
+          </controlProperties>
+        </control>
+        <control controlID="45" controlTypeID="com.balsamiq.mockups::Title" x="44" y="0" w="35" h="-1" measuredW="26" measuredH="62" zOrder="3" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>o</text>
+            <align>center</align>
+            <size>40</size>
+            <color>16776960</color>
+          </controlProperties>
+        </control>
+        <control controlID="46" controlTypeID="com.balsamiq.mockups::Title" x="64" y="0" w="35" h="-1" measuredW="27" measuredH="62" zOrder="4" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>g</text>
+            <align>center</align>
+            <size>40</size>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="47" controlTypeID="com.balsamiq.mockups::Title" x="82" y="0" w="35" h="-1" measuredW="16" measuredH="62" zOrder="5" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>l</text>
+            <align>center</align>
+            <size>40</size>
+            <color>40463</color>
+          </controlProperties>
+        </control>
+        <control controlID="48" controlTypeID="com.balsamiq.mockups::Title" x="100" y="0" w="35" h="-1" measuredW="28" measuredH="62" zOrder="6" locked="false" isInGroup="49">
+          <controlProperties>
+            <text>e</text>
+            <align>center</align>
+            <size>40</size>
+            <color>16711680</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::Label" x="728" y="118" w="196" h="25" measuredW="80" measuredH="20" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BAdvance%20Search%5D</text>
+        <align>left</align>
+        <size>10</size>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="67" controlTypeID="com.balsamiq.mockups::Label" x="728" y="130" w="196" h="25" measuredW="64" measuredH="20" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BPreferences%5D</text>
+        <align>left</align>
+        <size>10</size>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="68" controlTypeID="com.balsamiq.mockups::Button" x="628" y="119" w="96" h="-1" measuredW="99" measuredH="28" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Google%20Search</text>
+        <size>11</size>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::MenuBar" x="4" y="63" w="1020" h="29" measuredW="408" measuredH="29" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Web%2C%20%5BImages%5D%2C%20%5BMaps%5D%2C%20%5BNews%5D%2C%20%5BVideo%5D%2C%20%5BMail%5D%2C%20%5Bmore%5D</text>
+        <selectedIndex>-1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Icon" x="394" y="69" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>DownTriangleIcon%7Cxsmall</icon>
+        <color>255</color>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="417" y="66" w="593" h="25" measuredW="352" measuredH="25" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>bw@cphcreatives.dk%20%7C%A0%5BiGoogle%5D%20%7C%A0%5BMy%20Account%5D%20%7C%A0%5BSign%20out%5D</text>
+        <align>right</align>
+      </controlProperties>
+    </control>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::Label" x="45" y="225" w="523" h="112" measuredW="862" measuredH="25" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Copenhagen%20Creatives.%20...%20CPH%20CREATIVES.%20Lone%20Palmus%20Jensen%3B%20%7C%3B%20Christoffer%20P.%20Wendelboe%3B%20%7C%3B%20Benjamin%20A.%20Wendelboe.%20Copenhagen%2C%20Denmark.</text>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::Label" x="45" y="263" w="523" h="37" measuredW="289" measuredH="25" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>cphcreatives.dk/%20-%202k%20-%20%5BCached%5D%20-%20%5BSimilar%20pages%5D</text>
+        <size>13</size>
+        <bold>false</bold>
+        <color>4227072</color>
+      </controlProperties>
+    </control>
+    <control controlID="122" controlTypeID="__group__" x="45" y="468" w="-1" h="-1" measuredW="523" measuredH="133" zOrder="29" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="119" controlTypeID="com.balsamiq.mockups::Label" x="0" y="0" w="188" h="25" measuredW="188" measuredH="25" zOrder="0" locked="false" isInGroup="122">
+          <controlProperties>
+            <text>%5BCPH%20Creatives%27%20GroupieGuide%5D</text>
+            <bold>true</bold>
+          </controlProperties>
+        </control>
+        <control controlID="120" controlTypeID="com.balsamiq.mockups::Label" x="0" y="21" w="523" h="112" measuredW="671" measuredH="25" zOrder="1" locked="false" isInGroup="122">
+          <controlProperties>
+            <text>The%20free%20and%20effortless%20way%20to%20organize%20and%20promote%20your%20group.%20Create%20your%20free%20group%20website%20in%2015%20seconds.</text>
+            <bold>false</bold>
+          </controlProperties>
+        </control>
+        <control controlID="121" controlTypeID="com.balsamiq.mockups::Label" x="0" y="61" w="466" h="46" measuredW="375" measuredH="25" zOrder="2" locked="false" isInGroup="122">
+          <controlProperties>
+            <text>cphcreatives.groupieguide.com/%20-%209k%20-%20%5BCached%5D%20-%20%5BSimilar%20pages%5D</text>
+            <size>13</size>
+            <bold>false</bold>
+            <color>4227072</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="70" controlTypeID="com.balsamiq.mockups::Label" x="45" y="204" w="-1" h="-1" measuredW="141" measuredH="25" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BCopenhagen%20Creatives%5D</text>
+        <bold>true</bold>
+      </controlProperties>
+    </control>
+    <control controlID="71" controlTypeID="com.balsamiq.mockups::Label" x="77" y="165" w="-1" h="-1" measuredW="93" measuredH="25" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BShow%20options...%5D</text>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="90" controlTypeID="__group__" x="691" y="204" w="-1" h="-1" measuredW="12" measuredH="485" zOrder="15" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="88" controlTypeID="com.balsamiq.mockups::Canvas" x="2" y="0" w="10" h="485" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="90">
+          <controlProperties>
+            <borderStyle>none</borderStyle>
+            <color>255</color>
+          </controlProperties>
+        </control>
+        <control controlID="89" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="10" h="485" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="90">
+          <controlProperties>
+            <borderStyle>none</borderStyle>
+            <color>16777215</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::Label" x="707" y="204" w="245" h="25" measuredW="162" measuredH="25" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BCool%20guide%20to%20Copenhagen%5D</text>
+        <bold>true</bold>
+      </controlProperties>
+    </control>
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::Label" x="707" y="225" w="284" h="112" measuredW="399" measuredH="25" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Guided%20shopping%20and%20design%20toursto%20the%20most%20trendy%20parts%20of%20Cph.</text>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="93" controlTypeID="com.balsamiq.mockups::Label" x="707" y="263" w="284" h="37" measuredW="97" measuredH="25" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>www.cphcool.dk</text>
+        <size>13</size>
+        <bold>false</bold>
+        <color>4227072</color>
+      </controlProperties>
+    </control>
+    <control controlID="106" controlTypeID="com.balsamiq.mockups::HRule" x="5" y="161" w="990" h="-1" measuredW="100" measuredH="5" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>16512</color>
+      </controlProperties>
+    </control>
+    <control controlID="107" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="0" y="0" w="1024" h="768" measuredW="450" measuredH="400" zOrder="0" locked="true" isInGroup="-1">
+      <controlProperties>
+        <text>cph%20creatives%20-%20Google%20Search%0Ahttp%3A//www.google.com/search%3Fclient%3Dsafari%26rls%3Den-us%26q%3Dcph+creatives%26ie%3DUTF-8%26oe%3DUTF-8</text>
+      </controlProperties>
+    </control>
+    <control controlID="108" controlTypeID="__group__" x="89" y="290" w="-1" h="-1" measuredW="523" measuredH="133" zOrder="21" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="76" controlTypeID="com.balsamiq.mockups::Label" x="0" y="0" w="145" h="25" measuredW="145" measuredH="25" zOrder="0" locked="false" isInGroup="108">
+          <controlProperties>
+            <text>%5BThe%20stars%20of%20reboot10%5D</text>
+            <bold>true</bold>
+          </controlProperties>
+        </control>
+        <control controlID="77" controlTypeID="com.balsamiq.mockups::Label" x="0" y="21" w="523" h="112" measuredW="951" measuredH="25" zOrder="1" locked="false" isInGroup="108">
+          <controlProperties>
+            <text>A%20year%20ago%2C%20Mark%20Jensen%20sat%20at%20home.%20Tired%20of%20not%20having%20any%20money%2C%20being%20the%20undiscovered%20talent%20that%20he%20truly%20is%2C%20he%20took%20matters%20into%20his%20own%20hands%20and%20...</text>
+            <bold>false</bold>
+          </controlProperties>
+        </control>
+        <control controlID="78" controlTypeID="com.balsamiq.mockups::Label" x="0" y="61" w="523" h="46" measuredW="335" measuredH="25" zOrder="2" locked="false" isInGroup="108">
+          <controlProperties>
+            <text>cphcreatives.dk/reboot/%20-%207k%20-%20%5BCached%5D%20-%20%5BSimilar%20pages%5D</text>
+            <size>13</size>
+            <bold>false</bold>
+            <color>4227072</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="109" controlTypeID="__group__" x="45" y="380" w="-1" h="-1" measuredW="523" measuredH="133" zOrder="22" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="79" controlTypeID="com.balsamiq.mockups::Label" x="0" y="0" w="74" h="25" measuredW="74" measuredH="25" zOrder="0" locked="false" isInGroup="109">
+          <controlProperties>
+            <text>%5BIndex%20of%20/%5D</text>
+            <bold>true</bold>
+          </controlProperties>
+        </control>
+        <control controlID="80" controlTypeID="com.balsamiq.mockups::Label" x="0" y="21" w="523" h="112" measuredW="824" measuredH="25" zOrder="1" locked="false" isInGroup="109">
+          <controlProperties>
+            <text>Name%20%B7%20Last%20modified%20%B7%20Size%20%B7%20Description.%20%5BDIR%5D%2C%20old/%2C%2030-Aug-2008%2012%3A21%2C%20-.%20Apache/2.2.3%20%28Debian%29%20Server%20at%20bw.cphcreatives.dk%20Port%2080.</text>
+            <bold>false</bold>
+          </controlProperties>
+        </control>
+        <control controlID="81" controlTypeID="com.balsamiq.mockups::Label" x="0" y="61" w="523" h="46" measuredW="308" measuredH="25" zOrder="2" locked="false" isInGroup="109">
+          <controlProperties>
+            <text>bw.cphcreatives.dk/%20-%201k%20-%20%5BCached%5D%20-%20%5BSimilar%20pages%5D</text>
+            <size>13</size>
+            <bold>false</bold>
+            <color>4227072</color>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="113" controlTypeID="com.balsamiq.mockups::Label" x="45" y="646" w="502" h="25" measuredW="402" measuredH="25" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BCph%20Creative%20Video%2C%20Altamont%20IL%2062411%20--%20MerchantCircle.com%5D</text>
+        <bold>true</bold>
+      </controlProperties>
+    </control>
+    <control controlID="114" controlTypeID="com.balsamiq.mockups::Label" x="45" y="667" w="523" h="63" measuredW="876" measuredH="25" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cph%20Creative%20Video%20is%20located%20at%20705%20Prairie%20St%20Altamont%2C%20IL.%20Phone%3A%20618-483-%205602.%20.%20Post%20a%20message%20and%20leave%20a%20review%20for%20Cph%20Creative%20Video.</text>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="115" controlTypeID="com.balsamiq.mockups::Label" x="45" y="707" w="567" h="23" measuredW="515" measuredH="25" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>www.merchantcircle.com/business/Cph.Creative.Video.618-483-5602%20-%20%5BSimilar%20pages%5D</text>
+        <size>13</size>
+        <bold>false</bold>
+        <color>4227072</color>
+      </controlProperties>
+    </control>
+    <control controlID="116" controlTypeID="com.balsamiq.mockups::Label" x="45" y="556" w="523" h="25" measuredW="448" measuredH="25" zOrder="26" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BCopenhagen%20Creatives%20-%20Interiors%20-%20Wallpaper.com%20-%20International%20...%5D</text>
+        <bold>true</bold>
+      </controlProperties>
+    </control>
+    <control controlID="117" controlTypeID="com.balsamiq.mockups::Label" x="45" y="577" w="523" h="49" measuredW="937" measuredH="25" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>12%20Feb%202009%20...%20We%20caught%20up%20with%20some%20of%20the%20city%27s%20leading%20creatives%20%28read%20their%20interviews%20below%29%2C%20whom%20we%20photographed%20in%20our%20favourite%20Copenhagen%20...</text>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+    <control controlID="118" controlTypeID="com.balsamiq.mockups::Label" x="45" y="617" w="567" h="32" measuredW="541" measuredH="25" zOrder="28" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>www.wallpaper.com/interiors/copenhagen-creatives/3077%20-%2023k%20-%20%5BCached%5D%20-%20%5BSimilar%20pages%5D</text>
+        <size>13</size>
+        <bold>false</bold>
+        <color>4227072</color>
+      </controlProperties>
+    </control>
+    <control controlID="58" controlTypeID="com.balsamiq.mockups::Canvas" x="5" y="165" w="990" h="23" measuredW="100" measuredH="70" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <borderStyle>none</borderStyle>
+        <backgroundAlpha>0.25</backgroundAlpha>
+        <color>13158600</color>
+      </controlProperties>
+    </control>
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::Label" x="45" y="165" w="-1" h="-1" measuredW="33" measuredH="25" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Web</text>
+        <bold>true</bold>
+      </controlProperties>
+    </control>
+    <control controlID="63" controlTypeID="com.balsamiq.mockups::Label" x="587" y="164" w="-1" h="-1" measuredW="408" measuredH="25" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Results%201%20-%20100%20of%20about%20392%2C000%20for%20cph%20%5Bcreatives%5D.%20%280.29%20seconds%29%20</text>
+        <align>right</align>
+        <bold>false</bold>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

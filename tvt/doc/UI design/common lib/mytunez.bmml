@@ -1,0 +1,78 @@
+<mockup version="1.0" skin="sketch" measuredW="1049" measuredH="727">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="301" y="85" w="738" h="632" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <close>true</close>
+        <topheight>77</topheight>
+        <maximizeRestore>true</maximizeRestore>
+        <dragger>true</dragger>
+        <minimize>true</minimize>
+        <text>myTunez</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::DataGrid" x="473" y="480" w="562" h="214" measuredW="410" measuredH="206" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <verticalScrollbar>true</verticalScrollbar>
+        <text>Name%2C%20Artist%2C%20Album%2C%20Genre%0ABetter%20Together%2C%20Jack%20Johnson%2C%20In%20Between%20Dreams%2C%20Rock%0ANever%20Know%2C%20Jack%20Johnson%2C%20In%20Between%20Dreams%2C%20Rock%0ABanana%20Pancakes%2C%20Jack%20Johnson%2C%20In%20Between%20Dreams%2C%20Rock%0AGood%20People%2C%20Jack%20Johnson%2C%20In%20Between%20Dreams%2C%20Rock%0ANo%20Other%20Way%2C%20Jack%20Johnson%2C%20In%20Between%20Dreams%2C%20Rock%0A...</text>
+        <selectedIndex>-1</selectedIndex>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::List" x="301" y="158" w="172" h="197" measuredW="100" measuredH="160" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <verticalScrollbar>false</verticalScrollbar>
+        <hasHeader>true</hasHeader>
+        <text>Library%0AMusic%0AMovies%0ATV%20Shows%0APodcasts%0AAudiobooks%0ARadio</text>
+        <color>16777215</color>
+        <selectedIndex>-1</selectedIndex>
+        <borderStyle>square</borderStyle>
+        <alternateRowColor>16777215</alternateRowColor>
+        <rowHeight>27</rowHeight>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::VSplitter" x="473" y="465" w="562" h="-1" measuredW="100" measuredH="12" zOrder="3" locked="false" isInGroup="-1"/>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::MediaControls" x="324" y="110" w="-1" h="-1" measuredW="111" measuredH="35" zOrder="4" locked="false" isInGroup="-1"/>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::VolumeSlider" x="473" y="120" w="-1" h="-1" measuredW="72" measuredH="16" zOrder="5" locked="false" isInGroup="-1"/>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::SearchBox" x="896" y="115" w="115" h="-1" measuredW="93" measuredH="25" zOrder="6" locked="false" isInGroup="-1"/>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::CoverFlow" x="498" y="192" w="513" h="247" measuredW="493" measuredH="198" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <verticalScrollbar>true</verticalScrollbar>
+        <src>http%3A//t0.gstatic.com/images%3Fq%3Dtbn%3AwU-czZKhzZcDtM%3Ahttp%3A//lh4.ggpht.com/_HB3kfZmFO5M/RwnkYn5c5yI/AAAAAAAAAHQ/iK6zl0_UK-o/JackJohnson-InBetweenDreams.jpg-images.com/images/AlbumCoverArt/291/XXL/In-Between-Dreams2.jpg</src>
+        <filter>true</filter>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="__group__" x="583" y="109" w="-1" h="-1" measuredW="257" measuredH="38" zOrder="8" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="11" controlTypeID="com.balsamiq.mockups::ProgressBar" x="0" y="26" w="257" h="12" measuredW="100" measuredH="20" zOrder="0" locked="false" isInGroup="13"/>
+        <control controlID="12" controlTypeID="com.balsamiq.mockups::Label" x="64" y="0" w="128" h="23" measuredW="128" measuredH="23" zOrder="1" locked="false" isInGroup="13">
+          <controlProperties>
+            <text>Jack%20Johnson%20-%20Belle</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::List" x="301" y="355" w="172" h="84" measuredW="100" measuredH="126" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <verticalScrollbar>false</verticalScrollbar>
+        <hasHeader>true</hasHeader>
+        <alternateRowColor>16777215</alternateRowColor>
+        <color>16777215</color>
+        <selectedIndex>-1</selectedIndex>
+        <borderStyle>square</borderStyle>
+        <text>Store%0AmyTuneze%20Store%0APurchased</text>
+        <rowHeight>27</rowHeight>
+      </controlProperties>
+    </control>
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::List" x="301" y="439" w="172" h="255" measuredW="100" measuredH="187" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <verticalScrollbar>false</verticalScrollbar>
+        <hasHeader>true</hasHeader>
+        <text>Playlists%0AParty%20Shuffle%0A90%27s%20Music%0AMusic%20Videos%0AMy%20Top%20Rated%0ARecently%20Added%0ARecently%20Played%0ATop%2025%20Most%20Played</text>
+        <color>16777215</color>
+        <selectedIndex>-1</selectedIndex>
+        <borderStyle>square</borderStyle>
+        <alternateRowColor>16777215</alternateRowColor>
+        <rowHeight>27</rowHeight>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

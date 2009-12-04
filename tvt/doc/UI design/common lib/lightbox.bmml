@@ -1,0 +1,35 @@
+<mockup version="1.0" skin="sketch" measuredW="1466" measuredH="853">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="374" y="50" w="1092" h="803" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//</text>
+        <verticalScrollbar>true</verticalScrollbar>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::ModalScreen" x="380" y="120" w="1065" h="705" measuredW="320" measuredH="240" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Canvas" x="575" y="275" w="674" h="394" measuredW="100" measuredH="70" zOrder="2" locked="false" isInGroup="-1"/>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::RoundButton" x="560" y="258" w="34" h="36" measuredW="52" measuredH="52" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CircledXIcon%7Cmedium</icon>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Icon" x="590" y="448" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>LeftTriangleIcon%7Cmedium</icon>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Icon" x="1202" y="448" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>RightTriangleIcon%7Cmedium</icon>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Image" x="630" y="310" w="580" h="308" measuredW="141" measuredH="144" zOrder="5" locked="false" isInGroup="-1"/>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::IconLabel" x="1150" y="633" w="-1" h="-1" measuredW="75" measuredH="25" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>XIcon%7Csmall</icon>
+        <text>CLOSE</text>
+        <labelPosition>right</labelPosition>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

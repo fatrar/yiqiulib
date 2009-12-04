@@ -1,0 +1,24 @@
+<mockup version="1.0" skin="sketch">
+  <controls>
+    <control controlID="0" controlTypeID="__group__" x="269" y="197" w="-1" h="-1" zOrder="0" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="631" h="54" zOrder="0" locked="false" isInGroup="5">
+          <controlProperties>
+            <color>16448250</color>
+            <borderStyle>square</borderStyle>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::Icon" x="15" y="15" w="-1" h="-1" zOrder="1" locked="false" isInGroup="5">
+          <controlProperties>
+            <icon>AlertIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Paragraph" x="48" y="15" w="568" h="32" zOrder="2" locked="false" isInGroup="5">
+          <controlProperties>
+            <text>This%20could%20be%20used%20as%20an%20error%20message%20to%20say%20that%20something%20is%20wrong.</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

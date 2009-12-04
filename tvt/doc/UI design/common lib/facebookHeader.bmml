@@ -1,0 +1,86 @@
+<mockup version="1.0" skin="sketch" measuredW="964" measuredH="37">
+  <controls>
+    <control controlID="13" controlTypeID="__group__" x="0" y="0" w="-1" h="-1" measuredW="964" measuredH="37" zOrder="0" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="964" h="37" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="13">
+          <controlProperties>
+            <color>16512</color>
+          </controlProperties>
+        </control>
+        <control controlID="12" controlTypeID="__group__" x="6" y="2" w="950" h="32" measuredW="950" measuredH="32" zOrder="1" locked="false" isInGroup="13">
+          <groupChildrenDescriptors>
+            <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="0" y="0" w="82" h="32" measuredW="82" measuredH="32" zOrder="0" locked="false" isInGroup="12">
+              <controlProperties>
+                <text>facebook</text>
+                <size>18</size>
+                <bold>true</bold>
+                <color>15790322</color>
+              </controlProperties>
+            </control>
+            <control controlID="11" controlTypeID="__group__" x="103" y="3" w="847" h="25" measuredW="847" measuredH="25" zOrder="1" locked="false" isInGroup="12">
+              <groupChildrenDescriptors>
+                <control controlID="3" controlTypeID="com.balsamiq.mockups::SearchBox" x="753" y="0" w="94" h="-1" measuredW="94" measuredH="25" zOrder="0" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>search</text>
+                  </controlProperties>
+                </control>
+                <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="0" y="0" w="41" h="25" measuredW="41" measuredH="25" zOrder="1" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>Home</text>
+                    <color>15790322</color>
+                    <bold>false</bold>
+                  </controlProperties>
+                </control>
+                <control controlID="5" controlTypeID="com.balsamiq.mockups::Label" x="56" y="0" w="46" h="25" measuredW="46" measuredH="25" zOrder="2" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>Profile</text>
+                    <color>15790322</color>
+                    <bold>false</bold>
+                  </controlProperties>
+                </control>
+                <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="117" y="0" w="51" h="25" measuredW="51" measuredH="25" zOrder="3" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>Friends</text>
+                    <color>15790322</color>
+                    <bold>false</bold>
+                  </controlProperties>
+                </control>
+                <control controlID="7" controlTypeID="com.balsamiq.mockups::Label" x="183" y="0" w="40" h="25" measuredW="40" measuredH="25" zOrder="4" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>Inbox</text>
+                    <color>15790322</color>
+                    <bold>false</bold>
+                  </controlProperties>
+                </control>
+                <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="570" y="2" w="59" h="22" measuredW="55" measuredH="22" zOrder="5" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>John%20Doe</text>
+                    <size>11</size>
+                    <color>15790322</color>
+                    <bold>false</bold>
+                  </controlProperties>
+                </control>
+                <control controlID="9" controlTypeID="com.balsamiq.mockups::Label" x="635" y="2" w="49" h="22" measuredW="49" measuredH="22" zOrder="6" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>Settings</text>
+                    <size>11</size>
+                    <color>15790322</color>
+                    <bold>false</bold>
+                  </controlProperties>
+                </control>
+                <control controlID="10" controlTypeID="com.balsamiq.mockups::Label" x="699" y="2" w="39" h="22" measuredW="39" measuredH="22" zOrder="7" locked="false" isInGroup="11">
+                  <controlProperties>
+                    <text>Logout</text>
+                    <size>11</size>
+                    <color>15790322</color>
+                    <bold>false</bold>
+                  </controlProperties>
+                </control>
+              </groupChildrenDescriptors>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

@@ -1,0 +1,43 @@
+<mockup version="1.0" skin="sketch" measuredW="779" measuredH="559">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="319" y="175" w="450" h="374" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <topheight>26</topheight>
+        <close>true</close>
+        <bottomheight>52</bottomheight>
+        <text>Export%20Mockup</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::TextArea" x="334" y="314" w="420" h="122" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <verticalScrollbar>true</verticalScrollbar>
+        <text>xml%20goes%20here</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Paragraph" x="334" y="207" w="420" h="103" measuredW="200" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Below%20is%20a%20text%20representation%20of%20your%20mockup%20%28ok%20it%27s%20XML%20to%20be%20precise%29.%0A%20%0AYou%20can%20copy%20it%20for%20your%20records%20and%20paste%20it%20into%20the%20%22Import%20Mockup...%22%20dialog%20of%20a%20new%20mockup</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::RoundButton" x="345" y="443" w="41" h="41" measuredW="52" measuredH="52" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>HelpIcon%7Cmedium</icon>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Paragraph" x="401" y="443" w="353" h="52" measuredW="200" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Exporting%20and%20Importing%20mockups%20is%20a%20quick%20and%20easy%20way%20to%20duplicate%20a%20mockup%20or%20to%20save%20it%20as%20a%20text%20file.</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="699" y="510" w="-1" h="-1" measuredW="55" measuredH="28" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Close</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Button" x="562" y="510" w="-1" h="-1" measuredW="129" measuredH="28" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Copy%20to%20Clipboard</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

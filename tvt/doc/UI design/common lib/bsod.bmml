@@ -1,0 +1,16 @@
+<mockup version="1.0" skin="sketch" measuredW="1005" measuredH="881">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="995" h="871" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>33023</color>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Paragraph" x="8" y="222" w="825" h="472" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20problem%20has%20been%20detected%20and%20windows%20has%20been%20shut%20down%20to%20prevent%20damage%20to%20your%20computer.%0A%20%0AA%20process%20or%20thread%20crucial%20to%20your%20system%20operation%20has%20unexpectedly%20exited%20or%20been%20terminated.%0AIf%20this%20is%20the%20first%20time%20you%27ve%20seen%20this%20stop%20error%20screen%2C%20restart%20your%20computer.%20If%20this%20screen%20appears%20again%2C%20follow%20these%20steps%3A%0A%20%0ACheck%20to%20make%20sure%20any%20new%20hardware%20or%20software%20is%20properly%20installed.%0A%20%0AIf%20this%20is%20a%20new%20installation%2C%20ask%20your%20hardware%20or%20software%20manufacturer%20for%20any%20windows%20updates%20you%20might%20need.%0A%20%0AIf%20problems%20continue%20disable%20or%20remove%20any%20newly%20installed%20hardware%20or%20software.%20Disable%20BIOS%20memory%20options%20such%20as%20caching%20or%20shadowing.%20If%20you%20need%20to%20use%20safe%20mode%20to%20remove%20or%20disable%20components%2C%20restart%20your%20computer%2C%20press%20F8%20to%20select%20advanced%20start%20up%20options%20and%20then%20select%20Safe%20Mode.%0A%20%0ATechnical%20information%3A%0A***Stop%3A%200x000000F4%20%280x00000003%2C%200x8215F790%2C%200x8215F904%2C%200x805F9F88%29%0A%20%0A%20%0A%20%0ABeginning%20dump%20of%20physical%20memory.%0A%20</text>
+        <size>16</size>
+        <color>16777215</color>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
