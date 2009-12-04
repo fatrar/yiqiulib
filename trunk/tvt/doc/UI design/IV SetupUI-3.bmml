@@ -1,0 +1,100 @@
+<mockup version="1.0" skin="sketch" measuredW="985" measuredH="595" mockupW="646" mockupH="527">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="329" y="58" w="646" h="527" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <minimize>false</minimize>
+        <close>true</close>
+        <text>Window%20Name</text>
+        <maximizeRestore>false</maximizeRestore>
+        <dragger>false</dragger>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Tree" x="434" y="101" w="133" h="337" measuredW="300" measuredH="225" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>10</size>
+        <text>fSingle%20Tripwire%0AfDouble%20Tripwire%0AfPart%20View%0AfFull%20View%0AfView%20Change</text>
+        <selectedIndex>0</selectedIndex>
+        <borderStyle>square</borderStyle>
+        <verticalScrollbar>false</verticalScrollbar>
+        <backgroundAlpha>1</backgroundAlpha>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Button" x="681" y="514" w="47" h="-1" measuredW="43" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>OK</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="808" y="514" w="71" h="-1" measuredW="65" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cancel</text>
+        <href>IV%20Config%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22479%2C456%2C550%2C484%22%20href%3D%22IV%20MainUI%201.bmml%22%20alt%3D%22IV%20MainUI%201%22%20id%3D%223%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::IconLabel" x="357" y="273" w="52" h="-1" measuredW="48" measuredH="73" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Adv.</text>
+        <labelPosition>bottom</labelPosition>
+        <icon>PencilIcon%7Clarge</icon>
+        <color>16711680</color>
+        <borderStyle>square</borderStyle>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::IconLabel" x="349" y="189" w="71" h="-1" measuredW="65" measuredH="73" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>By%20Scene</text>
+        <icon>EyeIcon%7Clarge</icon>
+        <borderStyle>square</borderStyle>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%2220%2C131%2C91%2C204%22%20href%3D%22IV%20SetupUI-2.bmml%22%20alt%3D%22IV%20SetupUI-2%22%20id%3D%225%22/%3E</map>
+        <href>IV%20SetupUI-2%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml</href>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::IconLabel" x="337" y="104" w="95" h="-1" measuredW="87" measuredH="73" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>HomeIcon%7Clarge</icon>
+        <href>IV%20SetupUI-1%26bm%3BIV%20SetupUI-1.bmml%26bm%3BIV%20SetupUI-1.bmml%26bm%3BIV%20SetupUI-1.bmml</href>
+        <text>By%20Appcation</text>
+        <color>0</color>
+        <state>up</state>
+        <borderStyle>square</borderStyle>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%228%2C46%2C103%2C119%22%20href%3D%22IV%20SetupUI-1.bmml%22%20alt%3D%22IV%20SetupUI-1%22%20id%3D%226%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::TextArea" x="431" y="439" w="527" h="73" measuredW="200" measuredH="140" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Some%20text%0AA%20second%20line%20of%20text</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Canvas" x="570" y="101" w="388" h="339" measuredW="100" measuredH="70" zOrder="8" locked="false" isInGroup="-1"/>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::IconLabel" x="575" y="111" w="91" h="-1" measuredW="83" measuredH="68" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Single%20Direction</text>
+        <labelPosition>bottom</labelPosition>
+        <size>10</size>
+        <icon>UsersIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::IconLabel" x="670" y="109" w="87" h="-1" measuredW="85" measuredH="68" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Double%20Direction</text>
+        <size>10</size>
+        <icon>UsersIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="__group__" x="926" y="87" w="32" h="14" measuredW="32" measuredH="16" zOrder="11" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="25" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="0" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="0" locked="false" isInGroup="42">
+          <controlProperties>
+            <icon>ListIcon%7Cxsmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="26" controlTypeID="com.balsamiq.mockups::Icon" x="16" y="0" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="1" locked="false" isInGroup="42">
+          <controlProperties>
+            <icon>GridIcon%7Cxsmall</icon>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>
