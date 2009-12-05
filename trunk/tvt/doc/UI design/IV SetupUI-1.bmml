@@ -37,22 +37,22 @@
     <control controlID="4" controlTypeID="com.balsamiq.mockups::IconLabel" x="357" y="273" w="52" h="-1" measuredW="48" measuredH="73" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <href>IV%20SetupUI-3%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml</href>
-        <borderStyle>square</borderStyle>
+        <text>Adv.</text>
         <color>0</color>
         <icon>PencilIcon%7Clarge</icon>
         <labelPosition>bottom</labelPosition>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%2228%2C215%2C80%2C288%22%20href%3D%22IV%20SetupUI-3.bmml%22%20alt%3D%22IV%20SetupUI-3%22%20id%3D%224%22/%3E</map>
-        <text>Adv.</text>
+        <borderStyle>square</borderStyle>
       </controlProperties>
     </control>
     <control controlID="5" controlTypeID="com.balsamiq.mockups::IconLabel" x="349" y="189" w="71" h="-1" measuredW="65" measuredH="73" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>EyeIcon%7Clarge</icon>
         <text>By%20Scene</text>
-        <color>0</color>
         <href>IV%20SetupUI-2%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml</href>
-        <borderStyle>square</borderStyle>
+        <color>0</color>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%2220%2C131%2C91%2C204%22%20href%3D%22IV%20SetupUI-2.bmml%22%20alt%3D%22IV%20SetupUI-2%22%20id%3D%225%22/%3E</map>
+        <borderStyle>square</borderStyle>
       </controlProperties>
     </control>
     <control controlID="6" controlTypeID="com.balsamiq.mockups::IconLabel" x="337" y="104" w="95" h="-1" measuredW="87" measuredH="73" zOrder="6" locked="false" isInGroup="-1">
@@ -66,7 +66,7 @@
     </control>
     <control controlID="7" controlTypeID="com.balsamiq.mockups::TextArea" x="433" y="439" w="527" h="73" measuredW="200" measuredH="140" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Some%20text%0AA%20second%20line%20of%20text</text>
+        <text>Description</text>
       </controlProperties>
     </control>
     <control controlID="9" controlTypeID="__group__" x="926" y="87" w="32" h="14" measuredW="32" measuredH="16" zOrder="8" locked="false" isInGroup="-1">
