@@ -38,9 +38,9 @@
         <icon>XIcon%7Clarge</icon>
       </controlProperties>
     </control>
-    <control controlID="25" controlTypeID="com.balsamiq.mockups::Menu" x="392" y="165" w="143" h="-1" measuredW="150" measuredH="245" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="25" controlTypeID="com.balsamiq.mockups::Menu" x="376" y="178" w="143" h="-1" measuredW="150" measuredH="295" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Start%20Record%0AInstance%20Record%0ASetup%20PTZ%0A---%0AStart%20All%20IV%20Rule%0AStop%20All%20IV%20Rule%0AEdit%20IV%20Rule%0AEdit%20IV%20Schedule%0A---%0AFull%20Screen%0ASnapScreen</text>
+        <text>Start%20Record%0AInstance%20Record%0ASetup%20PTZ%0A---%0AStart%20All%20IV%20Rule%0AStop%20All%20IV%20Rule%0AEdit%20IV%20Rule%0AEdit%20IV%20Schedule%0AShow%20Object%0AShow%20Trace%0A---%0AFull%20Screen%0ASnapScreen</text>
         <selectedIndex>4</selectedIndex>
       </controlProperties>
     </control>
