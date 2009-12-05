@@ -52,7 +52,7 @@
           <controlProperties>
             <text>Next-%3E</text>
             <href>Illegal%20Parking-2%26bm%3BIllegal%20Parking-2.bmml%26bm%3BIllegal%20Parking-2.bmml%26bm%3BIllegal%20Parking-2.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22454%2C525%2C558%2C553%22%20href%3D%22Illegal%20Parking-2.bmml%22%20alt%3D%22Illegal%20Parking-2%22%20id%3D%2243%22/%3E</map>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22454%2C525%2C558%2C553%22%20href%3D%22Illegal%20Parking-2.bmml%22%20alt%3D%22Illegal%20Parking-2%22%20id%3D%2263%22/%3E</map>
           </controlProperties>
         </control>
         <control controlID="64" controlTypeID="com.balsamiq.mockups::Button" x="586" y="524" w="104" h="-1" measuredW="58" measuredH="28" zOrder="10" locked="false" isInGroup="73">
