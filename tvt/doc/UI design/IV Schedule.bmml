@@ -65,7 +65,7 @@
     </control>
     <control controlID="23" controlTypeID="com.balsamiq.mockups::VCurly" x="975" y="203" w="134" h="388" measuredW="180" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Our%20DVR%20Config%20%0AMontion%20Page</text>
+        <text>Our%20DVR%20Config%20%0ASchedule%20Page</text>
       </controlProperties>
     </control>
     <control controlID="120" controlTypeID="__group__" x="1005" y="133" w="-1" h="-1" measuredW="162" measuredH="29" zOrder="16" locked="false" isInGroup="-1">
@@ -146,12 +146,11 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="275" y="118" w="641" h="564" measuredW="330" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
+    <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="275" y="118" w="641" h="564" measuredW="293" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Montion%2CIVS%20config%2CIVS%20Schedule</text>
+        <text>Base%20Schedule%2CIVS%20Schedule</text>
         <selectedIndex>2</selectedIndex>
-        <hrefs>%2CIV%20Config%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml%2C</hrefs>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%2294%2C9%2C171%2C38%22%20href%3D%22IV%20Config.bmml%22%20alt%3D%22IV%20Config%22%20id%3D%22108_0%22/%3E%0A</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22134%2C9%2C233%2C38%22%20href%3D%22IV%20Config.bmml%22%20alt%3D%22IV%20Config%22%20id%3D%22108_0%22/%3E%0A</map>
       </controlProperties>
     </control>
   </controls>
