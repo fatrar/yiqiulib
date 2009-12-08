@@ -1,0 +1,109 @@
+<mockup version="1.0" skin="sketch" measuredW="1157" measuredH="452" mockupW="990" mockupH="316">
+  <controls>
+    <control controlID="97" controlTypeID="com.balsamiq.mockups::Label" x="188" y="177" w="370" h="51" measuredW="366" measuredH="25" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Your%20Camera%20is%20watch%20a%20Vertical%20View%20or%20a%20Parallel%20View%3F</text>
+      </controlProperties>
+    </control>
+    <control controlID="98" controlTypeID="com.balsamiq.mockups::Button" x="175" y="366" w="104" h="-1" measuredW="89" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%3C-Previous</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="99" controlTypeID="com.balsamiq.mockups::Button" x="313" y="365" w="104" h="-1" measuredW="73" measuredH="28" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Next-%3E</text>
+      </controlProperties>
+    </control>
+    <control controlID="132" controlTypeID="com.balsamiq.mockups::TitleWindow" x="714" y="126" w="433" h="316" measuredW="450" measuredH="400" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Event%20Rule%20Setttings%282-5%29</text>
+        <close>true</close>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="133" controlTypeID="com.balsamiq.mockups::FieldSet" x="740" y="215" w="364" h="103" measuredW="200" measuredH="170" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Object%20Shape%20and%20Direction%20Change%20Filter</text>
+      </controlProperties>
+    </control>
+    <control controlID="134" controlTypeID="com.balsamiq.mockups::RadioButton" x="763" y="239" w="148" h="29" measuredW="62" measuredH="22" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Enable</text>
+        <state>selected</state>
+      </controlProperties>
+    </control>
+    <control controlID="135" controlTypeID="com.balsamiq.mockups::RadioButton" x="763" y="281" w="148" h="29" measuredW="66" measuredH="22" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Disable</text>
+      </controlProperties>
+    </control>
+    <control controlID="136" controlTypeID="com.balsamiq.mockups::Label" x="745" y="177" w="370" h="51" measuredW="190" measuredH="25" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>You%20Select%20Region%20is%20have%20...</text>
+      </controlProperties>
+    </control>
+    <control controlID="137" controlTypeID="com.balsamiq.mockups::Button" x="732" y="366" w="104" h="-1" measuredW="89" measuredH="28" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%3C-Previous</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="138" controlTypeID="com.balsamiq.mockups::Button" x="870" y="365" w="104" h="-1" measuredW="73" measuredH="28" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Next-%3E</text>
+        <href>IV%20StageChange%20Config%26bm%3BIV%20StageChange%20Config.bmml%26bm%3BIV%20StageChange%20Config.bmml%26bm%3BIV%20StageChange%20Config.bmml</href>
+      </controlProperties>
+    </control>
+    <control controlID="139" controlTypeID="com.balsamiq.mockups::Button" x="1010" y="366" w="104" h="-1" measuredW="58" measuredH="28" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Finish</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="100" controlTypeID="com.balsamiq.mockups::Button" x="453" y="366" w="104" h="-1" measuredW="58" measuredH="28" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Finish</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="173" controlTypeID="com.balsamiq.mockups::CheckBox" x="200" y="303" w="79" h="27" measuredW="79" measuredH="22" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Anything</text>
+      </controlProperties>
+    </control>
+    <control controlID="174" controlTypeID="com.balsamiq.mockups::CheckBox" x="386" y="239" w="100" h="27" measuredW="86" measuredH="22" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Light%20Off</text>
+      </controlProperties>
+    </control>
+    <control controlID="175" controlTypeID="com.balsamiq.mockups::CheckBox" x="200" y="270" w="186" h="27" measuredW="180" measuredH="22" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Montion%28ex.camera%20move%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="171" controlTypeID="com.balsamiq.mockups::CheckBox" x="200" y="239" w="79" h="27" measuredW="79" measuredH="22" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Light%20On</text>
+      </controlProperties>
+    </control>
+    <control controlID="172" controlTypeID="com.balsamiq.mockups::CheckBox" x="386" y="270" w="79" h="27" measuredW="65" measuredH="22" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Other</text>
+      </controlProperties>
+    </control>
+    <control controlID="93" controlTypeID="com.balsamiq.mockups::TitleWindow" x="157" y="126" w="433" h="316" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Event%20Rule%20Setttings%281-5%29</text>
+        <close>true</close>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="94" controlTypeID="com.balsamiq.mockups::FieldSet" x="183" y="215" w="375" h="136" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Rule</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
