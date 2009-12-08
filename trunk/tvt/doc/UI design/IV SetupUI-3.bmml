@@ -14,10 +14,10 @@
       <controlProperties>
         <size>10</size>
         <text>fSingle%20Tripwire%0AfDouble%20Tripwire%0AfPart%20View%0AfFull%20View%0AfView%20Change</text>
+        <selectedIndex>0</selectedIndex>
         <borderStyle>square</borderStyle>
         <backgroundAlpha>1</backgroundAlpha>
         <verticalScrollbar>false</verticalScrollbar>
-        <selectedIndex>0</selectedIndex>
       </controlProperties>
     </control>
     <control controlID="2" controlTypeID="com.balsamiq.mockups::Button" x="681" y="544" w="47" h="-1" measuredW="43" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
@@ -45,9 +45,9 @@
       <controlProperties>
         <text>By%20Scene</text>
         <icon>EyeIcon%7Clarge</icon>
+        <href>IV%20SetupUI-2%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml</href>
         <borderStyle>square</borderStyle>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%2218%2C63%2C89%2C136%22%20href%3D%22IV%20SetupUI-2.bmml%22%20alt%3D%22IV%20SetupUI-2%22%20id%3D%225%22/%3E</map>
-        <href>IV%20SetupUI-2%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml</href>
       </controlProperties>
     </control>
     <control controlID="7" controlTypeID="com.balsamiq.mockups::TextArea" x="431" y="469" w="527" h="73" measuredW="200" measuredH="140" zOrder="6" locked="false" isInGroup="-1">

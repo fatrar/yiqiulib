@@ -162,7 +162,7 @@
         <text>new%20Rule%0ADelete%20Rule%0ACopy%20Rule%0APaste%20Rule%0ACopy%20All%20Rule%0AConfig%20Rule</text>
       </controlProperties>
     </control>
-    <control controlID="106" controlTypeID="com.balsamiq.mockups::Tooltip" x="574" y="42" w="218" h="122" measuredW="213" measuredH="141" zOrder="29" locked="false" isInGroup="-1">
+    <control controlID="106" controlTypeID="com.balsamiq.mockups::Tooltip" x="574" y="42" w="218" h="122" measuredW="213" measuredH="122" zOrder="29" locked="false" isInGroup="-1">
       <controlProperties>
         <tooltipDirection>SW</tooltipDirection>
         <text>Add%20or%20Remove%20Alarm%20Event%0ADelete%20specify%20Alarm%20Event%0ACopy%20Alarm%20Rule%0APaste%20Alarm%20Rule%0ACopy%20All%20Alarm%20Rule</text>
