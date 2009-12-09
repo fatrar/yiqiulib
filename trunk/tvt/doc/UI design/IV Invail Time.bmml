@@ -28,7 +28,7 @@
         <state>disabled</state>
       </controlProperties>
     </control>
-    <control controlID="37" controlTypeID="com.balsamiq.mockups::Image" x="333" y="176" w="598" h="405" measuredW="10" measuredH="4" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="37" controlTypeID="com.balsamiq.mockups::Image" x="333" y="176" w="598" h="405" measuredW="530" measuredH="354" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
         <src>./pic/cms_Schedule.PNG</src>

@@ -154,12 +154,12 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="18" controlTypeID="com.balsamiq.mockups::Button" x="301" y="378" w="104" h="-1" measuredW="77" measuredH="28" zOrder="18" locked="false" isInGroup="-1">
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Button" x="301" y="382" w="85" h="-1" measuredW="77" measuredH="28" zOrder="18" locked="false" isInGroup="-1">
       <controlProperties>
         <text>All%20Zone</text>
       </controlProperties>
     </control>
-    <control controlID="19" controlTypeID="com.balsamiq.mockups::Button" x="434" y="378" w="104" h="-1" measuredW="56" measuredH="28" zOrder="19" locked="false" isInGroup="-1">
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::Button" x="488" y="382" w="72" h="-1" measuredW="56" measuredH="28" zOrder="19" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Clear</text>
       </controlProperties>
@@ -197,6 +197,11 @@
       <controlProperties>
         <text>Description%20Edit%2COnly%20can%20show%20Information</text>
         <color>16711680</color>
+      </controlProperties>
+    </control>
+    <control controlID="29" controlTypeID="com.balsamiq.mockups::Button" x="390" y="382" w="94" h="-1" measuredW="100" measuredH="28" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Delete%20Point</text>
       </controlProperties>
     </control>
   </controls>

@@ -1,64 +1,65 @@
-<mockup version="1.0" skin="sketch" measuredW="1272" measuredH="688" mockupW="621" mockupH="650">
+<mockup version="1.0" skin="sketch" measuredW="1283" measuredH="696" mockupW="1192" mockupH="650">
   <controls>
-    <control controlID="132" controlTypeID="com.balsamiq.mockups::TitleWindow" x="641" y="362" w="433" h="316" measuredW="450" measuredH="400" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="132" controlTypeID="com.balsamiq.mockups::TitleWindow" x="652" y="370" w="433" h="316" measuredW="450" measuredH="400" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Event%20Rule%20Setttings%282-4%29</text>
         <close>true</close>
         <topheight>26</topheight>
       </controlProperties>
     </control>
-    <control controlID="133" controlTypeID="com.balsamiq.mockups::FieldSet" x="667" y="451" w="364" h="103" measuredW="200" measuredH="170" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="133" controlTypeID="com.balsamiq.mockups::FieldSet" x="678" y="459" w="364" h="103" measuredW="200" measuredH="170" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Object%20Shape%20and%20Direction%20Change%20Filter</text>
       </controlProperties>
     </control>
-    <control controlID="134" controlTypeID="com.balsamiq.mockups::RadioButton" x="690" y="475" w="148" h="29" measuredW="62" measuredH="22" zOrder="7" locked="false" isInGroup="-1">
+    <control controlID="134" controlTypeID="com.balsamiq.mockups::RadioButton" x="701" y="483" w="148" h="29" measuredW="62" measuredH="22" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Enable</text>
         <state>selected</state>
       </controlProperties>
     </control>
-    <control controlID="135" controlTypeID="com.balsamiq.mockups::RadioButton" x="690" y="517" w="148" h="29" measuredW="66" measuredH="22" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="135" controlTypeID="com.balsamiq.mockups::RadioButton" x="701" y="525" w="148" h="29" measuredW="66" measuredH="22" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Disable</text>
       </controlProperties>
     </control>
-    <control controlID="136" controlTypeID="com.balsamiq.mockups::Label" x="672" y="413" w="370" h="51" measuredW="190" measuredH="25" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="136" controlTypeID="com.balsamiq.mockups::Label" x="683" y="421" w="370" h="51" measuredW="190" measuredH="25" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <text>You%20Select%20Region%20is%20have%20...</text>
       </controlProperties>
     </control>
-    <control controlID="137" controlTypeID="com.balsamiq.mockups::Button" x="659" y="602" w="104" h="-1" measuredW="89" measuredH="28" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="137" controlTypeID="com.balsamiq.mockups::Button" x="670" y="610" w="104" h="-1" measuredW="89" measuredH="28" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%3C-Previous</text>
         <state>disabled</state>
       </controlProperties>
     </control>
-    <control controlID="138" controlTypeID="com.balsamiq.mockups::Button" x="797" y="601" w="104" h="-1" measuredW="73" measuredH="28" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="138" controlTypeID="com.balsamiq.mockups::Button" x="808" y="609" w="104" h="-1" measuredW="73" measuredH="28" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Next-%3E</text>
       </controlProperties>
     </control>
-    <control controlID="139" controlTypeID="com.balsamiq.mockups::Button" x="937" y="602" w="104" h="-1" measuredW="58" measuredH="28" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="139" controlTypeID="com.balsamiq.mockups::Button" x="948" y="610" w="104" h="-1" measuredW="58" measuredH="28" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Finish</text>
         <state>disabled</state>
       </controlProperties>
     </control>
-    <control controlID="108" controlTypeID="com.balsamiq.mockups::Button" x="960" y="269" w="104" h="-1" measuredW="58" measuredH="28" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="108" controlTypeID="com.balsamiq.mockups::Button" x="971" y="277" w="104" h="-1" measuredW="58" measuredH="28" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Finish</text>
         <state>disabled</state>
       </controlProperties>
     </control>
-    <control controlID="101" controlTypeID="com.balsamiq.mockups::TitleWindow" x="641" y="28" w="433" h="316" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+    <control controlID="101" controlTypeID="com.balsamiq.mockups::TitleWindow" x="652" y="36" w="433" h="316" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Event%20Rule%20Setttings%281-4%29</text>
         <close>true</close>
         <topheight>26</topheight>
       </controlProperties>
     </control>
-    <control controlID="167" controlTypeID="__group__" x="682" y="107" w="351" h="125" measuredW="351" measuredH="125" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="174" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="203" y="175" w="396" h="330" measuredW="300" measuredH="200" zOrder="19" locked="false" isInGroup="-1"/>
+    <control controlID="167" controlTypeID="__group__" x="693" y="115" w="351" h="125" measuredW="351" measuredH="125" zOrder="13" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="89" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="351" h="125" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="141">
           <controlProperties>
@@ -89,25 +90,67 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="105" controlTypeID="com.balsamiq.mockups::Label" x="695" y="80" w="370" h="34" measuredW="228" measuredH="25" zOrder="1" locked="false" isInGroup="-1">
+    <control controlID="176" controlTypeID="com.balsamiq.mockups::Label" x="90" y="184" w="113" h="135" measuredW="215" measuredH="25" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>System%20Auto%20Use%20Default%20Config.</text>
+      </controlProperties>
+    </control>
+    <control controlID="105" controlTypeID="com.balsamiq.mockups::Label" x="706" y="88" w="370" h="34" measuredW="228" measuredH="25" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Which%20Object%20is%20will%20be%20%20detected%3F</text>
       </controlProperties>
     </control>
-    <control controlID="106" controlTypeID="com.balsamiq.mockups::Button" x="682" y="269" w="104" h="-1" measuredW="89" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="106" controlTypeID="com.balsamiq.mockups::Button" x="693" y="277" w="104" h="-1" measuredW="89" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%3C-Previous</text>
         <state>up</state>
       </controlProperties>
     </control>
-    <control controlID="107" controlTypeID="com.balsamiq.mockups::Button" x="820" y="268" w="104" h="-1" measuredW="73" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
+    <control controlID="107" controlTypeID="com.balsamiq.mockups::Button" x="831" y="276" w="104" h="-1" measuredW="73" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Next-%3E</text>
       </controlProperties>
     </control>
-    <control controlID="169" controlTypeID="com.balsamiq.mockups::VCurly" x="1082" y="223" w="180" h="279" measuredW="180" measuredH="140" zOrder="14" locked="false" isInGroup="-1">
+    <control controlID="172" controlTypeID="com.balsamiq.mockups::Button" x="353" y="521" w="104" h="-1" measuredW="73" measuredH="28" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Next-%3E</text>
+        <href>IV%20Singleline%20Config%26bm%3BIV%20Singleline%20Config.bmml%26bm%3BIV%20Singleline%20Config.bmml%26bm%3BIV%20Singleline%20Config.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22272%2C493%2C376%2C521%22%20href%3D%22IV%20Singleline%20Config.bmml%22%20alt%3D%22IV%20Singleline%20Config%22%20id%3D%22172%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="173" controlTypeID="com.balsamiq.mockups::Button" x="493" y="522" w="104" h="-1" measuredW="58" measuredH="28" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Finish</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="175" controlTypeID="com.balsamiq.mockups::Label" x="283" y="299" w="238" h="33" measuredW="191" measuredH="25" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20line%20on%20the%20live%20by%20Default%20</text>
+        <color>16711680</color>
+      </controlProperties>
+    </control>
+    <control controlID="177" controlTypeID="com.balsamiq.mockups::Button" x="90" y="347" w="111" h="-1" measuredW="84" measuredH="28" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Simulation</text>
+      </controlProperties>
+    </control>
+    <control controlID="169" controlTypeID="com.balsamiq.mockups::VCurly" x="1093" y="231" w="180" h="279" measuredW="180" measuredH="140" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Default%20by%20View%2Cex.%3A%0AParking%2C%20is%20setting%20detect%20Vehicle%0ADisable%20Obj%20shape%20and%20Dir%20change%20Filter.%0A%20%0AThe%20page%20not%20show%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="170" controlTypeID="com.balsamiq.mockups::TitleWindow" x="81" y="134" w="530" h="456" measuredW="450" measuredH="400" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Event%20Rule%20Setttings%281-3%29</text>
+        <close>true</close>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="171" controlTypeID="com.balsamiq.mockups::Button" x="215" y="520" w="104" h="-1" measuredW="89" measuredH="28" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%3C-Previous</text>
+        <state>up</state>
       </controlProperties>
     </control>
   </controls>
