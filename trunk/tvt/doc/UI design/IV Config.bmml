@@ -97,11 +97,13 @@
     <control controlID="85" controlTypeID="com.balsamiq.mockups::HCurly" x="367" y="661" w="237" h="90" measuredW="200" measuredH="80" zOrder="25" locked="false" isInGroup="-1">
       <controlProperties>
         <text>count%20icon%3A%20System%20can%20Intelligence%20Analysis%20XX%20channel.%0ARed%3A%20System%20Userd%20XX%20channel.%0AGreen%3A%20Idle%20channel%0AGray%3A%20%3F%20</text>
+        <color>16711680</color>
       </controlProperties>
     </control>
     <control controlID="23" controlTypeID="com.balsamiq.mockups::VCurly" x="1047" y="203" w="134" h="388" measuredW="180" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Our%20DVR%20Config%20%0AMontion%20Page</text>
+        <color>16711680</color>
       </controlProperties>
     </control>
     <control controlID="144" controlTypeID="com.balsamiq.mockups::Menu" x="103" y="114" w="142" h="-1" measuredW="150" measuredH="245" zOrder="32" locked="false" isInGroup="-1">
@@ -114,11 +116,13 @@
       <controlProperties>
         <text>Right%20click%20Rule%0Apop%20up</text>
         <direction>right</direction>
+        <color>16711680</color>
       </controlProperties>
     </control>
     <control controlID="146" controlTypeID="com.balsamiq.mockups::HCurly" x="103" y="360" w="133" h="80" measuredW="200" measuredH="80" zOrder="34" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Right%20click%20camera%28root%20item%29%0Apop%20up</text>
+        <color>16711680</color>
       </controlProperties>
     </control>
     <control controlID="147" controlTypeID="com.balsamiq.mockups::Label" x="617" y="428" w="280" h="26" measuredW="280" measuredH="25" zOrder="35" locked="false" isInGroup="-1">
