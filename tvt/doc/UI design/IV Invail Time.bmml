@@ -10,16 +10,16 @@
     <control controlID="17" controlTypeID="com.balsamiq.mockups::Button" x="550" y="614" w="114" h="-1" measuredW="89" measuredH="28" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%3C-Previous</text>
-        <href>Illegal%20Parking-2%26bm%3BIllegal%20Parking-2.bmml%26bm%3BIllegal%20Parking-2.bmml%26bm%3BIllegal%20Parking-2.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22262%2C514%2C376%2C542%22%20href%3D%22Illegal%20Parking-2.bmml%22%20alt%3D%22Illegal%20Parking-2%22%20id%3D%2217%22/%3E</map>
+        <href>IV%20Base%20Setting%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22262%2C514%2C376%2C542%22%20href%3D%22IV%20Base%20Setting.bmml%22%20alt%3D%22IV%20Base%20Setting%22%20id%3D%2217%22/%3E</map>
       </controlProperties>
     </control>
-    <control controlID="18" controlTypeID="com.balsamiq.mockups::Button" x="685" y="613" w="114" h="-1" measuredW="73" measuredH="29" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Button" x="685" y="613" w="114" h="-1" measuredW="73" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Next-%3E</text>
-        <state>selected</state>
-        <href>Illegal%20Parking-4%26bm%3BIllegal%20Parking-4.bmml%26bm%3BIllegal%20Parking-4.bmml%26bm%3BIllegal%20Parking-4.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22397%2C513%2C511%2C542%22%20href%3D%22Illegal%20Parking-4.bmml%22%20alt%3D%22Illegal%20Parking-4%22%20id%3D%2218%22/%3E</map>
+        <state>up</state>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22397%2C513%2C511%2C541%22%20href%3D%22Alarm%20Out%20Settings%20wise.bmml%22%20alt%3D%22Alarm%20Out%20Settings%20wise%22%20id%3D%2218%22/%3E</map>
+        <href>Alarm%20Out%20Settings%20wise%26bm%3BAlarm%20Out%20Settings%20wise.bmml%26bm%3BAlarm%20Out%20Settings%20wise.bmml%26bm%3BAlarm%20Out%20Settings%20wise.bmml</href>
       </controlProperties>
     </control>
     <control controlID="19" controlTypeID="com.balsamiq.mockups::Button" x="814" y="614" w="114" h="-1" measuredW="58" measuredH="28" zOrder="3" locked="false" isInGroup="-1">

@@ -141,7 +141,7 @@
     <control controlID="182" controlTypeID="com.balsamiq.mockups::Button" x="350" y="508" w="104" h="-1" measuredW="73" measuredH="28" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Next-%3E</text>
-        <href>IV%20Singleline%20Config%26bm%3BIV%20Singleline%20Config.bmml%26bm%3BIV%20Singleline%20Config.bmml%26bm%3BIV%20Singleline%20Config.bmml</href>
+        <href>IV%20Base%20Setting%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22272%2C473%2C376%2C501%22%20href%3D%22IV%20Singleline%20Config.bmml%22%20alt%3D%22IV%20Singleline%20Config%22%20id%3D%22182%22/%3E</map>
       </controlProperties>
     </control>
