@@ -28,6 +28,11 @@
         <state>disabled</state>
       </controlProperties>
     </control>
+    <control controlID="94" controlTypeID="com.balsamiq.mockups::FieldSet" x="311" y="128" w="364" h="103" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>View</text>
+      </controlProperties>
+    </control>
     <control controlID="95" controlTypeID="com.balsamiq.mockups::RadioButton" x="334" y="150" w="148" h="29" measuredW="104" measuredH="22" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Vertical%20View</text>
@@ -129,6 +134,7 @@
     <control controlID="112" controlTypeID="com.balsamiq.mockups::Button" x="460" y="802" w="104" h="-1" measuredW="73" measuredH="28" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Next-%3E</text>
+        <href>IV%20Base%20Setting%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml</href>
       </controlProperties>
     </control>
     <control controlID="177" controlTypeID="com.balsamiq.mockups::Button" x="189" y="550" w="104" h="-1" measuredW="100" measuredH="28" zOrder="23" locked="false" isInGroup="-1">
@@ -146,7 +152,6 @@
         <text>Please%20Define%20a%20detect%20Region%2C%20which%20you%20is%20interesting.Obj%20Max%20size%20and%20Min%20size%20is%20not%20have%20to%20Set.</text>
       </controlProperties>
     </control>
-    <control controlID="118" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="316" y="449" w="396" h="330" measuredW="300" measuredH="200" zOrder="13" locked="false" isInGroup="-1"/>
     <control controlID="176" controlTypeID="com.balsamiq.mockups::FieldSet" x="177" y="473" w="128" h="171" measuredW="200" measuredH="170" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Select%20Region</text>
@@ -229,11 +234,7 @@
         <topheight>26</topheight>
       </controlProperties>
     </control>
-    <control controlID="94" controlTypeID="com.balsamiq.mockups::FieldSet" x="311" y="128" w="364" h="103" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>View</text>
-      </controlProperties>
-    </control>
+    <control controlID="118" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="316" y="449" w="396" h="330" measuredW="300" measuredH="200" zOrder="13" locked="false" isInGroup="-1"/>
     <control controlID="159" controlTypeID="com.balsamiq.mockups::Button" x="189" y="506" w="104" h="-1" measuredW="77" measuredH="28" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <text>All%20Zone</text>
