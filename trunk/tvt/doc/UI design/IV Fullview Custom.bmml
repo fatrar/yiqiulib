@@ -115,7 +115,7 @@
       <controlProperties>
         <text>Next-%3E</text>
         <href>IV%20Base%20Setting%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22272%2C493%2C376%2C521%22%20href%3D%22IV%20Singleline%20Config.bmml%22%20alt%3D%22IV%20Singleline%20Config%22%20id%3D%22172%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22272%2C485%2C376%2C513%22%20href%3D%22IV%20Base%20Setting.bmml%22%20alt%3D%22IV%20Base%20Setting%22%20id%3D%22172%22/%3E</map>
       </controlProperties>
     </control>
     <control controlID="173" controlTypeID="com.balsamiq.mockups::Button" x="493" y="522" w="104" h="-1" measuredW="58" measuredH="28" zOrder="18" locked="false" isInGroup="-1">
@@ -137,7 +137,7 @@
     </control>
     <control controlID="169" controlTypeID="com.balsamiq.mockups::VCurly" x="1093" y="231" w="180" h="279" measuredW="180" measuredH="140" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Default%20by%20View%2Cex.%3A%0AParking%2C%20is%20setting%20detect%20Vehicle%0ADisable%20Obj%20shape%20and%20Dir%20change%20Filter.%0A%20%0AThe%20page%20not%20show%20</text>
+        <text>Default%20by%20View%2Cex.%3A%0AParking%2C%20is%20setting%20detect%20Vehicle%0ADisable%20Obj%20shape%20and%20Dir%20change%20Filter.%0A%20%0AThe%20page%20not%20be%20show%20by%20normal.%0Abut%2C%20sometime%20is%20show%20yet.</text>
       </controlProperties>
     </control>
     <control controlID="170" controlTypeID="com.balsamiq.mockups::TitleWindow" x="81" y="134" w="530" h="456" measuredW="450" measuredH="400" zOrder="15" locked="false" isInGroup="-1">

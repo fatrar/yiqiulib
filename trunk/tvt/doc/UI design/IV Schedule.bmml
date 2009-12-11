@@ -6,13 +6,6 @@
         <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
-    <control controlID="125" controlTypeID="com.balsamiq.mockups::VCurly" x="60" y="136" w="114" h="203" measuredW="180" measuredH="140" zOrder="19" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Right%20click%20IVS%28root%20item%29%0Apop%20up</text>
-        <direction>right</direction>
-        <color>16711680</color>
-      </controlProperties>
-    </control>
     <control controlID="104" controlTypeID="com.balsamiq.mockups::Icon" x="1015" y="611" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>XIcon%7Clarge</icon>
@@ -25,18 +18,23 @@
         <text>IVS</text>
       </controlProperties>
     </control>
-    <control controlID="76" controlTypeID="com.balsamiq.mockups::VRule" x="414" y="135" w="-1" h="29" measuredW="5" measuredH="100" zOrder="4" locked="false" isInGroup="-1"/>
+    <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="374" y="91" w="641" h="564" measuredW="293" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Base%20Schedule%2CIVS%20Schedule</text>
+        <selectedIndex>2</selectedIndex>
+      </controlProperties>
+    </control>
     <control controlID="109" controlTypeID="com.balsamiq.mockups::Image" x="556" y="135" w="444" h="413" measuredW="530" measuredH="354" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
         <src>./pic/cms_Schedule.PNG</src>
       </controlProperties>
     </control>
-    <control controlID="78" controlTypeID="com.balsamiq.mockups::Tree" x="392" y="167" w="149" h="468" measuredW="300" measuredH="388" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::Tree" x="392" y="167" w="149" h="468" measuredW="300" measuredH="313" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>v%20IVS1%0A%20-%20Camera1%0A%20-%20Camera3%0A%20-%20Camera7%0A%3E%20IVS2%0Av%20IVS3%0A%20-%20Camera2%0A%20-%20Camera15%0A%3E%20IVS4%0A%3E%20IVS5%0A%3E%20IVS6%0A%3E%20IVS7%0A%3E%20IVS8%0A%3E%20IVS9</text>
-        <selectedIndex>1</selectedIndex>
+        <text>%3E%20IVS1%0A%3E%20IVS2%0Av%20IVS3%0A%20-%20Camera2%0A%20-%20Camera15%0A%3E%20IVS4%0A%3E%20IVS5%0A%3E%20IVS6%0A%3E%20IVS7%0A%3E%20IVS8%0A%3E%20IVS9</text>
         <verticalScrollbar>true</verticalScrollbar>
+        <selectedIndex>0</selectedIndex>
         <color>8355711</color>
       </controlProperties>
     </control>
@@ -65,6 +63,7 @@
         <icon>ArchiveIcon%7Csmall</icon>
       </controlProperties>
     </control>
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::VRule" x="414" y="135" w="-1" h="29" measuredW="5" measuredH="100" zOrder="4" locked="false" isInGroup="-1"/>
     <control controlID="110" controlTypeID="com.balsamiq.mockups::FieldSet" x="550" y="120" w="457" h="530" measuredW="200" measuredH="170" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Week%20Time</text>
@@ -166,10 +165,11 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="374" y="91" w="641" h="564" measuredW="293" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
+    <control controlID="125" controlTypeID="com.balsamiq.mockups::VCurly" x="60" y="136" w="114" h="203" measuredW="180" measuredH="140" zOrder="19" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Base%20Schedule%2CIVS%20Schedule</text>
-        <selectedIndex>2</selectedIndex>
+        <text>Right%20click%20IVS%28root%20item%29%0Apop%20up</text>
+        <direction>right</direction>
+        <color>16711680</color>
       </controlProperties>
     </control>
   </controls>
