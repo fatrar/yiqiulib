@@ -55,8 +55,8 @@
     <control controlID="78" controlTypeID="com.balsamiq.mockups::Tree" x="459" y="168" w="149" h="404" measuredW="300" measuredH="338" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>v%20Camera1%0A%20-%20illegal%20Parking%0A%3E%20Camera2%0Av%20Camera3%0A%20-%20Rule1%0A%20-%20Rule2%0A%3E%20Camera4%0A%3E%20Camera5%0A%3E%20Camera6%0A%3E%20Camera7%0A%3E%20Camera8%0A%3E%20Camera9</text>
-        <selectedIndex>1</selectedIndex>
         <verticalScrollbar>true</verticalScrollbar>
+        <selectedIndex>1</selectedIndex>
         <color>8355711</color>
       </controlProperties>
     </control>
@@ -108,7 +108,7 @@
     </control>
     <control controlID="144" controlTypeID="com.balsamiq.mockups::Menu" x="167" y="87" w="142" h="-1" measuredW="150" measuredH="245" zOrder="29" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>New%20Rule%0ADelete%20All%20Rule%0APaste%20Rule%0ACopy%20All%20Rule%0A---%0Ao%20Enable%20All%20Rule%0ADisable%20All%20Rule%0A%3D%0Ao%20Show%20Object%0AShow%20Trace%0AShow%20Obj.%26Trace</text>
+        <text>New%20Rule%0ADelete%20All%20Rule%0APaste%20Rule%0ACopy%20All%20Rule%0A---%0AEnable%20All%20Rule%0ADisable%20All%20Rule%0A%3D%0Ao%20Show%20Object%0AShow%20Trace%0AShow%20Obj.%26Trace</text>
         <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
@@ -134,9 +134,9 @@
         <control controlID="132" controlTypeID="com.balsamiq.mockups::Tree" x="11" y="53" w="385" h="111" measuredW="300" measuredH="225" zOrder="1" locked="false" isInGroup="139">
           <controlProperties>
             <text>-%20EMAP%0A-%20Instant%20Record%0A-%20E-mail%0A-%20Telphone%0A-%20Sound%0A-%20Sensor%0A-%20ect.</text>
+            <verticalScrollbar>true</verticalScrollbar>
             <selectedIndex>0</selectedIndex>
             <borderStyle>square</borderStyle>
-            <verticalScrollbar>true</verticalScrollbar>
           </controlProperties>
         </control>
         <control controlID="133" controlTypeID="com.balsamiq.mockups::Icon" x="12" y="18" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="2" locked="false" isInGroup="139">
@@ -169,9 +169,9 @@
         <control controlID="138" controlTypeID="com.balsamiq.mockups::VRule" x="36" y="15" w="-1" h="29" measuredW="5" measuredH="100" zOrder="7" locked="false" isInGroup="139"/>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="140" controlTypeID="com.balsamiq.mockups::Menu" x="171" y="427" w="133" h="-1" measuredW="150" measuredH="195" zOrder="28" locked="false" isInGroup="-1">
+    <control controlID="140" controlTypeID="com.balsamiq.mockups::Menu" x="171" y="427" w="133" h="-1" measuredW="150" measuredH="200" zOrder="28" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Delete%20Rule%0ACopy%20Rule%0AEdit%20Rule%0ATime%20valid%0AEdit%20Alarm%20out%0A---%0Ao%20Enable%20Rule%0ADisable%20Rule%0A%3D</text>
+        <text>Delete%20Rule%0ACopy%20Rule%0A---%0AEdit%20Rule%0AEdit%20Base%0AEdit%20Alarm%20out%0A---%0Ao%20Enable%20Rule%0ADisable%20Rule%0A%3D</text>
         <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
@@ -198,14 +198,14 @@
     </control>
     <control controlID="105" controlTypeID="com.balsamiq.mockups::Tooltip" x="337" y="145" w="119" h="155" measuredW="118" measuredH="155" zOrder="25" locked="false" isInGroup="-1">
       <controlProperties>
-        <tooltipDirection>NE</tooltipDirection>
         <text>new%20Rule%0ADelete%20Rule%0ACopy%20Rule%0APaste%20Rule%0ACopy%20All%20Rule%0AConfig%20Rule</text>
+        <tooltipDirection>NE</tooltipDirection>
       </controlProperties>
     </control>
     <control controlID="106" controlTypeID="com.balsamiq.mockups::Tooltip" x="732" y="12" w="218" h="122" measuredW="213" measuredH="122" zOrder="27" locked="false" isInGroup="-1">
       <controlProperties>
-        <tooltipDirection>SW</tooltipDirection>
         <text>Add%20or%20Remove%20Alarm%20Event%0ADelete%20specify%20Alarm%20Event%0ACopy%20Alarm%20Rule%0APaste%20Alarm%20Rule%0ACopy%20All%20Alarm%20Rule</text>
+        <tooltipDirection>SW</tooltipDirection>
       </controlProperties>
     </control>
     <control controlID="107" controlTypeID="__group__" x="419" y="79" w="717" h="580" measuredW="717" measuredH="580" zOrder="0" locked="false" isInGroup="-1">
@@ -247,10 +247,10 @@
     <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="433" y="88" w="641" h="564" measuredW="234" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Montion%2CIVS%20config</text>
-        <selectedIndex>1</selectedIndex>
         <hrefs>%2C%2CIV%20Schedule%26bm%3BIV%20Schedule.bmml%26bm%3BIV%20Schedule.bmml%26bm%3BIV%20Schedule.bmml</hrefs>
+        <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
-    <control controlID="61" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="633" y="300" w="416" h="281" measuredW="300" measuredH="200" zOrder="3" locked="false" isInGroup="-1"/>
+    <control controlID="61" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="637" y="300" w="416" h="281" measuredW="300" measuredH="200" zOrder="3" locked="false" isInGroup="-1"/>
   </controls>
 </mockup>
