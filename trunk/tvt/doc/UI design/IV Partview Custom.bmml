@@ -225,12 +225,12 @@
         <state>disabled</state>
       </controlProperties>
     </control>
-    <control controlID="178" controlTypeID="com.balsamiq.mockups::Label" x="35" y="626" w="59" h="23" measuredW="61" measuredH="25" zOrder="24" locked="false" isInGroup="-1">
+    <control controlID="178" controlTypeID="com.balsamiq.mockups::Label" x="187" y="666" w="59" h="23" measuredW="61" measuredH="25" zOrder="24" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Time%28/s%29%3A</text>
       </controlProperties>
     </control>
-    <control controlID="179" controlTypeID="com.balsamiq.mockups::TextInput" x="99" y="624" w="43" h="-1" measuredW="30" measuredH="29" zOrder="25" locked="false" isInGroup="-1">
+    <control controlID="179" controlTypeID="com.balsamiq.mockups::TextInput" x="251" y="664" w="43" h="-1" measuredW="30" measuredH="29" zOrder="25" locked="false" isInGroup="-1">
       <controlProperties>
         <text>10</text>
       </controlProperties>
