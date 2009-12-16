@@ -1,11 +1,11 @@
-<mockup version="1.0" skin="sketch" measuredW="1233" measuredH="715" mockupW="1099" mockupH="625">
+<mockup version="1.0" skin="sketch" measuredW="1233" measuredH="806" mockupW="1077" mockupH="716">
   <controls>
     <control controlID="316" controlTypeID="com.balsamiq.mockups::FieldSet" x="435" y="208" w="168" h="432" measuredW="200" measuredH="170" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <text>IVS</text>
       </controlProperties>
     </control>
-    <control controlID="381" controlTypeID="com.balsamiq.mockups::Tooltip" x="599" y="223" w="109" h="122" measuredW="108" measuredH="131" zOrder="15" locked="false" isInGroup="-1">
+    <control controlID="381" controlTypeID="com.balsamiq.mockups::Tooltip" x="599" y="223" w="109" h="122" measuredW="108" measuredH="122" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <text>New%20Rule%0ADelete%20Rule%0ACopy%20Rule%0APaste%20Rule%0AEdit%20Rule</text>
         <tooltipDirection>NW</tooltipDirection>
@@ -15,7 +15,7 @@
       <controlProperties>
         <icon>XIcon%7Clarge</icon>
         <href>IV%20DVR%20MainUI%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22955%2C529%2C1003%2C577%22%20href%3D%22IV%20DVR%20MainUI.bmml%22%20alt%3D%22IV%20DVR%20MainUI%22%20id%3D%22104%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22933%2C529%2C981%2C577%22%20href%3D%22IV%20DVR%20MainUI.bmml%22%20alt%3D%22IV%20DVR%20MainUI%22%20id%3D%22104%22/%3E</map>
       </controlProperties>
     </control>
     <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="425" y="85" w="641" h="564" measuredW="234" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
@@ -33,13 +33,13 @@
         <color>8355711</color>
       </controlProperties>
     </control>
-    <control controlID="144" controlTypeID="com.balsamiq.mockups::Menu" x="254" y="88" w="142" h="-1" measuredW="150" measuredH="220" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="144" controlTypeID="com.balsamiq.mockups::Menu" x="260" y="85" w="142" h="-1" measuredW="150" measuredH="220" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <text>New%20Rule%0ADelete%20All%20Rule%0APaste%20Rule%0A---%0AEnable%20All%20Rule%0ADisable%20All%20Rule%0A%3D%0Ao%20Show%20Object%0AShow%20Trace%0AShow%20Obj.%26Trace</text>
         <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
-    <control controlID="145" controlTypeID="com.balsamiq.mockups::VCurly" x="124" y="474" w="127" h="140" measuredW="180" measuredH="140" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="145" controlTypeID="com.balsamiq.mockups::VCurly" x="146" y="509" w="127" h="140" measuredW="180" measuredH="140" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Right%20click%20Rule%0Apop%20up</text>
         <direction>right</direction>
@@ -51,14 +51,14 @@
         <text>Live%20Screen%2Cwhen%20click%20camera%20or%20Rule%20Show</text>
       </controlProperties>
     </control>
-    <control controlID="148" controlTypeID="com.balsamiq.mockups::VCurly" x="303" y="285" w="147" h="264" measuredW="180" measuredH="140" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="148" controlTypeID="com.balsamiq.mockups::VCurly" x="594" y="326" w="147" h="264" measuredW="180" measuredH="140" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Camera%28Root%20Item%29%20Pic%20have%20color.%20%0ARed%20is%20behalf%20of%20is%20running.%0AGreen%20is%20Stop.%20</text>
-        <direction>right</direction>
+        <direction>left</direction>
         <color>16711680</color>
       </controlProperties>
     </control>
-    <control controlID="149" controlTypeID="com.balsamiq.mockups::VCurly" x="155" y="108" w="99" h="203" measuredW="180" measuredH="140" zOrder="7" locked="false" isInGroup="-1">
+    <control controlID="149" controlTypeID="com.balsamiq.mockups::VCurly" x="161" y="102" w="99" h="203" measuredW="180" measuredH="140" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Right%20click%20camera%28root%20item%29%0Apop%20up</text>
         <direction>right</direction>
@@ -106,7 +106,7 @@
       </controlProperties>
     </control>
     <control controlID="61" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="611" y="215" w="440" h="356" measuredW="300" measuredH="200" zOrder="12" locked="false" isInGroup="-1"/>
-    <control controlID="218" controlTypeID="__group__" x="606" y="592" w="-1" h="-1" measuredW="240" measuredH="113" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="218" controlTypeID="__group__" x="717" y="683" w="-1" h="-1" measuredW="240" measuredH="113" zOrder="8" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="66" controlTypeID="com.balsamiq.mockups::ColorPicker" x="10" y="0" w="-1" h="-1" measuredW="26" measuredH="28" zOrder="0" locked="false" isInGroup="218">
           <controlProperties>
@@ -205,7 +205,7 @@
           <controlProperties>
             <icon>DocEmptyIcon%7Csmall</icon>
             <href>IV%20SetupUI%26bm%3BIV%20SetupUI.bmml%26bm%3BIV%20SetupUI.bmml%26bm%3BIV%20SetupUI.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22320%2C143%2C344%2C167%22%20href%3D%22IV%20SetupUI.bmml%22%20alt%3D%22IV%20SetupUI%22%20id%3D%2279%22/%3E</map>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22298%2C143%2C322%2C167%22%20href%3D%22IV%20SetupUI.bmml%22%20alt%3D%22IV%20SetupUI%22%20id%3D%2279%22/%3E</map>
           </controlProperties>
         </control>
         <control controlID="80" controlTypeID="com.balsamiq.mockups::Icon" x="29" y="1" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="3" locked="false" isInGroup="220">
@@ -232,12 +232,12 @@
           <controlProperties>
             <icon>GearIcon%7Csmall</icon>
             <href>Illegal%20Parking-1%26bm%3BIllegal%20Parking-1.bmml%26bm%3BIllegal%20Parking-1.bmml%26bm%3BIllegal%20Parking-1.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22450%2C141%2C474%2C165%22%20href%3D%22Illegal%20Parking-1.bmml%22%20alt%3D%22Illegal%20Parking-1%22%20id%3D%2284%22/%3E</map>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22428%2C141%2C452%2C165%22%20href%3D%22Illegal%20Parking-1.bmml%22%20alt%3D%22Illegal%20Parking-1%22%20id%3D%2284%22/%3E</map>
           </controlProperties>
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="140" controlTypeID="com.balsamiq.mockups::Menu" x="251" y="472" w="111" h="-1" measuredW="150" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="140" controlTypeID="com.balsamiq.mockups::Menu" x="268" y="506" w="111" h="-1" measuredW="150" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Delete%20Rule%0ACopy%20Rule%0AEdit%20Rule%0A---%0Ao%20Enable%20Rule%0ADisable%20Rule</text>
         <selectedIndex>1</selectedIndex>
