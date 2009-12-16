@@ -1,13 +1,13 @@
-<mockup version="1.0" skin="sketch" measuredW="2137" measuredH="623" mockupW="2036" mockupH="584">
+<mockup version="1.0" skin="sketch" measuredW="2180" measuredH="1064" mockupW="2118" mockupH="1036">
   <controls>
-    <control controlID="361" controlTypeID="com.balsamiq.mockups::Label" x="127" y="378" w="-1" h="-1" measuredW="68" measuredH="25" zOrder="28" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>End%20Time%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="389" controlTypeID="com.balsamiq.mockups::Icon" x="2103" y="179" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="43" locked="false" isInGroup="-1">
+    <control controlID="389" controlTypeID="com.balsamiq.mockups::Icon" x="2103" y="179" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="36" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>CreativeCommonsIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="416" controlTypeID="com.balsamiq.mockups::FieldSet" x="1325" y="168" w="617" h="425" measuredW="200" measuredH="170" zOrder="41" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Week%20Time</text>
       </controlProperties>
     </control>
     <control controlID="331" controlTypeID="__group__" x="544" y="165" w="152" h="421" measuredW="152" measuredH="421" zOrder="5" locked="false" isInGroup="-1">
@@ -27,32 +27,38 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="336" controlTypeID="com.balsamiq.mockups::DataGrid" x="703" y="379" w="330" h="203" measuredW="236" measuredH="178" zOrder="7" locked="false" isInGroup="-1">
+    <control controlID="336" controlTypeID="com.balsamiq.mockups::DataGrid" x="170" y="641" w="330" h="203" measuredW="236" measuredH="178" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <align>center</align>
         <text>Time%2CChannel%2CColor%0A12%3A34-15%3A30%2C%2010%2C%20%5Bred%5D%0A12%3A34-15%3A30%2C%2016%2C%20%5BX%5D%0A12%3A34-15%3A30%2C%201%2C%20%5Bx%5D%0A12%3A34-15%3A30%2C%201%2C%20%5Bx%5D%0A12%3A34-15%3A30%2C%2012%2C%5Bx%5D</text>
-        <verticalScrollbar>true</verticalScrollbar>
-        <vLines>true</vLines>
         <hLines>true</hLines>
         <color>12303802</color>
+        <verticalScrollbar>true</verticalScrollbar>
+        <vLines>true</vLines>
       </controlProperties>
     </control>
-    <control controlID="338" controlTypeID="com.balsamiq.mockups::Button" x="1067" y="439" w="78" h="-1" measuredW="49" measuredH="28" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="415" controlTypeID="com.balsamiq.mockups::Image" x="702" y="180" w="458" h="402" measuredW="458" measuredH="402" zOrder="40" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+        <src>./pic/cms_Schedule.PNG</src>
+      </controlProperties>
+    </control>
+    <control controlID="338" controlTypeID="com.balsamiq.mockups::Button" x="1054" y="686" w="78" h="-1" measuredW="49" measuredH="28" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Add</text>
       </controlProperties>
     </control>
-    <control controlID="339" controlTypeID="com.balsamiq.mockups::Button" x="1067" y="483" w="78" h="-1" measuredW="64" measuredH="28" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="339" controlTypeID="com.balsamiq.mockups::Button" x="1054" y="730" w="78" h="-1" measuredW="64" measuredH="28" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Delete</text>
       </controlProperties>
     </control>
-    <control controlID="340" controlTypeID="com.balsamiq.mockups::Button" x="1067" y="530" w="75" h="-1" measuredW="50" measuredH="28" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="340" controlTypeID="com.balsamiq.mockups::Button" x="1054" y="777" w="75" h="-1" measuredW="50" measuredH="28" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Edit</text>
       </controlProperties>
     </control>
-    <control controlID="341" controlTypeID="com.balsamiq.mockups::FieldSet" x="696" y="355" w="471" h="237" measuredW="200" measuredH="170" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="341" controlTypeID="com.balsamiq.mockups::FieldSet" x="537" y="623" w="471" h="237" measuredW="200" measuredH="170" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Time%20Edit</text>
       </controlProperties>
@@ -111,10 +117,10 @@
       <controlProperties>
         <icon>XIcon%7Clarge</icon>
         <href>IV%20DVR%20MainUI%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%221100%2C525%2C1148%2C573%22%20href%3D%22IV%20DVR%20MainUI.bmml%22%20alt%3D%22IV%20DVR%20MainUI%22%20id%3D%22281%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%221139%2C536%2C1187%2C584%22%20href%3D%22IV%20DVR%20MainUI.bmml%22%20alt%3D%22IV%20DVR%20MainUI%22%20id%3D%22281%22/%3E</map>
       </controlProperties>
     </control>
-    <control controlID="410" controlTypeID="__group__" x="548" y="69" w="-1" h="-1" measuredW="617" measuredH="98" zOrder="44" locked="false" isInGroup="-1">
+    <control controlID="410" controlTypeID="__group__" x="548" y="69" w="-1" h="-1" measuredW="617" measuredH="98" zOrder="37" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="405" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="617" h="98" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="410">
           <controlProperties>
@@ -148,7 +154,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="348" controlTypeID="__group__" x="1325" y="73" w="-1" h="-1" measuredW="617" measuredH="98" zOrder="15" locked="false" isInGroup="-1">
+    <control controlID="348" controlTypeID="__group__" x="1325" y="73" w="-1" h="-1" measuredW="617" measuredH="98" zOrder="14" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="310" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="617" h="98" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="311">
           <controlProperties>
@@ -181,149 +187,54 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="349" controlTypeID="com.balsamiq.mockups::FieldSet" x="1329" y="362" w="615" h="234" measuredW="200" measuredH="170" zOrder="16" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Time%20Edit</text>
-      </controlProperties>
+    <control controlID="413" controlTypeID="__group__" x="1555" y="635" w="-1" h="-1" measuredW="615" measuredH="419" zOrder="38" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="345" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="614" h="182" measuredW="614" measuredH="182" zOrder="0" locked="false" isInGroup="413">
+          <controlProperties>
+            <text/>
+            <src>./assets/nuuo_Schudule.PNG</src>
+          </controlProperties>
+        </control>
+        <control controlID="349" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="185" w="615" h="234" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="413">
+          <controlProperties>
+            <text>Time%20Edit</text>
+          </controlProperties>
+        </control>
+        <control controlID="350" controlTypeID="com.balsamiq.mockups::DataGrid" x="9" y="209" w="454" h="200" measuredW="236" measuredH="178" zOrder="2" locked="false" isInGroup="413">
+          <controlProperties>
+            <align>center</align>
+            <text>Time%2CChannel%2CColor%0A12%3A34-15%3A30%2C%2010%2C%20%5Bred%5D%0A12%3A34-15%3A30%2C%2016%2C%20%5BX%5D%0A12%3A34-15%3A30%2C%201%2C%20%5Bx%5D%0A12%3A34-15%3A30%2C%201%2C%20%5Bx%5D%0A12%3A34-15%3A30%2C%2012%2C%5Bx%5D</text>
+            <vLines>true</vLines>
+            <hLines>true</hLines>
+            <color>12303802</color>
+            <verticalScrollbar>true</verticalScrollbar>
+          </controlProperties>
+        </control>
+        <control controlID="351" controlTypeID="com.balsamiq.mockups::Button" x="496" y="274" w="84" h="-1" measuredW="49" measuredH="28" zOrder="3" locked="false" isInGroup="413">
+          <controlProperties>
+            <text>Add</text>
+          </controlProperties>
+        </control>
+        <control controlID="352" controlTypeID="com.balsamiq.mockups::Button" x="498" y="326" w="84" h="-1" measuredW="64" measuredH="28" zOrder="4" locked="false" isInGroup="413">
+          <controlProperties>
+            <text>Delete</text>
+          </controlProperties>
+        </control>
+        <control controlID="353" controlTypeID="com.balsamiq.mockups::Button" x="501" y="383" w="84" h="-1" measuredW="50" measuredH="28" zOrder="5" locked="false" isInGroup="413">
+          <controlProperties>
+            <text>Edit</text>
+          </controlProperties>
+        </control>
+        <control controlID="370" controlTypeID="com.balsamiq.mockups::Button" x="497" y="222" w="82" h="-1" measuredW="87" measuredH="28" zOrder="6" locked="false" isInGroup="413">
+          <controlProperties>
+            <text>Copy%20To..</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
     </control>
-    <control controlID="350" controlTypeID="com.balsamiq.mockups::DataGrid" x="1338" y="386" w="454" h="200" measuredW="236" measuredH="178" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="414" controlTypeID="com.balsamiq.mockups::FieldSet" x="698" y="166" w="467" h="425" measuredW="200" measuredH="170" zOrder="39" locked="false" isInGroup="-1">
       <controlProperties>
-        <align>center</align>
-        <text>Time%2CChannel%2CColor%0A12%3A34-15%3A30%2C%2010%2C%20%5Bred%5D%0A12%3A34-15%3A30%2C%2016%2C%20%5BX%5D%0A12%3A34-15%3A30%2C%201%2C%20%5Bx%5D%0A12%3A34-15%3A30%2C%201%2C%20%5Bx%5D%0A12%3A34-15%3A30%2C%2012%2C%5Bx%5D</text>
-        <verticalScrollbar>true</verticalScrollbar>
-        <vLines>true</vLines>
-        <hLines>true</hLines>
-        <color>12303802</color>
-      </controlProperties>
-    </control>
-    <control controlID="351" controlTypeID="com.balsamiq.mockups::Button" x="1825" y="451" w="84" h="-1" measuredW="49" measuredH="28" zOrder="18" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Add</text>
-      </controlProperties>
-    </control>
-    <control controlID="344" controlTypeID="com.balsamiq.mockups::Icon" x="1968" y="558" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="13" locked="false" isInGroup="-1">
-      <controlProperties>
-        <icon>XIcon%7Clarge</icon>
-        <href>IV%20DVR%20MainUI%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%221877%2C529%2C1925%2C577%22%20href%3D%22IV%20DVR%20MainUI.bmml%22%20alt%3D%22IV%20DVR%20MainUI%22%20id%3D%22344%22/%3E</map>
-      </controlProperties>
-    </control>
-    <control controlID="345" controlTypeID="com.balsamiq.mockups::Image" x="1329" y="177" w="614" h="182" measuredW="690" measuredH="157" zOrder="14" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text/>
-        <src>./assets/nuuo_Schudule.PNG</src>
-      </controlProperties>
-    </control>
-    <control controlID="354" controlTypeID="com.balsamiq.mockups::TitleWindow" x="91" y="295" w="400" h="316" measuredW="450" measuredH="400" zOrder="21" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text/>
-        <close>true</close>
-        <topheight>26</topheight>
-        <bottomheight>15</bottomheight>
-      </controlProperties>
-    </control>
-    <control controlID="355" controlTypeID="com.balsamiq.mockups::FieldSet" x="118" y="330" w="329" h="84" measuredW="200" measuredH="170" zOrder="22" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Time</text>
-      </controlProperties>
-    </control>
-    <control controlID="356" controlTypeID="com.balsamiq.mockups::Button" x="318" y="560" w="57" h="-1" measuredW="43" measuredH="28" zOrder="23" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>OK</text>
-      </controlProperties>
-    </control>
-    <control controlID="357" controlTypeID="com.balsamiq.mockups::Button" x="404" y="560" w="-1" h="-1" measuredW="65" measuredH="28" zOrder="24" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Cancel</text>
-      </controlProperties>
-    </control>
-    <control controlID="358" controlTypeID="com.balsamiq.mockups::NumericStepper" x="225" y="347" w="-1" h="-1" measuredW="71" measuredH="26" zOrder="25" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>13%3A10</text>
-      </controlProperties>
-    </control>
-    <control controlID="359" controlTypeID="com.balsamiq.mockups::NumericStepper" x="226" y="380" w="-1" h="-1" measuredW="71" measuredH="26" zOrder="26" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>14%3A10</text>
-      </controlProperties>
-    </control>
-    <control controlID="296" controlTypeID="com.balsamiq.mockups::Image" x="703" y="173" w="463" h="182" measuredW="690" measuredH="157" zOrder="3" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text/>
-        <src>./assets/nuuo_Schudule.PNG</src>
-      </controlProperties>
-    </control>
-    <control controlID="297" controlTypeID="com.balsamiq.mockups::TextArea" x="91" y="150" w="251" h="105" measuredW="200" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>IVS%20Schedule%20max%20support%204%20channel.different%20corlor%20be%20behave%20of%20different%20channel.diag%20up%20Popup%20a%20diag%20for%20select%20Chanel%20and%20color</text>
-        <color>15790322</color>
-      </controlProperties>
-    </control>
-    <control controlID="362" controlTypeID="com.balsamiq.mockups::Label" x="129" y="449" w="79" h="31" measuredW="59" measuredH="25" zOrder="29" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Channel%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="363" controlTypeID="com.balsamiq.mockups::Label" x="129" y="495" w="79" h="31" measuredW="77" measuredH="25" zOrder="30" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Show%20color%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="364" controlTypeID="com.balsamiq.mockups::ComboBox" x="228" y="453" w="69" h="-1" measuredW="48" measuredH="25" zOrder="31" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>20</text>
-      </controlProperties>
-    </control>
-    <control controlID="365" controlTypeID="com.balsamiq.mockups::ColorPicker" x="226" y="497" w="-1" h="-1" measuredW="26" measuredH="28" zOrder="32" locked="false" isInGroup="-1"/>
-    <control controlID="366" controlTypeID="com.balsamiq.mockups::Button" x="1067" y="388" w="75" h="-1" measuredW="87" measuredH="28" zOrder="33" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Copy%20To..</text>
-      </controlProperties>
-    </control>
-    <control controlID="360" controlTypeID="com.balsamiq.mockups::Label" x="127" y="349" w="-1" h="-1" measuredW="79" measuredH="25" zOrder="27" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Start%20Time%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="352" controlTypeID="com.balsamiq.mockups::Button" x="1827" y="503" w="84" h="-1" measuredW="64" measuredH="28" zOrder="19" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Delete</text>
-      </controlProperties>
-    </control>
-    <control controlID="370" controlTypeID="com.balsamiq.mockups::Button" x="1826" y="399" w="82" h="-1" measuredW="87" measuredH="28" zOrder="34" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Copy%20To..</text>
-      </controlProperties>
-    </control>
-    <control controlID="374" controlTypeID="com.balsamiq.mockups::VRule" x="2083" y="174" w="-1" h="22" measuredW="5" measuredH="100" zOrder="35" locked="false" isInGroup="-1"/>
-    <control controlID="375" controlTypeID="com.balsamiq.mockups::Icon" x="2057" y="173" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="36" locked="false" isInGroup="-1">
-      <controlProperties>
-        <icon>DocEmptyIcon%7Csmall</icon>
-      </controlProperties>
-    </control>
-    <control controlID="376" controlTypeID="com.balsamiq.mockups::Icon" x="561" y="183" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="37" locked="false" isInGroup="-1">
-      <controlProperties>
-        <icon>TrashIcon%7Csmall</icon>
-      </controlProperties>
-    </control>
-    <control controlID="377" controlTypeID="com.balsamiq.mockups::Icon" x="600" y="181" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="38" locked="false" isInGroup="-1">
-      <controlProperties>
-        <icon>CopyIcon%7Csmall</icon>
-      </controlProperties>
-    </control>
-    <control controlID="378" controlTypeID="com.balsamiq.mockups::Icon" x="627" y="179" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="39" locked="false" isInGroup="-1">
-      <controlProperties>
-        <icon>PasteIcon%7Csmall</icon>
-      </controlProperties>
-    </control>
-    <control controlID="379" controlTypeID="com.balsamiq.mockups::Icon" x="653" y="182" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="40" locked="false" isInGroup="-1">
-      <controlProperties>
-        <icon>ArchiveIcon%7Csmall</icon>
-      </controlProperties>
-    </control>
-    <control controlID="353" controlTypeID="com.balsamiq.mockups::Button" x="1830" y="560" w="84" h="-1" measuredW="50" measuredH="28" zOrder="20" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Edit</text>
+        <text>Week%20Time</text>
       </controlProperties>
     </control>
     <control controlID="279" controlTypeID="__group__" x="530" y="29" w="717" h="580" measuredW="717" measuredH="580" zOrder="0" locked="false" isInGroup="-1">
@@ -362,12 +273,127 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="382" controlTypeID="com.balsamiq.mockups::Tooltip" x="425" y="183" w="133" h="106" measuredW="129" measuredH="106" zOrder="41" locked="false" isInGroup="-1">
+    <control controlID="344" controlTypeID="com.balsamiq.mockups::Icon" x="1968" y="558" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>XIcon%7Clarge</icon>
+        <href>IV%20DVR%20MainUI%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml%26bm%3BIV%20DVR%20MainUI.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%221916%2C540%2C1964%2C588%22%20href%3D%22IV%20DVR%20MainUI.bmml%22%20alt%3D%22IV%20DVR%20MainUI%22%20id%3D%22344%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="417" controlTypeID="com.balsamiq.mockups::Image" x="1330" y="182" w="605" h="402" measuredW="530" measuredH="354" zOrder="42" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+        <src>./pic/cms_Schedule.PNG</src>
+      </controlProperties>
+    </control>
+    <control controlID="354" controlTypeID="com.balsamiq.mockups::TitleWindow" x="91" y="295" w="400" h="316" measuredW="450" measuredH="400" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+        <close>true</close>
+        <topheight>26</topheight>
+        <bottomheight>15</bottomheight>
+      </controlProperties>
+    </control>
+    <control controlID="355" controlTypeID="com.balsamiq.mockups::FieldSet" x="118" y="330" w="329" h="84" measuredW="200" measuredH="170" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Time</text>
+      </controlProperties>
+    </control>
+    <control controlID="356" controlTypeID="com.balsamiq.mockups::Button" x="318" y="560" w="57" h="-1" measuredW="43" measuredH="28" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>OK</text>
+      </controlProperties>
+    </control>
+    <control controlID="357" controlTypeID="com.balsamiq.mockups::Button" x="404" y="560" w="-1" h="-1" measuredW="65" measuredH="28" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cancel</text>
+      </controlProperties>
+    </control>
+    <control controlID="358" controlTypeID="com.balsamiq.mockups::NumericStepper" x="225" y="347" w="-1" h="-1" measuredW="71" measuredH="26" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>13%3A10</text>
+      </controlProperties>
+    </control>
+    <control controlID="359" controlTypeID="com.balsamiq.mockups::NumericStepper" x="226" y="380" w="-1" h="-1" measuredW="71" measuredH="26" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>14%3A10</text>
+      </controlProperties>
+    </control>
+    <control controlID="296" controlTypeID="com.balsamiq.mockups::Image" x="1063" y="628" w="463" h="278" measuredW="463" measuredH="278" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+        <src>./assets/nuuo_Schudule.PNG</src>
+      </controlProperties>
+    </control>
+    <control controlID="297" controlTypeID="com.balsamiq.mockups::TextArea" x="52" y="18" w="251" h="105" measuredW="200" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>IVS%20Schedule%20max%20support%204%20channel.different%20corlor%20be%20behave%20of%20different%20channel.diag%20up%20Popup%20a%20diag%20for%20select%20Chanel%20and%20color</text>
+        <color>15790322</color>
+      </controlProperties>
+    </control>
+    <control controlID="362" controlTypeID="com.balsamiq.mockups::Label" x="129" y="449" w="79" h="31" measuredW="59" measuredH="25" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Channel%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="363" controlTypeID="com.balsamiq.mockups::Label" x="129" y="495" w="79" h="31" measuredW="77" measuredH="25" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Show%20color%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="364" controlTypeID="com.balsamiq.mockups::ComboBox" x="228" y="453" w="69" h="-1" measuredW="48" measuredH="25" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>20</text>
+      </controlProperties>
+    </control>
+    <control controlID="365" controlTypeID="com.balsamiq.mockups::ColorPicker" x="226" y="497" w="-1" h="-1" measuredW="26" measuredH="28" zOrder="26" locked="false" isInGroup="-1"/>
+    <control controlID="366" controlTypeID="com.balsamiq.mockups::Button" x="1054" y="635" w="75" h="-1" measuredW="87" measuredH="28" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Copy%20To..</text>
+      </controlProperties>
+    </control>
+    <control controlID="360" controlTypeID="com.balsamiq.mockups::Label" x="127" y="349" w="-1" h="-1" measuredW="79" measuredH="25" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Start%20Time%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="361" controlTypeID="com.balsamiq.mockups::Label" x="127" y="378" w="-1" h="-1" measuredW="68" measuredH="25" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>End%20Time%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="374" controlTypeID="com.balsamiq.mockups::VRule" x="2083" y="174" w="-1" h="22" measuredW="5" measuredH="100" zOrder="28" locked="false" isInGroup="-1"/>
+    <control controlID="375" controlTypeID="com.balsamiq.mockups::Icon" x="2057" y="173" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="29" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>DocEmptyIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="376" controlTypeID="com.balsamiq.mockups::Icon" x="561" y="183" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="30" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>TrashIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="377" controlTypeID="com.balsamiq.mockups::Icon" x="600" y="181" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="31" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CopyIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="378" controlTypeID="com.balsamiq.mockups::Icon" x="627" y="179" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="32" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>PasteIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="379" controlTypeID="com.balsamiq.mockups::Icon" x="653" y="182" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="33" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>ArchiveIcon%7Csmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="382" controlTypeID="com.balsamiq.mockups::Tooltip" x="425" y="183" w="133" h="106" measuredW="129" measuredH="106" zOrder="34" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Delete%20Channel%0ACopy%20All%0ACopy%0APaste</text>
         <tooltipDirection>NE</tooltipDirection>
       </controlProperties>
     </control>
-    <control controlID="383" controlTypeID="com.balsamiq.mockups::VRule" x="589" y="182" w="-1" h="22" measuredW="5" measuredH="100" zOrder="42" locked="false" isInGroup="-1"/>
+    <control controlID="383" controlTypeID="com.balsamiq.mockups::VRule" x="589" y="182" w="-1" h="22" measuredW="5" measuredH="100" zOrder="35" locked="false" isInGroup="-1"/>
   </controls>
 </mockup>

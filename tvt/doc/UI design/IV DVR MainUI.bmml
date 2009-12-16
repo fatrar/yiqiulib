@@ -1,4 +1,4 @@
-<mockup version="1.0" skin="sketch" measuredW="1218" measuredH="636" mockupW="1128" mockupH="567">
+<mockup version="1.0" skin="sketch" measuredW="1053" measuredH="636" mockupW="802" mockupH="550">
   <controls>
     <control controlID="6" controlTypeID="com.balsamiq.mockups::Canvas" x="241" y="76" w="699" h="550" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1"/>
     <control controlID="7" controlTypeID="com.balsamiq.mockups::Canvas" x="273" y="101" w="277" h="209" measuredW="100" measuredH="70" zOrder="2" locked="false" isInGroup="-1"/>
@@ -20,7 +20,7 @@
       <controlProperties>
         <icon>GearIcon%7Clarge</icon>
         <href>IV%20Config%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22780%2C334%2C828%2C382%22%20href%3D%22IV%20Config.bmml%22%20alt%3D%22IV%20Config%22%20id%3D%2221%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22619%2C317%2C667%2C365%22%20href%3D%22IV%20Config.bmml%22%20alt%3D%22IV%20Config%22%20id%3D%2221%22/%3E</map>
       </controlProperties>
     </control>
     <control controlID="22" controlTypeID="com.balsamiq.mockups::Icon" x="860" y="277" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="9" locked="false" isInGroup="-1">
@@ -54,27 +54,6 @@
     <control controlID="28" controlTypeID="com.balsamiq.mockups::VCurly" x="945" y="120" w="98" h="436" measuredW="180" measuredH="140" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Our%20DVR%0A%20Main%20UI</text>
-      </controlProperties>
-    </control>
-    <control controlID="29" controlTypeID="com.balsamiq.mockups::Button" x="80" y="248" w="143" h="-1" measuredW="81" measuredH="28" zOrder="16" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Add%20Rule</text>
-        <href>IV%20SetupUI%26bm%3BIV%20SetupUI.bmml%26bm%3BIV%20SetupUI.bmml%26bm%3BIV%20SetupUI.bmml</href>
-        <color>16711680</color>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%220%2C189%2C143%2C217%22%20href%3D%22IV%20SetupUI.bmml%22%20alt%3D%22IV%20SetupUI%22%20id%3D%2229%22/%3E</map>
-      </controlProperties>
-    </control>
-    <control controlID="30" controlTypeID="com.balsamiq.mockups::Button" x="80" y="297" w="143" h="-1" measuredW="81" measuredH="28" zOrder="15" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Edit%20Rule</text>
-        <href>IV%20Config%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml%26bm%3BIV%20Config.bmml</href>
-        <color>16711680</color>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%220%2C238%2C143%2C266%22%20href%3D%22IV%20Config.bmml%22%20alt%3D%22IV%20Config%22%20id%3D%2230%22/%3E</map>
-      </controlProperties>
-    </control>
-    <control controlID="31" controlTypeID="com.balsamiq.mockups::Menu" x="1058" y="59" w="-1" h="-1" measuredW="150" measuredH="195" zOrder="17" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Open%2CCTRL+O%0AOpen%20Recent%20%3E%0A---%0Ao%20Option%20One%0AOption%20Two%0A%3D%0Ax%20Toggle%20Item%0A-Disabled%20Item-%0AExit%2CCTRL+Q</text>
       </controlProperties>
     </control>
   </controls>
