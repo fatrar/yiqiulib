@@ -5,12 +5,7 @@
         <text>IVS</text>
       </controlProperties>
     </control>
-    <control controlID="381" controlTypeID="com.balsamiq.mockups::Tooltip" x="599" y="223" w="109" h="122" measuredW="108" measuredH="122" zOrder="15" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>New%20Rule%0ADelete%20Rule%0ACopy%20Rule%0APaste%20Rule%0AEdit%20Rule</text>
-        <tooltipDirection>NW</tooltipDirection>
-      </controlProperties>
-    </control>
+    <control controlID="61" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="611" y="215" w="440" h="356" measuredW="300" measuredH="200" zOrder="12" locked="false" isInGroup="-1"/>
     <control controlID="104" controlTypeID="com.balsamiq.mockups::Icon" x="1079" y="609" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>XIcon%7Clarge</icon>
@@ -18,10 +13,9 @@
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22933%2C529%2C981%2C577%22%20href%3D%22IV%20DVR%20MainUI.bmml%22%20alt%3D%22IV%20DVR%20MainUI%22%20id%3D%22104%22/%3E</map>
       </controlProperties>
     </control>
-    <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="425" y="85" w="641" h="564" measuredW="234" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
+    <control controlID="140" controlTypeID="com.balsamiq.mockups::Menu" x="268" y="506" w="111" h="-1" measuredW="150" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Montion%2CIVS%20config</text>
-        <hrefs>%2C%2CIV%20Schedule%26bm%3BIV%20Schedule.bmml%26bm%3BIV%20Schedule.bmml%26bm%3BIV%20Schedule.bmml</hrefs>
+        <text>Delete%20Rule%0ACopy%20Rule%0AEdit%20Rule%0A---%0Ao%20Enable%20Rule%0ADisable%20Rule</text>
         <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
@@ -101,11 +95,16 @@
     </control>
     <control controlID="23" controlTypeID="com.balsamiq.mockups::VCurly" x="1134" y="131" w="89" h="474" measuredW="180" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Our%20DVR%20Config%20%0AMontion%20Page</text>
+        <text>Our%20DVR%20Config%20%0AMotion%20Page</text>
         <color>16711680</color>
       </controlProperties>
     </control>
-    <control controlID="61" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="611" y="215" w="440" h="356" measuredW="300" measuredH="200" zOrder="12" locked="false" isInGroup="-1"/>
+    <control controlID="381" controlTypeID="com.balsamiq.mockups::Tooltip" x="599" y="223" w="109" h="122" measuredW="108" measuredH="122" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>New%20Rule%0ADelete%20Rule%0ACopy%20Rule%0APaste%20Rule%0AEdit%20Rule</text>
+        <tooltipDirection>NW</tooltipDirection>
+      </controlProperties>
+    </control>
     <control controlID="218" controlTypeID="__group__" x="717" y="683" w="-1" h="-1" measuredW="240" measuredH="113" zOrder="8" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="66" controlTypeID="com.balsamiq.mockups::ColorPicker" x="10" y="0" w="-1" h="-1" measuredW="26" measuredH="28" zOrder="0" locked="false" isInGroup="218">
@@ -237,9 +236,10 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="140" controlTypeID="com.balsamiq.mockups::Menu" x="268" y="506" w="111" h="-1" measuredW="150" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="108" controlTypeID="com.balsamiq.mockups::TabBar" x="425" y="85" w="641" h="564" measuredW="234" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Delete%20Rule%0ACopy%20Rule%0AEdit%20Rule%0A---%0Ao%20Enable%20Rule%0ADisable%20Rule</text>
+        <text>Montion%2CIVS%20config</text>
+        <hrefs>%2C%2CIV%20Schedule%26bm%3BIV%20Schedule.bmml%26bm%3BIV%20Schedule.bmml%26bm%3BIV%20Schedule.bmml</hrefs>
         <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
