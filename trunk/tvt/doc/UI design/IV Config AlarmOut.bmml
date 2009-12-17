@@ -1,6 +1,6 @@
-<mockup version="1.0" skin="sketch" measuredW="1085" measuredH="659" mockupW="838" mockupH="580">
+<mockup version="1.0" skin="sketch" measuredW="1085" measuredH="659" mockupW="825" mockupH="580">
   <controls>
-    <control controlID="256" controlTypeID="com.balsamiq.mockups::Tooltip" x="237" y="108" w="138" h="127" measuredW="140" measuredH="127" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="256" controlTypeID="com.balsamiq.mockups::Tooltip" x="250" y="114" w="138" h="127" measuredW="140" measuredH="127" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Select%20All%20Alarm%0AEmpty%20Alarm%0ACopy%0APaste%0AUse%20to%20All%20Rule</text>
         <tooltipDirection>SE</tooltipDirection>
@@ -19,7 +19,7 @@
         <text>Choose%20You%20Want%20Alarm%20out</text>
       </controlProperties>
     </control>
-    <control controlID="421" controlTypeID="__group__" x="376" y="105" w="-1" h="-1" measuredW="617" measuredH="98" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="421" controlTypeID="__group__" x="376" y="105" w="-1" h="-1" measuredW="617" measuredH="98" zOrder="7" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="417" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="617" h="98" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="421">
           <controlProperties>
@@ -89,7 +89,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="329" controlTypeID="__group__" x="595" y="340" w="364" h="272" measuredW="364" measuredH="272" zOrder="7" locked="false" isInGroup="-1">
+    <control controlID="329" controlTypeID="__group__" x="595" y="340" w="364" h="272" measuredW="364" measuredH="272" zOrder="6" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="319" controlTypeID="com.balsamiq.mockups::CheckBox" x="0" y="0" w="164" h="26" measuredW="108" measuredH="22" zOrder="0" locked="false" isInGroup="329">
           <controlProperties>
@@ -174,13 +174,13 @@
         <text>Right%20click%20Rule%0Apop%20up</text>
       </controlProperties>
     </control>
-    <control controlID="212" controlTypeID="com.balsamiq.mockups::Menu" x="243" y="312" w="133" h="-1" measuredW="150" measuredH="145" zOrder="0" locked="false" isInGroup="-1">
+    <control controlID="212" controlTypeID="com.balsamiq.mockups::Menu" x="250" y="314" w="114" h="-1" measuredW="150" measuredH="145" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Select%20All%0AEmpty%0A---%0ACopy%0APaste%0A---%0AUse%20To%20All</text>
+        <text>Full%0AEmpty%0A---%0ACopy%0APaste%0A---%0AUse%20To%20All</text>
         <selectedIndex>1</selectedIndex>
       </controlProperties>
     </control>
-    <control controlID="436" controlTypeID="__group__" x="387" y="217" w="142" h="32" measuredW="126" measuredH="32" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="436" controlTypeID="__group__" x="387" y="217" w="142" h="32" measuredW="139" measuredH="32" zOrder="11" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="429" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="3" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="0" locked="false" isInGroup="436">
           <controlProperties>
