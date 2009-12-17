@@ -102,7 +102,7 @@
     </control>
     <control controlID="23" controlTypeID="com.balsamiq.mockups::VCurly" x="1136" y="117" w="134" h="388" measuredW="180" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Our%20DVR%20Config%20%0AMontion%20Page</text>
+        <text>Our%20DVR%20Config%20%0AMotion%20Page</text>
         <color>16711680</color>
       </controlProperties>
     </control>
@@ -134,9 +134,9 @@
         <control controlID="132" controlTypeID="com.balsamiq.mockups::Tree" x="11" y="53" w="385" h="111" measuredW="300" measuredH="225" zOrder="1" locked="false" isInGroup="139">
           <controlProperties>
             <text>-%20EMAP%0A-%20Instant%20Record%0A-%20E-mail%0A-%20Telphone%0A-%20Sound%0A-%20Sensor%0A-%20ect.</text>
+            <borderStyle>square</borderStyle>
             <verticalScrollbar>true</verticalScrollbar>
             <selectedIndex>0</selectedIndex>
-            <borderStyle>square</borderStyle>
           </controlProperties>
         </control>
         <control controlID="133" controlTypeID="com.balsamiq.mockups::Icon" x="12" y="18" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="2" locked="false" isInGroup="139">
