@@ -111,17 +111,16 @@
         <text>Next-%3E</text>
       </controlProperties>
     </control>
-    <control controlID="172" controlTypeID="com.balsamiq.mockups::Button" x="353" y="521" w="104" h="-1" measuredW="73" measuredH="28" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="172" controlTypeID="com.balsamiq.mockups::Button" x="353" y="519" w="104" h="-1" measuredW="73" measuredH="28" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Next-%3E</text>
-        <href>IV%20Base%20Setting%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml%26bm%3BIV%20Base%20Setting.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22272%2C485%2C376%2C513%22%20href%3D%22IV%20Base%20Setting.bmml%22%20alt%3D%22IV%20Base%20Setting%22%20id%3D%22172%22/%3E</map>
+        <state>disabled</state>
       </controlProperties>
     </control>
-    <control controlID="173" controlTypeID="com.balsamiq.mockups::Button" x="493" y="522" w="104" h="-1" measuredW="58" measuredH="28" zOrder="18" locked="false" isInGroup="-1">
+    <control controlID="173" controlTypeID="com.balsamiq.mockups::Button" x="493" y="522" w="104" h="-1" measuredW="58" measuredH="29" zOrder="18" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Finish</text>
-        <state>disabled</state>
+        <state>selected</state>
       </controlProperties>
     </control>
     <control controlID="175" controlTypeID="com.balsamiq.mockups::Label" x="283" y="299" w="238" h="33" measuredW="191" measuredH="25" zOrder="20" locked="false" isInGroup="-1">
@@ -150,7 +149,7 @@
     <control controlID="171" controlTypeID="com.balsamiq.mockups::Button" x="215" y="520" w="104" h="-1" measuredW="89" measuredH="28" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%3C-Previous</text>
-        <state>up</state>
+        <state>disabled</state>
       </controlProperties>
     </control>
   </controls>
