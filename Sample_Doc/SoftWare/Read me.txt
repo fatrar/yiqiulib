@@ -1,0 +1,9 @@
+
+名词介绍：
+
+开发计划（Iteration Planning）
+需求分析（Requirements Analysis）
+原型设计（Prototype Design）
+概念设计（Conceptual Design）
+初步设计（Schematic Design）
+详细设计（Design Development）
