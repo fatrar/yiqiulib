@@ -1,0 +1,68 @@
+<mockup version="1.0" skin="sketch" measuredW="889" measuredH="629" mockupW="530" mockupH="496">
+  <controls>
+    <control controlID="160" controlTypeID="com.balsamiq.mockups::Button" x="361" y="405" w="104" h="-1" measuredW="56" measuredH="28" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Clear</text>
+      </controlProperties>
+    </control>
+    <control controlID="113" controlTypeID="com.balsamiq.mockups::Button" x="761" y="551" w="104" h="-1" measuredW="58" measuredH="28" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Finish</text>
+        <state>disabled</state>
+      </controlProperties>
+    </control>
+    <control controlID="131" controlTypeID="com.balsamiq.mockups::Label" x="551" y="328" w="238" h="33" measuredW="211" measuredH="25" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Drawing%20a%20region%20on%20the%20live%20view</text>
+        <color>16711680</color>
+      </controlProperties>
+    </control>
+    <control controlID="118" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="471" y="204" w="396" h="330" measuredW="300" measuredH="200" zOrder="5" locked="false" isInGroup="-1"/>
+    <control controlID="111" controlTypeID="com.balsamiq.mockups::Button" x="483" y="549" w="104" h="-1" measuredW="89" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%3C-Previous</text>
+        <state>up</state>
+        <href>IV%20Object%20Select%26bm%3BIV%20Object%20Select.bmml%26bm%3BIV%20Object%20Select.bmml%26bm%3BIV%20Object%20Select.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22134%2C426%2C238%2C454%22%20href%3D%22IV%20Object%20Select.bmml%22%20alt%3D%22IV%20Object%20Select%22%20id%3D%22111%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="112" controlTypeID="com.balsamiq.mockups::Button" x="621" y="550" w="104" h="-1" measuredW="73" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Next-%3E</text>
+        <href>IV%20Object%20Shape%20and%20dir%20Filter%26bm%3BIV%20Object%20Shape%20and%20dir%20Filter.bmml%26bm%3BIV%20Object%20Shape%20and%20dir%20Filter.bmml%26bm%3BIV%20Object%20Shape%20and%20dir%20Filter.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22272%2C427%2C376%2C455%22%20href%3D%22IV%20Object%20Shape%20and%20dir%20Filter.bmml%22%20alt%3D%22IV%20Object%20Shape%20and%20dir%20Filter%22%20id%3D%22112%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="142" controlTypeID="__group__" x="357" y="243" w="-1" h="-1" measuredW="104" measuredH="60" zOrder="7" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="123" controlTypeID="com.balsamiq.mockups::ColorPicker" x="39" y="0" w="-1" h="-1" measuredW="26" measuredH="28" zOrder="0" locked="false" isInGroup="142">
+          <controlProperties>
+            <color>16711680</color>
+          </controlProperties>
+        </control>
+        <control controlID="127" controlTypeID="com.balsamiq.mockups::Label" x="0" y="26" w="104" h="34" measuredW="103" measuredH="25" zOrder="1" locked="false" isInGroup="142">
+          <controlProperties>
+            <text>Interset%20Region</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="109" controlTypeID="com.balsamiq.mockups::TitleWindow" x="349" y="123" w="530" h="496" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Event%20Rule%20Setttings%283-7%29</text>
+        <close>true</close>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="110" controlTypeID="com.balsamiq.mockups::Label" x="416" y="153" w="404" h="44" measuredW="655" measuredH="25" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Please%20Define%20a%20detect%20Region%2C%20which%20you%20is%20interesting.Obj%20Max%20size%20and%20Min%20size%20is%20not%20have%20to%20Set.</text>
+      </controlProperties>
+    </control>
+    <control controlID="159" controlTypeID="com.balsamiq.mockups::Button" x="361" y="332" w="104" h="-1" measuredW="77" measuredH="28" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>All%20Zone</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
