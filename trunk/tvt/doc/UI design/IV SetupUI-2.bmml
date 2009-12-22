@@ -17,8 +17,8 @@
         <borderStyle>square</borderStyle>
         <text>fParking%0AfRoad%26highway%0AfRailway%0AfShop%26Supermarket%0AfHotel%0AfBank%0AfHouse%0AfFactory%0AfBeach%0AfAt%20sea/river/lake</text>
         <verticalScrollbar>false</verticalScrollbar>
-        <backgroundAlpha>1</backgroundAlpha>
         <selectedIndex>0</selectedIndex>
+        <backgroundAlpha>1</backgroundAlpha>
       </controlProperties>
     </control>
     <control controlID="66" controlTypeID="com.balsamiq.mockups::IconLabel" x="1190" y="143" w="78" h="-1" measuredW="73" measuredH="73" zOrder="24" locked="false" isInGroup="-1">
@@ -66,9 +66,9 @@
         <size>10</size>
         <text>fParking%0AfDoorway%0AfRoad%26highway%0AfRailway%0AfShop%26Supermarket%0AfHotel%0AfBank%0AfHouse%0AfFactory%0AfBeach%0AfAt%20sea/river/lake</text>
         <borderStyle>square</borderStyle>
-        <backgroundAlpha>1</backgroundAlpha>
         <selectedIndex>0</selectedIndex>
         <verticalScrollbar>false</verticalScrollbar>
+        <backgroundAlpha>1</backgroundAlpha>
       </controlProperties>
     </control>
     <control controlID="75" controlTypeID="com.balsamiq.mockups::Button" x="1769" y="544" w="47" h="-1" measuredW="43" measuredH="28" zOrder="33" locked="false" isInGroup="-1">
@@ -86,10 +86,10 @@
     <control controlID="77" controlTypeID="com.balsamiq.mockups::IconLabel" x="1443" y="249" w="52" h="-1" measuredW="48" measuredH="73" zOrder="35" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>PencilIcon%7Clarge</icon>
-        <href>IV%20SetupUI-3%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml</href>
-        <color>0</color>
         <borderStyle>square</borderStyle>
+        <color>0</color>
         <labelPosition>bottom</labelPosition>
+        <href>IV%20SetupUI-3%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%221390%2C167%2C1442%2C240%22%20href%3D%22IV%20SetupUI-3.bmml%22%20alt%3D%22IV%20SetupUI-3%22%20id%3D%2277%22/%3E</map>
         <text>Adv.</text>
       </controlProperties>
@@ -105,9 +105,9 @@
         <dragger>false</dragger>
       </controlProperties>
     </control>
-    <control controlID="15" controlTypeID="com.balsamiq.mockups::Button" x="439" y="546" w="63" h="-1" measuredW="43" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::Button" x="439" y="546" w="63" h="-1" measuredW="57" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>OK</text>
+        <text>Next</text>
       </controlProperties>
     </control>
     <control controlID="16" controlTypeID="com.balsamiq.mockups::Button" x="604" y="544" w="71" h="-1" measuredW="65" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
@@ -151,10 +151,10 @@
     <control controlID="21" controlTypeID="com.balsamiq.mockups::IconLabel" x="89" y="247" w="52" h="-1" measuredW="48" measuredH="73" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>PencilIcon%7Clarge</icon>
-        <href>IV%20SetupUI-3%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml</href>
-        <color>0</color>
         <borderStyle>square</borderStyle>
+        <color>0</color>
         <labelPosition>bottom</labelPosition>
+        <href>IV%20SetupUI-3%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%2226%2C161%2C78%2C234%22%20href%3D%22IV%20SetupUI-3.bmml%22%20alt%3D%22IV%20SetupUI-3%22%20id%3D%2221%22/%3E</map>
         <text>Adv.</text>
       </controlProperties>
@@ -292,9 +292,9 @@
         <size>10</size>
         <text>fParking%0AfDoorway%0AfRoad%26highway%0AfRailway%0AfShop%26Supermarket%0AfHotel%0AfBank%0AfHouse%0AfFactory%0AfBeach%0AfAt%20sea/river/lake</text>
         <borderStyle>square</borderStyle>
-        <backgroundAlpha>1</backgroundAlpha>
         <selectedIndex>0</selectedIndex>
         <verticalScrollbar>false</verticalScrollbar>
+        <backgroundAlpha>1</backgroundAlpha>
       </controlProperties>
     </control>
     <control controlID="57" controlTypeID="com.balsamiq.mockups::Button" x="1111" y="540" w="47" h="-1" measuredW="43" measuredH="28" zOrder="15" locked="false" isInGroup="-1">
@@ -312,10 +312,10 @@
     <control controlID="59" controlTypeID="com.balsamiq.mockups::IconLabel" x="785" y="245" w="52" h="-1" measuredW="48" measuredH="73" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>PencilIcon%7Clarge</icon>
-        <href>IV%20SetupUI-3%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml</href>
-        <color>0</color>
         <borderStyle>square</borderStyle>
+        <color>0</color>
         <labelPosition>bottom</labelPosition>
+        <href>IV%20SetupUI-3%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml%26bm%3BIV%20SetupUI-3.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22732%2C163%2C784%2C236%22%20href%3D%22IV%20SetupUI-3.bmml%22%20alt%3D%22IV%20SetupUI-3%22%20id%3D%2259%22/%3E</map>
         <text>Adv.</text>
       </controlProperties>

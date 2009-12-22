@@ -7,8 +7,8 @@
         <bottomheight>17</bottomheight>
         <minimize>false</minimize>
         <text>Window%20Name</text>
-        <topheight>26</topheight>
         <dragger>false</dragger>
+        <topheight>26</topheight>
       </controlProperties>
     </control>
     <control controlID="1" controlTypeID="com.balsamiq.mockups::Tree" x="138" y="109" w="133" h="337" measuredW="300" measuredH="225" zOrder="1" locked="false" isInGroup="-1">
@@ -42,7 +42,7 @@
         <borderStyle>square</borderStyle>
       </controlProperties>
     </control>
-    <control controlID="5" controlTypeID="com.balsamiq.mockups::IconLabel" x="63" y="129" w="71" h="-1" measuredW="65" measuredH="73" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::IconLabel" x="63" y="131" w="71" h="-1" measuredW="65" measuredH="73" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <text>By%20Scene</text>
         <icon>EyeIcon%7Clarge</icon>
