@@ -1,0 +1,72 @@
+<mockup version="1.0" skin="sketch" measuredW="778" measuredH="498" mockupW="301" mockupH="267">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="467" y="221" w="301" h="267" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+        <close>true</close>
+        <topheight>26</topheight>
+        <bottomheight>15</bottomheight>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="483" y="250" w="269" h="169" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Week%20Time</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::CheckBox" x="505" y="266" w="83" h="32" measuredW="54" measuredH="22" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Sun.</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::CheckBox" x="635" y="266" w="83" h="26" measuredW="55" measuredH="22" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Mon.</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::CheckBox" x="505" y="304" w="83" h="32" measuredW="55" measuredH="22" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Tue.</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::CheckBox" x="635" y="306" w="83" h="26" measuredW="59" measuredH="22" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Wed.</text>
+        <state>disabledSelected</state>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::CheckBox" x="505" y="343" w="83" h="32" measuredW="61" measuredH="22" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Thur.</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::CheckBox" x="635" y="347" w="83" h="26" measuredW="49" measuredH="22" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Fri.</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::CheckBox" x="505" y="381" w="83" h="32" measuredW="54" measuredH="22" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Sat.</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::CheckBox" x="635" y="387" w="83" h="26" measuredW="43" measuredH="22" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>All</text>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::Button" x="620" y="432" w="57" h="-1" measuredW="43" measuredH="28" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>OK</text>
+        <href>IV%20Config%20RuleEnable%26bm%3BIV%20Config%20RuleEnable.bmml%26bm%3BIV%20Config%20RuleEnable.bmml%26bm%3BIV%20Config%20RuleEnable.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22153%2C211%2C210%2C239%22%20href%3D%22IV%20Config%20RuleEnable.bmml%22%20alt%3D%22IV%20Config%20RuleEnable%22%20id%3D%2210%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::Button" x="695" y="432" w="-1" h="-1" measuredW="65" measuredH="28" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cancel</text>
+        <href>IV%20Config%20RuleEnable%26bm%3BIV%20Config%20RuleEnable.bmml%26bm%3BIV%20Config%20RuleEnable.bmml%26bm%3BIV%20Config%20RuleEnable.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22228%2C211%2C293%2C239%22%20href%3D%22IV%20Config%20RuleEnable.bmml%22%20alt%3D%22IV%20Config%20RuleEnable%22%20id%3D%2211%22/%3E</map>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
