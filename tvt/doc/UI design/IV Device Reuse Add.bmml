@@ -1,0 +1,67 @@
+<mockup version="1.0" skin="sketch" measuredW="855" measuredH="505" mockupW="400" mockupH="316">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="445" y="179" w="400" h="316" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>IV%20Device%20Reuse</text>
+        <close>true</close>
+        <topheight>26</topheight>
+        <bottomheight>15</bottomheight>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="472" y="214" w="329" h="84" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Time</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Button" x="672" y="444" w="57" h="-1" measuredW="43" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>OK</text>
+        <href>IV%20Config%20DeviceReuse%26bm%3BIV%20Config%20DeviceReuse.bmml%26bm%3BIV%20Config%20DeviceReuse.bmml%26bm%3BIV%20Config%20DeviceReuse.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22227%2C265%2C284%2C293%22%20href%3D%22IV%20Config%20DeviceReuse.bmml%22%20alt%3D%22IV%20Config%20DeviceReuse%22%20id%3D%222%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="758" y="444" w="-1" h="-1" measuredW="65" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cancel</text>
+        <href>IV%20Config%20DeviceReuse%26bm%3BIV%20Config%20DeviceReuse.bmml%26bm%3BIV%20Config%20DeviceReuse.bmml%26bm%3BIV%20Config%20DeviceReuse.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22313%2C265%2C378%2C293%22%20href%3D%22IV%20Config%20DeviceReuse.bmml%22%20alt%3D%22IV%20Config%20DeviceReuse%22%20id%3D%223%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::NumericStepper" x="579" y="231" w="-1" h="-1" measuredW="71" measuredH="26" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>13%3A10</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::NumericStepper" x="580" y="264" w="-1" h="-1" measuredW="71" measuredH="26" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>14%3A10</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="481" y="233" w="-1" h="-1" measuredW="79" measuredH="25" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Start%20Time%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Label" x="481" y="262" w="-1" h="-1" measuredW="68" measuredH="25" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>End%20Time%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="483" y="333" w="79" h="31" measuredW="59" measuredH="25" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Channel%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Label" x="483" y="379" w="79" h="31" measuredW="77" measuredH="25" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Show%20color%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::ComboBox" x="582" y="337" w="69" h="-1" measuredW="48" measuredH="25" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>20</text>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::ColorPicker" x="580" y="381" w="-1" h="-1" measuredW="26" measuredH="28" zOrder="11" locked="false" isInGroup="-1"/>
+  </controls>
+</mockup>

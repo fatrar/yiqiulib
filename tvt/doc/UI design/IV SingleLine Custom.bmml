@@ -10,6 +10,8 @@
       <controlProperties>
         <text>Finish</text>
         <state>selected</state>
+        <href>IV%20Config%20Rule%26bm%3BIV%20Config%20Rule.bmml%26bm%3BIV%20Config%20Rule.bmml%26bm%3BIV%20Config%20Rule.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22389%2C432%2C493%2C461%22%20href%3D%22IV%20Config%20Rule.bmml%22%20alt%3D%22IV%20Config%20Rule%22%20id%3D%22113%22/%3E</map>
       </controlProperties>
     </control>
     <control controlID="131" controlTypeID="com.balsamiq.mockups::Label" x="584" y="317" w="238" h="33" measuredW="191" measuredH="25" zOrder="6" locked="false" isInGroup="-1">
@@ -66,9 +68,9 @@
       </controlProperties>
     </control>
     <control controlID="118" controlTypeID="com.balsamiq.mockups::VideoPlayer" x="504" y="193" w="396" h="330" measuredW="300" measuredH="200" zOrder="5" locked="false" isInGroup="-1"/>
-    <control controlID="182" controlTypeID="com.balsamiq.mockups::StickyNote" x="859" y="175" w="-1" h="-1" measuredW="109" measuredH="123" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="110" controlTypeID="com.balsamiq.mockups::Label" x="449" y="142" w="404" h="44" measuredW="582" measuredH="25" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Click%20%3F%20Show%20a%20Flash%20Sample</text>
+        <text>Please%20Draw%20a%20Line%2C%20which%20you%20is%20interesting.Obj%20Max%20size%20and%20Min%20size%20is%20not%20have%20to%20Set.</text>
       </controlProperties>
     </control>
     <control controlID="172" controlTypeID="com.balsamiq.mockups::Button" x="411" y="491" w="88" h="-1" measuredW="84" measuredH="28" zOrder="7" locked="false" isInGroup="-1">
@@ -83,15 +85,17 @@
         <topheight>26</topheight>
       </controlProperties>
     </control>
-    <control controlID="110" controlTypeID="com.balsamiq.mockups::Label" x="449" y="142" w="404" h="44" measuredW="582" measuredH="25" zOrder="1" locked="false" isInGroup="-1">
+    <control controlID="182" controlTypeID="com.balsamiq.mockups::StickyNote" x="859" y="175" w="-1" h="-1" measuredW="109" measuredH="123" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Please%20Draw%20a%20Line%2C%20which%20you%20is%20interesting.Obj%20Max%20size%20and%20Min%20size%20is%20not%20have%20to%20Set.</text>
+        <text>Click%20%3F%20Show%20a%20Flash%20Sample</text>
       </controlProperties>
     </control>
     <control controlID="111" controlTypeID="com.balsamiq.mockups::Button" x="516" y="542" w="104" h="-1" measuredW="89" measuredH="28" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%3C-Previous</text>
         <state>up</state>
+        <href>IV%20SetupUI-2%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22111%2C430%2C215%2C458%22%20href%3D%22IV%20SetupUI-2.bmml%22%20alt%3D%22IV%20SetupUI-2%22%20id%3D%22111%22/%3E</map>
       </controlProperties>
     </control>
   </controls>

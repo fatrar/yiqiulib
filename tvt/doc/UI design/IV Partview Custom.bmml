@@ -27,6 +27,8 @@
       <controlProperties>
         <text>%3C-Previous</text>
         <state>up</state>
+        <href>IV%20SetupUI-2%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml%26bm%3BIV%20SetupUI-2.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22148%2C428%2C252%2C456%22%20href%3D%22IV%20SetupUI-2.bmml%22%20alt%3D%22IV%20SetupUI-2%22%20id%3D%22111%22/%3E</map>
       </controlProperties>
     </control>
     <control controlID="112" controlTypeID="com.balsamiq.mockups::Button" x="606" y="535" w="104" h="-1" measuredW="73" measuredH="28" zOrder="3" locked="false" isInGroup="-1">
@@ -39,6 +41,8 @@
       <controlProperties>
         <text>Finish</text>
         <state>selected</state>
+        <href>IV%20Config%20Rule%26bm%3BIV%20Config%20Rule.bmml%26bm%3BIV%20Config%20Rule.bmml%26bm%3BIV%20Config%20Rule.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22426%2C430%2C530%2C459%22%20href%3D%22IV%20Config%20Rule.bmml%22%20alt%3D%22IV%20Config%20Rule%22%20id%3D%22113%22/%3E</map>
       </controlProperties>
     </control>
     <control controlID="178" controlTypeID="com.balsamiq.mockups::Label" x="328" y="458" w="59" h="23" measuredW="61" measuredH="25" zOrder="8" locked="false" isInGroup="-1">
@@ -85,7 +89,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="189" controlTypeID="com.balsamiq.mockups::CallOut" x="798" y="135" w="-1" h="-1" measuredW="37" measuredH="40" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="189" controlTypeID="com.balsamiq.mockups::CallOut" x="798" y="135" w="-1" h="-1" measuredW="37" measuredH="39" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%3F</text>
       </controlProperties>
