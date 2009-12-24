@@ -14,6 +14,8 @@
         <text>Abandon%20</text>
         <icon>UsersIcon%7Clarge</icon>
         <size>10</size>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22116%2C146%2C194%2C214%22%20href%3D%22IV%20Partview%20Custom.bmml%22%20alt%3D%22IV%20Partview%20Custom%22%20id%3D%2265%22/%3E</map>
+        <href>IV%20Partview%20Custom%26bm%3BIV%20Partview%20Custom.bmml%26bm%3BIV%20Partview%20Custom.bmml%26bm%3BIV%20Partview%20Custom.bmml</href>
       </controlProperties>
     </control>
     <control controlID="66" controlTypeID="com.balsamiq.mockups::IconLabel" x="656" y="177" w="78" h="-1" measuredW="142" measuredH="68" zOrder="16" locked="false" isInGroup="-1">
@@ -50,8 +52,8 @@
         <bottomheight>12</bottomheight>
         <minimize>false</minimize>
         <text>Add%20Rule</text>
-        <topheight>26</topheight>
         <dragger>false</dragger>
+        <topheight>26</topheight>
       </controlProperties>
     </control>
     <control controlID="47" controlTypeID="com.balsamiq.mockups::IconLabel" x="656" y="84" w="84" h="-1" measuredW="110" measuredH="68" zOrder="7" locked="false" isInGroup="-1">
@@ -84,12 +86,12 @@
     <control controlID="46" controlTypeID="com.balsamiq.mockups::IconLabel" x="570" y="84" w="78" h="-1" measuredW="109" measuredH="68" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>UsersIcon%7Clarge</icon>
-        <text>Stride%20over%20the%20fence</text>
+        <labelPosition>bottom</labelPosition>
         <color>16711680</color>
         <size>10</size>
         <href>IV%20SingleLine%20Custom%26bm%3BIV%20SingleLine%20Custom.bmml%26bm%3BIV%20SingleLine%20Custom.bmml%26bm%3BIV%20SingleLine%20Custom.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22116%2C51%2C194%2C119%22%20href%3D%22IV%20SingleLine%20Custom.bmml%22%20alt%3D%22IV%20SingleLine%20Custom%22%20id%3D%2246%22/%3E</map>
-        <labelPosition>bottom</labelPosition>
+        <text>Stride%20over%20the%20fence</text>
       </controlProperties>
     </control>
     <control controlID="15" controlTypeID="com.balsamiq.mockups::Button" x="830" y="528" w="69" h="-1" measuredW="73" measuredH="28" zOrder="1" locked="false" isInGroup="-1">
@@ -117,12 +119,12 @@
     <control controlID="62" controlTypeID="com.balsamiq.mockups::IconLabel" x="471" y="152" w="78" h="-1" measuredW="74" measuredH="52" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>UsersIcon%7Cmedium</icon>
-        <text>Road%26Highway</text>
+        <href>IV%20SetupUI-2-Road%26bm%3BIV%20SetupUI-2-Road.bmml%26bm%3BIV%20SetupUI-2-Road.bmml%26bm%3BIV%20SetupUI-2-Road.bmml</href>
         <color>0</color>
         <size>10</size>
         <labelPosition>bottom</labelPosition>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%2217%2C119%2C95%2C171%22%20href%3D%22IV%20SetupUI-2-Road.bmml%22%20alt%3D%22IV%20SetupUI-2-Road%22%20id%3D%2262%22/%3E</map>
-        <href>IV%20SetupUI-2-Road%26bm%3BIV%20SetupUI-2-Road.bmml%26bm%3BIV%20SetupUI-2-Road.bmml%26bm%3BIV%20SetupUI-2-Road.bmml</href>
+        <text>Road%26Highway</text>
       </controlProperties>
     </control>
   </controls>
