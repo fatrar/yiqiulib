@@ -39,7 +39,7 @@ protected:
 };
 
 
-inline BOOL LockCursor(CRect* pLockRect){ return ClipCursor(pLockRect); }
+inline BOOL LockCursor(CRect& LockRect){ return ClipCursor(&LockRect); }
 
 inline BOOL UnLockCursor()
 {

@@ -18,18 +18,21 @@ CLineDrawer::CLineDrawer(void)
 	, m_IsDargPointBt(false)
 	, m_nDargBtIndex(-1)
 {
-	m_Button[0] = new CPointButton(this);
-	m_Button[1] = new CPointButton(this);
+	//m_Button[0] = new CPointButton(this);
+	//m_Button[1] = new CPointButton(this);
 }
 
 CLineDrawer::~CLineDrawer(void)
 {
-	Release();
-	delete m_Button[0];
-	delete m_Button[1];
+	//Release();
+	//delete m_Button[0];
+	//delete m_Button[1];
 }
 
-void CLineDrawer::OnMouseDown( CDC* pdc, CPoint& point, CRect* pLockRect )
+void CLineDrawer::OnMouseDown(
+	CDC* pdc,
+	CPoint& point,
+	CRect& LockRect )
 {
 	if ( m_bDrawing )
 	{
@@ -38,11 +41,9 @@ void CLineDrawer::OnMouseDown( CDC* pdc, CPoint& point, CRect* pLockRect )
 		Release();
 	}
 
+	m_LockRect = LockRect;
 	m_bIsOK = m_bDrawing = true;
-	if ( pLockRect )
-	{
-		LockCursor(pLockRect);
-	}
+	LockCursor(m_LockRect);
 
 	Create(pdc->GetWindow(), point);
 	m_Point[0] = m_Point[1] = point;
@@ -89,46 +90,47 @@ void CLineDrawer::OnPaint(CDC* pdc)
 		return;
 	}
 
+	pdc->DrawDragRect()
 	pdc->MoveTo(m_Point[0]);
 	pdc->LineTo(m_Point[1]);
 }
 
-void CLineDrawer::Release()
-{
-	m_Button[0]->DestroyWindow();
-	m_Button[1]->DestroyWindow();
-}
-
-void CLineDrawer::Create(CWnd* pWnd, CPoint& point)
-{
-	CRect rect;
-	CalculateRect(point.x, point.y, rect);
-	if ( m_Button[0]->m_hWnd == NULL )
-	{
-		m_Button[0]->Create(
-			"", WS_CHILD|WS_VISIBLE,
-			rect,
-			pWnd,
-			MSG_0 );
-	}
-	else
-	{
-		m_Button[0]->MoveWindow(&rect);
-	}
-
-	if ( m_Button[1]->m_hWnd == NULL )
-	{
-		m_Button[1]->Create(
-			"", WS_CHILD|WS_VISIBLE,
-			rect,
-			pWnd,
-			MSG_1 );
-	}
-	else
-	{
-		m_Button[1]->MoveWindow(&rect);
-	}
-}
+//void CLineDrawer::Release()
+//{
+//	m_Button[0]->DestroyWindow();
+//	m_Button[1]->DestroyWindow();
+//}
+//
+//void CLineDrawer::Create(CWnd* pWnd, CPoint& point)
+//{
+//	CRect rect;
+//	CalculateRect(point.x, point.y, rect);
+//	if ( m_Button[0]->m_hWnd == NULL )
+//	{
+//		m_Button[0]->Create(
+//			"", WS_CHILD|WS_VISIBLE,
+//			rect,
+//			pWnd,
+//			MSG_0 );
+//	}
+//	else
+//	{
+//		m_Button[0]->MoveWindow(&rect);
+//	}
+//
+//	if ( m_Button[1]->m_hWnd == NULL )
+//	{
+//		m_Button[1]->Create(
+//			"", WS_CHILD|WS_VISIBLE,
+//			rect,
+//			pWnd,
+//			MSG_1 );
+//	}
+//	else
+//	{
+//		m_Button[1]->MoveWindow(&rect);
+//	}
+//}
 
 void CLineDrawer::Translate(
 	MouseMsg msg,
