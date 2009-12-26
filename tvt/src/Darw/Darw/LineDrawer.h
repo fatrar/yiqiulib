@@ -32,11 +32,12 @@ public:
 	void Translate(MouseMsg msg, CPoint& point, int nID);
 
 private:
-	void Release();
-	void Create(CWnd* pWnd, CPoint& point);
+	//void Release();
+	//void Create(CWnd* pWnd, CPoint& point);
 
 private:
-	CPointButton* m_Button[2];
+	// CPointButton* m_Button[2];
+	CRect m_LockRect;
 	CPoint m_Point[2];
 	bool m_bIsOK;
 	bool m_IsDargPointBt;
