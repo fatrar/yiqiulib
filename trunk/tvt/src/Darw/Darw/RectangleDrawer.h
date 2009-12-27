@@ -20,7 +20,7 @@ public:
 	CRectangleDrawer(void);
 	~CRectangleDrawer(void);
 public:
-	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect* pLockRect=NULL);
+	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect& LockRect);
 	virtual void OnMouseMove(CDC* pdc, CPoint& point);
 	virtual void OnMouseUp(CDC* pdc, CPoint& point);
 	virtual void OnPaint(CDC* pdc);

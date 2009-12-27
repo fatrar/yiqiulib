@@ -13,7 +13,7 @@
 
 
 #include "IDrawer.h"
-
+#include <math.h>
 
 enum MouseMsg
 {
@@ -29,8 +29,8 @@ struct IMsgTranslator
 
 
 class CDrawer :
-	public IDrawer,
-	public IMsgTranslator
+	public IDrawer
+	//public IMsgTranslator
 {
 public:
 	CDrawer():m_bDrawing(false){}
@@ -50,8 +50,9 @@ inline BOOL UnLockCursor()
 
 enum
 {
-	Point_Button_Widht = 15,
-	Point_Button_Height = 15,
+    Point_Radii = 15,
+	//Point_Button_Widht = 15,
+	//Point_Button_Height = 15,
 
 
 	MSG_0 = 0x8100,
@@ -60,13 +61,22 @@ enum
 
 };
 
-inline CRect& CalculateRect(int x, int y, CRect& rect)
+#define Pow2(x) ((x)*(x)) 
+
+//template<typename T>
+static int Distance(CPoint& p1, CPoint& p2)
 {
-	int x1 = x - Point_Button_Widht/2; 
-	int y1 = y - Point_Button_Height/2; 
-	int x2 = x + Point_Button_Widht/2; 
-	int y2 = y + Point_Button_Height/2; 
-	rect.SetRect(x1, y1, x2, y2);
-	return rect;
+    double s = sqrt( Pow2(double(p1.x-p2.x)) + Pow2(double(p1.y-p2.y)) );
+    return int(s);
 }
+
+//inline CRect& CalculateRect(int x, int y, CRect& rect)
+//{
+//	int x1 = x - Point_Button_Widht/2; 
+//	int y1 = y - Point_Button_Height/2; 
+//	int x2 = x + Point_Button_Widht/2; 
+//	int y2 = y + Point_Button_Height/2; 
+//	rect.SetRect(x1, y1, x2, y2);
+//	return rect;
+//}
 

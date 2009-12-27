@@ -21,7 +21,7 @@
 
 struct IDrawer
 {
-	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect* pLockRect=NULL) = 0;
+	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect& pLockRect) = 0;
 	virtual void OnMouseMove(CDC* pdc, CPoint& point) = 0;
 	virtual void OnMouseUp(CDC* pdc, CPoint& point) = 0;
 	virtual void OnPaint(CDC* pdc) = 0;

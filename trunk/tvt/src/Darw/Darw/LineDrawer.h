@@ -13,7 +13,7 @@
 
 #include "DarwCommon.h"
 
-class CPointButton;
+//class CPointButton;
 
 class CLineDrawer :
 	public CDrawer
@@ -23,23 +23,20 @@ public:
 	~CLineDrawer(void);
 
 public:
-	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect* pLockRect=NULL);
+	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect& LockRect);
 	virtual void OnMouseMove(CDC* pdc, CPoint& point);
 	virtual void OnMouseUp(CDC* pdc, CPoint& point);
 	virtual void OnPaint(CDC* pdc);
 
-public:
-	void Translate(MouseMsg msg, CPoint& point, int nID);
-
 private:
-	//void Release();
-	//void Create(CWnd* pWnd, CPoint& point);
+    bool IsDargPoint(CPoint& point);
 
 private:
 	// CPointButton* m_Button[2];
 	CRect m_LockRect;
 	CPoint m_Point[2];
 	bool m_bIsOK;
-	bool m_IsDargPointBt;
-	int m_nDargBtIndex;
+
+    int m_nDargIndex;
+    bool m_bDarging;
 };
