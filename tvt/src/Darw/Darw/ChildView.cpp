@@ -63,24 +63,26 @@ void CChildView::OnPaint()
 
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
-	CRect rect;
+    CRect rect;
 	GetClientRect(&rect);
 	ClientToScreen(&rect);
-	pDrawer->OnMouseDown(GetDC(), point, &rect);
+	pDrawer->OnMouseDown(GetDC(), point, rect);
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
 void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 	pDrawer->OnMouseUp(GetDC(), point);
 	CWnd::OnLButtonUp(nFlags, point);
 }
 
 void CChildView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
+    if ( !(nFlags&MK_LBUTTON) )
+    {
+        return;
+    }
+
 	pDrawer->OnMouseMove(GetDC(), point);
 	CWnd::OnMouseMove(nFlags, point);
 }

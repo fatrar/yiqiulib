@@ -20,7 +20,10 @@ CRectangleDrawer::~CRectangleDrawer(void)
 {
 }
 
-void CRectangleDrawer::OnMouseDown( CDC* pdc, CPoint& point, CRect* pLockRect/*=NULL*/ )
+void CRectangleDrawer::OnMouseDown(
+    CDC* pdc,
+    CPoint& point,
+    CRect& LockRect/*=NULL*/ )
 {
 
 }
