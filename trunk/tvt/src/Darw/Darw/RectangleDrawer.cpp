@@ -56,6 +56,7 @@ void CRectangleDrawer::OnMouseMove(CDC* pdc, CPoint& point)
 {
 	if ( m_bDragging )
 	{
+        TRACE("OnMouseMove %d\n", m_nDragIndex);
 		ReFreshPoint(m_nDragIndex, point);
 		pdc->GetWindow()->Invalidate();
 		return;
@@ -117,6 +118,7 @@ void CRectangleDrawer::OnPaint(CDC* pdc)
 
 void CRectangleDrawer::ReFreshPoint(int nIndex, CPoint& point)
 {
+    //TRACE("%d\n", nIndex);
 	// Rect
 	//  0    1
 	//  3    2 
