@@ -100,13 +100,14 @@ protected:
 			return false;
 		}
 
-#define SimpleDistance(x)  Distance(point, (x))
+#define SimpleDistance(x)  Distance((point), (x))
 
 		int nIndex = 0;
 		int nMin = SimpleDistance( *(m_PointQueue[nIndex]) );
 		for (size_t i=1; i<nSize; ++i)
 		{
 			int nTmp = SimpleDistance( *(m_PointQueue[i]) );
+            TRACE("for nTmp %d = %d\n", i, nTmp);
 			if ( nTmp < nMin )
 			{
 				nMin = nTmp;
@@ -120,6 +121,7 @@ protected:
 		}
 		
 		m_nDragIndex = nIndex;
+        TRACE("%d\n", m_nDragIndex);
 		return true;
 	}
 
