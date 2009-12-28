@@ -24,6 +24,17 @@ public:
 	virtual void OnMouseMove(CDC* pdc, CPoint& point);
 	virtual void OnMouseUp(CDC* pdc, CPoint& point);
 	virtual void OnPaint(CDC* pdc);
-public:
-	virtual void Translate(MouseMsg msg, CPoint& point, int nID);
+protected:
+	inline void ReFreshPoint(int nIndex, CPoint& point);
 };
+
+
+
+
+
+
+
+// End of file
+
+
+

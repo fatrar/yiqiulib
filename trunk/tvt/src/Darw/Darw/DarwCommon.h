@@ -14,29 +14,23 @@
 
 #include "IDrawer.h"
 #include <math.h>
+#include <deque>
+using namespace std;
 
-enum MouseMsg
-{
-	MouseMsg_LButtonDown,
-	MouseMsg_LButtonUp,
-	MouseMsg_MouseMove,
-};
+//enum MouseMsg
+//{
+//	MouseMsg_LButtonDown,
+//	MouseMsg_LButtonUp,
+//	MouseMsg_MouseMove,
+//};
+//
+//struct IMsgTranslator
+//{
+//	virtual void Translate(MouseMsg msg, CPoint& point, int nID) = 0;
+//};
 
-struct IMsgTranslator
-{
-	virtual void Translate(MouseMsg msg, CPoint& point, int nID) = 0;
-};
 
 
-class CDrawer :
-	public IDrawer
-	//public IMsgTranslator
-{
-public:
-	CDrawer():m_bDrawing(false){}
-protected:
-	bool m_bDrawing;
-};
 
 
 inline BOOL LockCursor(CRect& LockRect){ return ClipCursor(&LockRect); }
@@ -50,7 +44,7 @@ inline BOOL UnLockCursor()
 
 enum
 {
-    Point_Radii = 15,
+    Point_Radii = 9,
 	//Point_Button_Widht = 15,
 	//Point_Button_Height = 15,
 
@@ -64,7 +58,7 @@ enum
 #define Pow2(x) ((x)*(x)) 
 
 //template<typename T>
-static int Distance(CPoint& p1, CPoint& p2)
+inline int Distance(CPoint& p1, CPoint& p2)
 {
     double s = sqrt( Pow2(double(p1.x-p2.x)) + Pow2(double(p1.y-p2.y)) );
     return int(s);
@@ -79,4 +73,74 @@ static int Distance(CPoint& p1, CPoint& p2)
 //	rect.SetRect(x1, y1, x2, y2);
 //	return rect;
 //}
+
+
+class CDrawer :
+	public IDrawer
+	//public IMsgTranslator
+{
+public:
+	CDrawer()
+		: m_bDrawing(false)
+		, m_nDragIndex(-1)
+		, m_bDragging(false)
+		, m_bIsOK(false) {}
+
+	~CDrawer()
+	{
+		// [] STLDelete(m_PointQueue);
+	}
+
+protected:
+	bool IsDargPoint(CPoint& point)
+	{
+		size_t nSize = m_PointQueue.size();
+		if ( nSize == 0 )
+		{
+			return false;
+		}
+
+#define SimpleDistance(x)  Distance(point, (x))
+
+		int nIndex = 0;
+		int nMin = SimpleDistance( *(m_PointQueue[nIndex]) );
+		for (size_t i=1; i<nSize; ++i)
+		{
+			int nTmp = SimpleDistance( *(m_PointQueue[i]) );
+			if ( nTmp < nMin )
+			{
+				nMin = nTmp;
+				nIndex = i;
+			}
+		}
+
+		if ( nMin > Point_Radii )
+		{
+			return false;
+		}
+		
+		m_nDragIndex = nIndex;
+		return true;
+	}
+
+protected:
+	bool m_bIsOK;                // Is Drew?
+	bool m_bDrawing;             // Is Drawing?
+
+	int m_nDragIndex;            // Drag Point Index
+	bool m_bDragging;            // Is Dragging?
+
+	deque<CPoint*> m_PointQueue; // Point Queue
+
+	CRect m_LockRect;            // lock mouse in Rect, when Draw or drag
+};
+
+
+
+
+
+
+// End of file
+
+
 

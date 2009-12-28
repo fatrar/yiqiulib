@@ -7,6 +7,7 @@
 #include "ChildView.h"
 
 #include "LineDrawer.h"
+#include "RectangleDrawer.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,7 +18,7 @@
 
 CChildView::CChildView()
 {
-	pDrawer = new CLineDrawer();
+	pDrawer = new CRectangleDrawer();
 }
 
 CChildView::~CChildView()
