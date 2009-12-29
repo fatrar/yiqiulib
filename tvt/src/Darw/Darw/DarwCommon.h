@@ -58,10 +58,9 @@ enum
 #define Pow2(x) ((x)*(x)) 
 
 //template<typename T>
-inline int Distance(CPoint& p1, CPoint& p2)
+inline double Distance(CPoint& p1, CPoint& p2)
 {
-    double s = sqrt( Pow2(double(p1.x-p2.x)) + Pow2(double(p1.y-p2.y)) );
-    return int(s);
+    return sqrt( Pow2(double(p1.x-p2.x)) + Pow2(double(p1.y-p2.y)) );
 }
 
 //inline CRect& CalculateRect(int x, int y, CRect& rect)
@@ -102,12 +101,15 @@ protected:
 
 #define SimpleDistance(x)  Distance((point), (x))
 
+		TRACE("Input Point is x=%d, y=%d\n", point.x, point.y);
 		int nIndex = 0;
-		int nMin = SimpleDistance( *(m_PointQueue[nIndex]) );
+		double nMin = SimpleDistance( *(m_PointQueue[nIndex]) );
+		TRACE("Point Info 0: x=%d, y=%d\n", m_PointQueue[0]->x, m_PointQueue[0]->y);
 		for (size_t i=1; i<nSize; ++i)
 		{
-			int nTmp = SimpleDistance( *(m_PointQueue[i]) );
-            TRACE("for nTmp %d = %d\n", i, nTmp);
+			TRACE("Point Info %d: x=%d, y=%d\n", i, m_PointQueue[i]->x, m_PointQueue[i]->y);
+			double nTmp = SimpleDistance( *(m_PointQueue[i]) );
+            TRACE("for nTmp = %f\n", nTmp);
 			if ( nTmp < nMin )
 			{
 				nMin = nTmp;
@@ -115,7 +117,7 @@ protected:
 			}
 		}
 
-		if ( nMin > Point_Radii )
+		if ( nMin > (double)Point_Radii )
 		{
 			return false;
 		}

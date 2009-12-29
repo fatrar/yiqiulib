@@ -135,13 +135,13 @@ void CRectangleDrawer::ReFreshPoint(int nIndex, CPoint& point)
 		m_PointQueue[2]->x = point.x;
 		break;
 	case 2: 
-		m_PointQueue[1]->y = point.y;
+		m_PointQueue[1]->x = point.x;
 		*(m_PointQueue[2]) = point;
-		m_PointQueue[3]->x = point.x;
+		m_PointQueue[3]->y = point.y;
 		break;
 	case 3: 
-		m_PointQueue[0]->y = point.y;
-		m_PointQueue[2]->x = point.x;
+		m_PointQueue[0]->x = point.x;
+		m_PointQueue[2]->y = point.y;
 		*(m_PointQueue[3]) = point;
 		break;
 	}
