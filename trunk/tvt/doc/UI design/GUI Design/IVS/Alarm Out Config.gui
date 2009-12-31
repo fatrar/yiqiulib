@@ -658,8 +658,8 @@
 		<Element
 			CID = "37"
 			Type = "MenuPopup"
-			X = "-135"
-			Y = "129"
+			X = "-78"
+			Y = "207"
 			Width = "99"
 			Height = "115"
 			Flags = "3"
