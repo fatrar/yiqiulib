@@ -413,8 +413,8 @@
 		<Element
 			CID = "26"
 			Type = "MenuPopup"
-			X = "-136"
-			Y = "152"
+			X = "-70"
+			Y = "214"
 			Width = "99"
 			Height = "115"
 			Flags = "3"

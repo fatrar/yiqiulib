@@ -6,7 +6,7 @@
 		CID = "1"/>
 	<OpenFiles
 		CID = "2"
-		LastActive = "8">
+		LastActive = "9">
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Rule Config.gui"
@@ -37,10 +37,6 @@
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
-			RelativePathname = "逆行.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
 			RelativePathname = "Stage Change.gui"
 			ViewSettings = ""/>
 		<File
@@ -54,6 +50,10 @@
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Adv 区域.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "逆行.gui"
 			ViewSettings = ""/>
 	</OpenFiles>
 </Project>

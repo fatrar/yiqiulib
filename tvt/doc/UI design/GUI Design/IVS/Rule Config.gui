@@ -441,8 +441,8 @@
 		<Element
 			CID = "19"
 			Type = "MenuPopup"
-			X = "-169"
-			Y = "128"
+			X = "138"
+			Y = "567"
 			Width = "127"
 			Height = "161"
 			Flags = "3"
@@ -517,8 +517,8 @@
 		<Element
 			CID = "20"
 			Type = "MenuPopup"
-			X = "-167"
-			Y = "364"
+			X = "315"
+			Y = "597"
 			Width = "115"
 			Height = "115"
 			Flags = "3"

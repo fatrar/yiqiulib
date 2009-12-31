@@ -48,17 +48,17 @@
             <text>Simulation</text>
           </controlProperties>
         </control>
-        <control controlID="181" controlTypeID="com.balsamiq.mockups::CallOut" x="448" y="34" w="-1" h="-1" measuredW="37" measuredH="40" zOrder="8" locked="false" isInGroup="190">
+        <control controlID="181" controlTypeID="com.balsamiq.mockups::CallOut" x="448" y="34" w="37" h="40" measuredW="37" measuredH="40" zOrder="8" locked="false" isInGroup="190">
           <controlProperties>
             <text>%3F</text>
           </controlProperties>
         </control>
-        <control controlID="182" controlTypeID="com.balsamiq.mockups::StickyNote" x="454" y="63" w="-1" h="-1" measuredW="109" measuredH="123" zOrder="9" locked="false" isInGroup="190">
+        <control controlID="182" controlTypeID="com.balsamiq.mockups::StickyNote" x="454" y="63" w="109" h="123" measuredW="109" measuredH="123" zOrder="9" locked="false" isInGroup="190">
           <controlProperties>
             <text>Click%20%3F%20Show%20a%20Flash%20Sample</text>
           </controlProperties>
         </control>
-        <control controlID="189" controlTypeID="__group__" x="6" y="77" w="-1" h="-1" measuredW="88" measuredH="297" zOrder="10" locked="false" isInGroup="190">
+        <control controlID="189" controlTypeID="__group__" x="6" y="77" w="88" h="297" measuredW="88" measuredH="297" zOrder="10" locked="false" isInGroup="190">
           <groupChildrenDescriptors>
             <control controlID="183" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="88" h="297" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="189">
               <controlProperties>
