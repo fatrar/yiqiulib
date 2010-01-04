@@ -32,8 +32,25 @@ private:
 };
 
 
+//          _ 
+//         /|\         
+//          |   
+// _________|__________
+class CArrowLine:
+	public CLineDrawer
+{
+public:
+	CArrowLine();
+	~CArrowLine();
 
+	enum ArrowDirection { Dir_Left=0, Dir_Right, Dir_All};
+public:
+	DrawerErr OnCommand(DrawerCommand command, WPARAM wParam = 0, LPARAM lParam = 0);
+	
 
+private:
+	ArrowDirection m_dir;
+}
 
 
 

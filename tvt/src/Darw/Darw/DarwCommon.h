@@ -45,8 +45,7 @@ inline BOOL UnLockCursor()
 enum
 {
     Point_Radii = 9,
-	//Point_Button_Widht = 15,
-	//Point_Button_Height = 15,
+	Point_Color = 0x00ff00;
 
 
 	MSG_0 = 0x8100,
@@ -88,6 +87,12 @@ public:
 	~CDrawer()
 	{
 		// [] STLDelete(m_PointQueue);
+	}
+
+public:
+	DrawerErr OnCommand(DrawerCommand command, WPARAM wParam = 0, LPARAM lParam = 0)
+	{
+		return Not_Found_Commad;
 	}
 
 protected:
