@@ -124,3 +124,22 @@ void CLineDrawer::OnPaint(CDC* pdc)
 
 
 
+
+DrawerErr CArrowLine::OnCommand( DrawerCommand command, WPARAM wParam /*= 0*/, LPARAM lParam /*= 0*/ )
+{
+	switch (command)
+	{
+	case Line_Arrow_Change:
+		if ( wParam != Dir_All || wParam!=Dir_Left || wParam!=Dir_Right)
+		{
+			return Param_Input_Err;
+		}
+
+		m_dir = wParam;
+	default:
+		return Not_Found_Commad;
+	}
+	
+
+	return No_Error;
+}

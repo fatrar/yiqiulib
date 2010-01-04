@@ -244,6 +244,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IDrawer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\LineDrawer.h"
 				>
 			</File>
