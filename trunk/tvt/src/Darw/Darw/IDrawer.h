@@ -36,6 +36,7 @@ enum DrawerErr
 
 struct IDrawer
 {
+    // Mouse event and Graph Render
 	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect& pLockRect) = 0;
 	virtual void OnMouseMove(CDC* pdc, CPoint& point) = 0;
 	virtual void OnMouseUp(CDC* pdc, CPoint& point) = 0;
