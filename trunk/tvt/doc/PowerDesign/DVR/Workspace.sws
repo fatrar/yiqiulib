@@ -5,6 +5,7 @@
 <Workspace>
 	<Local Expanded="Yes">
 		<Model Expanded="Yes" ID="{FABADE27-5EB9-40E2-BB44-C9F47915ED67}" Name="DVR" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" URL="DVR.prj"/>
+		<Model Expanded="Yes" ID="{4AF29B56-EAE2-4F8E-B672-49C35FDBC119}" Name="IV Other" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="IV Other.oom"/>
 	</Local>
 	<BrowserModule Name="Repository"/>
 </Workspace>
