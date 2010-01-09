@@ -4,13 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DEV_HC_DM642i", "DEV_HC_DM642i\DEV_HC_DM642i.vcproj", "{225F3400-0F16-4C98-91CB-2418F298C6FC}"
 EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 1
-		SccProjectUniqueName0 = DEV_HC_DM642i\\DEV_HC_DM642i.vcproj
-		SccProjectName0 = \u0022$/LhsWork/DSP/DEV_HC_DM642i\u0022,\u0020FCKBAAAA
-		SccLocalPath0 = DEV_HC_DM642i
-		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32

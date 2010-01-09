@@ -4,8 +4,6 @@
 	Version="8.00"
 	Name="DEV_HC_DM642i"
 	ProjectGUID="{225F3400-0F16-4C98-91CB-2418F298C6FC}"
-	SccProjectName="&quot;$/LhsWork/DSP/DEV_HC_DM642i&quot;, FCKBAAAA"
-	SccLocalPath="."
 	Keyword="MFCProj"
 	>
 	<Platforms>

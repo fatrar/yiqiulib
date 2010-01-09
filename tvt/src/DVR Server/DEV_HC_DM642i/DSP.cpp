@@ -1495,51 +1495,6 @@ BOOL CDSP::ControlDriver(INT nIndex, DWORD dwIoControlCode, LPVOID lpInBuffer, D
 	return FALSE;
 }
 
-BOOL CDSP::FindAudBuf(INT nDevice, INT &nIndex)
-{
-    return FindTBuf<AUD_BUF_NUM>(nDevice, nIndex,m_pAudBufCS,m_pAudBuf);
-}
-	
-BOOL CDSP::FindCapBuf(INT nDevice, INT &nIndex)
-{
-    return FindTBuf<CAP_BUF_NUM>(nDevice, nIndex,m_pCapBufCS,m_pCapBuf);
-}
-
-BOOL CDSP::FindPrvBuf(INT nDevice, INT &nIndex)
-{
-    return FindTBuf<PRV_BUF_NUM>(nDevice, nIndex,m_pPrvBufCS,m_pPrvBuf);
-}
-
-void CDSP::ReleaseAudBuf(INT nDevice, INT nIndex)
-{
-	AutoLockAndUnlock(m_pAudBufCS[nDevice]);
-	m_pAudBuf[nDevice][nIndex].nVLostFlag = 1;
-}
-
-void CDSP::ReleaseCapBuf(INT nDevice, INT nIndex)
-{
-	AutoLockAndUnlock(m_pCapBufCS[nDevice]);
-	if(m_pCapBuf[nDevice][nIndex].nVLostFlag == 0)
-	{
-		ReleaseDriverBuffer(m_pDrvHeadOfCapBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
-		m_pDrvHeadOfCapBuf[nDevice][nIndex] = NULL;
-		m_pCapBuf[nDevice][nIndex].pBuf = NULL;
-		m_pCapBuf[nDevice][nIndex].nVLostFlag = 1;
-	}
-}
-
-void CDSP::ReleasePrvBuf(INT nDevice, INT nIndex)
-{
-	AutoLockAndUnlock(m_pPrvBufCS[nDevice]);
-	if(m_pPrvBuf[nDevice][nIndex].nVLostFlag == 0)
-	{
-		ReleaseDriverBuffer(m_pDrvHeadOfPrvBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
-		m_pDrvHeadOfPrvBuf[nDevice][nIndex] = NULL;
-		m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
-		m_pPrvBuf[nDevice][nIndex].nVLostFlag = 1;
-	}
-}
-
 BOOL CDSP::SetParam(int nType, int nChannel, int nValue)
 {
 	PARAMPACK pack;
@@ -1699,6 +1654,60 @@ BOOL CDSP::FindMobileBuf(INT nDevice, INT &nIndex)
     return FindTBuf<MOBILE_BUF_NUM>(nDevice, nIndex,m_pMobileBufCS,m_pMobileBuf);
 }
 
+
+BOOL CDSP::FindAudBuf(INT nDevice, INT &nIndex)
+{
+    return FindTBuf<AUD_BUF_NUM>(nDevice, nIndex,m_pAudBufCS,m_pAudBuf);
+}
+
+BOOL CDSP::FindCapBuf(INT nDevice, INT &nIndex)
+{
+    return FindTBuf<CAP_BUF_NUM>(nDevice, nIndex,m_pCapBufCS,m_pCapBuf);
+}
+
+BOOL CDSP::FindPrvBuf(INT nDevice, INT &nIndex)
+{
+    return FindTBuf<PRV_BUF_NUM>(nDevice, nIndex,m_pPrvBufCS,m_pPrvBuf);
+}
+
+void CDSP::ReleaseAudBuf(INT nDevice, INT nIndex)
+{
+    AutoLockAndUnlock(m_pAudBufCS[nDevice]);
+    FRAMEBUFSTRUCT& frame = m_pAudBuf[nDevice][nIndex];
+    if ( frame.nVLostFlag == 0)
+    {
+        m_pAudBuf[nDevice][nIndex].nVLostFlag = 1;
+    }
+    else
+    {
+        // TRACE  ERROR []
+    }
+}
+
+void CDSP::ReleaseCapBuf(INT nDevice, INT nIndex)
+{
+    AutoLockAndUnlock(m_pCapBufCS[nDevice]);
+    if(m_pCapBuf[nDevice][nIndex].nVLostFlag == 0)
+    {
+        ReleaseDriverBuffer(m_pDrvHeadOfCapBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
+        m_pDrvHeadOfCapBuf[nDevice][nIndex] = NULL;
+        m_pCapBuf[nDevice][nIndex].pBuf = NULL;
+        m_pCapBuf[nDevice][nIndex].nVLostFlag = 1;
+    }
+}
+
+void CDSP::ReleasePrvBuf(INT nDevice, INT nIndex)
+{
+    AutoLockAndUnlock(m_pPrvBufCS[nDevice]);
+    if(m_pPrvBuf[nDevice][nIndex].nVLostFlag == 0)
+    {
+        ReleaseDriverBuffer(m_pDrvHeadOfPrvBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
+        m_pDrvHeadOfPrvBuf[nDevice][nIndex] = NULL;
+        m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
+        m_pPrvBuf[nDevice][nIndex].nVLostFlag = 1;
+    }
+}
+
 void CDSP::ReleaseNetBuf(INT nDevice, INT nIndex)
 {
 	AutoLockAndUnlock(m_pNetBufCS[nDevice]);
@@ -1719,6 +1728,10 @@ void CDSP::ReleaseNetBuf_RT(INT nDevice, INT nIndex)
 	{
 		m_pNetBuf_RT[nDevice][nIndex].nVLostFlag = 1;
 	}
+    else
+    {
+        // TRACE  ERROR []
+    }
 }
 
 void CDSP::ReleaseMobileBuf(INT nDevice, INT nIndex)
@@ -1730,26 +1743,6 @@ void CDSP::ReleaseMobileBuf(INT nDevice, INT nIndex)
 		m_pDrvHeadOfMobileBuf[nDevice][nIndex] = NULL;
 		m_pMobileBuf[nDevice][nIndex].pBuf = NULL;
 		m_pMobileBuf[nDevice][nIndex].nVLostFlag = 1;
-	}
-}
-
-void CDSP::ByteSwapCopy(void *pDst, void *pSrc, unsigned int nLen)
-{
-	_asm{
-		mov edi,pDst;
-		mov esi,pSrc;
-		mov ecx,nLen;
-		add ecx,3;
-		and ecx,0xffffffc;
-		add ecx,pDst;
-SWAP_COPY_LOOP:
-		mov eax,[esi];
-		bswap eax;
-		mov [edi],eax;
-		add edi,4;
-		add esi,4;
-		cmp edi,ecx;
-		jne SWAP_COPY_LOOP;
 	}
 }
 
