@@ -41,7 +41,7 @@ public:
 	DWORD m_dwNetChannelMask;	//网络通道开关	Add By zhangzhen 2007/10/11
 protected:
 	BYTE Encrypt(INT nDevice, BYTE byRandom);
-	void ByteSwapCopy(void* pDst,void *pSrc,unsigned int nLen);
+	
 	FILETIME m_ftNetLastFrameTime[MAX_CHANNEL_NUM];
 	CCounterTime m_CounterTime;
 	void ReleaseNetBuf(INT nDevice, INT nIndex);

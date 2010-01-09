@@ -213,6 +213,14 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\Include\Common.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\Config.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
