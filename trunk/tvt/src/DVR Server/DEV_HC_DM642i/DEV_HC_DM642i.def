@@ -1,0 +1,8 @@
+; DEV_HC_DM642.def : Declares the module parameters for the DLL.
+
+LIBRARY      "DEV_HC_DM642i"
+DESCRIPTION  "DEV_HC_DM642i Windows Dynamic Link Library"
+
+EXPORTS
+    ; Explicit exports can go here
+	g_Dev_Object @1
