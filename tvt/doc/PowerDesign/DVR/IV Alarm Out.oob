@@ -2137,8 +2137,8 @@ LABL 0 Arial,8,N</a:FontList>
 <o:TextSymbol Id="o50">
 <a:Text>No</a:Text>
 <a:CreationDate>1262775315</a:CreationDate>
-<a:ModificationDate>1262775337</a:ModificationDate>
-<a:Rect>((-19574,7494), (-17174,9443))</a:Rect>
+<a:ModificationDate>1262845645</a:ModificationDate>
+<a:Rect>((-13124,4944), (-10724,6893))</a:Rect>
 <a:TextStyle>4130</a:TextStyle>
 <a:AutoAdjustToText>0</a:AutoAdjustToText>
 <a:LineColor>0</a:LineColor>
@@ -2151,8 +2151,8 @@ LABL 0 Arial,8,N</a:FontList>
 <o:TextSymbol Id="o51">
 <a:Text>Yes</a:Text>
 <a:CreationDate>1262775325</a:CreationDate>
-<a:ModificationDate>1262845538</a:ModificationDate>
-<a:Rect>((-13498,4794), (-11098,6743))</a:Rect>
+<a:ModificationDate>1262845648</a:ModificationDate>
+<a:Rect>((-19348,8019), (-16948,9968))</a:Rect>
 <a:TextStyle>4130</a:TextStyle>
 <a:AutoAdjustToText>0</a:AutoAdjustToText>
 <a:LineColor>0</a:LineColor>

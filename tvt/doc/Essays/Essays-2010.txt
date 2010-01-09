@@ -14,3 +14,20 @@
 
 
 -----------------------------------------------------------
+
+
+9:13 2010-1-8
+关于当初对界面的想法
+以现在的资料游戏的方式是 
+CEGUI做界面引擎       -- 提供基本的界面编辑接口
+OGRE做3D/2D渲染引擎   -- CEGUI会调用它用以实际的显示
+Lua做界面编写语言     -- 脚本语言动作做需要的不同控件，首先用lua做基础控件，比如对话框，listctrl， 等
+
+
+今天在ATLBase.h发现几个以前要写的类，不过有写以前就写了。现在列出来。、
+CHandle
+CCritSecLock
+CAutoStackPtr
+CAutoPtr
+CAutoVectorPtr
+CComCritSecLock
