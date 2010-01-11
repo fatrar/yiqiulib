@@ -11,7 +11,7 @@
 #ifndef OCI_COMMON_H
 #define OCI_COMMON_H
 
-#include "Config.h" // 包含用户的配置
+//#include "Config.h" // 包含用户的配置
 
 
 /// 模块的配置后缀
@@ -53,19 +53,19 @@
 //#elif defined(BASE_STATIC_LIB_MD)
 //#	pragma comment(lib, "libBase_md.lib")
 //#endif
-#elif defined(BASE_EXPORTS)
-#	define RKT_EXPORT	CLASS_EXPORT
-#else
-#	define RKT_EXPORT	CLASS_IMPORT
-#	pragma comment(lib, MAKE_DLL_LIB_NAME(Base))
-#endif
+//#elif defined(BASE_EXPORTS)
+//#	define RKT_EXPORT	CLASS_EXPORT
+//#else
+//#	define RKT_EXPORT	CLASS_IMPORT
+//#	pragma comment(lib, MAKE_DLL_LIB_NAME(Base))
+//#endif
 
 
 #if defined(_LIB) || defined(_USELIB) || defined(BASE_STATIC_LIB)
 #	define RKT_API	extern "C"
 //#		pragma comment(lib, MAKE_LIB_NAME(Base))
 #elif defined(BASE_EXPORTS)
-#	define RKT_API	extern "C" RKT_EXPORT
+#	define RKT_API	extern "C" OCI_EXPORT
 #else
 #	define RKT_API	extern "C"
 //#		pragma comment(lib, MAKE_DLL_LIB_NAME(Base))
