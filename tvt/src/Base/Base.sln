@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "Base.vcproj", "{F190A9B9-2BDD-4229-ADC9-9A7AE2FC99DB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "Base\Base.vcproj", "{F190A9B9-2BDD-4229-ADC9-9A7AE2FC99DB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "System", "System\System.vcproj", "{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "tinyxml\tinyxml.vcproj", "{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,14 @@ Global
 		{F190A9B9-2BDD-4229-ADC9-9A7AE2FC99DB}.Debug|Win32.Build.0 = Debug|Win32
 		{F190A9B9-2BDD-4229-ADC9-9A7AE2FC99DB}.Release|Win32.ActiveCfg = Release|Win32
 		{F190A9B9-2BDD-4229-ADC9-9A7AE2FC99DB}.Release|Win32.Build.0 = Release|Win32
+		{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}.Debug|Win32.Build.0 = Debug|Win32
+		{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}.Release|Win32.ActiveCfg = Release|Win32
+		{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}.Release|Win32.Build.0 = Release|Win32
+		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Debug|Win32.Build.0 = Debug|Win32
+		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Release|Win32.ActiveCfg = Release|Win32
+		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
