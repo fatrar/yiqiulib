@@ -14,6 +14,15 @@
 //#include "Config.h" // 包含用户的配置
 
 
+#define BEGIN_BASE_ENGINE namespace OCI {
+#define END_BASE_ENGINE }
+
+#if defined(USEBASEENINE)
+    using namespace OCI;
+#endif
+//#define UseBaseEnine() using namespace OCI
+
+
 /// 模块的配置后缀
 #if defined(_DEBUG)
 #	define CFG_SUFFIX		"_d"
@@ -130,7 +139,6 @@ namespace COMPILE_ASSERT
 
 
 // hash_map的定义，为了不关心命名空间的差异，可直接用 HashMap 宏
-
 #if _MSC_VER  > 1300
 #    define HashMap stdext::hash_map
 #else
