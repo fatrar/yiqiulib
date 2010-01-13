@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="DEV_HC_DM642i"
-	ProjectGUID="{225F3400-0F16-4C98-91CB-2418F298C6FC}"
+	Name="IVUI"
+	ProjectGUID="{96894916-99F0-4CD1-9BC2-93CC04567BC7}"
 	Keyword="MFCProj"
 	>
 	<Platforms>
@@ -42,24 +42,23 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/DEV_HC_DM642i.tlb"
+				TypeLibraryName=".\Release/IVUI.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXEXT"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\Release/DEV_HC_DM642i.pch"
+				PrecompiledHeaderFile=".\Release/IVUI.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -76,14 +75,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\AlarmCard\AlarmCard.lib"
-				OutputFile=".\Release/DEV_HC_DM642i.dll"
+				OutputFile=".\Release/IVUI.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\DEV_HC_DM642i.def"
-				ProgramDatabaseFile=".\Release/DEV_HC_DM642i.pdb"
+				ModuleDefinitionFile=".\IVUI.def"
+				ProgramDatabaseFile=".\Release/IVUI.pdb"
 				SubSystem="2"
-				ImportLibrary=".\Release/DEV_HC_DM642i.lib"
+				ImportLibrary=".\Release/IVUI.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -98,7 +96,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/DEV_HC_DM642i.bsc"
+				OutputFile=".\Release/IVUI.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -111,7 +109,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="CopyFiles.bat"
 			/>
 		</Configuration>
 		<Configuration
@@ -142,23 +139,22 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/DEV_HC_DM642i.tlb"
+				TypeLibraryName=".\Debug/IVUI.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXEXT"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\Debug/DEV_HC_DM642i.pch"
+				PrecompiledHeaderFile=".\Debug/IVUI.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -176,15 +172,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\AlarmCard\AlarmCard.lib"
-				OutputFile=".\Debug/DEV_HC_DM642i.dll"
+				OutputFile=".\Debug/IVUI.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\DEV_HC_DM642i.def"
+				ModuleDefinitionFile=".\IVUI.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/DEV_HC_DM642i.pdb"
+				ProgramDatabaseFile=".\Debug/IVUI.pdb"
 				SubSystem="2"
-				ImportLibrary=".\Debug/DEV_HC_DM642i.lib"
+				ImportLibrary=".\Debug/IVUI.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -199,7 +194,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/DEV_HC_DM642i.bsc"
+				OutputFile=".\Debug/IVUI.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -212,7 +207,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="CopyFiles.bat D"
 			/>
 		</Configuration>
 	</Configurations>
@@ -224,7 +218,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="CounterTime.cpp"
+				RelativePath="IVUI.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -244,31 +238,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="DEV_HC_DM642i.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="DEV_HC_DM642i.def"
+				RelativePath="IVUI.def"
 				>
 			</File>
 			<File
-				RelativePath="DEV_HC_DM642i.rc"
+				RelativePath="IVUI.rc"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -283,46 +257,6 @@
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="DeviceSDK.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="DSP.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
@@ -349,45 +283,13 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="TiCoffFile.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath=".\CommonUtil.h"
-				>
-			</File>
-			<File
-				RelativePath="CounterTime.h"
-				>
-			</File>
-			<File
-				RelativePath="DeviceSDK.h"
-				>
-			</File>
-			<File
-				RelativePath="DSP.h"
+				RelativePath="IVUI.h"
 				>
 			</File>
 			<File
@@ -398,25 +300,13 @@
 				RelativePath="StdAfx.h"
 				>
 			</File>
-			<File
-				RelativePath="TiCoffFile.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="res\070202N"
-				>
-			</File>
-			<File
-				RelativePath="res\070202P"
-				>
-			</File>
-			<File
-				RelativePath="res\DEV_HC_DM642i.rc2"
+				RelativePath="res\IVUI.rc2"
 				>
 			</File>
 		</Filter>
