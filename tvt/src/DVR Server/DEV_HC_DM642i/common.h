@@ -107,11 +107,22 @@ typedef struct _FILETIME
 }FILETIME,*PFILETIME;
 #endif//_WINBASE_
 
+typedef enum _STREAMTYPE
+{
+	PREV = 0,
+	REC,
+	NET,
+	AUD ,
+	IEVENT,
+	////////////////////////
+	STREAMTYPECNT /////////
+	////////////////////////
+}STREAMTYPE;
 typedef struct _APP_DRIVER_BUFFER_INFO
 {
 	ULONG m_ulChipTotalNumber;
 
-	HANDLE m_hEvent[4];
+	HANDLE m_hEvent[STREAMTYPECNT];
 
 	//wirte reg value
 	ULONG m_ulRegOffset;
@@ -134,16 +145,20 @@ typedef struct _TVT_PREV_VBI
 {
 	unsigned char byInvalid;//status of this buff 
 	unsigned char byVideoFormat;//1     	:422,2:411,3:420
+	unsigned short  wStride;//
 	unsigned int dwWidth;//width
 	unsigned int dwHeight;//height
 	SYSTIME  prevVideoTime; //capture time
 	unsigned int  videoLoss;//loss state
-	unsigned int  dwReserve1;//for 8 bytes algian
+	unsigned char  byChannelID;//for 8 bytes algian
+	unsigned char  byReserve1;//for 8 bytes algian
+	unsigned char  byAIProcess;//for 8 bytes algian
+	unsigned char  byReserve2;//for 8 bytes algian
 }TVT_PREV_VBI,*PTVT_PREV_VBI;  
 typedef struct _TVT_REC_VBI
 {  
 	unsigned char byChannel;//channel id
-	unsigned char byDataType;//  0:rec ,1:Net 2:mobile      0xff: end of buff                
+	unsigned char byDataType;//  0:rec ,1:NET 2:mobile      0xff: end of buff                
 	unsigned char byInvalid;//status of this buff;
 	unsigned char byKeyFrame;//keyframe flag     ; 
 	unsigned short wWidth;    //image with;
@@ -171,7 +186,17 @@ typedef struct _TVT_CAP_STATUS
 	unsigned int 		dwReserve4;
 }TVT_CAP_STATUS,*PTVT_CAP_STATUS;
 
-
+typedef struct _TVT_AI_VBI
+{
+	unsigned int 		dwNumberOfTargets;
+	unsigned int 		dwNumberOfEvents;
+	SYSTIME				frameRealTime;
+	unsigned char 		byViewStates;
+	unsigned char		byReserve1;
+	unsigned char		byReserve2;
+	unsigned char		byReserve3;
+	
+}TVT_AI_VBI,*PTVT_AI_VBI;
 
 //const value define ////////////////////////
 
@@ -182,6 +207,7 @@ typedef struct _TVT_CAP_STATUS
 #define NET_VBI_SIZE			REC_VBI_SIZE
 #define AUD_VBI_SIZE			0
 
+#define D1_BUFF_SIZE			(720*576*2)     //for one channel
 #define CIF_BUFF_SIZE			(352*288*2)     //for one channel
 #define MOTION_STATUS			(352*288/8/8)   //for one channel
 #define REC_BUFF_SIZE			(200*1024)      //for one channel
@@ -189,16 +215,19 @@ typedef struct _TVT_CAP_STATUS
 
 #define AUD_BUFF_SIZE			(1024*8*2*2)        //for 4channels
 
-#define EACH_PREV_BUFF_SIZE		(CAP_STATUS_SIZE + (PREV_VBI_SIZE+CIF_BUFF_SIZE+MOTION_STATUS)*4)
+#define EACH_PREV_BUFF_SIZE		(1024*1024+3*1024*1024)//(CAP_STATUS_SIZE + (PREV_VBI_SIZE+CIF_BUFF_SIZE+MOTION_STATUS)*3+720*576*2+MOTION_STATUS+PREV_VBI_SIZE)
 #define EACH_REC_BUFF_SIZE		(CAP_STATUS_SIZE + (REC_VBI_SIZE+REC_BUFF_SIZE)*4)
 #define EACH_NET_BUFF_SIZE		(CAP_STATUS_SIZE + (REC_VBI_SIZE+REC_BUFF_SIZE)*4)
-#define EACH_AUD_BUFF_SIZE		(CAP_STATUS_SIZE + AUD_BUFF_SIZE) //
+#define EACH_AUD_BUFF_SIZE	(CAP_STATUS_SIZE + AUD_BUFF_SIZE) //
+#define EACH_IEVENT_BUFF_SIZE	(32)//*1024*1024)
+#define EACH_TRAN_BUFF_SIZE		(1024*1024)
+#define TARGET_MAX_NUM			50
 
 /*
 +------------------+
 |CAP_STATUS_SIZE   |
 +------------------+
-|VBI for channel1  | //don't for audio
+|VBI for channel1  | 
 +------------------+
 |                  |
 |image data for ch1|
@@ -223,40 +252,61 @@ typedef struct _TVT_CAP_STATUS
 |motion_Status     |
 +------------------+
 |VBI for channel4  |
-+------------------+
-|                  |
-|image data for ch4|
-|                  |
-+------------------+
-|motion_Status     |
-+------------------+
++------------------+------------+
+|                  |            |
+|image data for ch4|            |
+|                  |            |
++------------------+            |
+|motion_Status     |            |
++------------------+            |
+|                               |
+|             D1 ear            |
+|                               |
+|                               |
+|                               |
++-------------------------------+
 */
 
 
 //dsp memory layout///////////////////////////////
-#define DSP_MEM_LAYOUT_BASE		0x200
-#define DATA_VALID_FLAG_PREV		(DSP_MEM_LAYOUT_BASE)
+#define DSP_MEM_LAYOUT_BASE			0x200
+#define DATA_VALID_FLAG_PREV			(DSP_MEM_LAYOUT_BASE)
 #define DATA_VALID_FLAG_REC			(DATA_VALID_FLAG_PREV+4)
 #define DATA_VALID_FLAG_AUD			(DATA_VALID_FLAG_REC+4)
+#define DATA_VALID_FLAG_IEVENT	(DATA_VALID_FLAG_AUD+4)
 
+#define DATA_VALID_FLAG_NET		DATA_VALID_FLAG_AUD
+#define DATA_VALID_FLAG_MOB		DATA_VALID_FLAG_AUD
+#define DATA_VALID_FLAG_DECV		DATA_VALID_FLAG_AUD
 
-#define DMA_INT_TYPE	(DATA_VALID_FLAG_AUD+4)
+#define DMA_INT_TYPE	(DATA_VALID_FLAG_IEVENT+4)
 #define DMA_INT_VIDEO	1
 #define DMA_INT_AUDIO	2
-#define DMA_INT_VREC	3
+#define DMA_INT_VREC	4
+#define DMA_INT_INTL	8
 
 #define DMA_ADDR_BASE		(DMA_INT_TYPE+4)//	(DATA_VALID_FLAG_PREV+4)
 
-#define DMA_ADDR_VPREV	(DMA_ADDR_BASE)
-#define DMA_ADDR_VREC	(DMA_ADDR_VPREV+4)
-#define DMA_ADDR_APREV	(DMA_ADDR_VREC +4)
+#define DMA_ADDR_PREV		(DMA_ADDR_BASE)
+#define DMA_ADDR_REC		(DMA_ADDR_PREV+4)
+#define DMA_ADDR_NET		(DMA_ADDR_REC+4)
+#define DMA_ADDR_MOB		(DMA_ADDR_NET+4)
+#define DMA_ADDR_AUD		(DMA_ADDR_MOB+4)
+#define DMA_ADDR_IEVENT	(DMA_ADDR_AUD+4)
+#define DMA_ADDR_DECV		(DMA_ADDR_IEVENT+4)
 
 
-#define DSPTIME_FROM_PCI_SYNC (DMA_ADDR_APREV+4)
+#define DSPTIME_FROM_PCI_SYNC (DMA_ADDR_DECV+4)
 #define DSPTIME_FROM_PCI_ADDR (DSPTIME_FROM_PCI_SYNC+4)
-//next addr:(DSPTIME_FROM_PCI_SYNC+12) //sizeof(_SYSTEMTIME)
+//next addr:(DSPTIME_FROM_PCI_ADDR+12) //sizeof(_SYSTEMTIME)
 
+#define DECODE_STREAM_PC_PHYADD  (DSPTIME_FROM_PCI_ADDR+12)
+#define DECODE_STREAM_FLAG (DECODE_STREAM_PC_PHYADD+4)
+#define DECODE_STREAM_LEN		(DECODE_STREAM_FLAG+4)
 
+#define DECODE_CMD_PC_PHYADD  (DECODE_STREAM_LEN+12)
+#define DECODE_CMD_FLAG	(DECODE_CMD_PC_PHYADD+4)
+#define DECODE_CMD_LEN		(DECODE_CMD_FLAG+4)
 
 #define PCI_VIDEO_MEMADDR_SIZE		0x290
 #define PCI_VIDEO_MEMADDR_DATA		0x294
@@ -291,9 +341,7 @@ typedef struct _TVT_CAP_STATUS
 
 #define PT_PCI_SET_TIME_STAMP        PT_CMD_PCI_DEFAULT+14
 #define PT_PCI_SET_CALL_MONITOR         PT_CMD_PCI_DEFAULT+15   //call moNITOR
-
-
-
+#define PT_PCI_SET_D1_CHANNEL			PT_CMD_PCI_DEFAULT+16
 
 #define PT_PCI_SET_NET_ENCODE_BITRATE		PT_CMD_NET_DEFAULT+1
 #define PT_PCI_SET_NET_ENCODE_FRAMERATE  	PT_CMD_NET_DEFAULT+2
@@ -302,8 +350,6 @@ typedef struct _TVT_CAP_STATUS
 #define PT_PCI_SET_NET_IMMED_IFRAME			PT_CMD_NET_DEFAULT+5
 #define PT_PCI_SET_NET_WATER_MARK			PT_CMD_NET_DEFAULT+6
 
-
-//手机流控制码
 #define PT_PCI_SET_MOB_ENCODE_BITRATE		PT_CMD_MOB_DEFAULT+1
 #define PT_PCI_SET_MOB_ENCODE_FRAMERATE  	PT_CMD_MOB_DEFAULT+2
 #define PT_PCI_SET_MOB_ENCODE_ISENCODE      PT_CMD_MOB_DEFAULT+3
@@ -347,6 +393,7 @@ typedef struct _TVT_CAP_STATUS
 #define IOCTL_GET_DEVICE_PASSWORD                     CTL_CODE(FILE_DEVICE_UNKNOWN, 0x813, METHOD_BUFFERED, FILE_ANY_ACCESS)
 
 #define IOCTL_VIDEO_GET_TEST_DATA                     CTL_CODE(FILE_DEVICE_UNKNOWN, 0x814, METHOD_BUFFERED, FILE_ANY_ACCESS)
-
+#define IOCTL_WRITE_DECODE_STREAM                     CTL_CODE(FILE_DEVICE_UNKNOWN, 0x815, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_WRITE_DECODE_CMD                    CTL_CODE(FILE_DEVICE_UNKNOWN, 0x816, METHOD_BUFFERED, FILE_ANY_ACCESS)
 
 #endif //_DSP_CARD_COMMON_HH_

@@ -52,7 +52,8 @@ using namespace std;
 #include "math.h"
 
 //zhangzhen 2007/02/09
-#define	OUT_FILE_VERSION	"081023"					//OUT文件版本号YYMMDD
+//#define	OUT_FILE_VERSION	"081023"
+#define	OUT_FILE_VERSION	"100113"					//OUT文件版本号YYMMDD
 #define	OUT_FILE_NAME_NTSC	(".\\"OUT_FILE_VERSION"N")	//OUT文件(NTSC制式)相对路径，当前目录下
 #define OUT_FILE_NAME_PAL	(".\\"OUT_FILE_VERSION"P")	//OUT文件(PAL制式)相对路径，当前目录下
 
@@ -64,8 +65,13 @@ static char* s_pStandardName[] = {"PAL", "NTSC"};
     extern void WriteTestLog(LPCSTR pstrFormat...);
     extern void PrintFrameRate(int chl, int streamtype);
 #else
-    #define WriteTestLog __noop  // (exp)	{;}
-    #define PrintFrameRate __noop // (exp) 	{;}
+	#if defined(_MSC_VER) && (_MSC_VER <= 1200 )  // vc6 and old version use
+		#define WriteTestLog   // (exp)	{;}
+		#define PrintFrameRate // (exp) 	{;}	
+	#else
+		#define WriteTestLog __noop  // (exp)	{;}
+		#define PrintFrameRate __noop // (exp) 	{;}
+	#endif
 #endif
 
 class CAutoCriticalSection
@@ -84,7 +90,13 @@ private:
 #define Conn(x,y) Conn1(x,y)
 #define Conn1(x,y) x##y
 
-#define AUTOLOCKNAME  Conn(cs,__LINE__)
+#if defined(_MSC_VER) && (_MSC_VER <= 1200 )  // vc6 and old version use
+	#define AUTOLOCKNAME  Conn(cs,10000)
+#else
+	#define AUTOLOCKNAME  Conn(cs,__LINE__) // vc6 __LINE__是一个变量 
+#endif
+
+// 后面加个数字是为了防止重命名
 #define AutoLockAndUnlock(sec)  CAutoCriticalSection AUTOLOCKNAME(sec)
 
 //{{AFX_INSERT_LOCATION}}

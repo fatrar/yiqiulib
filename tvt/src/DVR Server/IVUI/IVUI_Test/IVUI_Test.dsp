@@ -1,35 +1,35 @@
-# Microsoft Developer Studio Project File - Name="DEV_HC_DM642i" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="IVUI_Test" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
+# TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=DEV_HC_DM642i - Win32 Debug
+CFG=IVUI_Test - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "DEV_HC_DM642i.mak".
+!MESSAGE NMAKE /f "IVUI_Test.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "DEV_HC_DM642i.mak" CFG="DEV_HC_DM642i - Win32 Debug"
+!MESSAGE NMAKE /f "IVUI_Test.mak" CFG="IVUI_Test - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "DEV_HC_DM642i - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "DEV_HC_DM642i - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "IVUI_Test - Win32 Release" (based on "Win32 (x86) Application")
+!MESSAGE "IVUI_Test - Win32 Debug" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""$/LhsWork/DSP/DEV_HC_DM642i", FCKBAAAA"
-# PROP Scc_LocalPath "."
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "DEV_HC_DM642i - Win32 Release"
+!IF  "$(CFG)" == "IVUI_Test - Win32 Release"
 
 # PROP BASE Use_MFC 6
 # PROP BASE Use_Debug_Libraries 0
@@ -40,10 +40,9 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
-# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /Yu"stdafx.h" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_AFXEXT" /FR /Yu"stdafx.h" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /Yu"stdafx.h" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Yu"stdafx.h" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "NDEBUG" /d "_AFXDLL"
@@ -52,14 +51,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 ..\AlarmCard\AlarmCard.lib /nologo /subsystem:windows /dll /machine:I386
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PostBuild_Cmds=CopyFiles.bat
-# End Special Build Tool
+# ADD BASE LINK32 /nologo /subsystem:windows /machine:I386
+# ADD LINK32 /nologo /subsystem:windows /machine:I386
 
-!ELSEIF  "$(CFG)" == "DEV_HC_DM642i - Win32 Debug"
+!ELSEIF  "$(CFG)" == "IVUI_Test - Win32 Debug"
 
 # PROP BASE Use_MFC 6
 # PROP BASE Use_Debug_Libraries 1
@@ -70,10 +65,9 @@ PostBuild_Cmds=CopyFiles.bat
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
-# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_AFXEXT" /FR /Yu"stdafx.h" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Yu"stdafx.h" /FD /GZ  /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Yu"stdafx.h" /FD /GZ   /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "_DEBUG" /d "_AFXDLL"
@@ -82,54 +76,34 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ..\AlarmCard\AlarmCard.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PostBuild_Cmds=CopyFiles.bat D
-# End Special Build Tool
+# ADD BASE LINK32 /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 
 !ENDIF 
 
 # Begin Target
 
-# Name "DEV_HC_DM642i - Win32 Release"
-# Name "DEV_HC_DM642i - Win32 Debug"
+# Name "IVUI_Test - Win32 Release"
+# Name "IVUI_Test - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\CounterTime.cpp
+SOURCE=.\IVUI_Test.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DEV_HC_DM642i.cpp
+SOURCE=.\IVUI_Test.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\DEV_HC_DM642i.def
-# End Source File
-# Begin Source File
-
-SOURCE=.\DEV_HC_DM642i.rc
-# End Source File
-# Begin Source File
-
-SOURCE=.\DeviceSDK.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\DSP.cpp
+SOURCE=.\IVUI_TestDlg.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\TiCoffFile.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -137,15 +111,11 @@ SOURCE=.\TiCoffFile.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\CounterTime.h
+SOURCE=.\IVUI_Test.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DeviceSDK.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\DSP.h
+SOURCE=.\IVUI_TestDlg.h
 # End Source File
 # Begin Source File
 
@@ -155,27 +125,19 @@ SOURCE=.\Resource.h
 
 SOURCE=.\StdAfx.h
 # End Source File
-# Begin Source File
-
-SOURCE=.\TiCoffFile.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\res\DEV_HC_DM642i.rc2
+SOURCE=.\res\IVUI_Test.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\res\IVUI_Test.rc2
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=.\res\071226N
-# End Source File
-# Begin Source File
-
-SOURCE=.\res\071226P
-# End Source File
 # Begin Source File
 
 SOURCE=.\ReadMe.txt
