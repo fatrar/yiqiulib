@@ -29,7 +29,10 @@ struct IIVDataSaver
     // 视频文件关闭时，回调
     virtual BOOL Close(int nChannelID, int time)=0;
 
+    // 删除视频文件回调，从而通知智能这边删除智能文件。
     virtual BOOL DeleteIVFile(const char* pPath)=0;
+
+    virtual BOOL TellPreAlarmTime(int time)=0;
 };
 
 struct IIVViewer

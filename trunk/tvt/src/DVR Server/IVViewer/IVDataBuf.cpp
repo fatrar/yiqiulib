@@ -98,9 +98,15 @@ BOOL CIVDataBuf::DeleteIVFile(
     }
 
     // 这里要判断文件是否在读。 PlayBack
+    // [x] 这个时候按道理视频文件也在读，所以依赖那边就好。当删除不了时，会再次删除
     string strPath = pPath;
     strPath += pPath;
     DeleteFile(strPath.c_str());
+    return TRUE;
+}
+
+BOOL CIVDataBuf::TellPreAlarmTime( int time )
+{
     return TRUE;
 }
 
@@ -114,9 +120,6 @@ size_t CIVDataBuf::SaveFileLoopFun()
 {
     return 0;
 }
-
-
-
 
 
 

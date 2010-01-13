@@ -6,8 +6,6 @@
 * purpose : 公共头文件
 */
 //==========================================================================
-
-
 #ifndef OCI_COMMON_H
 #define OCI_COMMON_H
 
@@ -15,13 +13,7 @@
 
 
 #define BEGIN_BASE_ENGINE namespace OCI {
-#define END_BASE_ENGINE }
-
-#if defined(USEBASEENINE)
-    using namespace OCI;
-#endif
-//#define UseBaseEnine() using namespace OCI
-
+#define END_BASE_ENGINE };
 
 /// 模块的配置后缀
 #if defined(_DEBUG)
