@@ -127,5 +127,30 @@ bool GetElementAttributeData(
 
 
 
+/**
+@purpose          : 设置一个定时器
+@param	 timerID  : 定时器ID
+@param   interval : 定时器调用间隔
+@param   handler  : 处理接口
+@param   callTimes: 调用次数,默认调用无穷次
+@param   debugInfo: 调试信息
+@return		      : 如果设置成功则返回true
+*/
+
+
+
+
+ 
+/**
+@purpose          : 设置一个定时器
+@param	 timerID  : 定时器ID
+@param   interval : 定时器调用间隔
+@param   handler  : 处理接口
+@param   callTimes: 调用次数,默认调用无穷次
+@param   debugInfo: 调试信息
+@return		      : 如果设置成功则返回true
+*/
+
+static int a(int i , int j);
 
 #endif

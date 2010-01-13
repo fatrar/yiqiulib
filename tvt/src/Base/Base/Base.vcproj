@@ -221,6 +221,10 @@
 				RelativePath=".\Include\Config.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Include\Singleton.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

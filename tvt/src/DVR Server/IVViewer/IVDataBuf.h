@@ -61,6 +61,8 @@ public:
     virtual BOOL DeleteIVFile(
         const char* pPath);
 
+    virtual BOOL TellPreAlarmTime(int time);
+
 protected:
     static size_t WINAPI SaveFileThread(void* pParm);
     size_t SaveFileLoopFun();
