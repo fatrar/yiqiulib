@@ -40,6 +40,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+private:
+	CIVSwtichTab m_IVSwtichTab;
 };
 
 //{{AFX_INSERT_LOCATION}}
