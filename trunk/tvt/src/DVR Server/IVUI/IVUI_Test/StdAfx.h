@@ -24,4 +24,6 @@
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
+#include "IVSwtichTab.h"
+
 #endif // !defined(AFX_STDAFX_H__EB4F5E92_957D_43F6_A929_70F658CBCA72__INCLUDED_)

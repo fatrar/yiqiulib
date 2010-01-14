@@ -63,6 +63,17 @@ BEGIN_BASE_ENGINE
 			return *_instance;
 		}
 
+        static T* getInstancePtr()
+        {
+            if (!_instance)
+            {
+                _instance = new T;
+                if (mustDelete) atexit(releaseInstance);
+            }
+
+            return _instance;
+        }
+
 	protected:
 		/// 使用保护构造是为了用户不能在栈上声明一个实例
 		Singleton() { }

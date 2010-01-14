@@ -27,7 +27,7 @@ struct IIVDataSaver
     virtual BOOL Open(int nChannelID,const char* pPath, const FILETIME& time)=0;
 
     // 视频文件关闭时，回调
-    virtual BOOL Close(int nChannelID, int time)=0;
+    virtual BOOL Close(int nChannelID, const FILETIME& time)=0;
 
     // 删除视频文件回调，从而通知智能这边删除智能文件。
     virtual BOOL DeleteIVFile(const char* pPath)=0;
@@ -39,7 +39,11 @@ struct IIVViewer
 {
     // 显示目标矩形框和路径时的回调，
     // 传入DC和正在播放的数据帧的时间
-    virtual BOOL Paint(int nChannelID, const CDC& dc, const FILETIME& nTime)=0;
+    virtual BOOL Paint(
+        int nChannelID, 
+        const HDC dc,
+        const RECT& rect,
+        const FILETIME& time)=0;
 };
 
 // 得到对应的对象指针
@@ -57,7 +61,7 @@ struct IVDataFound
     virtual int Open(int nChannelID, const char* pPath, const FILETIME& time)=0;
 
     // 视频文件关闭时回调
-    virtual int Close(int nChannelID, int time)=0;
+    virtual int Close(int nChannelID, const FILETIME& time)=0;
 };
 
 // 得到对应的对象指针

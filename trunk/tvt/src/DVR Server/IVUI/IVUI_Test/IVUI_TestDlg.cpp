@@ -52,7 +52,12 @@ BOOL CIVUI_TestDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 	
 	// TODO: Add extra initialization here
-	
+	CRect rect;
+	GetClientRect(&rect);
+
+	m_IVSwtichTab.Create(NULL, "" , WS_CHILD|WS_VISIBLE, rect, this, WM_USER);
+	m_IVSwtichTab.Init(this, rect);
+	//m_IVSwtichTab.ShowWindow(SW_SHOW);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

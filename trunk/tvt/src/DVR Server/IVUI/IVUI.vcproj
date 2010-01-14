@@ -218,6 +218,22 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\IVAlarmOutDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IVRuleDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IVSchuduleDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IVSwitchTab.cpp"
+				>
+			</File>
+			<File
 				RelativePath="IVUI.cpp"
 				>
 				<FileConfiguration
@@ -289,6 +305,22 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\IVAlarmOutDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVRuleDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVSchuduleDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVSwitchTab.h"
+				>
+			</File>
+			<File
 				RelativePath="IVUI.h"
 				>
 			</File>
@@ -316,5 +348,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="IVUI.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

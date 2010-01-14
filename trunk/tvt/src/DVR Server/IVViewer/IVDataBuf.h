@@ -56,7 +56,7 @@ public:
     // 视频文件关闭时，回调
     virtual BOOL Close(
         int nChannelID,
-         const FILETIME& time );
+        const FILETIME& time );
 
     virtual BOOL DeleteIVFile(
         const char* pPath);
@@ -83,6 +83,8 @@ protected:
     public:
         list<GroupTarget*> TargetList;
         list<GroupTarget*>::iterator iterIndex;
+        //CFile File;
+        string strNewFilePath;
     };
 
     typedef map<int, ChannelTarget> AllChannelTarget;
@@ -90,6 +92,7 @@ protected:
     AllChannelTarget m_TargetMap;
     CriticalSection m_cs;
 
+   
     HANDLE m_Thread;
     HANDLE m_Event[3]; // Open/close File + 
 };

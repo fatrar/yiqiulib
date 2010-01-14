@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="IVViewer"
 	ProjectGUID="{AAE56DA0-D81C-4717-A473-664DF6A6855D}"
+	RootNamespace="IVViewer"
 	Keyword="MFCProj"
 	>
 	<Platforms>
@@ -216,6 +217,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IVLiveViewer.cpp"
+				>
+			</File>
+			<File
 				RelativePath="IVViewer.def"
 				>
 			</File>
@@ -276,6 +281,10 @@
 			>
 			<File
 				RelativePath=".\IVDataBuf.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVLiveViewer.h"
 				>
 			</File>
 			<File
