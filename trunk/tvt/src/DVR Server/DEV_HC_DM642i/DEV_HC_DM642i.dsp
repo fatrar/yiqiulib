@@ -178,6 +178,14 @@ SOURCE=.\res\071226P
 # End Source File
 # Begin Source File
 
+SOURCE=.\res\081023N
+# End Source File
+# Begin Source File
+
+SOURCE=.\res\100113P
+# End Source File
+# Begin Source File
+
 SOURCE=.\ReadMe.txt
 # End Source File
 # End Target

@@ -344,10 +344,9 @@ BOOL CDSP::CreateWorkerThread()
    
     for ( int i=0; i< m_nDeviceNum; ++i )
     {
-        ThreadParm* pParm = new ThreadParm(this, i);
-        m_hThreadPrv[i] = CreateThread(NULL, 0, OnThreadPrv, pParm, 0, NULL);
-        m_hThreadCompressStrm[i] = CreateThread(NULL, 0, OnThreadCompressStrm, pParm, 0, NULL);
-        m_hThreadAud[i] = CreateThread(NULL, 0, OnThreadAud, pParm, 0, NULL);
+        m_hThreadPrv[i] = CreateThread(NULL, 0, OnThreadPrv, new ThreadParm(this, i), 0, NULL);
+        m_hThreadCompressStrm[i] = CreateThread(NULL, 0, OnThreadCompressStrm, new ThreadParm(this, i), 0, NULL);
+        m_hThreadAud[i] = CreateThread(NULL, 0, OnThreadAud, new ThreadParm(this, i), 0, NULL);
     }
 
 	return TRUE;

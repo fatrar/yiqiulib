@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="DEV_HC_DM642i"
 	ProjectGUID="{225F3400-0F16-4C98-91CB-2418F298C6FC}"
+	RootNamespace="DEV_HC_DM642i"
 	Keyword="MFCProj"
 	>
 	<Platforms>
@@ -116,8 +117,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -154,11 +155,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\Debug/DEV_HC_DM642i.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -177,12 +174,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\AlarmCard\AlarmCard.lib"
-				OutputFile=".\Debug/DEV_HC_DM642i.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\DEV_HC_DM642i.def"
+				ModuleDefinitionFile="$(ProjectDir)$(ProjectName).def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/DEV_HC_DM642i.pdb"
 				SubSystem="2"
 				ImportLibrary=".\Debug/DEV_HC_DM642i.lib"
 				TargetMachine="1"
@@ -198,7 +193,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
+				SuppressStartupBanner="false"
 				OutputFile=".\Debug/DEV_HC_DM642i.bsc"
 			/>
 			<Tool
@@ -212,7 +207,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="CopyFiles.bat D"
+				CommandLine="CopyFiles.bat D&#x0D;&#x0A;copy DEV_HC_DM642i.dll D:\Program Files\SuperDVR\SuperDVR\DEV_HC_DM642i.dll&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -408,18 +403,18 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="res\070202N"
-				>
-			</File>
-			<File
-				RelativePath="res\070202P"
-				>
-			</File>
-			<File
 				RelativePath="res\DEV_HC_DM642i.rc2"
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\res\081023N"
+			>
+		</File>
+		<File
+			RelativePath=".\res\100113P"
+			>
+		</File>
 		<File
 			RelativePath="ReadMe.txt"
 			>

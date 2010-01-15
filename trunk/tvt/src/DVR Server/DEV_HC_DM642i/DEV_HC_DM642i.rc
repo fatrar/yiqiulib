@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -27,18 +27,18 @@ LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -50,7 +50,7 @@ BEGIN
     "LANGUAGE 9, 1\r\n"
     "#pragma code_page(1252)\r\n"
     "#endif //_WIN32\r\n"
-    "#include ""res\\DEV_HC_DM642.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""res\\DEV_HC_DM642i.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
     "#include ""afxres.rc""         // Standard components\r\n"
     "#endif\r\n"
     "\0"
@@ -64,8 +64,8 @@ END
 // OUTFILE
 //
 
-NTSC                    OUTFILE DISCARDABLE     "res\\081023N"
-PAL                     OUTFILE DISCARDABLE     "res\\081023P"
+NTSC                    OUTFILE                 "res\\081023N"
+PAL                     OUTFILE                 "res\\100113P"
 #endif    // Chinese (P.R.C.) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +79,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -102,18 +101,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "DEV_HC_DM642 DLL\0"
-            VALUE "FileVersion", "2, 12, 8, 1024\0"
-            VALUE "InternalName", "DEV_HC_DM642\0"
-            VALUE "LegalCopyright", "Copyright (C) 2006\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "DEV_HC_DM642.DLL\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "DEV_HC_DM642 Dynamic Link Library\0"
-            VALUE "ProductVersion", "2, 12, 8, 1024\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "FileDescription", "DEV_HC_DM642i DLL"
+            VALUE "FileVersion", "2, 12, 8, 1024"
+            VALUE "InternalName", "DEV_HC_DM642i"
+            VALUE "LegalCopyright", "Copyright (C) 2006"
+            VALUE "OriginalFilename", "DEV_HC_DM642i.DLL"
+            VALUE "ProductName", "DEV_HC_DM642i Dynamic Link Library"
+            VALUE "ProductVersion", "2, 12, 8, 1024"
         END
     END
     BLOCK "VarFileInfo"
@@ -121,8 +115,6 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
-
-#endif    // !_MAC
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
