@@ -6,14 +6,10 @@
 		CID = "1"/>
 	<OpenFiles
 		CID = "2"
-		LastActive = "2">
+		LastActive = "1">
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Rule Config.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
-			RelativePathname = "Alarm Out Config.gui"
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
@@ -54,6 +50,10 @@
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Adv Filter.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "Alarm Out Config.gui"
 			ViewSettings = ""/>
 	</OpenFiles>
 </Project>
