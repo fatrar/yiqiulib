@@ -370,6 +370,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\common.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CommonUtil.h"
 				>
 			</File>

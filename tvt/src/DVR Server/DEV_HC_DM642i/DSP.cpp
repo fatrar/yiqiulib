@@ -175,10 +175,11 @@ BOOL CDSP::DeviceInit()
 	for (i = 0; i < m_nDeviceNum; i++)
 	{
 		m_pTiCoffFile[i] = new CTiCoffFile(m_hDevice[i]);
-		if (DVRVIDEO_STANDARD_PAL == m_dwVideoFormat)
+        m_pTiCoffFile[i]->LoadCoffFile(s_pOutFileName[m_dwVideoFormat]);
+		/*if (DVRVIDEO_STANDARD_PAL == m_dwVideoFormat)
 			m_pTiCoffFile[i]->LoadCoffFile(OUT_FILE_NAME_PAL);
 		else
-			m_pTiCoffFile[i]->LoadCoffFile(OUT_FILE_NAME_NTSC);
+			m_pTiCoffFile[i]->LoadCoffFile(OUT_FILE_NAME_NTSC);*/
 	}
 
 	for (i = 0; i < m_nDeviceNum; i++)

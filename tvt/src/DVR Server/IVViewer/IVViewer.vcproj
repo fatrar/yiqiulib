@@ -213,6 +213,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\BaseIVViewer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IVDataBuf.cpp"
 				>
 			</File>
@@ -279,6 +283,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\BaseIVViewer.h"
+				>
+			</File>
 			<File
 				RelativePath=".\IVDataBuf.h"
 				>
