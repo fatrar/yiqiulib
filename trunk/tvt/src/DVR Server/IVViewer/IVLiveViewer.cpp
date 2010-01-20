@@ -66,9 +66,12 @@ BOOL CIVLiveViewer::Paint(
     for (; iter!=DataQueue->end();++iter)
     {
         WPG_Target& Tar = *iter;
-        TranslateToRect(rect,Tar, left, top, right, bottom);
+        TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
         ::Rectangle(dc, left, top, right, bottom);
     }
+
+
+    return TRUE;
 }
 
 
