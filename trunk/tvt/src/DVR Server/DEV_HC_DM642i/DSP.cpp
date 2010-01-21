@@ -406,9 +406,15 @@ BOOL CDSP::CreateBuffer()
 
 		for (j = 0; j < PRV_BUF_NUM; j++)
 		{
-			m_pPrvBuf[i][j].pBuf = new BYTE[CIF_BUFF_SIZE]; //heliang fix
-			m_pPrvBuf[i][j].nVLostFlag = 1;
+#ifdef PRECOPY
+            m_pPrvBuf[i][j].pBuf = new BYTE[CIF_BUFF_SIZE]; //heliang fix
             m_pDrvHeadOfPrvBuf[i][j] = new TVT_CAP_STATUS; //heliang+
+#else
+            m_pPrvBuf[i][j].pBuf = NULL;
+            m_pDrvHeadOfPrvBuf[i][j] = NULL;
+#endif // PRECOPY	
+			m_pPrvBuf[i][j].nVLostFlag = 1;
+            
 		}
 
 		for (j = 0; j < NET_BUF_NUM; j++)
@@ -450,6 +456,7 @@ void CDSP::DestroyBuffer()
              safeDeleteArray(m_pNetBuf_RT[i][j].pBuf);
 		}
 
+#ifdef PRECOPY 
         //heliang+
         for (j = 0; j < PRV_BUF_NUM; j++)
         {
@@ -457,6 +464,7 @@ void CDSP::DestroyBuffer()
             m_pPrvBuf[i][j].nVLostFlag = 1;
             safeDeleteArray(m_pDrvHeadOfPrvBuf[i][j]); 
         }
+#endif
 	}
 }
 
@@ -574,7 +582,6 @@ void CDSP::ProcessPrv(INT nDevice)
 			TRACE("Devide : %d ProcessPrv WAIT_TIMEOUT\n", nDevice);
 			break;
 		case WAIT_ABANDONED:
-			break;
 		case WAIT_FAILED:
 			break;		
 		case WAIT_OBJECT_0:
@@ -631,22 +638,25 @@ void CDSP::GetPrvData(int nDevice)
 
             //数据部分指针
             BYTE* pBuf = pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel + PREV_VBI_SIZE;
+#ifdef PRECOPY            
             memcpy(m_pPrvBuf[nDevice][nIndex].pBuf, pBuf, CIF_BUFF_SIZE); 
             memcpy(m_pDrvHeadOfPrvBuf[nDevice][nIndex], pStatus, sizeof(TVT_CAP_STATUS));	//该缓冲对应的DRIVER层BUF头
-
+#else
+            m_pPrvBuf[nDevice][nIndex].pBuf = pBuf;
+            m_pDrvHeadOfPrvBuf[nDevice][nIndex] = pStatus;
+#endif // PRECOPY
             m_pPrvBuf[nDevice][nIndex].ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
             m_pPrvBuf[nDevice][nIndex].BufLen = m_dwPrvBufSize;
             m_pPrvBuf[nDevice][nIndex].nStreamID = VIDEO_STREAM_PREVIEW;
             m_pPrvBuf[nDevice][nIndex].BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
 
             PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
-            BOOL bRc =  m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
-            if ( !bRc )
-            {
-                TRACE("..............Pre Err!\n");
-            }
+            m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
 
+
+#ifdef PRECOPY 
             ReleaseDriverBuffer(pStatus);
+#endif
         }      
     }
 }
@@ -676,7 +686,6 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 	while (TRUE)
 	{
 		dwWait = WaitForSingleObject(m_hCompressEvent[nDevice], 5000);
-
 		if (m_bQuit == TRUE)
 			break;
 
@@ -715,14 +724,12 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 				while(TRUE)
 				{
 					pVBI = (TVT_REC_VBI*) pData;
-
 					if(pVBI->byDataType == 0xff)	//该数据包处理完
 					{
 						break;
 					}
 
 					pData += sizeof(TVT_REC_VBI);
-
 					if(pVBI->byInvalid == 0)	//非法数据不统计
 					{
 						pData += pVBI->dwLen;	//
@@ -730,7 +737,6 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 					}
 
 					nFrameNum++;
-
 					pData += pVBI->dwLen;	//下一帧
 				}
 
@@ -1504,9 +1510,12 @@ void CDSP::ReleasePrvBuf(INT nDevice, INT nIndex)
     AutoLockAndUnlock(m_pPrvBufCS[nDevice]);
     if(m_pPrvBuf[nDevice][nIndex].nVLostFlag == 0)
     {
-        //ReleaseDriverBuffer(m_pDrvHeadOfPrvBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
-        //m_pDrvHeadOfPrvBuf[nDevice][nIndex] = NULL;
-        //m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
+#ifdef PRECOPY 
+#else
+        ReleaseDriverBuffer(m_pDrvHeadOfPrvBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
+        m_pDrvHeadOfPrvBuf[nDevice][nIndex] = NULL;
+        m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
+#endif
         m_pPrvBuf[nDevice][nIndex].nVLostFlag = 1;
     }
 }

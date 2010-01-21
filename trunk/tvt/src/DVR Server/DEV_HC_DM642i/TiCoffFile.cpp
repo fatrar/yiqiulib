@@ -210,48 +210,6 @@ void CTiCoffFile::InitDSP ()
 
     Write8MMemVal( 0x01800050, 0x00000002);
     Write8MMemVal( 0x01800054, 0x00000073);
-
-	/*
-	{
-		//set emif reg value
-		ULONG ulEmifA[12] = {0x00052078,        // GCTL     - 0x01800000
-                         0x73a28e01,            // CE1      - 0x01800004
-                         0xffffffD3,            // CE0      - 0x01800008
-                         // Address split 3
-                         0x73a28e01,        // CE2      - 0x01800010
-                         0x73a28e01,        // CE3      - 0x01800014
-						// 0x22a28a42,        // CE3      - 0x01800014
-                         0x57226000,        // SDRAMCTL - 0x01800018
-                         0x00000446,        // SDRAMTIM - 0x0180001c
-                         0x001fffef,        // SDRAMEXT - 0x01800020
-                         // Address split 9
-                         0x00000002,        // CE1ECCTL - 0x01800044 
-                         0x00000002,        // CE0ECCTL - 0x01800048
-                         // Address split 
-                         0x00000002,        // CE2ECCTL - 0x01800050
-                         0x00000073,        // CE3ECCTL - 0x01800054
-                        };
-
-		{
-			int iRegValIndex = 0;
-			m_pDm642Drv->Write8MMemVal( 0x01800000, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x01800004, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x01800008, ulEmifA[iRegValIndex++]);
-
-			m_pDm642Drv->Write8MMemVal( 0x01800010, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x01800014, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x01800018, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x0180001c, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x01800020, ulEmifA[iRegValIndex++]);
-
-			m_pDm642Drv->Write8MMemVal( 0x01800044, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x01800048, ulEmifA[iRegValIndex++]);
-
-			m_pDm642Drv->Write8MMemVal( 0x01800050, ulEmifA[iRegValIndex++]);
-			m_pDm642Drv->Write8MMemVal( 0x01800054, ulEmifA[iRegValIndex++]);
-		}
-	}
-	*/
 }
 
 void CTiCoffFile::StartDSP ()
