@@ -189,26 +189,27 @@ ERROR_EXIT:
 
 void CTiCoffFile::InitDSP ()
 {
-	ULONG ulHDCRVal = 0;
-	Read8MMemVal( PCI64_HDCR, ulHDCRVal );
-	ulHDCRVal |= HDCR_WARMRESET;              
-	Write8MMemVal( PCI64_HDCR, ulHDCRVal );
+    ULONG ulHDCRVal = 0;
+    Read8MMemVal( PCI64_HDCR, ulHDCRVal );
+    ulHDCRVal |= HDCR_WARMRESET;        
 
-	Write8MMemVal( 0x01800000, 0x00052078);
-	Write8MMemVal( 0x01800004, 0x73a28e01);
-	Write8MMemVal( 0x01800008, 0xffffffD3);
+    Write8MMemVal( PCI64_HDCR, ulHDCRVal );
 
-	Write8MMemVal( 0x01800010, 0x73a28e01);
-	Write8MMemVal( 0x01800014, 0x73a28e01);
-	Write8MMemVal( 0x01800018, 0x57226000);//  0x57229000
-	Write8MMemVal( 0x0180001c, 0x00000446);
-	Write8MMemVal( 0x01800020, 0x001fffef);
+    Write8MMemVal( 0x01800000, 0x00052078);
+    Write8MMemVal( 0x01800004, 0x73a28e01);
+    Write8MMemVal( 0x01800008, 0xffffffD3);
 
-	Write8MMemVal( 0x01800044, 0x00000002);
-	Write8MMemVal( 0x01800048, 0x00000002);
+    Write8MMemVal( 0x01800010, 0x73a28e01);
+    Write8MMemVal( 0x01800014, 0x73a28e01);
+    Write8MMemVal( 0x01800018, 0x53226000);//  0x57229000
+    Write8MMemVal( 0x0180001c, 0x00000446);
+    Write8MMemVal( 0x01800020, 0x001fffef);
 
-	Write8MMemVal( 0x01800050, 0x00000002);
-	Write8MMemVal( 0x01800054, 0x00000073);
+    Write8MMemVal( 0x01800044, 0x00000002);
+    Write8MMemVal( 0x01800048, 0x00000002);
+
+    Write8MMemVal( 0x01800050, 0x00000002);
+    Write8MMemVal( 0x01800054, 0x00000073);
 
 	/*
 	{
