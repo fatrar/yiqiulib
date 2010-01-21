@@ -1,4 +1,4 @@
-// DSP.cpp: implementation of the CDSP class.
+ï»¿// DSP.cpp: implementation of the CDSP class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -54,8 +54,8 @@ inline	void ReleaseDriverBuffer(PTVT_CAP_STATUS pST)
 	cs.Lock();
 	pST->dwReserve4--;
 
-//<----cs×÷ÓÃ:¶àÏß³ÌÖØÈë£»·À¶àÏß³Ìµ÷ÓÃÊ±(´«ÈëÖ¸ÕëÏàÍ¬)£¬ÔÚ´ËÇĞ»»Ïß³Ì£¬Á½¸öÏß³Ì·Ö±ğÖ´ĞĞ¼õÒ»²Ù×÷ºó
-//dwReserve4==0£¬ÕâÊ±Á½¸öÏß³Ì»á·Ö±ğ½«byLockÖÃ0£¬¿ÉÄÜµ¼ÖÂÇı¶¯²ã¸ÕÔÚµÚÒ»´ÎÖÃ0Ê±Ìî³äµÄBUFÖØĞÂ±»ÊÍ·Å
+//<----csä½œç”¨:å¤šçº¿ç¨‹é‡å…¥ï¼›é˜²å¤šçº¿ç¨‹è°ƒç”¨æ—¶(ä¼ å…¥æŒ‡é’ˆç›¸åŒ)ï¼Œåœ¨æ­¤åˆ‡æ¢çº¿ç¨‹ï¼Œä¸¤ä¸ªçº¿ç¨‹åˆ†åˆ«æ‰§è¡Œå‡ä¸€æ“ä½œå
+//dwReserve4==0ï¼Œè¿™æ—¶ä¸¤ä¸ªçº¿ç¨‹ä¼šåˆ†åˆ«å°†byLockç½®0ï¼Œå¯èƒ½å¯¼è‡´é©±åŠ¨å±‚åˆšåœ¨ç¬¬ä¸€æ¬¡ç½®0æ—¶å¡«å……çš„BUFé‡æ–°è¢«é‡Šæ”¾
 
 	if((pST)->dwReserve4 == 0)
 	{
@@ -65,10 +65,10 @@ inline	void ReleaseDriverBuffer(PTVT_CAP_STATUS pST)
 }
 #if 0
 /*
-º¯Êı¹¦ÄÜ : ×ª±äÖ¡Í·4BYTE¸ñÊ½
-²ÎÊıËµÃ÷ :
-p4B[IN/OUT] : Òª×ª±äµÄ4×Ö½ÚµØÖ·
-bDirection[IN]: ×ª±ä·½Ïò(TRUE: ĞòºÅ->¹Ø¼üÖ¡±êÊ¾£¬FALSE: ¹Ø¼üÖ¡±êÊ¾->ĞòºÅ)
+å‡½æ•°åŠŸèƒ½ : è½¬å˜å¸§å¤´4BYTEæ ¼å¼
+å‚æ•°è¯´æ˜ :
+p4B[IN/OUT] : è¦è½¬å˜çš„4å­—èŠ‚åœ°å€
+bDirection[IN]: è½¬å˜æ–¹å‘(TRUE: åºå·->å…³é”®å¸§æ ‡ç¤ºï¼ŒFALSE: å…³é”®å¸§æ ‡ç¤º->åºå·)
 */
 inline	void FrameHead_4B_Convert(DWORD* p4B, BOOL bDirection, DWORD dwCompress)
 {
@@ -107,7 +107,6 @@ CDSP::CDSP()
 
 CDSP::~CDSP()
 {
-
 }
 
 #define PCI_DEVICE_STRING "\\\\.\\DmtiD"
@@ -116,8 +115,8 @@ BOOL CDSP::DeviceInit()
 {
 	int i;
 	char szName[20];
-	APP_DRIVER_BUFFER_INFO stIn;
-	APP_DRIVER_BUFFER_INFO stOut;
+	static APP_DRIVER_BUFFER_INFO stIn;
+	static APP_DRIVER_BUFFER_INFO stOut;
 
 	DWORD dwBytesReturned;
 
@@ -134,14 +133,18 @@ BOOL CDSP::DeviceInit()
 			NULL);
 		if (m_hDevice[i] == INVALID_HANDLE_VALUE)
 		{
+            m_hDevice[i] = NULL;
             break;
         }
 
-		m_nDeviceNum++;
-		stIn.m_hEvent[0] = m_hPrvEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
-		stIn.m_hEvent[1] = stIn.m_hEvent[2] =  // stIn.m_hEvent[2] ¸Ã²ÎÊıÎ´ÆôÓÃ£¬ÎªËü´«µİÒ»¸öÖµ£¬Ö»Îª±Ü¿ªÇı¶¯²ãµÄ²ÎÊı¼ì²é
-            m_hCompressEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
-		stIn.m_hEvent[3] = m_hAudEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
+        ZeroMemory( &stIn,  sizeof(APP_DRIVER_BUFFER_INFO) );
+        ZeroMemory( &stOut, sizeof(APP_DRIVER_BUFFER_INFO) );
+        m_nDeviceNum++;
+		stIn.m_hEvent[0] = m_hPrvEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
+		stIn.m_hEvent[1] = m_hCompressEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
+        stIn.m_hEvent[2] = NULL;//CreateEvent(NULL, TRUE, FALSE, NULL); // stIn.m_hEvent[2] è¯¥å‚æ•°æœªå¯ç”¨ï¼Œä¸ºå®ƒä¼ é€’ä¸€ä¸ªå€¼ï¼Œåªä¸ºé¿å¼€é©±åŠ¨å±‚çš„å‚æ•°æ£€æŸ¥
+		stIn.m_hEvent[3] = m_hAudEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
+		stIn.m_hEvent[4] = NULL;//CreateEvent(NULL, TRUE, FALSE, NULL);
 		BOOL bRtn = ControlDriver(
             i,
 			IOCTL_INITIALIZE_DRV,
@@ -166,20 +169,14 @@ BOOL CDSP::DeviceInit()
     {
         return FALSE;
     }
-    else
-    {
-        file.Close();
-    }
+    file.Close();
+
 	
     CTiCoffFile *m_pTiCoffFile[MAX_DEVICE_NUM];
 	for (i = 0; i < m_nDeviceNum; i++)
 	{
 		m_pTiCoffFile[i] = new CTiCoffFile(m_hDevice[i]);
         m_pTiCoffFile[i]->LoadCoffFile(s_pOutFileName[m_dwVideoFormat]);
-		/*if (DVRVIDEO_STANDARD_PAL == m_dwVideoFormat)
-			m_pTiCoffFile[i]->LoadCoffFile(OUT_FILE_NAME_PAL);
-		else
-			m_pTiCoffFile[i]->LoadCoffFile(OUT_FILE_NAME_NTSC);*/
 	}
 
 	for (i = 0; i < m_nDeviceNum; i++)
@@ -192,31 +189,12 @@ BOOL CDSP::DeviceInit()
 
 void CDSP::DeviceExit()
 {
-	for (int i = 0; i < /*MAX_DEVICE_NUM*/m_nDeviceNum; i++)	//zhangzhen	2007/03/01
+	for (int i = 0; i < m_nDeviceNum; i++)	//zhangzhen	2007/03/01
 	{
-		if (m_hDevice[i] != INVALID_HANDLE_VALUE)
-		{
-			CloseHandle(m_hDevice[i]);
-			m_hDevice[i] = INVALID_HANDLE_VALUE;
-		}
-
-		if (m_hPrvEvent[i] != NULL)
-		{
-			CloseHandle(m_hPrvEvent[i]);
-			m_hPrvEvent[i] = NULL;
-		}
-
-		if (m_hCompressEvent[i] != NULL)
-		{
-			CloseHandle(m_hCompressEvent[i]);
-			m_hCompressEvent[i] = NULL;
-		}
-
-		if (m_hAudEvent[i] != NULL)
-		{
-			CloseHandle(m_hAudEvent[i]);
-			m_hAudEvent[i] = NULL;
-		}
+        safeCloseHandle(m_hDevice[i]);
+        safeCloseHandle(m_hPrvEvent[i]);
+        safeCloseHandle(m_hCompressEvent[i]);
+        safeCloseHandle(m_hAudEvent[i]);
 	}
 }
 
@@ -282,7 +260,7 @@ BOOL CDSP::SetSwitch(DWORD *pSwitch, DWORD ChannelNum)
 		m_pSwitch[i] = pSwitch[i];
 	}
 
-	//Í¨µÀ¿ª¹Ø¸Ä±ä£¬Ë¢ĞÂÍøÂçÑ¹ËõÖ¡ÂÊ	Add By zhangzhen 2007/10/11
+	//é€šé“å¼€å…³æ”¹å˜ï¼Œåˆ·æ–°ç½‘ç»œå‹ç¼©å¸§ç‡	Add By zhangzhen 2007/10/11
 	if(bSwitchChged)
 	{
 		RefreshNetFrameRate();
@@ -341,8 +319,7 @@ BOOL CDSP::ReleaseBuffer(DWORD isVideo, DWORD DelBufPara)
 
 BOOL CDSP::CreateWorkerThread()
 {
-	m_bQuit = FALSE;
-   
+	m_bQuit = FALSE;  
     for ( int i=0; i< m_nDeviceNum; ++i )
     {
         m_hThreadPrv[i] = CreateThread(NULL, 0, OnThreadPrv, new ThreadParm(this, i), 0, NULL);
@@ -355,12 +332,9 @@ BOOL CDSP::CreateWorkerThread()
 
 void CDSP::DestroyWorkerThread()
 {
-	int i;
 	DWORD dwExitCode;
-
 	m_bQuit = TRUE;
-
-	for (i = 0; i < /*MAX_DEVICE_NUM*/m_nDeviceNum; i++)	//zhangzhen	2007/03/01
+	for (int i = 0; i < m_nDeviceNum; i++)	//zhangzhen	2007/03/01
 	{
 		if (m_hThreadPrv[i] != NULL)
 		{	
@@ -414,30 +388,14 @@ void CDSP::DestroyWorkerThread()
 
 BOOL CDSP::CreateBuffer()
 {
-	int i;
 	int j;
-
-	for (i = 0; i < m_nDeviceNum; i++)
+	for (int i = 0; i < m_nDeviceNum; i++)
 	{
 		m_pParamData[i] = new BYTE[MAX_PARAMDATA_SIZE];
-		if (m_pParamData[i] == NULL)
-		{
-//			AfxMessageBox("create m_pParamData error");
-			return FALSE;
-		}
-
 		for (j = 0; j < AUD_BUF_NUM; j++)
 		{
 			m_pAudBuf[i][j].pBuf = new BYTE[AUD_BUF_SIZE];
-			if (m_pAudBuf[i][j].pBuf == NULL)
-			{
-//				AfxMessageBox("create m_pAudBuf error");
-				return FALSE;
-			}
-			else
-			{
-				m_pAudBuf[i][j].nVLostFlag = 1;
-			}
+			m_pAudBuf[i][j].nVLostFlag = 1;
 		}
 
 		for (j = 0; j < CAP_BUF_NUM; j++)
@@ -448,8 +406,9 @@ BOOL CDSP::CreateBuffer()
 
 		for (j = 0; j < PRV_BUF_NUM; j++)
 		{
-			m_pPrvBuf[i][j].pBuf = NULL;
+			m_pPrvBuf[i][j].pBuf = new BYTE[CIF_BUFF_SIZE]; //heliang fix
 			m_pPrvBuf[i][j].nVLostFlag = 1;
+            m_pDrvHeadOfPrvBuf[i][j] = new TVT_CAP_STATUS; //heliang+
 		}
 
 		for (j = 0; j < NET_BUF_NUM; j++)
@@ -464,7 +423,7 @@ BOOL CDSP::CreateBuffer()
 			m_pMobileBuf[i][j].nVLostFlag = 1;
 		}
 
-		for (j = 0; j < CAP_BUF_NUM; j++)	//<REC-NET>ÊµÊ©ÍøÂçÁ÷À´Ô´ÓÚÂ¼ÏñÁ÷£¬BUFÊıÁ¿·ÖÅäÏàÍ¬
+		for (j = 0; j < CAP_BUF_NUM; j++)	//<REC-NET>å®æ–½ç½‘ç»œæµæ¥æºäºå½•åƒæµï¼ŒBUFæ•°é‡åˆ†é…ç›¸åŒ
 		{
 			m_pNetBuf_RT[i][j].pBuf = new BYTE[CAP_BUF_SIZE];	//<REC-NET>
 			m_pNetBuf_RT[i][j].nVLostFlag = 1;
@@ -476,43 +435,34 @@ BOOL CDSP::CreateBuffer()
 
 void CDSP::DestroyBuffer()
 {
-	int i;
 	int j;
-
-	for (i = 0; i < /*MAX_DEVICE_NUM*/m_nDeviceNum; i++)	//zhangzhen	2007/03/01
+	for (int i = 0; i < m_nDeviceNum; i++)
 	{
-		if (m_pParamData[i] != NULL)
-		{
-			delete [] m_pParamData[i];
-			m_pParamData[i] = NULL;
-		}
-
+        safeDeleteArray(m_pParamData[i]);
 		for (j = 0; j < AUD_BUF_NUM; j++)
 		{
-			if (m_pAudBuf[i][j].pBuf != NULL)
-			{
-				delete [] m_pAudBuf[i][j].pBuf;
-				m_pAudBuf[i][j].pBuf = NULL;
-			}
+            safeDeleteArray(m_pAudBuf[i][j].pBuf);
 		}
 
 		//<REC-NET>
 		for (j = 0; j < CAP_BUF_NUM; j++)
 		{
-			if (m_pNetBuf_RT[i][j].pBuf != NULL)
-			{
-				delete [] m_pNetBuf_RT[i][j].pBuf;
-				m_pNetBuf_RT[i][j].pBuf = NULL;
-			}
+             safeDeleteArray(m_pNetBuf_RT[i][j].pBuf);
 		}
+
+        //heliang+
+        for (j = 0; j < PRV_BUF_NUM; j++)
+        {
+            safeDeleteArray(m_pPrvBuf[i][j].pBuf);
+            m_pPrvBuf[i][j].nVLostFlag = 1;
+            safeDeleteArray(m_pDrvHeadOfPrvBuf[i][j]); 
+        }
 	}
 }
 
 void CDSP::VariableInit()
 {
 	int i;
-	int j;
-
 	m_bNetstart = FALSE;
 	m_bQuit = FALSE;
 	m_dwPrvBufSize = 0;
@@ -520,7 +470,6 @@ void CDSP::VariableInit()
 	m_pVideoCallBack = NULL;
 	m_pAudioCallBack = NULL;
 	m_nDeviceNum = 0;
-
 	m_dwVideoFormat = DVRVIDEO_STANDARD_PAL;
 
 	for (i = 0; i < MAX_CHANNEL_NUM; i++)
@@ -531,61 +480,38 @@ void CDSP::VariableInit()
 	for (i = 0; i < MAX_CHANNEL_NUM; i++)
 	{
 		m_ftNetLastFrameTime[i] = m_CounterTime.GetCurrentTime();
-		*(ULONGLONG *)&m_ftNetLastFrameTime[i] += i * 80 * 10000;//¾ùÔÈ·ÖÅä
+		*(ULONGLONG *)&m_ftNetLastFrameTime[i] += i * 80 * 10000;//å‡åŒ€åˆ†é…
 		m_pSwitch[i] = 0;
 		m_pAudioSwitch[i] = 1;
 	}
 
+    // Init FRAMEBUFSTRUCT
+    ZeroMemory(m_pAudBuf, sizeof(m_pAudBuf));
+    ZeroMemory(m_pCapBuf, sizeof(m_pCapBuf));
+    ZeroMemory(m_pPrvBuf, sizeof(m_pPrvBuf));
+    ZeroMemory(m_pNetBuf, sizeof(m_pNetBuf));
+    ZeroMemory(m_pMobileBuf, sizeof(m_pMobileBuf));
+    ZeroMemory(m_pNetBuf_RT, sizeof(m_pNetBuf_RT));  //<REC-NET>
+
+    // Init PTVT_CAP_STATUS
+    ZeroMemory(m_pDrvHeadOfNetBuf, sizeof(m_pDrvHeadOfNetBuf));
+    ZeroMemory(m_pDrvHeadOfMobileBuf, sizeof(m_pDrvHeadOfNetBuf));
+    ZeroMemory(m_pDrvHeadOfCapBuf, sizeof(m_pDrvHeadOfNetBuf));
+    ZeroMemory(m_pDrvHeadOfPrvBuf, sizeof(m_pDrvHeadOfNetBuf));
+
 	for (i = 0; i < MAX_DEVICE_NUM; i++)
 	{
 		m_pParamData[i] = NULL;
-
-		m_hDevice[i] = INVALID_HANDLE_VALUE;
-
+		m_hDevice[i] = NULL;
 		m_hAudEvent[i] = NULL;
 		m_hCompressEvent[i] = NULL;	//zhangzhen	2007/02/28
 		m_hPrvEvent[i] = NULL;
-
 		m_hThreadAud[i] = NULL;
 		m_hThreadPrv[i] = NULL;
-		m_hThreadCompressStrm[i] = NULL;	//zhangzhen	2007/02/28
-
-		for (j = 0; j < AUD_BUF_NUM; j++)
-		{
-			memset(&m_pAudBuf[i][j], 0, sizeof(FRAMEBUFSTRUCT));
-		}
-
-		for (j = 0; j < CAP_BUF_NUM; j++)
-		{
-			memset(&m_pCapBuf[i][j], 0, sizeof(FRAMEBUFSTRUCT));
-			m_pDrvHeadOfCapBuf[i][j] = NULL;
-		}
-
-		for (j = 0; j < PRV_BUF_NUM; j++)
-		{
-			memset(&m_pPrvBuf[i][j], 0, sizeof(FRAMEBUFSTRUCT));
-		}
-
-		for (j = 0; j < NET_BUF_NUM; j++)
-		{
-			memset(&m_pNetBuf[i][j], 0, sizeof(FRAMEBUFSTRUCT));
-			m_pDrvHeadOfNetBuf[i][j] = NULL;
-		}
-
-		for (j = 0; j < MOBILE_BUF_NUM; j++)
-		{
-			memset(&m_pMobileBuf[i][j], 0, sizeof(FRAMEBUFSTRUCT));
-			m_pDrvHeadOfMobileBuf[i][j] = NULL;
-		}
-		
-		//<REC-NET>
-		for (j = 0; j < CAP_BUF_NUM; j++)
-		{
-			memset(&m_pNetBuf_RT[i][j], 0, sizeof(FRAMEBUFSTRUCT));
-		}
+		m_hThreadCompressStrm[i] = NULL;	//zhangzhen	2007/02/28	
 	}
 
-	//Ñ¹ËõÁ÷¹Ø¼üÖ¡¿ØÖÆ±äÁ¿£¬·ÀÒâÍâ¶ªÖ¡/±àÂëÆ÷Òì³£(³¤ÆÚ²»ËÍ¹Ø¼üÖ¡)
+	//å‹ç¼©æµå…³é”®å¸§æ§åˆ¶å˜é‡ï¼Œé˜²æ„å¤–ä¸¢å¸§/ç¼–ç å™¨å¼‚å¸¸(é•¿æœŸä¸é€å…³é”®å¸§)
 	for(i = 0; i < MAX_CHANNEL_NUM; i++)
 	{
 		m_bNextFrameIsKeyRcd[i]	= TRUE;	//zhangzhen	2007/03/01
@@ -595,12 +521,12 @@ void CDSP::VariableInit()
 		m_nFrameCntNet[i]	= 0;
 		m_nFrameCntMobile[i]	= 0;
 		m_bNextFrameIsKeyNet_RT[i]	= TRUE;	//<REC-NET>
-		m_bRecordStop[i] = TRUE;	//<REC-NET>³õÊ¼×´Ì¬£¬ËùÓĞÍ¨µÀÂ¼ÏñÈ«²¿¹Ø±Õ
+		m_bRecordStop[i] = TRUE;	//<REC-NET>åˆå§‹çŠ¶æ€ï¼Œæ‰€æœ‰é€šé“å½•åƒå…¨éƒ¨å…³é—­
 	}
 
-	//ÍøÂçÁ÷Ñ¹Ëõ¿ª¹Ø	Add By zhangzhen 2007/10/11
+	//ç½‘ç»œæµå‹ç¼©å¼€å…³	Add By zhangzhen 2007/10/11
 	m_dwNetChannelMask = 0;
-	//³õÊ¼ÍøÂçÖ¡ÂÊÔöÁ¿Îª0	Add By zhangzhen 2007/10/17
+	//åˆå§‹ç½‘ç»œå¸§ç‡å¢é‡ä¸º0	Add By zhangzhen 2007/10/17
 	m_nNetFrameRateInc = 0;
 }
 
@@ -630,21 +556,11 @@ DWORD WINAPI CDSP::OnThreadCompressStrm(PVOID pParam)
 
 void CDSP::ProcessPrv(INT nDevice)
 {
-	DWORD dwWait;
-	DWORD dwStreamType;
-	DWORD dwReturn;
-	PBYTE pData;
-	PTVT_CAP_STATUS pStatus;
-	PTVT_PREV_VBI pVBI;
-	int nChannel;
-	int nIndex;
-
 	while (TRUE)
 	{
-		dwWait = WaitForSingleObject(m_hPrvEvent[nDevice], 5000);
-
-		//È·±£ÖÕÖ¹Ïß³ÌÇ°£¬°ÑËùÓĞ²ÎÊıÉèÖÃµ½DSP
-		if(m_bQuit == TRUE)	//Èô¸Ã¿¨Ã»ÓĞµÈ´ıÉèÖÃµÄ²ÎÊı£¬½áÊøÏß³Ì
+		DWORD dwWait = WaitForSingleObject(m_hPrvEvent[nDevice], 5000);
+		//ç¡®ä¿ç»ˆæ­¢çº¿ç¨‹å‰ï¼ŒæŠŠæ‰€æœ‰å‚æ•°è®¾ç½®åˆ°DSP
+		if(m_bQuit == TRUE)	//è‹¥è¯¥å¡æ²¡æœ‰ç­‰å¾…è®¾ç½®çš„å‚æ•°ï¼Œç»“æŸçº¿ç¨‹
 		{
 			if(m_pPack[nDevice].param.size() == 0)
 			{
@@ -662,80 +578,7 @@ void CDSP::ProcessPrv(INT nDevice)
 		case WAIT_FAILED:
 			break;		
 		case WAIT_OBJECT_0:
-			dwStreamType = STREAM_TYPE_PRV;
-
-			while (TRUE)	//È¡³öDriver²ãËùÓĞBUF£¬±ÜÃâBUF×èÈû
-			{
-				ControlDriver(nDevice,
-							IOCTL_VIDEO_GET_DATA_INFO,
-							&dwStreamType,
-							sizeof(DWORD),
-							&pData,
-							sizeof(DWORD),
-							&dwReturn);
-
-				if(pData == NULL)//Driver²ãÒÑÃ»ÓĞ¿ÉÓÃBUF
-				{
-					break;
-				}
-				
-				pStatus = (PTVT_CAP_STATUS)pData;
-
-				SetParamToDSP(nDevice);
-
-				pStatus->dwReserve4 = 4;	//Ò»´Î´¦ÀíÕû¿é¿¨4Í¨µÀÊı¾İ
-
-				for (nChannel = 0; nChannel < CHANNEL_PER_DEVICE; nChannel++)
-				{
-					pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel);
-					SetSignal(nDevice * CHANNEL_PER_DEVICE + nChannel, pVBI->videoLoss);
-
-					if (m_pSwitch[nDevice * CHANNEL_PER_DEVICE + nChannel] == 1 && !pVBI->videoLoss && pVBI->byInvalid)
-					{
-						if (FindPrvBuf(nDevice, nIndex))
-						{
-							//Êı¾İ²¿·ÖÖ¸Õë
-							m_pPrvBuf[nDevice][nIndex].pBuf = pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel + PREV_VBI_SIZE;
-							m_pDrvHeadOfPrvBuf[nDevice][nIndex] = pStatus;	//¸Ã»º³å¶ÔÓ¦µÄDRIVER²ãBUFÍ·
-
-							m_pPrvBuf[nDevice][nIndex].ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
-							m_pPrvBuf[nDevice][nIndex].BufLen = m_dwPrvBufSize;
-							m_pPrvBuf[nDevice][nIndex].nStreamID = VIDEO_STREAM_PREVIEW;
-							m_pPrvBuf[nDevice][nIndex].BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
-
-							PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
-							m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
-						}
-						else
-						{
-							ReleaseDriverBuffer(pStatus);
-							TRACE("no prvbuf\n");
-						}
-					}
-					else
-					{
-						ReleaseDriverBuffer(pStatus);
-					}
-				}
-/*//zhangzhen 2007/02/09
-				while(pStatus->dwReserve4 != 0)	//µÈ´ı»º³åÇøÈ«²¿´¦ÀíÍê
-				{
-					if(m_bQuit)
-					{
-						break;
-					}
-
-					Sleep(1);
-				}
-
-				pStatus->byLock = 0;
-*/			}
-/*//zhangzhen 2007/02/09
-			if(!m_bQuit)
-			{
-				ResetEvent(m_hPrvEvent[nDevice]);
-			}
-*/
+			GetPrvData(nDevice);
 			break;
 		default:
 			break;
@@ -743,15 +586,80 @@ void CDSP::ProcessPrv(INT nDevice)
 	}
 }
 
+void CDSP::GetPrvData(int nDevice)
+{
+    DWORD dwStreamType = STREAM_TYPE_PRV;
+    PBYTE pData;
+    PTVT_CAP_STATUS pStatus;
+    PTVT_PREV_VBI pVBI;
+    DWORD dwReturn;
+    while (TRUE)	//å–å‡ºDriverå±‚æ‰€æœ‰BUFï¼Œé¿å…BUFé˜»å¡
+    {
+        ControlDriver(
+            nDevice,
+            IOCTL_VIDEO_GET_DATA_INFO,
+            &dwStreamType,
+            sizeof(DWORD),
+            &pData,
+            sizeof(DWORD),
+            &dwReturn);
+        if(pData == NULL)//Driverå±‚å·²æ²¡æœ‰å¯ç”¨BUF
+        {
+            break;
+        }
+
+        pStatus = (PTVT_CAP_STATUS)pData;
+        SetParamToDSP(nDevice);
+
+        pStatus->dwReserve4 = 4;	//ä¸€æ¬¡å¤„ç†æ•´å—å¡4é€šé“æ•°æ®
+        for (int nChannel = 0; nChannel < CHANNEL_PER_DEVICE; nChannel++)
+        {
+            pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel);
+            SetSignal(nDevice * CHANNEL_PER_DEVICE + nChannel, pVBI->videoLoss);
+
+            int nIndex;
+            // if channel is close or video loss or is valid
+            // or not enough buffer
+            if ( m_pSwitch[nDevice * CHANNEL_PER_DEVICE + nChannel] == 0 ||
+                 pVBI->videoLoss ||
+                 !pVBI->byInvalid ||
+                 !FindPrvBuf(nDevice, nIndex) )
+            {
+                ReleaseDriverBuffer(pStatus);
+                continue;  // [] continue;
+            }    
+
+            //æ•°æ®éƒ¨åˆ†æŒ‡é’ˆ
+            BYTE* pBuf = pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel + PREV_VBI_SIZE;
+            memcpy(m_pPrvBuf[nDevice][nIndex].pBuf, pBuf, CIF_BUFF_SIZE); 
+            memcpy(m_pDrvHeadOfPrvBuf[nDevice][nIndex], pStatus, sizeof(TVT_CAP_STATUS));	//è¯¥ç¼“å†²å¯¹åº”çš„DRIVERå±‚BUFå¤´
+
+            m_pPrvBuf[nDevice][nIndex].ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
+            m_pPrvBuf[nDevice][nIndex].BufLen = m_dwPrvBufSize;
+            m_pPrvBuf[nDevice][nIndex].nStreamID = VIDEO_STREAM_PREVIEW;
+            m_pPrvBuf[nDevice][nIndex].BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
+
+            PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
+            BOOL bRc =  m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
+            if ( !bRc )
+            {
+                TRACE("..............Pre Err!\n");
+            }
+
+            ReleaseDriverBuffer(pStatus);
+        }      
+    }
+}
+
 /*
-¹¦ÄÜËµÃ÷ : ´¦ÀíËùÓĞÑ¹ËõÁ÷
-			(È¡´úÔ­Ê¼ProcessNetºÍProcessCapÁ½¸ö´¦Àíº¯Êı£¬¼°ÒÔºóµÄÊÖ»úÁ÷Ò²ÔÚ´Ë´¦Àí)
-²ÎÊıËµÃ÷ : nDevice[IN] : 4104¿¨±àºÅ
-·µ »Ø Öµ : ¿Õ
-ĞŞ¸Ä¼ÇÂ¼ :
-			ĞŞ¸ÄÈË			ĞŞ¸ÄÈÕÆÚ		ĞŞ¸ÄÄÚÈİ
+åŠŸèƒ½è¯´æ˜ : å¤„ç†æ‰€æœ‰å‹ç¼©æµ
+			(å–ä»£åŸå§‹ProcessNetå’ŒProcessCapä¸¤ä¸ªå¤„ç†å‡½æ•°ï¼ŒåŠä»¥åçš„æ‰‹æœºæµä¹Ÿåœ¨æ­¤å¤„ç†)
+å‚æ•°è¯´æ˜ : nDevice[IN] : 4104å¡ç¼–å·
+è¿” å› å€¼ : ç©º
+ä¿®æ”¹è®°å½• :
+			ä¿®æ”¹äºº			ä¿®æ”¹æ—¥æœŸ		ä¿®æ”¹å†…å®¹
 -----------------------------------------------------------------------------------
-			zhangzhen		2007/01/20		´´½¨(ÒòÎªDSP³ÌĞò´¦Àí¹ı³ÌĞŞ¸Ä£¬ĞèÒªºÏ²¢Ñ¹ËõÁ÷)
+			zhangzhen		2007/01/20		åˆ›å»º(å› ä¸ºDSPç¨‹åºå¤„ç†è¿‡ç¨‹ä¿®æ”¹ï¼Œéœ€è¦åˆå¹¶å‹ç¼©æµ)
 */
 void CDSP::ProcessCompressStreams(INT nDevice)
 {
@@ -762,12 +670,11 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 	PTVT_CAP_STATUS pStatus;
 	PTVT_REC_VBI pVBI;
 
-	long	nFrameNum = 0;	//¼ÇÂ¼´ÓDRIVER²ãÒ»´ÎÈ¡³öµÄÖ¡ÊıÁ¿
-	PVOID	pTemp = NULL;	//ÁÙÊ±Ö¸Õë
+	long	nFrameNum = 0;	//è®°å½•ä»DRIVERå±‚ä¸€æ¬¡å–å‡ºçš„å¸§æ•°é‡
+	PVOID	pTemp = NULL;	//ä¸´æ—¶æŒ‡é’ˆ
 
 	while (TRUE)
 	{
-
 		dwWait = WaitForSingleObject(m_hCompressEvent[nDevice], 5000);
 
 		if (m_bQuit == TRUE)
@@ -779,13 +686,12 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 			TRACE("Devide : %d ProcessCompressStreams WAIT_TIMEOUT\n", nDevice);
 			break;
 		case WAIT_ABANDONED:
-			break;
 		case WAIT_FAILED:
 			break;		
 		case WAIT_OBJECT_0:
 			dwStreamType = STREAM_TYPE_CAP;
 
-			while (TRUE)	//È¡³öDriver²ãËùÓĞBUF£¬±ÜÃâBUF×èÈû
+			while (TRUE)	//å–å‡ºDriverå±‚æ‰€æœ‰BUFï¼Œé¿å…BUFé˜»å¡
 			{
 				ControlDriver(nDevice,
 							IOCTL_VIDEO_GET_DATA_INFO,
@@ -794,8 +700,7 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 							&pData,
 							sizeof(DWORD),
 							&dwReturn);
-
-				if(pData == NULL)//Driver²ãÒÑÃ»ÓĞ¿ÉÓÃBUF
+				if(pData == NULL)//Driverå±‚å·²æ²¡æœ‰å¯ç”¨BUF
 				{
 					break;
 				}
@@ -803,7 +708,7 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 				pStatus = (PTVT_CAP_STATUS)pData;
 				pData += sizeof(TVT_CAP_STATUS);
 				
-				//Í³¼ÆÕâ´ÎÈ¡³öµÄBUF×ÜÊı(ÒËÔÚµ×²ãÌî³äBUFÊ±Í³¼Æ)
+				//ç»Ÿè®¡è¿™æ¬¡å–å‡ºçš„BUFæ€»æ•°(å®œåœ¨åº•å±‚å¡«å……BUFæ—¶ç»Ÿè®¡)
 				nFrameNum = 0;
 
 				pTemp = pData;
@@ -811,14 +716,14 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 				{
 					pVBI = (TVT_REC_VBI*) pData;
 
-					if(pVBI->byDataType == 0xff)	//¸ÃÊı¾İ°ü´¦ÀíÍê
+					if(pVBI->byDataType == 0xff)	//è¯¥æ•°æ®åŒ…å¤„ç†å®Œ
 					{
 						break;
 					}
 
 					pData += sizeof(TVT_REC_VBI);
 
-					if(pVBI->byInvalid == 0)	//·Ç·¨Êı¾İ²»Í³¼Æ
+					if(pVBI->byInvalid == 0)	//éæ³•æ•°æ®ä¸ç»Ÿè®¡
 					{
 						pData += pVBI->dwLen;	//
 						continue;
@@ -826,17 +731,17 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 
 					nFrameNum++;
 
-					pData += pVBI->dwLen;	//ÏÂÒ»Ö¡
+					pData += pVBI->dwLen;	//ä¸‹ä¸€å¸§
 				}
 
-				if(nFrameNum <= 0)	//¿ÕBUF
+				if(nFrameNum <= 0)	//ç©ºBUF
 				{
-					pStatus->byLock = 0;	//½âËø£¬È¡ÏÂÒ»BUF
+					pStatus->byLock = 0;	//è§£é”ï¼Œå–ä¸‹ä¸€BUF
 					continue;
 				}
 
-				//ÔÚBUF×´Ì¬ĞÅÏ¢Í·ÖĞ¼ÇÂ¼¸ÃBUFÖĞ×Ü¹²°üº¬µÄÖ¡Êı£¬ÒÔ±¸ÔÚBUFÊÍ·ÅÊ±×÷¼õÒ»¼ÆÊı
-				//´ı¸Ã¼ÆÊıÆ÷Îª0Ê±£¬ËµÃ÷¸ÃBUFÖĞËùÓĞÖ¡¾ùÒÑ´¦ÀíÍê£¬×îÖÕbyLockÖÃ0£¬ÊÍ·ÅDRIVER²ãBUF
+				//åœ¨BUFçŠ¶æ€ä¿¡æ¯å¤´ä¸­è®°å½•è¯¥BUFä¸­æ€»å…±åŒ…å«çš„å¸§æ•°ï¼Œä»¥å¤‡åœ¨BUFé‡Šæ”¾æ—¶ä½œå‡ä¸€è®¡æ•°
+				//å¾…è¯¥è®¡æ•°å™¨ä¸º0æ—¶ï¼Œè¯´æ˜è¯¥BUFä¸­æ‰€æœ‰å¸§å‡å·²å¤„ç†å®Œï¼Œæœ€ç»ˆbyLockç½®0ï¼Œé‡Šæ”¾DRIVERå±‚BUF
 				::InterlockedExchange((PLONG)(&(pStatus->dwReserve4)), nFrameNum);
 
 				pData = (PBYTE)pTemp;
@@ -845,75 +750,54 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 				{
 					pVBI = (TVT_REC_VBI*) pData;
 
-					if(pVBI->byDataType == 0xff)	//¸ÃÊı¾İ°ü´¦ÀíÍê
+					if(pVBI->byDataType == 0xff)	//è¯¥æ•°æ®åŒ…å¤„ç†å®Œ
 					{
 						break;
 					}
 
 					pData += sizeof(TVT_REC_VBI);
 
-					if(pVBI->byInvalid == 0)	//·Ç·¨Êı¾İ²»´¦Àí
+					if(pVBI->byInvalid == 0)	//éæ³•æ•°æ®ä¸å¤„ç†
 					{
-						pData += pVBI->dwLen;	//ÏÖÔÚ²»»áÖ´ĞĞµ½´Ë£¬±£Ö¤Âß¼­½á¹¹ÍêÕû
+						pData += pVBI->dwLen;	//ç°åœ¨ä¸ä¼šæ‰§è¡Œåˆ°æ­¤ï¼Œä¿è¯é€»è¾‘ç»“æ„å®Œæ•´
 						continue;
 					}
 
-					if(pVBI->byDataType == 0)	//Â¼ÏñÁ÷
-					{
-						CmprssStreamProcessNet_RT(nDevice, pVBI, pData, pStatus);	//<REC-NET>
+                    switch (pVBI->byDataType)
+                    {
+                    case 0:  //å½•åƒæµ                         
+                        CmprssStreamProcessNet_RT(nDevice, pVBI, pData, pStatus);	//<REC-NET>
 
-						//¶ªÖ¡ºó¸ÃBUF²»ÔÙÊ¹ÓÃ£¬¼´µ±Ç°ÓÉpStatus¹ÜÀí×´Ì¬µÄBUFÊıÁ¿Òª¼õÒ»
-						if(CmprssStreamProcessRcd(nDevice, pVBI, pData, pStatus) == 0)
-						{
-							ReleaseDriverBuffer(pStatus);
-						}
-					}
-					else if(pVBI->byDataType == 1)	//ÍøÂçÁ÷
-					{
-						//Ôö¼Ó¶Ô¶ªÖ¡µÄ´¦Àí£¬¶ªÖ¡ºó¸ÃBUF²»ÔÙÊ¹ÓÃ£¬¼´µ±Ç°ÓÉpStatus¹ÜÀí×´Ì¬µÄBUFÊıÁ¿Òª¼õÒ»
-						if(CmprssStreamProcessNet(nDevice, pVBI, pData, pStatus) == 0)
-						{
-							ReleaseDriverBuffer(pStatus);
-						}
-					}
-					else if(pVBI->byDataType == 2)	//ÊÖ»úÁ÷
-					{
-						//Ôö¼Ó¶Ô¶ªÖ¡µÄ´¦Àí£¬¶ªÖ¡ºó¸ÃBUF²»ÔÙÊ¹ÓÃ£¬¼´µ±Ç°ÓÉpStatus¹ÜÀí×´Ì¬µÄBUFÊıÁ¿Òª¼õÒ»
-						if(CmprssStreamProcessMobile(nDevice, pVBI, pData, pStatus) == 0)
-						{
-							ReleaseDriverBuffer(pStatus);
-						}
-					}
-					else
-					{
-						//ÕâÊÇ²»ºÏ·¨µÄÇé¿ö£¬Èç¹ûÖ´ĞĞµ½´Ë£¬Ò²×ö¶ªÖ¡´¦Àí
-						ReleaseDriverBuffer(pStatus);
-					}
+                        //ä¸¢å¸§åè¯¥BUFä¸å†ä½¿ç”¨ï¼Œå³å½“å‰ç”±pStatusç®¡ç†çŠ¶æ€çš„BUFæ•°é‡è¦å‡ä¸€
+                        if(CmprssStreamProcessRcd(nDevice, pVBI, pData, pStatus) == 0)
+                        {
+                            ReleaseDriverBuffer(pStatus);
+                        }
+                        break;
+                    case 1:  //ç½‘ç»œæµ
+                        //å¢åŠ å¯¹ä¸¢å¸§çš„å¤„ç†ï¼Œä¸¢å¸§åè¯¥BUFä¸å†ä½¿ç”¨ï¼Œå³å½“å‰ç”±pStatusç®¡ç†çŠ¶æ€çš„BUFæ•°é‡è¦å‡ä¸€
+                        if(CmprssStreamProcessNet(nDevice, pVBI, pData, pStatus) == 0)
+                        {
+                            ReleaseDriverBuffer(pStatus);
+                        }
+                    	break;
+                    case 2:  //æ‰‹æœºæµ
+                        //å¢åŠ å¯¹ä¸¢å¸§çš„å¤„ç†ï¼Œä¸¢å¸§åè¯¥BUFä¸å†ä½¿ç”¨ï¼Œå³å½“å‰ç”±pStatusç®¡ç†çŠ¶æ€çš„BUFæ•°é‡è¦å‡ä¸€
+                        if(CmprssStreamProcessMobile(nDevice, pVBI, pData, pStatus) == 0)
+                        {
+                            ReleaseDriverBuffer(pStatus);
+                        }
+                    	break;
+                    default:
+                        //è¿™æ˜¯ä¸åˆæ³•çš„æƒ…å†µï¼Œå¦‚æœæ‰§è¡Œåˆ°æ­¤ï¼Œä¹Ÿåšä¸¢å¸§å¤„ç†
+                        ReleaseDriverBuffer(pStatus);
+                    	break;
+                    }
 	
-					pData += pVBI->dwLen;	//ÏÂÒ»Ö¡
-				}
-
-//zhangzhen 2007/02/09
-				//µÈ´ıÈ¡³öµÄËùÓĞBUF¶¼´¦ÀíÍê£¬È»ºóÈ¡³öÏÂÒ»¸ö
-/*				while(pStatus->dwReserve4 != 0)
-				{
-					if(m_bQuit)
-					{
-						break;
-					}
-					Sleep(1);
-				}
-
-				pStatus->byLock = 0;
-*/			}
-
-//zhangzhen 2007/02/09
-/*			if(!m_bQuit)
-			{
-				ResetEvent(m_hCompressEvent[nDevice]);
-			}
-*/
-			break;
+					pData += pVBI->dwLen;	//ä¸‹ä¸€å¸§
+				}			    
+            }
+            break;
 		default:
 			break;
 		}
@@ -948,13 +832,12 @@ void CDSP::ProcessAud(INT nDevice)
 			TRACE("Devide : %d ProcessAud WAIT_TIMEOUT\n", nDevice);
 			break;
 		case WAIT_ABANDONED:
-			break;
 		case WAIT_FAILED:
 			break;		
 		case WAIT_OBJECT_0:
 			dwStreamType = STREAM_TYPE_AUD;
 
-			while (TRUE)	//È¡³öDriver²ãËùÓĞBUF£¬±ÜÃâBUF×èÈû
+			while (TRUE)	//å–å‡ºDriverå±‚æ‰€æœ‰BUFï¼Œé¿å…BUFé˜»å¡
 			{
 				ControlDriver(nDevice,
 							IOCTL_VIDEO_GET_DATA_INFO,
@@ -964,7 +847,7 @@ void CDSP::ProcessAud(INT nDevice)
 							sizeof(DWORD),
 							&dwReturn);
 
-				if(pData == NULL)//Driver²ãÒÑÃ»ÓĞ¿ÉÓÃBUF
+				if(pData == NULL)//Driverå±‚å·²æ²¡æœ‰å¯ç”¨BUF
 				{
 					break;
 				}
@@ -975,9 +858,9 @@ void CDSP::ProcessAud(INT nDevice)
 
 				for (nIndex = 0; nIndex < CHANNEL_PER_DEVICE; nIndex++)
 				{
-					//¸ÄÍ¨µÀºÅ£¬×ó×óÓÒÓÒ¸Ä³É×óÓÒ×óÓÒ
+					//æ”¹é€šé“å·ï¼Œå·¦å·¦å³å³æ”¹æˆå·¦å³å·¦å³
 //#define CARD4104_BNC
-#ifdef CARD4104_BNC	//4104 BNC½Ó¿Ú£¬ÒôÆµÍ¨µÀºÅÓ³Éä¾ÀÕı
+#ifdef CARD4104_BNC	//4104 BNCæ¥å£ï¼ŒéŸ³é¢‘é€šé“å·æ˜ å°„çº æ­£
 					if (nIndex == 1)
 					{
 						nChannel = nDevice * CHANNEL_PER_DEVICE + 2;
@@ -990,7 +873,7 @@ void CDSP::ProcessAud(INT nDevice)
 					{
 						nChannel = nDevice * CHANNEL_PER_DEVICE + nIndex;
 					}
-#else	//4104 DĞÍ½Ó¿Ú£¬ÒôÆµÍ¨µÀºÅÓ³Éä¾ÀÕı
+#else	//4104 Då‹æ¥å£ï¼ŒéŸ³é¢‘é€šé“å·æ˜ å°„çº æ­£
 					if (nIndex == 0)
 					{
 						nChannel = nDevice * CHANNEL_PER_DEVICE + 1;
@@ -1033,12 +916,6 @@ void CDSP::ProcessAud(INT nDevice)
 
 				pStatus->byLock = 0;
 			}
-/*//zhangzhen 2007/02/09
-			if(!m_bQuit)
-			{
-				ResetEvent(m_hAudEvent[nDevice]);
-			}
-*/
 			break;
 		default:
 			break;
@@ -1047,188 +924,153 @@ void CDSP::ProcessAud(INT nDevice)
 }
 
 /*
-¹¦ÄÜËµÃ÷ : ´¦ÀíÂ¼ÏñÁ÷Êı¾İÖ¡
-²ÎÊıËµÃ÷ : nDeviceNo[IN]--¿¨ºÅ
-		   pVBI[IN]	------VBIĞÅÏ¢Ö¸Õë
-		   pVideoData[IN]-Êı¾İ²¿·ÖÖ¸Õë
-		   pST[IN]--------Ö¸Ïò¸ÃÖ¡BUFÇøÔÚDRIVER²ãËùÊôµÄBUFÍ·,ÒÔ±ãÊÍ·ÅDRIVER²ãµÄBUF
-·µ »Ø Öµ : 0--Ê§°Ü(¸ÃÖ¡Ã»ÓĞÉúĞ§£¬¼´Ã»ÓĞÉÏ´«µ½AP)	1--³É¹¦ÉÏ´«µ½AP
+åŠŸèƒ½è¯´æ˜ : å¤„ç†å½•åƒæµæ•°æ®å¸§
+å‚æ•°è¯´æ˜ : nDeviceNo[IN]--å¡å·
+		   pVBI[IN]	------VBIä¿¡æ¯æŒ‡é’ˆ
+		   pVideoData[IN]-æ•°æ®éƒ¨åˆ†æŒ‡é’ˆ
+		   pST[IN]--------æŒ‡å‘è¯¥å¸§BUFåŒºåœ¨DRIVERå±‚æ‰€å±çš„BUFå¤´,ä»¥ä¾¿é‡Šæ”¾DRIVERå±‚çš„BUF
+è¿” å› å€¼ : 0--å¤±è´¥(è¯¥å¸§æ²¡æœ‰ç”Ÿæ•ˆï¼Œå³æ²¡æœ‰ä¸Šä¼ åˆ°AP)	1--æˆåŠŸä¸Šä¼ åˆ°AP
 */
 int CDSP::CmprssStreamProcessRcd(int nDeviceNo, const PTVT_REC_VBI& pVBI, const PBYTE pVideoData, const PTVT_CAP_STATUS& pST)
 {
-	int nChl = nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//Í¨µÀºÅ
-	int	nIndex = 0;	//Ñ¡ÖĞ»º³åÇø±àºÅ
-	int	nLen = 0;	//ÊÓÆµÊı¾İ³¤¶È
-	BOOL	bFrameAccept = FALSE;	//Êı¾İ±»AP½ÓÊÕ±êÖ¾
+	int nChl = nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//é€šé“å·
+	int	nIndex = 0;	//é€‰ä¸­ç¼“å†²åŒºç¼–å·
+	int	nLen = 0;	//è§†é¢‘æ•°æ®é•¿åº¦
 
-	//ÕıÔÚµÈ´ı¹Ø¼üÖ¡£¬µ«¸ÃÖ¡²»ÊÇ¹Ø¼üÖ¡£¬¶ªÆú
+	//æ­£åœ¨ç­‰å¾…å…³é”®å¸§ï¼Œä½†è¯¥å¸§ä¸æ˜¯å…³é”®å¸§ï¼Œä¸¢å¼ƒ
 	if(m_bNextFrameIsKeyRcd[nChl] && !pVBI->byKeyFrame)
 	{
 		return 0;
 	}
 
-	m_bNextFrameIsKeyRcd[nChl] = FALSE;
+    // if channel is close or Record is Stop, return
+    // <REC-NET>	å½•åƒåœæ­¢çŠ¶æ€ä¸‹ï¼Œå½•åƒæµåœæ­¢ä¸Šä¼ 
+    if ( m_pSwitch[nChl] == 0 || m_bRecordStop[nChl] )
+    {
+        //å…³é—­çŠ¶æ€ä¸‹ï¼Œä¸€ç›´ç­‰å¾…å…³é”®å¸§ï¼Œä½†ä¸èƒ½å¼ºåˆ¶å…³é”®å¸§ï¼Œå› ä¸ºå½•åƒæµå·²ç»å¼€æ”¾åˆ°ç½‘ç»œï¼Œå½•åƒå…³é—­æ—¶ï¼Œç½‘ç»œè¦ç…§å¸¸ä¼ è¾“ï¼Œå¦‚æœå¼ºåˆ¶å…³é”®å¸§ï¼Œå°†é€ æˆç æµå¤§ï¼Œä¸”ç”»è´¨ä½	<REC-NET>
+        m_bNextFrameIsKeyRcd[nChl] = TRUE;
+        //SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
+        return 0;
+    }
 
-	if (m_pSwitch[nChl] == 1 && !m_bRecordStop[nChl])	//<REC-NET>	Â¼ÏñÍ£Ö¹×´Ì¬ÏÂ£¬Â¼ÏñÁ÷Í£Ö¹ÉÏ´«
+    // buffer not enough, return
+	if ( !FindCapBuf(nDeviceNo, nIndex) )
 	{
-		if (FindCapBuf(nDeviceNo, nIndex))
-		{
-			nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
+        //BUFä¸è¶³ï¼Œä¸¢å¸§ï¼Œéœ€è¦ä¸€ä¸ªå³æ—¶å…³é”®å¸§ï¼Œå¹¶ç­‰å¾…ä¸‹ä¸€ä¸ªå…³é”®å¸§
+        SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
+        m_bNextFrameIsKeyRcd[nChl] = TRUE;
+        return 0;
+    }
 
-			m_pCapBuf[nDeviceNo][nIndex].pBuf = pVideoData;
+	nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
+	m_pCapBuf[nDeviceNo][nIndex].pBuf = pVideoData;
+	m_pDrvHeadOfCapBuf[nDeviceNo][nIndex] = pST;	//è®°å½•è¯¥BUFåœ¨DRIVERå±‚æ‰€å±çš„ç¼“å†²å¤´ï¼Œä»¥ä¾¿é‡Šæ”¾DRIVERå±‚BUF
 
-			m_pDrvHeadOfCapBuf[nDeviceNo][nIndex] = pST;	//¼ÇÂ¼¸ÃBUFÔÚDRIVER²ãËùÊôµÄ»º³åÍ·£¬ÒÔ±ãÊÍ·ÅDRIVER²ãBUF
+	m_pCapBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
+	m_pCapBuf[nDeviceNo][nIndex].BufLen = nLen;
+	m_pCapBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_CAPTURE;
+	m_pCapBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_CAPTURE << 16 | nDeviceNo << 8 | nIndex;
+	m_pCapBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
+	m_pCapBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
+	m_pCapBuf[nDeviceNo][nIndex].FrameTime = m_pCapBuf[nDeviceNo][nIndex].localTime;
+	
+    if ( m_pVideoCallBack(&m_pCapBuf[nDeviceNo][nIndex]) )
+    {
+        m_bNextFrameIsKeyRcd[nChl] = FALSE;
+    }
+    else
+    {
+        SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
+        m_bNextFrameIsKeyRcd[nChl] = TRUE;
+    }
 
-			m_pCapBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
-			m_pCapBuf[nDeviceNo][nIndex].BufLen = nLen;
-			m_pCapBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_CAPTURE;
-			m_pCapBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_CAPTURE << 16 | nDeviceNo << 8 | nIndex;
-			m_pCapBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
+	PrintFrameRate(nChl, VIDEO_STREAM_CAPTURE);
 
-			m_pCapBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
-
-			m_pCapBuf[nDeviceNo][nIndex].FrameTime = m_pCapBuf[nDeviceNo][nIndex].localTime;
-			bFrameAccept = m_pVideoCallBack(&m_pCapBuf[nDeviceNo][nIndex]);
-
-			PrintFrameRate(nChl, VIDEO_STREAM_CAPTURE);
-
-			m_nFrameCntRcd[nChl]++;
-
-			//³¬¹ı100Ö¡Ã»ÓĞÉÏ´«¹Ø¼üÖ¡£¬Ç¿ÖÆDSP³ÌĞò·¢ËÍÒ»¸ö¼´Ê±¹Ø¼üÖ¡
-			//µ«Ã»ÓĞ±ØÒªµÈ´ı¹Ø¼üÖ¡£¬ÒòÎªÃ»ÓĞ¶ªÖ¡
-/*			if(m_nFrameCntRcd[nChl] > 100)
-			{
-				SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
-			}
-*/
-			if(!bFrameAccept)
-			{
-				SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
-				m_bNextFrameIsKeyRcd[nChl] = TRUE;
-			}
-
-			if(pVBI->byKeyFrame)
-			{
-				m_nFrameCntRcd[nChl] = 0;
-			}
-		}
-		else
-		{
-			//BUF²»×ã£¬¶ªÖ¡£¬ĞèÒªÒ»¸ö¼´Ê±¹Ø¼üÖ¡£¬²¢µÈ´ıÏÂÒ»¸ö¹Ø¼üÖ¡
-			SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
-			m_bNextFrameIsKeyRcd[nChl] = TRUE;
-			TRACE("no capbuf\n");
-
-			return 0;
-		}
-	}
-	else
+    // ç»Ÿè®¡ä¸¤ä¸ªIå¸§ä¹‹é—´æœ‰å¤šå°‘ä¸ªPå¸§
+	++m_nFrameCntRcd[nChl];
+	//è¶…è¿‡100å¸§æ²¡æœ‰ä¸Šä¼ å…³é”®å¸§ï¼Œå¼ºåˆ¶DSPç¨‹åºå‘é€ä¸€ä¸ªå³æ—¶å…³é”®å¸§
+	//ä½†æ²¡æœ‰å¿…è¦ç­‰å¾…å…³é”®å¸§ï¼Œå› ä¸ºæ²¡æœ‰ä¸¢å¸§
+ /* if(m_nFrameCntRcd[nChl] > 100)
 	{
-		//¹Ø±Õ×´Ì¬ÏÂ£¬Ò»Ö±µÈ´ı¹Ø¼üÖ¡£¬µ«²»ÄÜÇ¿ÖÆ¹Ø¼üÖ¡£¬ÒòÎªÂ¼ÏñÁ÷ÒÑ¾­¿ª·Åµ½ÍøÂç£¬Â¼Ïñ¹Ø±ÕÊ±£¬ÍøÂçÒªÕÕ³£´«Êä£¬Èç¹ûÇ¿ÖÆ¹Ø¼üÖ¡£¬½«Ôì³ÉÂëÁ÷´ó£¬ÇÒ»­ÖÊµÍ	<REC-NET>
-		m_bNextFrameIsKeyRcd[nChl] = TRUE;
-//		SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
-		return 0;
+		SetParam(PT_PCI_SET_IMMED_IFRAME, nChl, 1);
+	} */
+
+	if(pVBI->byKeyFrame)
+	{
+		m_nFrameCntRcd[nChl] = 0;
 	}
 
 	return 1;
 }
 
 /*
-¹¦ÄÜËµÃ÷ : ´¦ÀíÍøÂçÁ÷Êı¾İÖ¡
-²ÎÊıËµÃ÷ : nDeviceNo[IN]--¿¨ºÅ
-		   pVBI[IN]	------VBIĞÅÏ¢Ö¸Õë
-		   pVideoData[IN]-Êı¾İ²¿·ÖÖ¸Õë
-		   pST[IN]--------Ö¸Ïò¸ÃÖ¡BUFÇøÔÚDRIVER²ãËùÊôµÄBUFÍ·,ÒÔ±ãÊÍ·ÅDRIVER²ãµÄBUF
-·µ »Ø Öµ : 0--Ê§°Ü(¸ÃÖ¡Ã»ÓĞÉúĞ§£¬¼´Ã»ÓĞÉÏ´«µ½AP)	1--³É¹¦ÉÏ´«µ½AP
+åŠŸèƒ½è¯´æ˜ : å¤„ç†ç½‘ç»œæµæ•°æ®å¸§
+å‚æ•°è¯´æ˜ : nDeviceNo[IN]--å¡å·
+		   pVBI[IN]	------VBIä¿¡æ¯æŒ‡é’ˆ
+		   pVideoData[IN]-æ•°æ®éƒ¨åˆ†æŒ‡é’ˆ
+		   pST[IN]--------æŒ‡å‘è¯¥å¸§BUFåŒºåœ¨DRIVERå±‚æ‰€å±çš„BUFå¤´,ä»¥ä¾¿é‡Šæ”¾DRIVERå±‚çš„BUF
+è¿” å› å€¼ : 0--å¤±è´¥(è¯¥å¸§æ²¡æœ‰ç”Ÿæ•ˆï¼Œå³æ²¡æœ‰ä¸Šä¼ åˆ°AP)	1--æˆåŠŸä¸Šä¼ åˆ°AP
 */
 int CDSP::CmprssStreamProcessNet(int nDeviceNo, const PTVT_REC_VBI& pVBI, const PBYTE pVideoData, const PTVT_CAP_STATUS& pST)
 {	
-	int nChl = nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//Í¨µÀºÅ
-	int	nIndex = 0;	//Ñ¡ÖĞ»º³åÇø±àºÅ
-	int	nLen = 0;	//ÊÓÆµÊı¾İ³¤¶È
-	BOOL	bFrameAccept = FALSE;	//Êı¾İ±»AP½ÓÊÕ±êÖ¾
+	int nChl = nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//é€šé“å·
+	int	nIndex = 0;	//é€‰ä¸­ç¼“å†²åŒºç¼–å·
+	int	nLen = 0;	//è§†é¢‘æ•°æ®é•¿åº¦
+	BOOL	bFrameAccept = FALSE;	//æ•°æ®è¢«APæ¥æ”¶æ ‡å¿—
 
 	WriteTestLog("chl = %d, key = %d, len = %d\n", nChl, pVBI->byKeyFrame, pVBI->dwLen);
-	//ÕıÔÚµÈ´ı¹Ø¼üÖ¡£¬µ«¸ÃÖ¡²»ÊÇ¹Ø¼üÖ¡£¬¶ªÆú
+	//æ­£åœ¨ç­‰å¾…å…³é”®å¸§ï¼Œä½†è¯¥å¸§ä¸æ˜¯å…³é”®å¸§ï¼Œä¸¢å¼ƒ
 	if(m_bNextFrameIsKeyNet[nChl] && !pVBI->byKeyFrame)
 	{
 //		pVBI->byKeyFrame = 1;
 		return 0;
 	}
 
-#if 0
-//*	ÖØ¸´Ö¡×·×Ù
-	static	DWORD dwLastNo = 0;
+    // if channel is close or net is Stop or buffer not enough, 
+    // Set next Frame must I Frame, return 0
+    if ( m_pSwitch[nChl] == 0 || !m_bNetstart 
+         || !FindNetBuf(nDeviceNo, nIndex) ) //<REC-NET>
+    {
+        m_bNextFrameIsKeyNet[nChl] = TRUE;
+        SetParam(PT_PCI_SET_NET_IMMED_IFRAME, nChl, 1);
+        return 0;  
+    }
 
-	if(((*(DWORD*)pVideoData)<<8) == (dwLastNo<<8))
+	nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
+	m_pNetBuf[nDeviceNo][nIndex].pBuf = pVideoData;
+	m_pDrvHeadOfNetBuf[nDeviceNo][nIndex] = pST;
+	m_pNetBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
+	m_pNetBuf[nDeviceNo][nIndex].BufLen = nLen;
+	m_pNetBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_NET;
+	m_pNetBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_NET << 16 | nDeviceNo << 8 | nIndex;
+	m_pNetBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
+	m_pNetBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
+	m_pNetBuf[nDeviceNo][nIndex].FrameTime = m_pNetBuf[nDeviceNo][nIndex].localTime;
+	PrintFrameRate(nChl, VIDEO_STREAM_NET);
+	bFrameAccept = m_pVideoCallBack(&m_pNetBuf[nDeviceNo][nIndex]);
+
+	m_nFrameCntNet[nChl]++;
+
+	//è¶…è¿‡100å¸§æ²¡æœ‰ä¸Šä¼ å…³é”®å¸§ï¼Œå¼ºåˆ¶DSPç¨‹åºå‘é€ä¸€ä¸ªå³æ—¶å…³é”®å¸§
+	//ä½†æ²¡æœ‰å¿…è¦ç­‰å¾…å…³é”®å¸§ï¼Œå› ä¸ºæ²¡æœ‰ä¸¢å¸§
+    /*if(m_nFrameCntNet[nChl] > 100)
 	{
-		::WriteTestLog("0x%x", *(DWORD*)pVideoData);
-	}
-	dwLastNo = *(DWORD*)pVideoData;
+		SetParam(PT_PCI_SET_NET_IMMED_IFRAME, nChl, 1);//
+	}*/
 
-	FrameHead_4B_Convert((DWORD*)pVideoData, TRUE, (DWORD)'TVTX');
-//*/
-#endif
-
-	m_bNextFrameIsKeyNet[nChl] = FALSE;
-
-//<REC-NET>	if (m_pSwitch[nChl] == 1 && m_bNetstart == TRUE)
-	if (m_pSwitch[nChl] == 1 && m_bNetstart == TRUE/* && (m_dwNetChannelMask & (1<<nChl))*/)	//<REC-NET>
+	if(!bFrameAccept)
 	{
-		if (FindNetBuf(nDeviceNo, nIndex))
-		{
-			nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
-			m_pNetBuf[nDeviceNo][nIndex].pBuf = pVideoData;
-			m_pDrvHeadOfNetBuf[nDeviceNo][nIndex] = pST;
-
-			m_pNetBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
-			m_pNetBuf[nDeviceNo][nIndex].BufLen = nLen;
-			m_pNetBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_NET;
-			m_pNetBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_NET << 16 | nDeviceNo << 8 | nIndex;
-			m_pNetBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
-
-			m_pNetBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
-
-			m_pNetBuf[nDeviceNo][nIndex].FrameTime = m_pNetBuf[nDeviceNo][nIndex].localTime;
-			PrintFrameRate(nChl, VIDEO_STREAM_NET);
-			bFrameAccept = m_pVideoCallBack(&m_pNetBuf[nDeviceNo][nIndex]);
-
-			m_nFrameCntNet[nChl]++;
-
-			//³¬¹ı100Ö¡Ã»ÓĞÉÏ´«¹Ø¼üÖ¡£¬Ç¿ÖÆDSP³ÌĞò·¢ËÍÒ»¸ö¼´Ê±¹Ø¼üÖ¡
-			//µ«Ã»ÓĞ±ØÒªµÈ´ı¹Ø¼üÖ¡£¬ÒòÎªÃ»ÓĞ¶ªÖ¡
-/*			if(m_nFrameCntNet[nChl] > 100)
-			{
-				SetParam(PT_PCI_SET_NET_IMMED_IFRAME, nChl, 1);//
-			}
-*/
-			if(!bFrameAccept)
-			{
-				SetParam(PT_PCI_SET_NET_IMMED_IFRAME, nChl, 1);//
-				m_bNextFrameIsKeyNet[nChl] = TRUE;
-			}
-
-			if(pVBI->byKeyFrame)
-			{
-				m_nFrameCntNet[nChl] = 0;
-			}
-		}
-		else
-		{
-			//BUF²»×ã£¬¶ªÖ¡£¬ĞèÒªÒ»¸ö¼´Ê±¹Ø¼üÖ¡£¬²¢µÈ´ıÏÂÒ»¸ö¹Ø¼üÖ¡
-			SetParam(PT_PCI_SET_NET_IMMED_IFRAME, nChl, 1);//
-			m_bNextFrameIsKeyNet[nChl] = TRUE;
-			TRACE("no netbuf\n");
-
-			return 0;
-		}
-	}
-	else
-	{
+		SetParam(PT_PCI_SET_NET_IMMED_IFRAME, nChl, 1);//
 		m_bNextFrameIsKeyNet[nChl] = TRUE;
-		SetParam(PT_PCI_SET_NET_IMMED_IFRAME, nChl, 1);//Í¨µÀ¹Ø±Õ£¬µÈ´ı¹Ø¼üÖ¡£¬Ã»±ØÒªÇ¿ÖÆ¹Ø¼üÖ¡<REC-NET>	
+	}
+    else
+    {
+        m_bNextFrameIsKeyNet[nChl] = FALSE;
+    }
 
-		return 0;
+	if(pVBI->byKeyFrame)
+	{
+		m_nFrameCntNet[nChl] = 0;
 	}
 
 	return 1;
@@ -1236,197 +1078,163 @@ int CDSP::CmprssStreamProcessNet(int nDeviceNo, const PTVT_REC_VBI& pVBI, const 
 
 
 /*
-¹¦ÄÜËµÃ÷ : ´¦ÀíÊÖ»úÁ÷Êı¾İÖ¡
-²ÎÊıËµÃ÷ : nDeviceNo[IN]--¿¨ºÅ
-		   pVBI[IN]	------VBIĞÅÏ¢Ö¸Õë
-		   pVideoData[IN]-Êı¾İ²¿·ÖÖ¸Õë
-		   pST[IN]--------Ö¸Ïò¸ÃÖ¡BUFÇøÔÚDRIVER²ãËùÊôµÄBUFÍ·,ÒÔ±ãÊÍ·ÅDRIVER²ãµÄBUF
-·µ »Ø Öµ : 0--Ê§°Ü(¸ÃÖ¡Ã»ÓĞÉúĞ§£¬¼´Ã»ÓĞÉÏ´«µ½AP)	1--³É¹¦ÉÏ´«µ½AP
-ĞŞ¸Ä¼ÇÂ¼ :
-		ĞŞ¸ÄÈË		ĞŞ¸ÄÈÕÆÚ		ĞŞ¸ÄÄÚÈİ
+åŠŸèƒ½è¯´æ˜ : å¤„ç†æ‰‹æœºæµæ•°æ®å¸§
+å‚æ•°è¯´æ˜ : nDeviceNo[IN]--å¡å·
+		   pVBI[IN]	------VBIä¿¡æ¯æŒ‡é’ˆ
+		   pVideoData[IN]-æ•°æ®éƒ¨åˆ†æŒ‡é’ˆ
+		   pST[IN]--------æŒ‡å‘è¯¥å¸§BUFåŒºåœ¨DRIVERå±‚æ‰€å±çš„BUFå¤´,ä»¥ä¾¿é‡Šæ”¾DRIVERå±‚çš„BUF
+è¿” å› å€¼ : 0--å¤±è´¥(è¯¥å¸§æ²¡æœ‰ç”Ÿæ•ˆï¼Œå³æ²¡æœ‰ä¸Šä¼ åˆ°AP)	1--æˆåŠŸä¸Šä¼ åˆ°AP
+ä¿®æ”¹è®°å½• :
+		ä¿®æ”¹äºº		ä¿®æ”¹æ—¥æœŸ		ä¿®æ”¹å†…å®¹
 --------------------------------------------------------------
-		zhangzhen	2007/09/10		Ôö¼ÓÊÖ»úÁ÷
+		zhangzhen	2007/09/10		å¢åŠ æ‰‹æœºæµ
 */
 int CDSP::CmprssStreamProcessMobile(int nDeviceNo, const PTVT_REC_VBI& pVBI, const PBYTE pVideoData, const PTVT_CAP_STATUS& pST)
 {	
 //	return 0;
-	int nChl = nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//Í¨µÀºÅ
-	int	nIndex = 0;	//Ñ¡ÖĞ»º³åÇø±àºÅ
-	int	nLen = 0;	//ÊÓÆµÊı¾İ³¤¶È
-	BOOL	bFrameAccept = FALSE;	//Êı¾İ±»AP½ÓÊÕ±êÖ¾
+	int nChl = nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//é€šé“å·
+	int	nIndex = 0;	//é€‰ä¸­ç¼“å†²åŒºç¼–å·
+	int	nLen = 0;	//è§†é¢‘æ•°æ®é•¿åº¦
+	BOOL	bFrameAccept = FALSE;	//æ•°æ®è¢«APæ¥æ”¶æ ‡å¿—
 
-	//ÕıÔÚµÈ´ı¹Ø¼üÖ¡£¬µ«¸ÃÖ¡²»ÊÇ¹Ø¼üÖ¡£¬¶ªÆú
+	//æ­£åœ¨ç­‰å¾…å…³é”®å¸§ï¼Œä½†è¯¥å¸§ä¸æ˜¯å…³é”®å¸§ï¼Œä¸¢å¼ƒ
 	if(m_bNextFrameIsKeyMobile[nChl] && !pVBI->byKeyFrame)
 	{
-//		pVBI->byKeyFrame = 1;
 		return 0;
 	}
 	
-//	WriteTestLog("Mobile Enter\n");
+    if ( m_pSwitch[nChl] == 0 || 
+         !m_bNetstart         ||
+         FindMobileBuf(nDeviceNo, nIndex) )
+    {
+        m_bNextFrameIsKeyMobile[nChl] = TRUE;
+        SetParam(PT_PCI_SET_MOB_IMMED_IFRAME, nChl, 1);	//<REC-NET>
+        return 0;
+    }
 
-	m_bNextFrameIsKeyMobile[nChl] = FALSE;
-
-	if (m_pSwitch[nChl] == 1 && m_bNetstart == TRUE)
+	nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
+	m_pMobileBuf[nDeviceNo][nIndex].pBuf = pVideoData;
+	m_pDrvHeadOfMobileBuf[nDeviceNo][nIndex] = pST;
+	m_pMobileBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
+	m_pMobileBuf[nDeviceNo][nIndex].BufLen = nLen;
+	m_pMobileBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_MOBILE;
+	m_pMobileBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_MOBILE << 16 | nDeviceNo << 8 | nIndex;
+	m_pMobileBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
+	m_pMobileBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
+	m_pMobileBuf[nDeviceNo][nIndex].FrameTime = m_pMobileBuf[nDeviceNo][nIndex].localTime;
+	bFrameAccept = m_pVideoCallBack(&m_pMobileBuf[nDeviceNo][nIndex]);
+	
+    m_nFrameCntMobile[nChl]++;
+	//è¶…è¿‡100å¸§æ²¡æœ‰ä¸Šä¼ å…³é”®å¸§ï¼Œå¼ºåˆ¶DSPç¨‹åºå‘é€ä¸€ä¸ªå³æ—¶å…³é”®å¸§
+	//ä½†æ²¡æœ‰å¿…è¦ç­‰å¾…å…³é”®å¸§ï¼Œå› ä¸ºæ²¡æœ‰ä¸¢å¸§
+	/*if(m_nFrameCntMobile[nChl] > 100)
 	{
-		if (FindMobileBuf(nDeviceNo, nIndex))
-		{
-			nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
-			m_pMobileBuf[nDeviceNo][nIndex].pBuf = pVideoData;
-			m_pDrvHeadOfMobileBuf[nDeviceNo][nIndex] = pST;
+		SetParam(PT_PCI_SET_MOB_IMMED_IFRAME, nChl, 1);
+	}*/
 
-			m_pMobileBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
-			m_pMobileBuf[nDeviceNo][nIndex].BufLen = nLen;
-			m_pMobileBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_MOBILE;
-			m_pMobileBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_MOBILE << 16 | nDeviceNo << 8 | nIndex;
-			m_pMobileBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
-
-			m_pMobileBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
-
-			m_pMobileBuf[nDeviceNo][nIndex].FrameTime = m_pMobileBuf[nDeviceNo][nIndex].localTime;
-
-			bFrameAccept = m_pVideoCallBack(&m_pMobileBuf[nDeviceNo][nIndex]);
-
-//			PrintFrameRate(nChl, VIDEO_STREAM_CAPTURE);
-
-			m_nFrameCntMobile[nChl]++;
-
-			//³¬¹ı100Ö¡Ã»ÓĞÉÏ´«¹Ø¼üÖ¡£¬Ç¿ÖÆDSP³ÌĞò·¢ËÍÒ»¸ö¼´Ê±¹Ø¼üÖ¡
-			//µ«Ã»ÓĞ±ØÒªµÈ´ı¹Ø¼üÖ¡£¬ÒòÎªÃ»ÓĞ¶ªÖ¡
-/*
-			if(m_nFrameCntMobile[nChl] > 100)
-			{
-				SetParam(PT_PCI_SET_MOB_IMMED_IFRAME, nChl, 1);
-			}
-*/
-			if(!bFrameAccept)
-			{
-				SetParam(PT_PCI_SET_MOB_IMMED_IFRAME, nChl, 1);
-				m_bNextFrameIsKeyMobile[nChl] = TRUE;
-			}
-
-			if(pVBI->byKeyFrame)
-			{
-				m_nFrameCntMobile[nChl] = 0;
-			}
-		}
-		else
-		{
-			//BUF²»×ã£¬¶ªÖ¡£¬ĞèÒªÒ»¸ö¼´Ê±¹Ø¼üÖ¡£¬²¢µÈ´ıÏÂÒ»¸ö¹Ø¼üÖ¡
-			SetParam(PT_PCI_SET_MOB_IMMED_IFRAME, nChl, 1);
-			m_bNextFrameIsKeyMobile[nChl] = TRUE;
-			TRACE("no Mobilebuf\n");
-//	WriteTestLog("Mobile No Buf\n");
-
-			return 0;
-		}
-	}
-	else
+	if(!bFrameAccept)
 	{
+		SetParam(PT_PCI_SET_MOB_IMMED_IFRAME, nChl, 1);
 		m_bNextFrameIsKeyMobile[nChl] = TRUE;
-		SetParam(PT_PCI_SET_MOB_IMMED_IFRAME, nChl, 1);	//<REC-NET>
-//	WriteTestLog("Mobile not start\n");
+	}
+    else
+    {
+        m_bNextFrameIsKeyMobile[nChl] = FALSE;
+    }
 
-		return 0;
+	if(pVBI->byKeyFrame)
+	{
+		m_nFrameCntMobile[nChl] = 0;
 	}
 
 	return 1;
 }
 
 /******************************************************************************
-* º¯ÊıÃû³Æ£º BOOL CmprssStreamProcessNet_RT(int nDeviceNo, const PTVT_REC_VBI const pVBI, 
-					const PBYTE const pVideoData, PTVT_CAP_STATUS const pST)
-* ¹¦ÄÜÃèÊö£º ´¦ÀíÍøÂçÁ÷Êı¾İÖ¡
-* ÊäÈë²ÎÊı£º nDeviceNo	¿¨ºÅ
-*		     pVBI VBI	ĞÅÏ¢Ö¸Õë
-*		     pVideoData	Êı¾İ²¿·ÖÖ¸Õë
-*		     pST		Ö¸Ïò¸ÃÖ¡BUFÇøÔÚDRIVER²ãËùÊôµÄBUFÍ·,ÒÔ±ãÊÍ·ÅDRIVER²ãµÄBUF
-* Êä³ö²ÎÊı£º ÎŞ
-* ·µ »Ø Öµ£º 0	Ê§°Ü(¸ÃÖ¡Ã»ÓĞÉúĞ§£¬¼´Ã»ÓĞÉÏ´«µ½AP)	
-*            1	³É¹¦ÉÏ´«µ½AP
-* ´´½¨ÈÕÆÚ   °æ±¾ºÅ    ´´½¨ÈË 
-* ĞŞ¸ÄÈÕÆÚ   °æ±¾ºÅ    ĞŞ¸ÄÈË	      ĞŞ¸ÄÄÚÈİ
+* å‡½æ•°åç§°ï¼š BOOL CmprssStreamProcessNet_RT
+* åŠŸèƒ½æè¿°ï¼š å¤„ç†ç½‘ç»œæµæ•°æ®å¸§
+* è¾“å…¥å‚æ•°ï¼š nDeviceNo	å¡å·
+*		     pVBI VBI	ä¿¡æ¯æŒ‡é’ˆ
+*		     pVideoData	æ•°æ®éƒ¨åˆ†æŒ‡é’ˆ
+*		     pST		æŒ‡å‘è¯¥å¸§BUFåŒºåœ¨DRIVERå±‚æ‰€å±çš„BUFå¤´,ä»¥ä¾¿é‡Šæ”¾DRIVERå±‚çš„BUF
+* è¾“å‡ºå‚æ•°ï¼š æ— 
+* è¿” å› å€¼ï¼š 0	å¤±è´¥(è¯¥å¸§æ²¡æœ‰ç”Ÿæ•ˆï¼Œå³æ²¡æœ‰ä¸Šä¼ åˆ°AP)	
+*            1	æˆåŠŸä¸Šä¼ åˆ°AP
+* åˆ›å»ºæ—¥æœŸ   ç‰ˆæœ¬å·    åˆ›å»ºäºº 
+* ä¿®æ”¹æ—¥æœŸ   ç‰ˆæœ¬å·    ä¿®æ”¹äºº	      ä¿®æ”¹å†…å®¹
 * --------------------------------------------------------------------------
 * 2007/12/25           zhangzhen		<REC-NET>   
 ******************************************************************************/
 int CDSP::CmprssStreamProcessNet_RT(int nDeviceNo, const PTVT_REC_VBI& pVBI, const PBYTE pVideoData, const PTVT_CAP_STATUS& pST)
 {	
-	int nChl= nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//Í¨µÀºÅ
-	int	nIndex = 0;	//Ñ¡ÖĞ»º³åÇø±àºÅ
-	int	nLen = 0;	//ÊÓÆµÊı¾İ³¤¶È
-	BOOL	bFrameAccept = FALSE;	//Êı¾İ±»AP½ÓÊÕ±êÖ¾
+	int nChl= nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//é€šé“å·
+	int	nIndex = 0;	//é€‰ä¸­ç¼“å†²åŒºç¼–å·
+	int	nLen = 0;	//è§†é¢‘æ•°æ®é•¿åº¦
 
-	//ÕıÔÚµÈ´ı¹Ø¼üÖ¡£¬µ«¸ÃÖ¡²»ÊÇ¹Ø¼üÖ¡£¬¶ªÆú
+	//æ­£åœ¨ç­‰å¾…å…³é”®å¸§ï¼Œä½†è¯¥å¸§ä¸æ˜¯å…³é”®å¸§ï¼Œä¸¢å¼ƒ
 	if(m_bNextFrameIsKeyNet_RT[nChl] && !pVBI->byKeyFrame)
 	{
 		return FALSE;
 	}
 
-	m_bNextFrameIsKeyNet_RT[nChl] = FALSE;
+    // if channel is close or net is stop, return
+    if ( m_pSwitch[nChl] == 0 || !m_bNetstart )
+    {
+        m_bNextFrameIsKeyNet_RT[nChl] = TRUE;	//é€šé“å…³é—­ï¼Œç­‰å¾…å…³é”®å¸§<REC-NET>	
+        return FALSE;
+    }
 
-	if (m_pSwitch[nChl] == 1 && m_bNetstart == TRUE)
+    // if find buf failed(not enough buffer), return
+	if ( !FindNetBuf_RT(nDeviceNo, nIndex) )
 	{
-		if (FindNetBuf_RT(nDeviceNo, nIndex))
-		{
-			nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
-			memcpy(m_pNetBuf_RT[nDeviceNo][nIndex].pBuf, pVideoData, nLen);
+        //BUFä¸è¶³ï¼Œä¸¢å¸§ï¼Œéœ€è¦ä¸€ä¸ªå³æ—¶å…³é”®å¸§ï¼Œå¹¶ç­‰å¾…ä¸‹ä¸€ä¸ªå…³é”®å¸§
+        m_bNextFrameIsKeyNet_RT[nChl] = TRUE;
+        return FALSE;
+    }
 
-			m_pNetBuf_RT[nDeviceNo][nIndex].ChannelIndex = nChl;
-			m_pNetBuf_RT[nDeviceNo][nIndex].BufLen = nLen;
-			m_pNetBuf_RT[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_NET_REALTIME;
-			m_pNetBuf_RT[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_NET_REALTIME << 16 | nDeviceNo << 8 | nIndex;
-			m_pNetBuf_RT[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
+	nLen = min(pVBI->dwLen, CAP_BUF_SIZE);
+	memcpy(m_pNetBuf_RT[nDeviceNo][nIndex].pBuf, pVideoData, nLen);
 
-			m_pNetBuf_RT[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
+	m_pNetBuf_RT[nDeviceNo][nIndex].ChannelIndex = nChl;
+	m_pNetBuf_RT[nDeviceNo][nIndex].BufLen = nLen;
+	m_pNetBuf_RT[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_NET_REALTIME;
+	m_pNetBuf_RT[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_NET_REALTIME << 16 | nDeviceNo << 8 | nIndex;
+	m_pNetBuf_RT[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
 
-			m_pNetBuf_RT[nDeviceNo][nIndex].FrameTime = m_pNetBuf_RT[nDeviceNo][nIndex].localTime;
-			PrintFrameRate(nChl, VIDEO_STREAM_NET);//, nLen*8);
+	m_pNetBuf_RT[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
 
-			bFrameAccept = m_pVideoCallBack(&m_pNetBuf_RT[nDeviceNo][nIndex]);
+	m_pNetBuf_RT[nDeviceNo][nIndex].FrameTime = m_pNetBuf_RT[nDeviceNo][nIndex].localTime;
+	PrintFrameRate(nChl, VIDEO_STREAM_NET);//, nLen*8);
 
-			if(!bFrameAccept)
-			{
-				m_bNextFrameIsKeyNet_RT[nChl] = TRUE;
-			}
-		}
-		else
-		{
-			//BUF²»×ã£¬¶ªÖ¡£¬ĞèÒªÒ»¸ö¼´Ê±¹Ø¼üÖ¡£¬²¢µÈ´ıÏÂÒ»¸ö¹Ø¼üÖ¡
-			m_bNextFrameIsKeyNet_RT[nChl] = TRUE;
-			WriteTestLog("C:\\Net_RT.txt", "no netbuf\n");
-
-			return FALSE;
-		}
-	}
-	else
+    // App accept failed, need next frame must I Frame
+	if(!m_pVideoCallBack(&m_pNetBuf_RT[nDeviceNo][nIndex]))
 	{
-		m_bNextFrameIsKeyNet_RT[nChl] = TRUE;	//Í¨µÀ¹Ø±Õ£¬µÈ´ı¹Ø¼üÖ¡<REC-NET>	
-		WriteTestLog("C:\\Net_RT.txt", "net closed\n");
-		return FALSE;
+		m_bNextFrameIsKeyNet_RT[nChl] = TRUE;
 	}
-
+    else
+    {
+        m_bNextFrameIsKeyNet_RT[nChl] = FALSE;
+    }
+	
 	return TRUE;
 }
 
 BOOL CDSP::CaptureStop()
 {
-	int i;
 	APP_DRIVER_BUFFER_INFO stIn;
 	DWORD dwRtn;
-	BOOL bRtn;
-
 	DestroyWorkerThread();
 
 	memset(&stIn, 0, sizeof(APP_DRIVER_BUFFER_INFO));
-	for (i = 0; i < m_nDeviceNum; i++)
+	for (int i = 0; i < m_nDeviceNum; i++)
 	{
-		bRtn = ControlDriver(i,
+		BOOL bRtn = ControlDriver(i,
 				IOCTL_SHOW_STREAM_END,
 				&stIn,
 				sizeof(APP_DRIVER_BUFFER_INFO),
 				NULL,
 				0,
 				&dwRtn);
-
 		if (bRtn == 0)
 		{
 			return FALSE;
@@ -1438,24 +1246,21 @@ BOOL CDSP::CaptureStop()
 
 BOOL CDSP::CaptureStart()
 {
-	int i;
+    int i;
 	APP_DRIVER_BUFFER_INFO stIn;
 	DWORD dwRtn;
-	BOOL bRtn;
-
 	CreateWorkerThread();
 
 	memset(&stIn, 0, sizeof(APP_DRIVER_BUFFER_INFO));
 	for (i = 0; i < m_nDeviceNum; i++)
 	{
-		bRtn = ControlDriver(i,
+		BOOL bRtn = ControlDriver(i,
 				IOCTL_SHOW_STREAM_START,
 				&stIn,
 				sizeof(APP_DRIVER_BUFFER_INFO),
 				NULL,
 				0,
 				&dwRtn);
-
 		if (bRtn == 0)
 		{
 			return FALSE;
@@ -1464,15 +1269,15 @@ BOOL CDSP::CaptureStart()
 
 	for (i = 0; i < CHANNEL_PER_DEVICE * m_nDeviceNum; i++)
 	{
-		//ÍøÂçÑ¹ËõÁ÷
+		//ç½‘ç»œå‹ç¼©æµ
 		SetParam(PT_PCI_SET_NET_ENCODE_ISENCODE, i, 1);
 		SetParam(PT_PCI_SET_NET_ENCODE_BITRATE, i, 500000);
 		SetParam(PT_PCI_SET_NET_ENCODE_IINTERVAL, i, 1);
-		//ÊÖ»úÑ¹ËõÁ÷
+		//æ‰‹æœºå‹ç¼©æµ
 		SetParam(PT_PCI_SET_MOB_ENCODE_ISENCODE, i, 1);
 		SetParam(PT_PCI_SET_MOB_ENCODE_BITRATE, i, 500000);
 		SetParam(PT_PCI_SET_MOB_ENCODE_IINTERVAL, i, 1);
-		//ÏÖ³¡Ñ¹ËõÁ÷
+		//ç°åœºå‹ç¼©æµ
 		SetParam(PT_PCI_SET_ENCODE_IINTERVAL, i, 100);
 	}
 	return TRUE;
@@ -1482,15 +1287,15 @@ BOOL CDSP::ControlDriver(INT nIndex, DWORD dwIoControlCode, LPVOID lpInBuffer, D
 {
 	if (m_hDevice[nIndex] != NULL)
 	{
-		BOOL bRtn = DeviceIoControl(m_hDevice[nIndex], 
-					dwIoControlCode, 
-					lpInBuffer, 
-					nInBufferSize,
-					lpOutBuffer, 
-					nOutBufferSize, 
-					lpBytesReturned, 
-					NULL);
-		return bRtn;
+		return DeviceIoControl(
+            m_hDevice[nIndex], 
+			dwIoControlCode, 
+			lpInBuffer, 
+			nInBufferSize,
+			lpOutBuffer, 
+			nOutBufferSize, 
+			lpBytesReturned, 
+			NULL);
 	}
 
 	return FALSE;
@@ -1513,7 +1318,8 @@ BOOL CDSP::SetParam(int nType, int nChannel, int nValue)
 	m_pPack[nDevice].CS.Lock();	
 	for (itParam = m_pPack[nDevice].param.begin(); itParam != m_pPack[nDevice].param.end(); itParam++)
 	{
-		if (itParam->chanNum == pack.chanNum && itParam->paramType == pack.paramType)
+		if ( itParam->chanNum == pack.chanNum &&
+             itParam->paramType == pack.paramType)
 		{
 			itParam->value = pack.value;
 			bNew = FALSE;
@@ -1538,9 +1344,9 @@ BOOL CDSP::SetParamToDSP(INT nDevice)
 	DWORD dwRtn;
 	int i;
 
-	_TVT_AP_SET stApSet;
+	TVT_AP_SET stApSet; //heliang fix
 
-	//ÅĞ¶Ïdsp³ÌĞòÓĞÃ»ÓĞÌáÈ¡ÉÏ´ÎÉè¶¨µÄ²ÎÊı¡£
+	//åˆ¤æ–­dspç¨‹åºæœ‰æ²¡æœ‰æå–ä¸Šæ¬¡è®¾å®šçš„å‚æ•°ã€‚
 	stApSet.dwAddress = PCI_VIDEO_MEMADDR_SIZE;
 	ControlDriver(nDevice,
 			IOCTL_GET_DSP_PARAM,
@@ -1549,8 +1355,7 @@ BOOL CDSP::SetParamToDSP(INT nDevice)
 			&stApSet,
 			sizeof(stApSet),
 			&dwRtn);
-
-	if(stApSet.dwValue != 0)	//Èç¹ûÃ»ÓĞÔòÈ¡Ïûµ±´ÎÉè¶¨¡£
+	if(stApSet.dwValue != 0)	//å¦‚æœæ²¡æœ‰åˆ™å–æ¶ˆå½“æ¬¡è®¾å®šã€‚
 	{
 		return TRUE;
 	}
@@ -1593,7 +1398,6 @@ BOOL CDSP::SetParamToDSP(INT nDevice)
 void CDSP::CheckVideoLoss(DWORD *pStatus, DWORD dwLen)
 {
 	dwLen = min(MAX_CHANNEL_NUM, dwLen);
-
 	for (int nChannel = 0; nChannel < dwLen; nChannel++)
 	{
 		m_pSignal[nChannel].CS.Lock();
@@ -1609,7 +1413,7 @@ void CDSP::SetSignal(int nChannel, UINT iS)
 	bStatusChged = (m_pSignal[nChannel].bSignal != iS);
 	m_pSignal[nChannel].bSignal = iS;
 
-	//Í¨µÀĞÅºÅ×´Ì¬¸Ä±ä£¬Ë¢ĞÂÍøÂçÑ¹ËõÖ¡ÂÊ	Add By zhangzhen 2007/10/11
+	//é€šé“ä¿¡å·çŠ¶æ€æ”¹å˜ï¼Œåˆ·æ–°ç½‘ç»œå‹ç¼©å¸§ç‡	Add By zhangzhen 2007/10/11
 	if(bStatusChged)
 	{
 		RefreshNetFrameRate();
@@ -1617,7 +1421,7 @@ void CDSP::SetSignal(int nChannel, UINT iS)
 	m_pSignal[nChannel].CS.Unlock();
 }
 
-// ÓÃµÈÓÚÖØÔØ¾ÍºÃ£¬ /¡£¡£
+// ç”¨ç­‰äºé‡è½½å°±å¥½ï¼Œ /ã€‚ã€‚
 ULONGLONG CDSP::ChangeTime(const SYSTIME &time)
 {
 	ULONGLONG ullTime;
@@ -1633,14 +1437,13 @@ ULONGLONG CDSP::ChangeTime(const SYSTIME &time)
 	sysTime.wDayOfWeek = 0;
 
 	BOOL b = SystemTimeToFileTime(&sysTime, (FILETIME *)&ullTime);
-
 	return ullTime;
 }
 
-// ÕâÈı¸öº¯Êı¿ÉÒÔÓÃÒ»¸öÄ£°åº¯Êı¸ã¶¨£¨»òĞíDefine£©£¬µÈÎÒÏÈ½«Ëø¸ÄÎªÖÇÄÜËø£¬ÏÈÊµÏÖËã·¨ÓÅ»¯
+// è¿™ä¸‰ä¸ªå‡½æ•°å¯ä»¥ç”¨ä¸€ä¸ªæ¨¡æ¿å‡½æ•°æå®šï¼ˆæˆ–è®¸Defineï¼‰ï¼Œç­‰æˆ‘å…ˆå°†é”æ”¹ä¸ºæ™ºèƒ½é”ï¼Œå…ˆå®ç°ç®—æ³•ä¼˜åŒ–
 BOOL CDSP::FindNetBuf(INT nDevice, INT &nIndex)
 {
-    // ÒòÎªÕÒÏÂÒ»¸ö¿ÉÓÃµÄbufË÷ÒıÒ»°ã¶¼ÎªÏÂÒ»¸ö£¬ËùÒÔÔÚÕâ×öËã·¨ÓÅ»¯£¬ÏÂÍ¬
+    // å› ä¸ºæ‰¾ä¸‹ä¸€ä¸ªå¯ç”¨çš„bufç´¢å¼•ä¸€èˆ¬éƒ½ä¸ºä¸‹ä¸€ä¸ªï¼Œæ‰€ä»¥åœ¨è¿™åšç®—æ³•ä¼˜åŒ–ï¼Œä¸‹åŒ
 	return FindTBuf<NET_BUF_NUM>(nDevice, nIndex,m_pNetBufCS,m_pNetBuf);
 }
 
@@ -1654,7 +1457,6 @@ BOOL CDSP::FindMobileBuf(INT nDevice, INT &nIndex)
 {
     return FindTBuf<MOBILE_BUF_NUM>(nDevice, nIndex,m_pMobileBufCS,m_pMobileBuf);
 }
-
 
 BOOL CDSP::FindAudBuf(INT nDevice, INT &nIndex)
 {
@@ -1702,9 +1504,9 @@ void CDSP::ReleasePrvBuf(INT nDevice, INT nIndex)
     AutoLockAndUnlock(m_pPrvBufCS[nDevice]);
     if(m_pPrvBuf[nDevice][nIndex].nVLostFlag == 0)
     {
-        ReleaseDriverBuffer(m_pDrvHeadOfPrvBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
-        m_pDrvHeadOfPrvBuf[nDevice][nIndex] = NULL;
-        m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
+        //ReleaseDriverBuffer(m_pDrvHeadOfPrvBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
+        //m_pDrvHeadOfPrvBuf[nDevice][nIndex] = NULL;
+        //m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
         m_pPrvBuf[nDevice][nIndex].nVLostFlag = 1;
     }
 }
@@ -1812,40 +1614,40 @@ BOOL CDSP::SetAudioSwitch(DWORD dwChannel, LONG lStatus)
 }
 
 /*
-º¯Êı¹¦ÄÜ : Ë¢ĞÂÍøÂçÖ¡ÂÊ
-²ÎÊıËµÃ÷ : ÎŞ
-·µ »Ø Öµ : Î´¶¨Òå£¬·µ»Ø0
-ĞŞ¸Ä¼ÇÂ¼ :
-		ĞŞ¸ÄÈË		ĞŞ¸ÄÈÕÆÚ		ĞŞ¸ÄÄÚÈİ
+å‡½æ•°åŠŸèƒ½ : åˆ·æ–°ç½‘ç»œå¸§ç‡
+å‚æ•°è¯´æ˜ : æ— 
+è¿” å› å€¼ : æœªå®šä¹‰ï¼Œè¿”å›0
+ä¿®æ”¹è®°å½• :
+		ä¿®æ”¹äºº		ä¿®æ”¹æ—¥æœŸ		ä¿®æ”¹å†…å®¹
 ----------------------------------------------------------
-		zhangzhen	2007/10/11		´´½¨
+		zhangzhen	2007/10/11		åˆ›å»º
 */
 DWORD CDSP::RefreshNetFrameRate()
 {
 	int	i = 0, j = 0;
-	int	nChlNum = 0;	//ÓĞĞ§Í¨µÀ¼ÆÊıÆ÷
-	int	nchl = 0;	//Í¨µÀºÅ
-	int	nFrameRate = 0;	//ÀíÂÛÖ¡ÂÊ
+	int	nChlNum = 0;	//æœ‰æ•ˆé€šé“è®¡æ•°å™¨
+	int	nchl = 0;	//é€šé“å·
+	int	nFrameRate = 0;	//ç†è®ºå¸§ç‡
 	int	nMaxFrameRate = 0;
 
 	for(i = 0; i < m_nDeviceNum; i++)
 	{
 		if(m_bNetstart)
 		{
-			//¼ÆËãÖ¡ÂÊ
+			//è®¡ç®—å¸§ç‡
 			nChlNum = 0;
 			for(j = 0; j < CHANNEL_PER_DEVICE; j++)
 			{
 				nchl = i*CHANNEL_PER_DEVICE+j;
-				if((m_dwNetChannelMask & (1<<(nchl)))	//ÍøÂçÍ¨µÀÁ¬½Ó
-					&& m_pSwitch[nchl]			//Í¨µÀ±¾Éí´ò¿ª
-					&& !m_pSignal[nchl].bSignal)			//Í¨µÀÓĞĞÅºÅ
+				if((m_dwNetChannelMask & (1<<(nchl)))	//ç½‘ç»œé€šé“è¿æ¥
+					&& m_pSwitch[nchl]			//é€šé“æœ¬èº«æ‰“å¼€
+					&& !m_pSignal[nchl].bSignal)			//é€šé“æœ‰ä¿¡å·
 				{
-					nChlNum++;	//ÓĞĞ§Í¨µÀ¼ÆÊıÆ÷+1
+					nChlNum++;	//æœ‰æ•ˆé€šé“è®¡æ•°å™¨+1
 				}
 			}
 
-			//Éè¶¨ËùÓĞ´ò¿ªÍ¨µÀµÄÖ¡ÂÊ
+			//è®¾å®šæ‰€æœ‰æ‰“å¼€é€šé“çš„å¸§ç‡
 			if(nChlNum != 0)
 			{
 				nMaxFrameRate = NET_FRAME_RATE_TOTAL / nChlNum;
@@ -1864,11 +1666,11 @@ DWORD CDSP::RefreshNetFrameRate()
 			for(j = 0; j < CHANNEL_PER_DEVICE; j++)
 			{
 				nchl = i*CHANNEL_PER_DEVICE+j;
-				if((m_dwNetChannelMask & (1<<(nchl)))	//ÍøÂçÍ¨µÀÁ¬½Ó
-					&& m_pSwitch[nchl]			//Í¨µÀ±¾Éí´ò¿ª
-					&& !m_pSignal[nchl].bSignal)			//Í¨µÀÓĞĞÅºÅ
+				if((m_dwNetChannelMask & (1<<(nchl)))	//ç½‘ç»œé€šé“è¿æ¥
+					&& m_pSwitch[nchl]			//é€šé“æœ¬èº«æ‰“å¼€
+					&& !m_pSignal[nchl].bSignal)			//é€šé“æœ‰ä¿¡å·
 				{
-					//Éè¶¨ÍøÂçÖ¡ÂÊ
+					//è®¾å®šç½‘ç»œå¸§ç‡
 					if(nFrameRate > 25)
 					{
 						nFrameRate = 25;
@@ -1876,9 +1678,9 @@ DWORD CDSP::RefreshNetFrameRate()
 					SetParam(PT_PCI_SET_NET_ENCODE_FRAMERATE, nchl, nFrameRate);
 					SetParam(PT_PCI_SET_MOB_ENCODE_FRAMERATE, nchl, 1);
 				}
-				else	//ÎŞĞ§Í¨µÀ¹Ø±Õ
+				else	//æ— æ•ˆé€šé“å…³é—­
 				{
-					//Éè¶¨ÍøÂçÖ¡ÂÊ
+					//è®¾å®šç½‘ç»œå¸§ç‡
 					SetParam(PT_PCI_SET_NET_ENCODE_FRAMERATE, nchl, 0);
 					SetParam(PT_PCI_SET_MOB_ENCODE_FRAMERATE, nchl, 0);
 				}
@@ -1886,7 +1688,7 @@ DWORD CDSP::RefreshNetFrameRate()
 		}
 		else
 		{
-			//Éè¶¨ËùÓĞÍ¨µÀÖ¡ÂÊÎª0
+			//è®¾å®šæ‰€æœ‰é€šé“å¸§ç‡ä¸º0
 			SetParam(PT_PCI_SET_NET_ENCODE_FRAMERATE, nchl, 0);
 			SetParam(PT_PCI_SET_MOB_ENCODE_FRAMERATE, nchl, 0);
 		}
@@ -1896,17 +1698,17 @@ DWORD CDSP::RefreshNetFrameRate()
 }
 
 /*
-º¯Êı¹¦ÄÜ : ÌáÉıÍøÂçÖ¡ÂÊ
-²ÎÊıËµÃ÷ : inc[IN]--ÍøÂçÖ¡ÂÊÔöÁ¿
-·µ »Ø Öµ : Î´¶¨Òå
-ĞŞ¸Ä¼ÇÂ¼ : 
-		ĞŞ¸ÄÈË		ĞŞ¸ÄÈÕÆÚ		ĞŞ¸ÄÄÚÈİ
+å‡½æ•°åŠŸèƒ½ : æå‡ç½‘ç»œå¸§ç‡
+å‚æ•°è¯´æ˜ : inc[IN]--ç½‘ç»œå¸§ç‡å¢é‡
+è¿” å› å€¼ : æœªå®šä¹‰
+ä¿®æ”¹è®°å½• : 
+		ä¿®æ”¹äºº		ä¿®æ”¹æ—¥æœŸ		ä¿®æ”¹å†…å®¹
 --------------------------------------------------------
-		ÕÅÕñ		2007/10/17		´´½¨
+		å¼ æŒ¯		2007/10/17		åˆ›å»º
 */
 DWORD CDSP::NetFrameRateInc(int inc)
 {
-	m_nNetFrameRateInc += inc;	//Ö¡ÂÊÔöÁ¿ÀÛ¼Ó
+	m_nNetFrameRateInc += inc;	//å¸§ç‡å¢é‡ç´¯åŠ 
 
 	if(m_nNetFrameRateInc > (NET_FRAME_RATE_TOTAL>>1))
 	{

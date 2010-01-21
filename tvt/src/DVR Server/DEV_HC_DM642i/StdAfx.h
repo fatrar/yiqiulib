@@ -42,7 +42,7 @@
 
 #include "winioctl.h"
 //#include "ioctl.h"
-
+#pragma warning(disable: 4996)
 #include <deque>
 using namespace std;
 
@@ -98,6 +98,12 @@ private:
 
 // 后面加个数字是为了防止重命名
 #define AutoLockAndUnlock(sec)  CAutoCriticalSection AUTOLOCKNAME(sec)
+
+
+#define safeCloseHandle(h) if((h)){CloseHandle((h)); (h)=NULL;}
+
+#define safeDelete(ptr)		 if((ptr)) {delete (ptr); (ptr) = 0;}
+#define safeDeleteArray(ptr) if((ptr)) {delete[] (ptr); (ptr) = 0;}
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
