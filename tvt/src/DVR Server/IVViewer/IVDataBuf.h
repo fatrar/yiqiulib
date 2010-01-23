@@ -19,7 +19,11 @@
 #define _IVDATABUF_H_2010_
 
 
-
+// 模型采用发线程消息模式，
+// 但是这种方式有个缺陷，就是通知比较好，取数据不怎么好。比如现在的GetData
+// 发线程消息由于可能会失败，所以要写一份采用锁的方式就实现的代码
+// 数据队列使用deque，然后去记录访问的索引，当有队列pop或push时，记录偏移
+// 实际操作数据采用索引+offset，当某些特殊的情况然后清零offset。
 class CIVDataBuf :
     public Singleton<CIVDataBuf>,
     public IIVDataBuf, 
@@ -78,7 +82,7 @@ protected:
 
         GroupTarget* Find(const FILETIME& time);
 
-        inline void PoshBack(GroupTarget* pGroupTarget);
+        inline void PushBack(GroupTarget* pGroupTarget);
 
     public:
         list<GroupTarget*> TargetList;
