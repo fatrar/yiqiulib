@@ -70,6 +70,9 @@ struct GroupTarget
         }
     }
 
+  /* ???[] template<typename oper>
+    bool operator oper(const FILETIME& a)  const
+    { return this->m_time oper a;}*/
     bool operator < (const FILETIME& a) const
     {
         return this->m_time < a;

@@ -143,7 +143,7 @@ GroupTarget* CIVDataBuf::ChannelTarget::Find( const FILETIME& time )
     return NULL;
 }
 
-void CIVDataBuf::ChannelTarget::PoshBack( GroupTarget* pGroupTarget )
+void CIVDataBuf::ChannelTarget::PushBack( GroupTarget* pGroupTarget )
 {
     TargetList.push_back(pGroupTarget);
 }
