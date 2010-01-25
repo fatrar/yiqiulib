@@ -143,4 +143,11 @@ private:
 //#define StartStopWatch()  CStopWatch ____stop(__FUNCTION__)
 #define StartStopWatch() 
 
+#define ERROR_RETURN_VOID(x) if(x) {SetLastError(DVRERR_DRIVERMUSTINIT); return;}
+#define ERROR_RETURN(x,y) if(x) {SetLastError(DVRERR_DRIVERMUSTINIT); return (y);}
+
+#define ERROR_RETURN_FALSE(x) ERROR_RETURN(x, FALSE)
+
+
+
 #endif // !defined(AFX_STDAFX_H__941AC137_8B58_4BE4_A1A1_6650586F3514__INCLUDED_)

@@ -55,6 +55,7 @@ protected:
 	//CTiCoffFile *m_pTiCoffFile[MAX_DEVICE_NUM];
 	BOOL m_bStart;
 	BOOL m_bQuit;
+
 	DWORD m_dwWidth;
 	DWORD m_dwHeight;
 	DWORD m_dwMotionSize;
@@ -150,10 +151,29 @@ protected:
         DWORD dwDeviceID;
     };
 
-protected:
+private:
     void GetPrvData(int nDevice);
 
     void GetCompressData(int nDevice);
+
+public:
+    // 设置Alarm发生时的给上层的回调,pParm为用户输入的参数，回调会传出
+    void SetIVAlarmOutCallBack(AlarmCallBackFn pAlarmCallBackFn, void* pParm)
+    {
+        m_AlarmCallBackFn = pAlarmCallBackFn;
+        m_pAlarmCallBackParm = pParm;
+    }
+
+    // 设置智能数据发送的回调，由IVLiveFactory得到这个指针
+    void SetIVDataCallBack(IIVDataSender* pIVDataSender)
+    {
+        m_pIVDataSender = pIVDataSender;
+    }
+
+private:
+    AlarmCallBackFn m_AlarmCallBackFn;
+    void* m_pAlarmCallBackParm;
+    IIVDataSender* m_pIVDataSender;
 };
 
 #endif // !defined(AFX_DSP_H__C706B57D_C9A0_4A6C_A74E_FE16F5B26E14__INCLUDED_)

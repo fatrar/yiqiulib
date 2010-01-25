@@ -27,9 +27,6 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-#define ERROR_RETURN(x,y) if(x) {SetLastError(DVRERR_DRIVERMUSTINIT); return (y);}
-
-#define ERROR_RETURN_FALSE(x) ERROR_RETURN(x, FALSE)
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -38,10 +35,7 @@ static char THIS_FILE[]=__FILE__;
 //const VIDEO_PROPER	CDeviceSDK::m_default_Video_Proper = {70,145,128,128,128};
 const VIDEO_PROPER	CDeviceSDK::m_default_Video_Proper = {128,128,128,128,128};
 
-CDeviceSDK::CDeviceSDK() 
-    : m_AlarmCallBackFn(NULL)
-    , m_pAlarmCallBackParm(NULL)
-    , m_pIVDataSender(NULL)
+CDeviceSDK::CDeviceSDK()
 {
 	m_hDllModule = NULL;
 	m_bInitialized = FALSE;

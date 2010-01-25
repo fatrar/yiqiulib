@@ -100,7 +100,10 @@ inline	void FrameHead_4B_Convert(DWORD* p4B, BOOL bDirection, DWORD dwCompress)
 }
 #endif
 
-CDSP::CDSP()
+CDSP::CDSP():
+    : m_AlarmCallBackFn(NULL)
+    , m_pAlarmCallBackParm(NULL)
+    , m_pIVDataSender(NULL)
 {
 	VariableInit();
 }
