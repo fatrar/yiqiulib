@@ -1,4 +1,5 @@
 #pragma once
+#include "afxcmn.h"
 
 
 // CIVRuleDlg dialog
@@ -18,4 +19,6 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+private:
+    CTreeCtrl m_CameraTree;
 };

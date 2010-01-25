@@ -22,7 +22,8 @@ CIVRuleDlg::~CIVRuleDlg()
 
 void CIVRuleDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_RULE_CAMERA_TREE, m_CameraTree);
 }
 
 

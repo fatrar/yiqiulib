@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVUI_Test", "IVUI\IVUI_Test
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVViewer", "IVViewer\IVViewer.vcproj", "{AAE56DA0-D81C-4717-A473-664DF6A6855D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QC", "QC\QC.vcproj", "{316C5D77-60C9-445D-9F3F-8FC1F466408C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVCfgMgr", "IVCfgMgr\IVCfgMgr.vcproj", "{068F9BA9-C98E-401D-A845-0FB387133FBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +35,14 @@ Global
 		{AAE56DA0-D81C-4717-A473-664DF6A6855D}.Debug|Win32.Build.0 = Debug|Win32
 		{AAE56DA0-D81C-4717-A473-664DF6A6855D}.Release|Win32.ActiveCfg = Release|Win32
 		{AAE56DA0-D81C-4717-A473-664DF6A6855D}.Release|Win32.Build.0 = Release|Win32
+		{316C5D77-60C9-445D-9F3F-8FC1F466408C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{316C5D77-60C9-445D-9F3F-8FC1F466408C}.Debug|Win32.Build.0 = Debug|Win32
+		{316C5D77-60C9-445D-9F3F-8FC1F466408C}.Release|Win32.ActiveCfg = Release|Win32
+		{316C5D77-60C9-445D-9F3F-8FC1F466408C}.Release|Win32.Build.0 = Release|Win32
+		{068F9BA9-C98E-401D-A845-0FB387133FBF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{068F9BA9-C98E-401D-A845-0FB387133FBF}.Debug|Win32.Build.0 = Debug|Win32
+		{068F9BA9-C98E-401D-A845-0FB387133FBF}.Release|Win32.ActiveCfg = Release|Win32
+		{068F9BA9-C98E-401D-A845-0FB387133FBF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

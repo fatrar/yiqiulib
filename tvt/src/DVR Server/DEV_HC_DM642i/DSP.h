@@ -152,6 +152,8 @@ protected:
 
 protected:
     void GetPrvData(int nDevice);
+
+    void GetCompressData(int nDevice);
 };
 
 #endif // !defined(AFX_DSP_H__C706B57D_C9A0_4A6C_A74E_FE16F5B26E14__INCLUDED_)

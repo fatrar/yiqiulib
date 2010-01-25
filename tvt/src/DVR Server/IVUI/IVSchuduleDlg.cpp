@@ -22,7 +22,8 @@ CIVSchuduleDlg::~CIVSchuduleDlg()
 
 void CIVSchuduleDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_SCHUDULE_CAMERA_TREE, m_CameraTree);
 }
 
 

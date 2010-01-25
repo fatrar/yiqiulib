@@ -111,5 +111,35 @@ private:
 // 定义编译宏，live数据是使用Copy一份还是引用数据
 #define PRECOPY
 
+class CStopWatch
+{
+public:
+    CStopWatch(CString strFunName)
+    {
+        QueryPerformanceCounter(&m_nEnterTime);
+        m_strFunName = strFunName;
+    }
+    ~CStopWatch()
+    {
+        LARGE_INTEGER nLeaveTime;
+        QueryPerformanceCounter(&nLeaveTime);
+        double nTime = double(nLeaveTime.QuadPart-m_nEnterTime.QuadPart)/s_nCpuClcok.QuadPart;
+        TRACE("%s time is %f\n", m_strFunName, nTime);
+    }
+
+    static LARGE_INTEGER Init()
+    {
+        QueryPerformanceFrequency(&s_nCpuClcok);
+        return s_nCpuClcok;
+    }
+private:
+    static LARGE_INTEGER s_nCpuClcok;
+    CString m_strFunName;
+    LARGE_INTEGER m_nEnterTime;
+};
+
+
+//#define StartStopWatch()  CStopWatch ____stop(__FUNCTION__)
+#define StartStopWatch() 
 
 #endif // !defined(AFX_STDAFX_H__941AC137_8B58_4BE4_A1A1_6650586F3514__INCLUDED_)

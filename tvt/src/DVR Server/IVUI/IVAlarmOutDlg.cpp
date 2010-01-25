@@ -22,7 +22,13 @@ CIVAlarmOutDlg::~CIVAlarmOutDlg()
 
 void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_ALARM_HOLD_TIME, m_AlarmOutHoldTimeComb);
+    for (int i=0;i<ALARM_CHECK_NUM;++i)
+    {
+        DDX_Control(pDX, IDC_CHECK1+i, m_AlarmCheck[i]);
+    }
+    DDX_Control(pDX, IDC_ALARMOUT_CAMERA_TREE, m_CameraTree);
 }
 
 

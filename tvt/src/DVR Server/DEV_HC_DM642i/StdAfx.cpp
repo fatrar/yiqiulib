@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 
-
+LARGE_INTEGER CStopWatch::s_nCpuClcok = CStopWatch::Init();
 /*
 一.
 修改内容 : 实现局域网实时传输

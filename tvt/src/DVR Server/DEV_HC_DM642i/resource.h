@@ -3,8 +3,6 @@
 // Used by DEV_HC_DM642i.rc
 //
 #define IDR_RT_OUT                      3002
-#define IDR_OUTFILE1                    3017
-#define PAL                             3017
 
 // Next default values for new objects
 // 
