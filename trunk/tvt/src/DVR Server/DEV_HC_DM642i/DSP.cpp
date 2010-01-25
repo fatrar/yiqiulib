@@ -142,9 +142,9 @@ BOOL CDSP::DeviceInit()
         m_nDeviceNum++;
 		stIn.m_hEvent[0] = m_hPrvEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
 		stIn.m_hEvent[1] = m_hCompressEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
-        stIn.m_hEvent[2] = NULL;//CreateEvent(NULL, TRUE, FALSE, NULL); // stIn.m_hEvent[2] 该参数未启用，为它传递一个值，只为避开驱动层的参数检查
+        stIn.m_hEvent[2] = NULL; // CreateEvent(NULL, TRUE, FALSE, NULL); // stIn.m_hEvent[2] 该参数未启用，为它传递一个值，只为避开驱动层的参数检查
 		stIn.m_hEvent[3] = m_hAudEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
-		stIn.m_hEvent[4] = NULL;//CreateEvent(NULL, TRUE, FALSE, NULL);
+		stIn.m_hEvent[4] = NULL; //CreateEvent(NULL, TRUE, FALSE, NULL);
 		BOOL bRtn = ControlDriver(
             i,
 			IOCTL_INITIALIZE_DRV,
@@ -595,7 +595,9 @@ void CDSP::ProcessPrv(INT nDevice)
 
 void CDSP::GetPrvData(int nDevice)
 {
-    DWORD dwStreamType = STREAM_TYPE_PRV;
+    StartStopWatch();
+
+    static DWORD dwStreamType = STREAM_TYPE_PRV;
     PBYTE pData;
     PTVT_CAP_STATUS pStatus;
     PTVT_PREV_VBI pVBI;
@@ -674,15 +676,6 @@ void CDSP::GetPrvData(int nDevice)
 void CDSP::ProcessCompressStreams(INT nDevice)
 {
 	DWORD dwWait;
-	DWORD dwStreamType;
-	DWORD dwReturn;
-	PBYTE pData;
-	PTVT_CAP_STATUS pStatus;
-	PTVT_REC_VBI pVBI;
-
-	long	nFrameNum = 0;	//记录从DRIVER层一次取出的帧数量
-	PVOID	pTemp = NULL;	//临时指针
-
 	while (TRUE)
 	{
 		dwWait = WaitForSingleObject(m_hCompressEvent[nDevice], 5000);
@@ -698,116 +691,137 @@ void CDSP::ProcessCompressStreams(INT nDevice)
 		case WAIT_FAILED:
 			break;		
 		case WAIT_OBJECT_0:
-			dwStreamType = STREAM_TYPE_CAP;
-
-			while (TRUE)	//取出Driver层所有BUF，避免BUF阻塞
-			{
-				ControlDriver(nDevice,
-							IOCTL_VIDEO_GET_DATA_INFO,
-							&dwStreamType,
-							sizeof(DWORD),
-							&pData,
-							sizeof(DWORD),
-							&dwReturn);
-				if(pData == NULL)//Driver层已没有可用BUF
-				{
-					break;
-				}
-			
-				pStatus = (PTVT_CAP_STATUS)pData;
-				pData += sizeof(TVT_CAP_STATUS);
-				
-				//统计这次取出的BUF总数(宜在底层填充BUF时统计)
-				nFrameNum = 0;
-
-				pTemp = pData;
-				while(TRUE)
-				{
-					pVBI = (TVT_REC_VBI*) pData;
-					if(pVBI->byDataType == 0xff)	//该数据包处理完
-					{
-						break;
-					}
-
-					pData += sizeof(TVT_REC_VBI);
-					if(pVBI->byInvalid == 0)	//非法数据不统计
-					{
-						pData += pVBI->dwLen;	//
-						continue;
-					}
-
-					nFrameNum++;
-					pData += pVBI->dwLen;	//下一帧
-				}
-
-				if(nFrameNum <= 0)	//空BUF
-				{
-					pStatus->byLock = 0;	//解锁，取下一BUF
-					continue;
-				}
-
-				//在BUF状态信息头中记录该BUF中总共包含的帧数，以备在BUF释放时作减一计数
-				//待该计数器为0时，说明该BUF中所有帧均已处理完，最终byLock置0，释放DRIVER层BUF
-				::InterlockedExchange((PLONG)(&(pStatus->dwReserve4)), nFrameNum);
-
-				pData = (PBYTE)pTemp;
-				
-				for(int i = 0; i < nFrameNum; i++)
-				{
-					pVBI = (TVT_REC_VBI*) pData;
-
-					if(pVBI->byDataType == 0xff)	//该数据包处理完
-					{
-						break;
-					}
-
-					pData += sizeof(TVT_REC_VBI);
-
-					if(pVBI->byInvalid == 0)	//非法数据不处理
-					{
-						pData += pVBI->dwLen;	//现在不会执行到此，保证逻辑结构完整
-						continue;
-					}
-
-                    switch (pVBI->byDataType)
-                    {
-                    case 0:  //录像流                         
-                        CmprssStreamProcessNet_RT(nDevice, pVBI, pData, pStatus);	//<REC-NET>
-
-                        //丢帧后该BUF不再使用，即当前由pStatus管理状态的BUF数量要减一
-                        if(CmprssStreamProcessRcd(nDevice, pVBI, pData, pStatus) == 0)
-                        {
-                            ReleaseDriverBuffer(pStatus);
-                        }
-                        break;
-                    case 1:  //网络流
-                        //增加对丢帧的处理，丢帧后该BUF不再使用，即当前由pStatus管理状态的BUF数量要减一
-                        if(CmprssStreamProcessNet(nDevice, pVBI, pData, pStatus) == 0)
-                        {
-                            ReleaseDriverBuffer(pStatus);
-                        }
-                    	break;
-                    case 2:  //手机流
-                        //增加对丢帧的处理，丢帧后该BUF不再使用，即当前由pStatus管理状态的BUF数量要减一
-                        if(CmprssStreamProcessMobile(nDevice, pVBI, pData, pStatus) == 0)
-                        {
-                            ReleaseDriverBuffer(pStatus);
-                        }
-                    	break;
-                    default:
-                        //这是不合法的情况，如果执行到此，也做丢帧处理
-                        ReleaseDriverBuffer(pStatus);
-                    	break;
-                    }
-	
-					pData += pVBI->dwLen;	//下一帧
-				}			    
-            }
+			GetCompressData(nDevice);
             break;
 		default:
 			break;
 		}
 	}
+}
+
+void CDSP::GetCompressData(int nDevice)
+{ 
+    StartStopWatch();
+
+    DWORD dwReturn;
+    PBYTE pData;
+    PTVT_CAP_STATUS pStatus;
+    PTVT_REC_VBI pVBI;
+    long nFrameNum = 0;	//记录从DRIVER层一次取出的帧数量
+
+    static DWORD dwStreamType = STREAM_TYPE_CAP;
+    while (TRUE)	//取出Driver层所有BUF，避免BUF阻塞
+    {
+        ControlDriver(nDevice,
+            IOCTL_VIDEO_GET_DATA_INFO,
+            &dwStreamType,
+            sizeof(DWORD),
+            &pData,
+            sizeof(DWORD),
+            &dwReturn);
+        if(pData == NULL)//Driver层已没有可用BUF
+        {
+            break;
+        }
+
+        pStatus = (PTVT_CAP_STATUS)pData;
+        pData += sizeof(TVT_CAP_STATUS);
+
+        //统计这次取出的BUF总数(宜在底层填充BUF时统计)
+        nFrameNum = 0;
+
+        PVOID pTemp = pData;
+        //for ( pVBI = (TVT_REC_VBI*)pData;
+        //      pVBI->byDataType != 0xff;   	//该数据包处理完
+        //      pData += pVBI->dwLen )
+        //{
+        //    pData += sizeof(TVT_REC_VBI);
+        //    if(pVBI->byInvalid != 0)	//非法数据不统计
+        //    {
+        //        nFrameNum++;
+        //    }
+        //}
+
+        while(TRUE)
+        {
+            pVBI = (TVT_REC_VBI*)pData;
+            if(pVBI->byDataType == 0xff)	//该数据包处理完
+            {
+                break;
+            }
+
+            pData += sizeof(TVT_REC_VBI);
+            if(pVBI->byInvalid == 0)	//非法数据不统计
+            {
+                pData += pVBI->dwLen;	//
+                continue;
+            }
+
+            nFrameNum++;
+            pData += pVBI->dwLen;	//下一帧
+        }
+
+        if(nFrameNum <= 0)	//空BUF
+        {
+            pStatus->byLock = 0;	//解锁，取下一BUF
+            continue;
+        }
+
+        //在BUF状态信息头中记录该BUF中总共包含的帧数，以备在BUF释放时作减一计数
+        //待该计数器为0时，说明该BUF中所有帧均已处理完，最终byLock置0，释放DRIVER层BUF
+        ::InterlockedExchange((PLONG)(&(pStatus->dwReserve4)), nFrameNum);
+
+        pData = (PBYTE)pTemp;
+
+        for(int i = 0; i < nFrameNum; i++)
+        {
+            pVBI = (TVT_REC_VBI*) pData;
+            if(pVBI->byDataType == 0xff)	//该数据包处理完
+            {
+                break;
+            }
+
+            pData += sizeof(TVT_REC_VBI);
+            if(pVBI->byInvalid == 0)	//非法数据不处理
+            {
+                pData += pVBI->dwLen;	//现在不会执行到此，保证逻辑结构完整
+                continue;
+            }
+
+            switch (pVBI->byDataType)
+            {
+            case 0:  //录像流                         
+                CmprssStreamProcessNet_RT(nDevice, pVBI, pData, pStatus);	//<REC-NET>
+
+                //丢帧后该BUF不再使用，即当前由pStatus管理状态的BUF数量要减一
+                if(CmprssStreamProcessRcd(nDevice, pVBI, pData, pStatus) == 0)
+                {
+                    ReleaseDriverBuffer(pStatus);
+                }
+                break;
+            case 1:  //网络流
+                //增加对丢帧的处理，丢帧后该BUF不再使用，即当前由pStatus管理状态的BUF数量要减一
+                if(CmprssStreamProcessNet(nDevice, pVBI, pData, pStatus) == 0)
+                {
+                    ReleaseDriverBuffer(pStatus);
+                }
+                break;
+            case 2:  //手机流
+                //增加对丢帧的处理，丢帧后该BUF不再使用，即当前由pStatus管理状态的BUF数量要减一
+                if(CmprssStreamProcessMobile(nDevice, pVBI, pData, pStatus) == 0)
+                {
+                    ReleaseDriverBuffer(pStatus);
+                }
+                break;
+            default:
+                //这是不合法的情况，如果执行到此，也做丢帧处理
+                ReleaseDriverBuffer(pStatus);
+                break;
+            }
+
+            pData += pVBI->dwLen;	//下一帧
+        }	 // end for		    
+    }  // end while
 }
 
 void CDSP::ProcessAud(INT nDevice)
@@ -828,7 +842,6 @@ void CDSP::ProcessAud(INT nDevice)
 	while (TRUE)
 	{
 		dwWait = WaitForSingleObject(m_hAudEvent[nDevice], 5000);
-
 		if (m_bQuit == TRUE)
 			break;
 

@@ -1,4 +1,6 @@
 #pragma once
+#include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CIVAlarmOutDlg dialog
@@ -18,4 +20,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+
+    enum
+    {
+        ALARM_CHECK_NUM = 10,
+    };
+private:
+    CComboBox m_AlarmOutHoldTimeComb;
+    CButton m_AlarmCheck[ALARM_CHECK_NUM];
+    CTreeCtrl m_CameraTree;
 };
