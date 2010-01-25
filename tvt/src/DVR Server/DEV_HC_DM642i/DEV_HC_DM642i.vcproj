@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXEXT"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXEXT;IIVDEVICE_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -149,7 +149,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXEXT"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXEXT;IIVDEVICE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -323,6 +323,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\IVDeviceSDK.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -408,6 +412,14 @@
 			>
 			<File
 				RelativePath="res\DEV_HC_DM642i.rc2"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Include"
+			>
+			<File
+				RelativePath="..\DEVICECONTROL\IIVDevice.h"
 				>
 			</File>
 		</Filter>

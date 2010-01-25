@@ -99,6 +99,8 @@ protected:
    
     HANDLE m_Thread;
     HANDLE m_Event[3]; // Open/close File + 
+
+    int m_nPreAlarmTime;
 };
 
 
