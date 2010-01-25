@@ -51,6 +51,7 @@ using namespace std;
 
 #include "math.h"
 
+#include "..\DEVICEControl\IIVDevice.h"
 //zhangzhen 2007/02/09
 //#define	OUT_FILE_VERSION	"081023"
 #define	OUT_FILE_VERSION	"100113"					//OUTÎÄ¼þ°æ±¾ºÅYYMMDD

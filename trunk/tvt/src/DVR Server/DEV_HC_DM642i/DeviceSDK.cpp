@@ -1,7 +1,20 @@
-// DeviceSDK.cpp: implementation of the CDeviceSDK class.
-//
-//////////////////////////////////////////////////////////////////////
+/*H***************************************************************************
+ File            : DeviceSDK.cpp
+ Subsystem       : 
+ Function Name(s): CDeviceSDK
+ Author          : YiQiu
+ Date            : 2010-1-25  
+ Time            : 11:22
+ Description     : 
 
+ Revision        : 
+
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+***************************************************************************H*/
 #include "stdafx.h"
 #include "DeviceSDK.h"
 #include "DSP.h"
@@ -25,7 +38,10 @@ static char THIS_FILE[]=__FILE__;
 //const VIDEO_PROPER	CDeviceSDK::m_default_Video_Proper = {70,145,128,128,128};
 const VIDEO_PROPER	CDeviceSDK::m_default_Video_Proper = {128,128,128,128,128};
 
-CDeviceSDK::CDeviceSDK()
+CDeviceSDK::CDeviceSDK() 
+    : m_AlarmCallBackFn(NULL)
+    , m_pAlarmCallBackParm(NULL)
+    , m_pIVDataSender(NULL)
 {
 	m_hDllModule = NULL;
 	m_bInitialized = FALSE;
@@ -988,3 +1004,7 @@ ds(dd)	: 源(目标)域默认值
 	MAP_DEFAULT_VIDEO_PROPER(vp.contrast, 0, 255, 128, 0, 255, m_default_Video_Proper.contrast);
 	MAP_DEFAULT_VIDEO_PROPER(vp.agc, 0, 255, 128, 0, 255, m_default_Video_Proper.agc);
 }
+
+
+
+// End of File

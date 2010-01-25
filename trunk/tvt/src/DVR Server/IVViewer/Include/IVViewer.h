@@ -1,7 +1,7 @@
 /*H***************************************************************************
  File            : IVViewer.h
  Subsystem       : 
- Function Name(s): CIVViewer
+ Function Name(s): 
  Author          : YiQiu
  Date            : 2010-1-13  
  Time            : 10:35
@@ -15,8 +15,8 @@
 
  Copyright (c) xxxx Ltd.
 ***************************************************************************H*/
-#ifndef _IVVIEWER_H_2010_
-#define _IVVIEWER_H_2010_
+#ifndef _IIVVIEWER_H_2010_
+#define _IIVVIEWER_H_2010_
 
 #include "IIVDataSender.h"
 
