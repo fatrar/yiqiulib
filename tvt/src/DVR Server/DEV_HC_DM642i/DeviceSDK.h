@@ -70,11 +70,7 @@ public:
     // IIVDeviceSetter
 public:
     virtual void SetIVAlarmOutCallBack(AlarmCallBackFn pAlarmCallBackFn, void* pParm);
-    virtual void SetIVDataCallBack(const IIVDataSender* pIVDataSender);
-private:
-    AlarmCallBackFn m_AlarmCallBackFn;
-    void* m_pAlarmCallBackParm;
-    IIVDataSender* m_pIVDataSender;
+    virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender);
 
 protected:	
 	
