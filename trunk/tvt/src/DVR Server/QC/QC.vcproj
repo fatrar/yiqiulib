@@ -401,26 +401,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="VideoDriver.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -476,10 +456,6 @@
 			</File>
 			<File
 				RelativePath="TextStatic.h"
-				>
-			</File>
-			<File
-				RelativePath="VideoDriver.h"
 				>
 			</File>
 		</Filter>
