@@ -66,7 +66,7 @@ BOOL CIVDataBuf::OnIVDataSend(
    
     AutoLockAndUnlock(m_cs);
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
-    ChanTarget.PoshBack(pGroupTarget);
+    ChanTarget.PushBack(pGroupTarget);
     return TRUE;
 }
 

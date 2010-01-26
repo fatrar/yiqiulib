@@ -325,7 +325,7 @@
 			Name="Include"
 			>
 			<File
-				RelativePath=".\Include\IIVDataSender.h"
+				RelativePath="..\DEVICECONTROL\IIVDataSender.h"
 				>
 			</File>
 			<File

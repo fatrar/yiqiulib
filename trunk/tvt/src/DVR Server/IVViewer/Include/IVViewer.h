@@ -18,7 +18,6 @@
 #ifndef _IIVVIEWER_H_2010_
 #define _IIVVIEWER_H_2010_
 
-#include "IIVDataSender.h"
 
 
 struct IIVDataSaver
