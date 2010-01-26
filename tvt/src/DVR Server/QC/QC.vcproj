@@ -296,26 +296,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="MyWaveOut.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="QC.cpp"
 				>
 				<FileConfiguration
@@ -376,24 +356,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="SignalDlg.cpp"
+				RelativePath=".\SignalDlg.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="StdAfx.cpp"
@@ -491,10 +455,6 @@
 				>
 			</File>
 			<File
-				RelativePath="MyWaveOut.h"
-				>
-			</File>
-			<File
 				RelativePath="QC.h"
 				>
 			</File>
@@ -507,7 +467,7 @@
 				>
 			</File>
 			<File
-				RelativePath="SignalDlg.h"
+				RelativePath=".\SignalDlg.h"
 				>
 			</File>
 			<File
@@ -566,5 +526,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="QC.rc"
+		/>
 	</Globals>
 </VisualStudioProject>
