@@ -12,10 +12,7 @@
 class CDSP;
 
 class CDeviceSDK : 
-    public CDeviceManager,
-    public IIVDeviceBase,
-    public IIVStatistic,
-    public IIVDeviceSetter
+    public CDeviceManager
 {
     // CDeviceManager
 public:
@@ -51,26 +48,8 @@ public:
 	virtual BOOL GetQuadRect(DWORD sizetype,DWORD &CamNumPerF,CRect pRect[]);
 	HINSTANCE m_hDllModule;
 
-
-    // IIVDeviceBase
 public:
-    virtual BOOL IsUse(int nChannelID);
-    virtual BOOL Use(int nChannelID, bool bState);
-    virtual BOOL ShowObjTrace(bool bState);
-    virtual BOOL GetObjTraceState(bool& bState);
-    virtual BOOL IsHaveFreeDevice(void);
-
-    // IIVStatistic
-public:
-    virtual BOOL IsHaveStatisticRule(int nChannelID);
-    virtual BOOL ResetStatistic(int nChannelID);
-    virtual BOOL StartStatistic(int nChannelID, bool bFlag);
-    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
-
-    // IIVDeviceSetter
-public:
-    virtual void SetIVAlarmOutCallBack(AlarmCallBackFn pAlarmCallBackFn, void* pParm);
-    virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender);
+    CDSP *m_pDSP;
 
 protected:	
 	
@@ -79,7 +58,7 @@ protected:
 	int DeleteFiles(DWORD dwVideoFormat);
 	int ExtractFiles(DWORD dwVideoFormat);
 	BOOL m_bAlarmCard;
-	CDSP *m_pDSP;
+	
 	VIDEO_PROPER m_VideoProperty[16];
 	DWORD m_dwVideoFormat;
 	BOOL m_bInitialized;

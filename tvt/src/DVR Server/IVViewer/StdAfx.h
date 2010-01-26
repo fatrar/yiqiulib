@@ -49,11 +49,13 @@ using namespace std;
 #include "..\..\Base\System\Include\Thread.h"
 using namespace OCI;
 
-#include "..\DEV_HC_DM642i\Include\WPG_EventOccurrence.h"
+#include "..\DEVICEControl\WPG_EventOccurrence.h"
+#include "..\DEVICEControl\IIVDataSender.h"
+
 #include "IVViewerUtil.h"
 
 #include "Include\IVViewer.h"
-#include "Include\IIVDataSender.h"
+
 
 
 

@@ -48,11 +48,17 @@ CDeviceSDK::CDeviceSDK()
 
 	//增加CallMonitor功能，默认全部关闭
 	m_nCurrentMonitor = -1;
+
+    m_pDSP = new CDSP();
 }
 
 CDeviceSDK::~CDeviceSDK()
 {
-
+    if ( m_pDSP )
+    {
+        delete m_pDSP;
+        m_pDSP = NULL;
+    }
 }
 
 /******************************************************************************
@@ -367,7 +373,6 @@ BOOL CDeviceSDK::DeviceInitial(DWORD VideoFormat, CAPTURECALLBACK *pVideoCallBac
 		}
 	}
 	
-	m_pDSP = new CDSP();
 	if (!m_pDSP->Initialize(VideoFormat, pVideoCallBack, pAudioCallBack))
 	{
 		delete m_pDSP;
@@ -380,7 +385,7 @@ BOOL CDeviceSDK::DeviceInitial(DWORD VideoFormat, CAPTURECALLBACK *pVideoCallBac
 	*pProductType = DVR_CARD_TD4104;
 
 	//WATERMARK	CALLMONITOR
-	for (int i = 0; i < 4 * m_pDSP->GetDevNum(); i++)
+	for (DWORD i = 0; i < 4 * m_pDSP->GetDevNum(); i++)
 	{
 		m_pDSP->SetParam(PT_PCI_SET_WATER_MARK, i, 0);
 		m_pDSP->SetParam(PT_PCI_SET_CALL_MONITOR, i, 0); //初始化Call Monitor状态为全闭
@@ -397,6 +402,7 @@ void CDeviceSDK::DeviceFree(void)
 
 	m_pDSP->Terminate();
 	delete m_pDSP;
+    m_pDSP = NULL;
 
 	if (m_bAlarmCard == TRUE)
 	{
@@ -997,6 +1003,27 @@ ds(dd)	: 源(目标)域默认值
 	MAP_DEFAULT_VIDEO_PROPER(vp.hue, 0, 255, 128, 0, 255, m_default_Video_Proper.hue);
 	MAP_DEFAULT_VIDEO_PROPER(vp.contrast, 0, 255, 128, 0, 255, m_default_Video_Proper.contrast);
 	MAP_DEFAULT_VIDEO_PROPER(vp.agc, 0, 255, 128, 0, 255, m_default_Video_Proper.agc);
+}
+
+
+extern CDeviceSDK g_Dev_Object;
+
+namespace DeviceFactory
+{
+    IIVDeviceBase* GetIVDeviceBase( void )
+    {
+        return g_Dev_Object.m_pDSP;
+    }
+
+    IIVDeviceSetter* GeIVDeviceSetter( void )
+    {
+        return g_Dev_Object.m_pDSP;
+    }
+
+    IIVStatistic* GetIVStatistic( void )
+    {
+        return g_Dev_Object.m_pDSP;
+    }
 }
 
 

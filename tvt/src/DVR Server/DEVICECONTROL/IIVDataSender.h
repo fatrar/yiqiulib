@@ -19,9 +19,7 @@
 #define _IIVDATASENDER_H_2010_
 
 
-
-
-struct WPG_Target;
+#include "WPG_EventOccurrence.h"
 
 
 struct IIVDataSender

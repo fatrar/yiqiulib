@@ -25,6 +25,7 @@
     #define IIVDEVICE_API extern "C" __declspec(dllimport)
 #endif
 
+#include "IIVDataSender.h"
 
 struct IIVDeviceBase
 {
@@ -90,8 +91,21 @@ enum IVRuleType
     IV_Stage_Change,        // 场景变换
 };
 
+union IV_RuleID
+{
+    struct RULE_ID
+    {
+        DWORD ID;          // 0x00
+        FILETIME SetTime;  // 0x04
+        BYTE nType;        // 0xC
+        BYTE resvr[3];     // 0xD
+    } RuleID;
+
+    unsigned char szRuleId[16];
+};
+
 // 第三个为通道，第四个为时间戳，第五个为回调传过来的用户参数
-typedef BOOL (*AlarmCallBackFn)(const AlarmOutTable&,IVRuleType,int,const FILETIME&,void* pParm);
+typedef BOOL (*AlarmCallBackFn)(const AlarmOutTable&,IVRuleType,int,const FILETIME*,void* pParm);
 
 struct IIVDeviceSetter
 {
@@ -99,9 +113,17 @@ struct IIVDeviceSetter
     virtual void SetIVAlarmOutCallBack(AlarmCallBackFn pAlarmCallBackFn, void* pParm)=0;
 
     // 设置智能数据发送的回调，由IVLiveFactory得到这个指针
-    virtual void SetIVDataCallBack(const IIVDataSender* pIVDataSender)=0;
+    virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender)=0;
 };
 
+struct ISnapShotSender
+{
+    virtual void OnSnapShotSend(
+        int nChannelID, 
+        DWORD dwRuleID,
+        BYTE* pData,
+        size_t nLen) = 0;
+};
 
 namespace DeviceFactory
 {

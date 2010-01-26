@@ -16,15 +16,8 @@ class CTiCoffFile;
 extern inline	void ReleaseDriverBuffer(PTVT_CAP_STATUS pST);
 #define NET_FRAME_RATE_TOTAL 32
 
-class CDSP :
-    public IIVDeviceBase,
-    public IIVStatistic,
-    public IIVDeviceSetter
+class CDSP  
 {
-public:
-    CDSP();
-    virtual ~CDSP();
-
 public:
 	BOOL m_bRecordStop[MAX_CHANNEL_NUM];	//<REC-NET>	记录录像状态开关
 	int m_nNetFrameRateInc;	//网络帧率增量	Add By zhangzhen 2007/10/17
@@ -41,9 +34,10 @@ public:
 	BOOL CaptureStop();
 	BOOL CaptureStart();
 	BOOL Initialize(DWORD dwVideoFormat, CAPTURECALLBACK *pVideoCallBack, CAPTURECALLBACK *pAudioCallBack);
-
+	CDSP();
+	virtual ~CDSP();
 	BOOL m_bNetstart;
-	INT m_nDeviceNum;
+	//INT m_nDeviceNum;
 	DWORD m_dwNetChannelMask;	//网络通道开关	Add By zhangzhen 2007/10/11
 protected:
 	BYTE Encrypt(INT nDevice, BYTE byRandom);
@@ -58,6 +52,7 @@ protected:
 protected:
     FILETIME m_ftNetLastFrameTime[MAX_CHANNEL_NUM];
     CCounterTime m_CounterTime;
+	//CTiCoffFile *m_pTiCoffFile[MAX_DEVICE_NUM];
 	BOOL m_bStart;
 	BOOL m_bQuit;
 
@@ -67,6 +62,7 @@ protected:
 	DWORD m_dwPrvBufSize;
 	
     SIGNAL m_pSignal[MAX_CHANNEL_NUM];
+	PBYTE m_pParamData[MAX_DEVICE_NUM];
 	PACK m_pPack[MAX_DEVICE_NUM];
     DWORD m_pSwitch[MAX_CHANNEL_NUM];
     DWORD m_pAudioSwitch[MAX_CHANNEL_NUM];
@@ -74,22 +70,24 @@ protected:
     void SetSignal(int nChannel, UINT iS);
     BOOL SetParamToDSP(INT nDevice);
 	void ReleaseCapBuf(INT nDevice, INT nIndex);
+
 	BOOL FindCapBuf(INT nDevice, INT &nIndex);
 	BOOL FindNetBuf_RT(INT nDevice, INT &nIndex);	//<REC-NET>
 	void ReleaseNetBuf_RT(INT nDevice, INT nIndex);	//<REC-NET>
 	void ReleaseAudBuf(INT nDevice, INT nIndex);
 	BOOL FindAudBuf(INT nDevice, INT &nIndex);
-	void ReleasePrvBuf(INT nDevice, INT nIndex);
+	
+    void ReleasePrvBuf(INT nDevice, INT nIndex);
 	BOOL FindPrvBuf(INT nDevice, INT &nIndex);
 	
-    CCriticalSection m_pPrvBufCS[MAX_DEVICE_NUM];	
+    //CCriticalSection m_pPrvBufCS[MAX_DEVICE_NUM];	
     CCriticalSection m_pNetBufCS[MAX_DEVICE_NUM];
 	CCriticalSection m_pMobileBufCS[MAX_DEVICE_NUM];
 	CCriticalSection m_pNetBufCS_RT[MAX_DEVICE_NUM];	//<REC-NET>
     CCriticalSection m_pAudBufCS[MAX_DEVICE_NUM];
     CCriticalSection m_pCapBufCS[MAX_DEVICE_NUM];
 
-    FRAMEBUFSTRUCT m_pPrvBuf[MAX_DEVICE_NUM][PRV_BUF_NUM];
+    //FRAMEBUFSTRUCT m_pPrvBuf[MAX_DEVICE_NUM][PRV_BUF_NUM];
 	FRAMEBUFSTRUCT m_pNetBuf[MAX_DEVICE_NUM][NET_BUF_NUM];
 	FRAMEBUFSTRUCT m_pMobileBuf[MAX_DEVICE_NUM][MOBILE_BUF_NUM];
 	FRAMEBUFSTRUCT m_pNetBuf_RT[MAX_DEVICE_NUM][CAP_BUF_NUM];	//<REC-NET>  
@@ -101,7 +99,7 @@ protected:
 	BOOL CreateWorkerThread();
 	void DestroyBuffer();
 	HANDLE m_hThreadAud[MAX_DEVICE_NUM];
-	HANDLE m_hThreadPrv[MAX_DEVICE_NUM];
+	//HANDLE m_hThreadPrv[MAX_DEVICE_NUM];
 	HANDLE m_hThreadCompressStrm[MAX_DEVICE_NUM];
 
 	static DWORD WINAPI OnThreadAud(PVOID pParam);
@@ -116,9 +114,10 @@ protected:
 
 	HANDLE m_hCompressEvent[MAX_DEVICE_NUM];
 	HANDLE m_hAudEvent[MAX_DEVICE_NUM];
-	HANDLE m_hPrvEvent[MAX_DEVICE_NUM];
+	//HANDLE m_hPrvEvent[MAX_DEVICE_NUM];
 
 	BOOL DeviceInit();
+	void VariableInit();
 	HANDLE m_hDevice[MAX_DEVICE_NUM];
 	BOOL ControlDriver(INT nIndex, DWORD dwIoControlCode, LPVOID lpInBuffer, DWORD nInBufferSize, LPVOID lpOutBuffer, DWORD nOutBufferSize, LPDWORD lpBytesReturned);
 
@@ -126,7 +125,7 @@ private:
 	PTVT_CAP_STATUS m_pDrvHeadOfNetBuf[MAX_DEVICE_NUM][NET_BUF_NUM];	//记录每个网络缓冲区所属的DRIVER层缓冲头
 	PTVT_CAP_STATUS m_pDrvHeadOfMobileBuf[MAX_DEVICE_NUM][MOBILE_BUF_NUM];	//记录每个手机缓冲区所属的DRIVER层缓冲头
 	PTVT_CAP_STATUS m_pDrvHeadOfCapBuf[MAX_DEVICE_NUM][CAP_BUF_NUM];	//记录每个录像缓冲区所属的DRIVER层缓冲头
-	PTVT_CAP_STATUS m_pDrvHeadOfPrvBuf[MAX_DEVICE_NUM][PRV_BUF_NUM];	//记录每个现场缓冲区所属的DRIVER层缓冲头
+	//PTVT_CAP_STATUS m_pDrvHeadOfPrvBuf[MAX_DEVICE_NUM][PRV_BUF_NUM];	//记录每个现场缓冲区所属的DRIVER层缓冲头
 
 	BOOL m_bNextFrameIsKeyRcd[MAX_CHANNEL_NUM];	//录像流关键帧需求状态	TRUE--下帧必须是关键帧，FALSE--无要求(可以为关键帧，也可以是非关键帧)
 	BOOL m_bNextFrameIsKeyNet[MAX_CHANNEL_NUM];	//网络流关键帧需求状态	TRUE--下帧必须是关键帧，FALSE--无要求(可以为关键帧，也可以是非关键帧)
@@ -144,7 +143,7 @@ private:
 	int CmprssStreamProcessNet_RT(int nDeviceNo, const PTVT_REC_VBI& pVBI, const PBYTE pVideoData, const PTVT_CAP_STATUS& pST);	//<REC-NET>
 	void ProcessCompressStreams(INT nDevice);
 	void ProcessAud(INT nDevice);
-	void ProcessPrv(INT nDevice);
+	//void ProcessPrv(INT nDevice);
 
 protected:
     struct ThreadParm
@@ -154,75 +153,29 @@ protected:
         DWORD dwDeviceID;
     };
 
-    // New Add
 private:
-    void GetPrvData(int nDevice);
-
-    void GetOneChannelPreData(
-        int nChannel,
-        int nDevice,
-        PBYTE pData,
-        PTVT_CAP_STATUS pStatus );
+    //void GetPrvData(int nDevice);
 
     void GetCompressData(int nDevice);
 
-    //
-    // **********************    IV   *******************
-    //
-    // IIVDeviceBase
 public:
-    virtual BOOL IsUse(int nChannelID);
-    virtual BOOL Use(int nChannelID, bool bState);
-    virtual BOOL ShowObjTrace(bool bState);
-    virtual BOOL GetObjTraceState(bool& bState);
-    virtual BOOL IsHaveFreeDevice(void);
+    // 设置Alarm发生时的给上层的回调,pParm为用户输入的参数，回调会传出
+    void SetIVAlarmOutCallBack(AlarmCallBackFn pAlarmCallBackFn, void* pParm)
+    {
+        m_AlarmCallBackFn = pAlarmCallBackFn;
+        m_pAlarmCallBackParm = pParm;
+    }
 
-    // IIVStatistic
-public:
-    virtual BOOL IsHaveStatisticRule(int nChannelID);
-    virtual BOOL ResetStatistic(int nChannelID);
-    virtual BOOL StartStatistic(int nChannelID, bool bFlag);
-    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
-
-    // IIVDeviceSetter
-public:
-    virtual void SetIVAlarmOutCallBack(
-        AlarmCallBackFn pAlarmCallBackFn, void* pParm);
-    virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender);
-
-    // Do IV Data
-private:
-    void DoIVData(int nDevice, PBYTE pData);
-
-    void DoSnapShot(
-        int nChannelID,
-        const WPG_EventOccurrence* pEvent, 
-        BYTE*& pFirstPic);
-
-    void DoIVAlarm(
-        int nChannelID,
-        const WPG_EventOccurrence* pEvent, 
-        FILETIME* pTime);
-
-private:
-    bool GetDeviceIDByChannel(int nChannelID, int& nDeviceID);
+    // 设置智能数据发送的回调，由IVLiveFactory得到这个指针
+    void SetIVDataCallBack(IIVDataSender* pIVDataSender)
+    {
+        m_pIVDataSender = pIVDataSender;
+    }
 
 private:
     AlarmCallBackFn m_AlarmCallBackFn;
     void* m_pAlarmCallBackParm;
     IIVDataSender* m_pIVDataSender;
-    ISnapShotSender* m_pSnapShotSender;
-    int m_szCurrentIVChannel[MAX_DEVICE_NUM];
-
-    BOOL m_ShowSnapShot;
 };
-
-//typedef struct WPG_EventOccurrence
-//{
-//    unsigned char ruleId[16];
-//}
- 
-
-
 
 #endif // !defined(AFX_DSP_H__C706B57D_C9A0_4A6C_A74E_FE16F5B26E14__INCLUDED_)
