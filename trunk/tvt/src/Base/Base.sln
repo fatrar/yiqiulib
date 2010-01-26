@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "tinyxml\tinyxml.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BaseTest", "BaseTest\BaseTest.vcproj", "{34321ADF-EF09-4C70-9ECE-9E47651A82F3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml_dynamic", "tinyxml\tinyxml_dynamic.vcproj", "{F6F48206-B09B-403A-A0CD-8CCF18E5749B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{34321ADF-EF09-4C70-9ECE-9E47651A82F3}.Debug|Win32.Build.0 = Debug|Win32
 		{34321ADF-EF09-4C70-9ECE-9E47651A82F3}.Release|Win32.ActiveCfg = Release|Win32
 		{34321ADF-EF09-4C70-9ECE-9E47651A82F3}.Release|Win32.Build.0 = Release|Win32
+		{F6F48206-B09B-403A-A0CD-8CCF18E5749B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F6F48206-B09B-403A-A0CD-8CCF18E5749B}.Debug|Win32.Build.0 = Debug|Win32
+		{F6F48206-B09B-403A-A0CD-8CCF18E5749B}.Release|Win32.ActiveCfg = Release|Win32
+		{F6F48206-B09B-403A-A0CD-8CCF18E5749B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
