@@ -1,0 +1,62 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: QC - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\heliang\LOCALS~1\Temp\RSP33.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Debug/" /Fp"Debug/QC.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\tvt\src\DVR Server\QC\QCDlg.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\heliang\LOCALS~1\Temp\RSP33.tmp" 
+Creating temporary file "C:\DOCUME~1\heliang\LOCALS~1\Temp\RSP34.tmp" with contents
+[
+.\NTDDK\newdev.lib SetupAPI.lib ddraw.lib dxguid.lib winmm.lib AMD411Codec.lib vfw32.lib Protocol.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/QC.pdb" /debug /machine:I386 /out:"Debug/QC.exe" /pdbtype:sept 
+".\Debug\AlarmTest.obj"
+".\Debug\ChangePasswordDlg.obj"
+".\Debug\CodecMgr.obj"
+".\Debug\CSetupDi.obj"
+".\Debug\DeviceDriver.obj"
+".\Debug\DirectDraw.obj"
+".\Debug\MyWaveOut.obj"
+".\Debug\NewUserDlg.obj"
+".\Debug\PtzTest.obj"
+".\Debug\QC.obj"
+".\Debug\QCDlg.obj"
+".\Debug\SignalDlg.obj"
+".\Debug\StdAfx.obj"
+".\Debug\TestCard.obj"
+".\Debug\TextStatic.obj"
+".\Debug\VideoDriver.obj"
+".\Debug\VideoDriverTD3004.obj"
+".\Debug\VideoDriverTD3008.obj"
+".\Debug\VideoDriverTD3016.obj"
+".\Debug\VideoDriverTD3108.obj"
+".\Debug\VideoDriverTD3116.obj"
+".\Debug\VideoDriverTD3216.obj"
+".\Debug\VideoDriverTD3304.obj"
+".\Debug\VideoDriverTD3308.obj"
+".\Debug\QC.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\heliang\LOCALS~1\Temp\RSP34.tmp"
+<h3>Output Window</h3>
+Compiling...
+QCDlg.cpp
+F:\tvt\src\DVR Server\QC\QCDlg.cpp(2472) : warning C4018: '!=' : signed/unsigned mismatch
+F:\tvt\src\DVR Server\QC\QCDlg.cpp(2480) : warning C4018: '!=' : signed/unsigned mismatch
+F:\tvt\src\DVR Server\QC\QCDlg.cpp(2647) : warning C4018: '<' : signed/unsigned mismatch
+F:\tvt\src\DVR Server\QC\QCDlg.cpp(2649) : warning C4018: '<' : signed/unsigned mismatch
+F:\tvt\src\DVR Server\QC\QCDlg.cpp(2684) : warning C4018: '<' : signed/unsigned mismatch
+F:\tvt\src\DVR Server\QC\QCDlg.cpp(2686) : warning C4018: '<' : signed/unsigned mismatch
+Linking...
+
+
+
+<h3>Results</h3>
+QC.exe - 0 error(s), 6 warning(s)
+</pre>
+</body>
+</html>

@@ -1,0 +1,706 @@
+AccessDB.cpp
+void 初始化()
+void 析构()
+void 添加一条纪录()
+void 修改Reset项()
+void 获得模式()
+void 保存模式()
+void 修改Result项()
+
+
+AlarmTest.cpp
+void OnFinish()按结束按钮
+void OnInitDialog()
+void OnAlarmInRes()按In按钮
+void OnAlarmOutRes()按out按钮
+void OnAlarmRelayRes()按继电器按钮
+
+int CARD_ALARM_INFOR[SUPPORT_CARD_NUMBER][TEST_ALARM_TYPE_NUMBER] = ...报警板支持的各种按钮数量SUPPORT_CARD_NUMBER = 22, TEST_ALARM_TYPE_NUMBER = 3;分别是In,out,relay
+
+void InitialControl()初始化in,out,relay控件，包含以下三个部分：
+void InitialIn(int num)初始化in,其中num为需要显示的控件个数;void InitialRelay(BOOL have)初始化relay,其中have为是否显示控件;void InitialOut(int num)初始化Out,参数参考InitialIn
+
+void RefreshControlList(DWORD * AlarmIn,DWORD * AlarmOut)刷新控件状态
+void InitalVar()初始化部分变量
+void Ontimer(UINT nIDEvent)按下报警板自动按钮后的处理
+void SetKeyBoard(DWORD in)设置in按钮的状态
+long StrToData(CString strData, int jz)将字符转化为数据，为setkeyboard做判断依据
+BOOL isRightData(char c, int jz)判断当前数据是否是有效数据
+long npf(int d, int n)未知
+BOOL MakeAlarmCardOutStatus(DWORD *out)设置报警板Out状态
+void OnAutoTest() 按下自动按钮
+void OnLampAlarmJ()按下J按钮
+void OnLampAlarmOut1~4()分别按下1~4号Out按钮
+void ManueAlarmOut()报警输出状态调整
+
+
+ChangePasswordDlg.cpp
+void OnOK()按下OK按钮的处理
+
+
+CodecMgr.cpp
+BOOL InitCodecV(int Res)初始化视频编码解码器V,其中Res好像没用上
+void DestroyCodecV()销毁视频编码解码器V
+BOOL InitCodecA()初始化解码器A(应该是音频，但目前功能好像没有)
+void DestroyCodecA()销毁解码器A(应该是音频，但目前功能好像没有)
+BOOL EncodeAudioData(char *pin,int len,char* pout,int* lenr)压缩音频帧，目前功能好像没有
+BOOL DecodeAudioData(char *pin,int len,char* pout,int* lenr)解压缩音频帧，目前功能好像没有
+
+BOOL DecodeVideoData(char *pin,DWORD len,char* pout,DWORD *lenr,DWORD flag)解压缩视频帧，其中pin为传入的原始数据，len为原始数据长度，pout为解压缩后的数据，lenr为解压缩后数据长度，flag暂时未用到
+
+BOOL EncodeVideoData(char* pin,int len,char* pout,int* lenr,BOOL* pKey)压缩视频帧，其中前四项与DecodeVideoData前四个相同，pKey指当前帧是否为关键帧
+void SetFormat(CSize csize)设置格式大小，其中csize为需要设置的格式大小
+BOOL InitCodecH(int Res)初始化视频编码解码器H(应该指支持h264的解码器)，Res指是否加载h264解码
+BOOL DecodeVideoDataH(char *pin, DWORD len, char *pout, DWORD *lenr, DWORD flag)解h264压缩视频帧，参数全部同DecodeVideoData
+
+
+CSetupDi.cpp
+/******************************************************************************
+* 函数名称： BOOL GetDeviceRegistryHardwareID(SP_DEVINFO_DATA& DeviceInfoData,CString &strHardID)
+* 功能描述： 得到指定硬件的系统ID
+* 输入参数： DeviceInfoData 硬件信息
+* 输出参数： strHardID 硬件的ID
+* 返 回 值： 成功返回TRUE,失败返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL GetDeviceRegistryHardwareID(SP_DEVINFO_DATA& DeviceInfoData,CStringArray &strHardIDList)
+/******************************************************************************
+* 函数名称： BOOL DeinstallDevices(CStringArray &Devices,void (*pFun)(LPARAM),LPARAM para)
+* 功能描述： 卸载指定的所有硬件
+* 输入参数： Devices 硬件的系统ID数组
+*			 pFun  para 每卸载一个硬件需要使用参数 para 执行函数pFun一次，方便于提示进度
+* 输出参数： 无
+* 返 回 值： 成功返回TRUE,失败返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL DeinstallDevices(CStringArray &Devices,void (*pFun)(LPARAM), LPARAM para)
+/******************************************************************************
+* 函数名称： BOOL FindExistingDevice(CString &HardwareId)
+* 功能描述： 查找指定硬件是否存在
+* 输入参数： HardwareId 硬件的系统ID数组
+* 输出参数： 无
+* 返 回 值： 成功发现硬件返回TRUE,否则返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL FindExistingDevice(CString &HardwareId)
+/******************************************************************************
+* 函数名称： BOOL InstallDrv(CString Deviceid, CString inffilename,HWND hwnd,void (*pFun)(LPARAM),LPARAM para)
+* 功能描述： 安装指定ID的所有硬件的Driver
+* 输入参数： Deviceid 硬件的系统ID
+*			 inffilename 安装Driver所需要的INF文件名
+*			 hwnd		窗体句柄
+*			 pRebootRequired 安装之后返回是否需要重启电脑
+*			 pFun  para 每卸载一个硬件需要使用参数 para 执行函数pFun一次，方便于提示进度
+* 输出参数： 无
+* 返 回 值： 成功返回TRUE,失败返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL InstallDrv(CString Deviceid, CString inffilename,HWND hwnd, BOOL *pRebootRequired, void (*pFun)(LPARAM),LPARAM para)
+/******************************************************************************
+* 函数名称： BOOL GetDeviceID(CString HardID,BOOL *bSubSystem ,DVRENUM_PRODUCT_TYPE *CardType)
+* 功能描述： 得到指定系统ID的设备数量和ID列表
+* 输入参数： HardID		硬件的系统ID
+* 输出参数： HardIDNum	硬件数量
+*			 IDList		所有ID列表
+* 返 回 值： 成功返回TRUE,否则返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL GetDeviceID(CString HardID,BOOL *bSubSystem ,DVRENUM_PRODUCT_TYPE *CardType)
+/******************************************************************************
+* 函数名称： BOOL UpdateDriver(HWND hwnd,CString Deviceid,CString infname,BOOL *pRebootRequired)
+* 功能描述： 使用指定INF文件中的信息安装指定系统ID的硬件Driver
+* 输入参数： hwnd主窗体句柄
+*			 Deviceid设备的系统ID
+*			 infname安装用的INF文件
+* 输出参数： pRebootRequired,如果安装成功,此参数返回是否需要重启电脑
+* 返 回 值： 安装成功返回TRUE,否则返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL UpdateDriver(HWND hwnd,CString Deviceid,CString infname,BOOL *pRebootRequired)
+
+
+DeviceDriver.cpp
+/******************************************************************************
+* 函数名称： BOOL InitializeDriver()
+* 功能描述： 初始化Driver,生成捕捉事件
+* 输入参数： 无
+* 输出参数： 无
+* 返 回 值：成功返回TRUE，否则返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL InitializeDriver()
+/******************************************************************************
+* 函数名称： void ExitDriver()
+* 功能描述： 退出Driver,关闭捕捉事件
+* 输入参数： 无
+* 输出参数： 无
+* 返 回 值： 无
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+void ExitDriver()
+/******************************************************************************
+* 函数名称： BOOL OpenDriver(CString strDrvName)
+* 功能描述： 打开Driver
+* 输入参数： strDrvName Driver名字
+* 输出参数： 无
+* 返 回 值： 成功返回TRUE，否则返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL OpenDriver(CString strDrvName)
+/******************************************************************************
+* 函数名称： void CloseDriver()
+* 功能描述： 关闭Driver
+* 输入参数： 无
+* 输出参数： 无
+* 返 回 值： 成功返回TRUE，否则返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+void CloseDriver()
+/******************************************************************************
+* 函数名称： BOOL ControlDriver(DWORD dwCtrlCode, LPVOID lpInBuf, DWORD nInBufSize, LPVOID lpOutBuf, DWORD nOutBufSize)
+* 功能描述： 控制Driver
+* 输入参数： dwCtrlCode 控制代码
+*			 lpInBuf	输入Buf
+*			 nInBufSize 输入Buf长度
+* 输出参数： lpOutBuf	输出Buf
+*			 nOutBufSize输出Buf长度
+* 返 回 值： 成功返回TRUE，否则返回FALSE
+* 修改日期    版本号     修改人	     修改内容
+* -----------------------------------------------
+******************************************************************************/
+BOOL ControlDriver(DWORD dwCtrlCode, LPVOID lpInBuf, DWORD nInBufSize, LPVOID lpOutBuf, DWORD nOutBufSize)
+void LockDelBuf()锁定需要删除的buf
+void UnlockDelBuf()解锁需要删除的buf
+CString ReadProductInforFromReg()读注册表键值
+void WriteProductInforToReg(CString str)写注册表键值，其中str为需要写入注册表的值
+
+
+DirectDraw.cpp
+/***********************************************************************************************
+功能说明: 将YUV422平面数据转换为打包数据
+		  分两种情况实现 : 如果CPU支持MMX指令集，则用MMX汇编实现，否则使用C语言实现
+参数说明: pDst[OUT]: 转换目标地址--即转换后的数据存放位置
+		  pSrc[IN] : 转换源地址----即需要转换的数据存放位置
+		  nWidth[IN]:图像宽度(PIXEL)
+		  nHeight[IN]:图像高度(PIXEL)
+		  nPitch[IN]:每行像素占用的字节数，如果是DDRAW的表面就传递DDSURFACEDESC::lPitch；
+											如果是普通转换，则传递nWidth*2(因为每个象素两个字节)
+修改记录:
+			修改人		修改时间		修改内容
+--------------------------------------------------------------------------
+			zhangzhen	2007/02/02		整理YUV422平面数据打包功能为一个函数
+******************************************************************************************************/
+void YUV422Pack(void *pDst, void *pSrc, unsigned int nWidth, unsigned int nHeight, unsigned int nPitch)
+/*******************************************************************************************************************************
+功能说明: 将YUV420平面数据转换为YUV422打包数据
+参数说明: pDst[OUT]: 转换目标地址--即转换后的数据存放位置
+		  pSrc[IN] : 转换源地址----即需要转换的数据存放位置
+		  nWidth[IN]:图像宽度(PIXEL)
+		  nHeight[IN]:图像高度(PIXEL)
+		  nPitch[IN]:每行像素占用的字节数，如果是DDRAW的表面就传递DDSURFACEDESC::lPitch；
+											如果是普通转换，则传递nWidth*2(因为每个象素两个字节)
+		YUV420数据格式:偶数行(0,2,4...):横向相邻两个像素共享U分量，并与其下一行相邻像素共享V分量
+					   奇数行(1,3,5...):横向相邻两个像素共享V分量，并与其上一行相邻像素共享U分量
+修改记录:
+			修改人		修改时间		修改内容
+--------------------------------------------------------------------------
+			zhangzhen	2007/03/27		<4108-16>
+*******************************************************************************************************************************/
+void YUV420_YUV422Pack(void *pDst, void *pSrc, unsigned int nWidth, unsigned int nHeight, unsigned int nPitch,INT src420Subtype)
+BOOL IniDirectDraw()初始化DirectDraw
+BOOL DrawBuffer(int index, LPBYTE pBuffer, WORD len)通过数据显示图像,其中index为需要显示图像的范围序号，pBuffer为数据，len暂时未用到
+void FreeDirectDraw()释放directdraw资源
+void DrawOverlayBack()画overlay背景
+BOOL AreOverlaysSupported()检查是否支持overlay
+BOOL CreateOverlay(DWORD dwFormat)创建overlay，其中dwFormat为制示
+void ShowOverlay(BOOL bShow)现实overlay，其中bShow为是否显示
+void GetOverlayADDR_PITCH(DWORD *pADDR, DWORD *pPITCH)获得overlay数据和像素占用字节数,其中pADDR为返回的overlay数据，pPITCH为返回的占用字节数
+void DrawBack()单纯的画背景
+void Init3316Back(DWORD dwFormat)初始化3316背景，其中dwFormat为制示
+void ShowPreview(long lIndex, BYTE *pBuf)显示预览画面，其中lIndex为需要显示图像的范围序号，pBuf为数据
+void InitUSBBack(DWORD dwFormat, int nChannelNum)初始化USB设备背景，其中dwFormat为制示，nChannelNum为通道数
+void ShowUSB(long lIndex, BYTE *pBuf, int nChannelNum)显示USB设备图像,其中lIndex为需要显示图像的范围序号，pBuf为数据，nChannelNum为通道数
+void FreeUSBBack()释放USBdirectdraw资源
+void InitDSPBack(DWORD dwFormat, int nChanNum)初始化DSP背景（CIF下），其中dwFormat为制示，nChanNum为通道数
+void InitDSPD1Back(DWORD dwFormat, int nChanNum)初始化DSP背景（D1下），其中dwFormat为制示，nChanNum为通道数
+void FreeDSPBack()释放DSPdirectdraw资源
+
+void ShowDSP(long lIndex, BYTE *pBuf, int nChanNum, DWORD format,INT src420Subtype)显示DSP图像，其中lIndex为需要显示图像的范围序号，pBuf为数据，nChanNum为通道数，src420Subtype为数据模式，现有420平面，422平面，422打包
+
+DWORD WINAPI TimeUpdateOverlay(LPVOID lpParameter)显示overlay线程，其中lpParameter为传入参数，当前为CDirectDraw类this指针
+VOID Show(long lIndex, BYTE *pBuf, int nChanNum)显示图像数据，其中lIndex为需要显示图像的范围序号，pBuf为数据，nChanNum为通道数
+VOID InitBack(DWORD dwFormat,BOOL bD1, int nChanNum)初始化背景，其中dwFormat为制示，bD1为是否为D1模式，nChanNum为通道数
+VOID InitHalfD1Back(DWORD dwFormat, int nChanNum)初始化halfD1背景，其中dwFormat为制示，nChanNum为通道数
+
+
+LoginDlg.cpp
+void OnOK()点击登陆按钮的处理
+void Connect()连接数据库
+void Disconnect()断开连接数据库
+int Check(CString strUser, CString strPassword)验证用户名，密码，其中strUser为用户名strPassword为密码
+void OnChange()点击修改密码按钮的处理
+void ChangePassword(CString strUser, CString strPassword)修改用户名和密码，其中strUser为修改后的用户名，strPassword为修改后的密码
+void GetFromInfo()获得数据库中匹配字段的信息
+void SaveToInfo()保存指定信息到匹配字段中
+
+
+ModifyUser.cpp
+void AddUser(CString strUser, CString strPassword)添加用户，strUser为需要添加的用户名，strPassword为密码
+void DeleteUser(CString strUser, CString strPassword)删除用户，strUser为需要删除的用户名，strPassword为密码
+void SetPointer(_RecordsetPtr pRecordSet)设置管理员登陆，其中pRecordSet为管理员数据库设置指针
+void Load()加载人员信息
+void OnButtonremove()点击Remove按钮的操作
+void OnButtonadd()点击Add User按钮的操作
+
+
+MyWaveOut.cpp
+void CALLBACK waveOutProc(HWAVEOUT hwo, UINT uMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)回调函数，用于截获waveOutOpen发送的消息，目前只截获WOM_DONE消息，其中hwo为waveout句柄，uMsg为截获的消息，dwInstance目前未用到，dwParam1目前为WAVEHDR信息指针，dwParam2未用到
+
+void WriteBuf(BYTE *pByte, DWORD len)写数据，其中pByte为数据，len为数据长度
+/**********************************************************************
+* 函数名称：  SetVolume
+* 功能描述：  设置音频的音量
+* 输入参数：  dwVolume:音量值
+* 输出参数：  无
+* 返 回 值：  无 
+* 修改日期        版本号     修改人	      修改内容
+* -----------------------------------------------
+* 2005/09/13	   V1.0	     袁石维	        创建
+***********************************************************************/
+void SetVolume(DWORD dwVolume)
+/**********************************************************************
+* 函数名称：  SetPlaybackRate
+* 功能描述：  设置音频播放速度
+* 输入参数：  dwRate:速率
+* 输出参数：  无
+* 返 回 值：  无 
+* 修改日期        版本号     修改人	      修改内容
+* -----------------------------------------------
+* 2005/09/13	   V1.0	     袁石维	        创建
+***********************************************************************/
+void SetPlaybackRate(DWORD dwRate)
+/**********************************************************************
+* 函数名称：  Stop
+* 功能描述：  停止播放音频
+* 输入参数：  无
+* 输出参数：  无
+* 返 回 值：  无 
+* 修改日期        版本号     修改人	      修改内容
+* -----------------------------------------------
+* 2005/09/13	   V1.0	     袁石维	        创建
+***********************************************************************/
+void Stop()
+
+
+NewUserDlg.cpp
+void OnOK()点击OK按钮的操作
+
+
+PtzTest.cpp
+void OnButtonpre()点击Preset按钮的操作
+void OnButtonsavepre()点击Save Preset按钮的操作
+void OnButtonstop()点击stop按钮的操作
+void OnButtonleft()点击left按钮的操作
+void OnButtonup()点击up按钮的操作
+void OnButtondown()点击down按钮的操作
+void OnButtonright()点击right按钮的操作
+void OnButtonadd()点击+按钮的操作
+void OnButtondel()点击-按钮的操作
+void OnOK()点击Exit按钮的操作
+void OnButtonSavesetting()点击SaveSetting按钮的操作
+
+QCDlg.cpp
+void OnFinish() 点击结束测试按钮
+void VideoChannelControl(int ch_num)根据ch_num，对channel控件显示的个数做初始化，其中ch_num为个数
+void OnCh1~16()点击对应序号的多选框的操作
+void InitialVar()初始化变量
+void RefreshChannelCheckStatus(int index)刷新通道状态信息，index未用到
+BOOL AudioCALLBACKFUNC(FRAMEBUFSTRUCT *bufs)音频回调函数，bufs为音频数据
+BOOL VideoCALLBACKFUNC(FRAMEBUFSTRUCT *bufs)视频回调函数，bufs为视频数据
+void FillAviHead(int bmptype)填充AVI文件数据头，其中bmptype为图像分辨率
+BOOL HaveView()格式化m_ChChecked，用来刷新通道状态信息
+BOOL CallMonitor(BOOL autod)callmonitor指定通道，其中autod为是否自动轮循
+void OnCloseupDwellList()关闭callmonitor下拉框的消息处理
+void OnAlarmInRes() 点击“报警输入判断”按钮的响应
+void OnAlarmOutRes() 点击“报警输出判断”按钮的响应
+void OnAlarmRelayRes() 点击“报警继电器判断”按钮的响应
+void OnAutoDwellRes() 点击“callmonitor判断”按钮的响应
+void OnResetRes() 点击“自动重启电脑判断”按钮的响应
+void OnDisplayTestRes() 点击“显示测试判断”按钮的响应
+void OnReset() 点击“自动重启电脑”按钮的响应
+void OnAlarmTestButton() 点击“报警测试”按钮的响应
+void OnButtonPtz() 点击“云台测试”按钮的响应
+void RefreshMainControl()根据卡的型号，刷新主窗口的显示
+void OnDisplay() 点击“显示测试”按钮的响应
+BOOL VideoCaptureStart()开始视频捕捉
+void VideoCaptureStop()停止视频捕捉
+BOOL GetUserInfor(CString user_name)获得用户信息，其中user_name为用户名，此函数暂时未使用
+void OnVideoFormatPal() 点击“PAL制”按钮的响应
+void OnVideoFormatNtsc()点击“N制”按钮的响应
+BOOL GetConfigInfor()获得设置信息
+BOOL WriterConfigInfor()修改设置信息
+void OnRadio1~16()选择对应的音频单选框的处理
+void OnRadioCapture() 点击“录象数据”按钮的响应
+void OnRadioPreview()  点击“现场数据”按钮的响应
+DWORD WINAPI LossThread(PVOID pParam)信号监测线程，其中pParam为当前创建线程时传入的参数
+void OnViewmode1/16()1/16通道预览模式 
+void OnBtnNextview() 下一种预览模式
+void OnTestPtzRes()点击“云台测试判断”按钮的响应
+void FreshAcceptButton()判断当前板卡是否支持对应的所有功能
+void OnAudioRes() 点击“音频测试判断”按钮的响应
+BOOL LoadMatchLibrary(int nId)加载匹配的DLL，其中nId为板卡Id号
+void LoadVideoRadio(int nBegin, int nEnd, BOOL bShow)加载视频控件，其中nBegin为开始控件加载的序号，nEnd为最后控件加载的序号，bShow为显示还是隐藏
+void LoadAudioRadio(int nBegin, int nEnd, BOOL bShow)加载音频控件，其中nBegin为开始控件加载的序号，nEnd为最后控件加载的序号，bShow为显示还是隐藏
+void InitChangeVideoSize(int nID)加载分辨率切换控件，其中nID为现场，录象，网络三个按钮的ID号
+int GetChannelNum(int nId)获得通道的总数，其中nId为板卡Id
+void FormatCodecMgrH(int nIndex, int codecType)初始化CodecMgr，其中nIndex为CodecMgr的序号，codecType为需要初始化的codec类型，目前只有录象和网络两种
+void CQCDlg::OnBtnApply() 点击Apply按钮的处理
+void OnChangeVideoSize()分辨率切换的处理
+void VideoFormatChange(DWORD videoformat)视频制式改变的处理，其中videoformat为需要改变成的视频制式
+
+VOID YUV420_YUV422Pack(void *pDst, void *pSrc, unsigned int nWidth, unsigned int nHeight, unsigned int nPitch, INT src420Subtype)YUV420平面转换为YUV422打包，其中pDst为转换后存放数据的指针，pSrc为转换前存放数据的指针，nWidth为视频分辨率的宽度，nHeight为视频分辨率的高度，nPitch为每行像素占用的字节数，src420Subtype为YUV420数据格式，目前只有0
+
+void OnRadioNet()点击“网络数据”按钮的响应
+
+
+SignalDlg.cpp
+此类为选择视频制示的窗口类
+
+
+TestCard.cpp
+const DWORD g_dwSupportSizeType=DVRVIDEO_SIZE_320x240|DVRVIDEO_SIZE_640x480;为目前支持的视频尺寸
+
+int _video_channel_number[SUPPORT_CARD_NUMBER] =
+{
+		4,
+		8,
+		16,
+		16,
+		16,
+		16,
+		16,
+		0,
+		16,
+		0,
+		4,
+		4,
+		8,
+		4,
+		16,
+		4,	//djx 2008/1/5 3004_6805
+		8,	//djx 2008/7/22 4108
+		8,	//zld 2009/4/22 3308
+		4,	//zld 2009/4/22 3304
+		8,	//zld 2009/4/22 4408
+		16,	//zld 2009/6/22 3016_6805
+		8	//zld 2009/6/22 3008_6805
+
+};视频支持的最大路数，跟_card_id匹配
+
+CString _card_id[SUPPORT_CARD_NUMBER] =
+{
+		ID3004,
+		ID3008,
+		ID3016,
+		ID3116V1,
+		ID3116V2,
+		ID3216V2,
+		ID3216V3,
+		TDALARMNULL,
+		ID3316,
+		TDNULL,
+		IDUSB_1,
+		IDUSB_2,
+		ID3108,
+		ID4104,
+		ID4116,
+		ID3004V2,//djx 2008/1/5 3004_6805
+		ID4108,	//djx 2008/7/22 4108
+		ID3308,  //zld 2009/4/22 3308
+		ID3304, //zld 2009/4/22 3304
+		ID4408,  //zld 2009/4/22 4408
+		ID3016V2,  //zld 2009/6/22 3016V2
+		ID3008V2  //zld 2009/6/23 3008V2
+
+};板卡型号
+
+CString _card_chip_set[5] =
+{
+		TW6800_VIDEO //3004,3008,3016
+		BT878_VIDEO //3116(1.0/2.0)3216 (2.0/3.0)
+		BT878_AUDIO 
+		ALOG7416	
+		ALOG480	
+};设置板卡芯片类型（个人判断）
+
+CString _display_name[SUPPORT_CARD_NUMBER] =
+{
+		("3004"),
+		("3008"),
+		("3016"),
+		("3116V1"),
+		("3116V2"),
+		("3216V2"),
+		("3216V3"),
+		("Alarm Card"),
+		("3316"),
+		("NULL"),
+		("USB"),
+		("USB"),
+		("TD3108"),
+		("TD4104"),
+		("TD4116"),
+		("3004V2"),//djx 2008/1/5 3004_6805
+		("TD4108"), //djx 2008/7/22 4108
+		("TD3308"), //zld 2009/4/22 3308
+		("TD3304"), //zld 2009/4/22 3304
+		("TD4408"), //zld 2009/4/22 4408
+		("TD3016V2"), //zld 2009/6/22 3016_6805
+		("TD3008V2") //zld 2009/6/23 3008_6805
+};板卡显示的字符串
+
+CString _LaodLibrary_name[SUPPORT_CARD_NUMBER] = 
+{
+    (""),//3004
+    (""),//3008
+    (""),//3016
+    (""),//3116V1
+    (""),//3116V2
+    (""),//3216V2
+    (""),//3216V3
+    (""),//Alarm Card
+    ("DEV_SC_AL16.dll"),//3316
+    (""),//NULL
+    ("DEV_SC_CXA.dll"),//USB
+    ("DEV_SC_CXA.dll"),//USB
+    (""),//TD3108
+    ("DEV_HC_DM642.dll"),//TD4104
+    ("DEV_HC_DM642_16.dll"),//TD4116
+    (""),//3004V2
+    ("DEV_HC_DM642_8.dll"),//TD4108
+    ("DEV_SC_MV08.dll"),//TD3308
+    ("DEV_SC_MV04.dll"),//TD3304
+    (""),//TD4408
+    (""),//TD3016V2
+    (""),//TD3008V2
+    ("DEV_SC_MV04.dll"),//TD3304S
+    ("DEV_SC_MV08.dll") //TD3308S
+};  //匹配加载的dll名
+
+
+BOOL _test_table[SUPPORT_CARD_NUMBER][TEST_ITEM_NUMBER] =
+{																							   //djx云台 音频
+	//  0 ,            1,         2,          3,       4,          5,         6,         7,         8,         9,         10,	   11,        12
+		TRUE,	 TRUE,	TRUE,    TRUE,  TRUE,   TRUE,  FALSE,   TRUE,  FALSE,  TRUE,   FALSE,	FALSE,	FALSE, //3004;
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   FALSE,	FALSE,	FALSE, //3008;
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE,	FALSE,	FALSE, //3016;
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  TRUE,   FALSE,	FALSE,	FALSE, //3116V1;
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  TRUE,   FALSE,	FALSE,	FALSE, //3116V2;
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   FALSE,  FALSE,   TRUE,   TRUE,   TRUE,   FALSE,	FALSE,	FALSE, //3216V2;
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   FALSE,  FALSE,   TRUE,   TRUE,   TRUE,   FALSE,	FALSE,	FALSE, //3216V3;
+		FALSE,  FALSE,  FALSE,  FALSE,  FALSE,  TRUE,  TRUE,    TRUE,   FALSE,  FALSE,  FALSE,	FALSE,	FALSE, //ALARM_CARD
+		TRUE,	 TRUE,  TRUE,    TRUE,  TRUE,   FALSE,  FALSE,   FALSE,  TRUE,  TRUE,   FALSE,	FALSE,	TRUE,  //3316;
+		TRUE,	 TRUE,	TRUE,	 FALSE,	FALSE,	FALSE,	FALSE,	FALSE,	FALSE,	FALSE,	FALSE,	FALSE,	FALSE, //NULL
+		TRUE,	 TRUE,  TRUE,    TRUE,  TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   FALSE, 	FALSE,  TRUE,  //USB_1
+		TRUE,	 TRUE,  TRUE,    TRUE,  TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   FALSE,	FALSE,  TRUE,  //USB_2
+		TRUE,	 TRUE,  TRUE,    TRUE,  TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   FALSE,	FALSE,  FALSE, //3108
+		TRUE,	 TRUE,	TRUE,	 TRUE,	TRUE,	FALSE,	FALSE,	FALSE,	TRUE,	TRUE,	FALSE,	FALSE,	TRUE,  //4104
+		TRUE,	 TRUE,	TRUE,	 TRUE,	TRUE,	FALSE,	FALSE,	FALSE,	TRUE,	TRUE,	FALSE,	FALSE,	TRUE,  //4116
+		TRUE,	 TRUE,	TRUE,    TRUE,  TRUE,   TRUE,  FALSE,   TRUE,  FALSE,  TRUE,   FALSE,	FALSE,	FALSE,  //3004V2;//djx 2008/1/5 3004_6805
+		TRUE,	 TRUE,	TRUE,	 TRUE,	TRUE,	FALSE,	FALSE,	FALSE,	TRUE,	TRUE,	FALSE,	FALSE,	TRUE,  ////djx 2008/7/22 4108	
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   TRUE,   FALSE,   TRUE,   TRUE,   TRUE,  FALSE,	FALSE,	FALSE,  //zld 2009/4/22 3308	
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   TRUE,   FALSE,   TRUE,   TRUE,   FALSE,  FALSE,	FALSE,	FALSE,  //zld 2009/4/22 3304	
+		TRUE,	 TRUE,	FALSE,	 TRUE,	FALSE,	FALSE,	FALSE,	FALSE,	TRUE,	TRUE,	FALSE,	FALSE,	TRUE, ////zld 2009/4/22 4408
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE,	FALSE,	FALSE, //zld 2009/6/22 3016V2;
+		TRUE,	 TRUE,  TRUE,	 TRUE,  TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   FALSE,	FALSE,	FALSE, //zld 2009/6/22 3008V2
+};对应板卡支持的功能，其中0~12分别表示，0-ID显示，1-ID类型显示，2-子ID显示，3-驱动安装，4-加密，5-报警输入，6-报警输出，7-继电器，8-CallMonitor，9-PAL/N显示测试，10-自动重启，11-云台，12-音频
+
+_CARD_INFOR GetInstallCardInfor()获取当前板卡信息
+BOOL TestPciCardInitial()是否初始化PCI类型板卡
+BOOL TestUsbCardInitial()是否初始化USB类型板卡
+BOOL  TestAlarmCardInitial()是否初始化Alarm类型板卡
+
+BOOL InitialDevice(BOOL *bPci, BOOL *bUsb, BOOL *bAlarm, CAPTURECALLBACK *pVideoCallBack, HWND hwnd)初始化设备，其中bPci为当前板卡是否为PCI类型，bUsb为当前板卡是否为USB类型，bAlarm为当前板卡是否为Alarm类型，pVideoCallBack为视频捕捉回调函数，hwnd为指定窗口句柄
+
+BOOL CheckPciDvrCard()检测PCI类型板卡数量，等于1就返回TRUE,其他返回FALSE,与TestPciCardInitial()一起使用
+BOOL CheckAlarmCard()检测Alarm类型板卡数量，等于1就返回TRUE,其他返回FALSE,TestAlarmCardInitial()一起使用
+BOOL CheckUsbCard()检测USB类型板卡数量，等于1就返回TRUE,其他返回FALSE,TestUsbCardInitial()一起使用
+BOOL InstallDriver()安装驱动
+CVideoDriver* GetVideoDevDrvObject(DWORD dwProductType)根据板卡类型选择相应的视频驱动处理，其中dwProductType为板卡类型
+
+BOOL Initial3316VideoDevice(DWORD VideoFormat, CAPTURECALLBACK *pVideoCallBack)初始化3316视频设备，其中VideoFormat为视频模式——P/N制，pVideoCallBack为视频捕捉回调函数，目前这两个参数未用到
+
+BOOL InitialVideoDevice(DWORD VideoFormat, CAPTURECALLBACK *pVideoCallBack)初始化视频设备，其中VideoFormat为视频模式——P/N制， pVideoCallBack为视频捕捉回调函数
+
+void GetVideoDriverName()获取视频设备的名称
+void DeviceFreeVideo()释放视频资源
+void InitialVar()初始化成员变量
+BOOL Password()检查板卡是否加密
+
+BOOL VideoCaptureStart(DWORD dwBmpSizeType, BITMAPINFOHEADER RecBmpHeader)开始视频捕捉，其中dwBmpSizeType视频尺寸，RecBmpHeader视频捕捉的头信息
+
+BOOL SetChannelOrder(DWORD ChannelCount, DWORD *pChannelIndex)设置通道显示序号，其中ChannelCount为通道总数，pChannelIndex为每个通道的状态指针
+
+void VideoCaptureStop()停止视频捕捉
+
+BOOL SetChannelOrder_3004(DWORD ChannelCount, DWORD *pChannelIndex)设置3004通道显示序号，其中ChannelCount为通道总数，pChannelIndex为每个通道的状态指针
+
+BOOL SetChannelOrder_3116(DWORD ChannelCount, DWORD *pChannelIndex)设置3116通道显示序号，其中ChannelCount为通道总数，pChannelIndex为每个通道的状态指针
+
+BOOL SetChannelOrder_3216(DWORD ChannelCount, DWORD *pChannelIndex)设置3216通道显示序号，其中ChannelCount为通道总数，pChannelIndex为每个通道的状态指针
+
+BOOL CallMonitor(int index)对指定的通道进行callmonitor，其中index为指定的通道号。
+void ResetComputer()重启电脑
+void InitialDevNum()设置视频控制芯片数量
+BOOL GetAlarmIn(DWORD * status)获得报警输入状态，其中status用来返回状态
+BOOL SetAlarmOut(DWORD *status)设置报警输出状态，其中status表示需要设置的状态
+BOOL FreeDevice()设备释放
+BOOL UsbDeviceFree()USB设备释放，目前未使用
+BOOL PciDeviceFree()PCI设备释放
+BOOL AlarmDeviceFree()Alarm设备释放
+void InitialTestInfor()初始化板卡信息
+BOOL NeedResetComputer()判断是否需要重启电脑
+
+void GetRestartAndInstallDriver(BOOL *needRestart, BOOL *needInstallDriver)判断是否需要重启电脑，或者是否需要安装驱动，其中needRestart为返回的重启电脑的判断，needInstallDriver为返回的安装驱动的判断
+
+void SetVideoFormat(DWORD m_VideoFormat)设置视频制示
+
+void ChangeVideoFormat()更改视频制示
+BOOL GetInvalidateFlag(int deviceNum)判断是否刷新屏幕，其中deviceNum为当前设备芯片数
+BOOL GetSignalStatus(int deviceNum)获得当前信号状态并返回上层是否要刷新，其中deviceNum为当前设备芯片数
+
+
+TextStatic.cpp
+文字闪烁类
+
+
+VideoDriver.cpp
+BOOL InitializeDriver(long DeviceIndex, DWORD dwVideoFormat, CAPTURECALLBACK *pVideoCallBack)初始化驱动，其中DeviceIndex为设备序号，dwVideoFormat为视频制示，pVideoCallBack为视频捕捉回调函数
+
+void ExitDriver()退出驱动
+BOOL StartCapture(DWORD sizeType)开始捕捉视频,生成视频捕捉线程，其中sizeType为视频size类型
+BOOL StopCapture()结束捕捉视频,退出视频捕捉线程
+DWORD WINAPI VideoCaptureThread(LPVOID lpParameter)视频捕获线程，其中lpParameter为创建线程传入的参数
+
+DWORD VideoCaptureFunc()视频捕捉线程,获得事件就可以从Driver取到数据有可能正在获取的时候,来了另一帧所以while(GetOneFrameData()); 取完数据后将事件置为无信号状态,等待下一次数据
+
+BOOL GetOneFrameData()获取一帧数据
+BOOL ReleaseBuffer(DWORD bufParam)释放Buf指针,准备继续抓数据，其中bufParam为删除Buf序号
+long GetDeviceNumber()得到视频芯片数量
+
+BOOL GPIORead(long lBeg, long lEnd, DWORD &lVal)读GPIO,有些卡的Driver不支持GPIO操作，但也不会执行此函数，其中lBeg要读的GPIO的开始位，lEnd要读的GPIO的结束位，lVal为得到的GPIO从位lBeg到lEnd的值（GPIO：通用输入/输出）
+
+BOOL GPIOWrite(long lBeg, long lEnd, long lVal)写GPIO,有些卡的Driver不支持GPIO操作，但也不会执行此函数，lBeg要写的GPIO的开始位， lEnd要写的GPIO的结束位，lVal要写的值
+
+BOOL CallMonitor(long VideoIndex)设置CallMonitor的视频通道，其中VideoIndex为视频通道序号
+
+BOOL GetSignalStatus(DWORD *pSignalStatus, long statusNum)得到信号状态有没有丢失，其中pSignalStatus为每个通道的信号状态的指针，statusNum为数组pSignalStatus的维数
+
+BOOL SetVideoPropertyValue(long ChIndex, VIDEO_PROPER videoProper)设置视频属性值亮度、对比度、色度等，其中ChIndex为通道序号，videoProper为要设置的属性值
+
+BOOL GetVideoPropertyValue(long ChIndex, VIDEO_PROPER &videoProper)获得视频属性值亮度、对比度、色度等，其中ChIndex通道序号，videoProper为获得的属性值
+
+BOOL Password()判断板卡是否有加密功能
+
+BOOL ResetComputer(DWORD dwStart)判断是否有自动重启电脑功能，其中dwStart表示控制参数，0表示结束Auto Reset功能计时,并退出AutoReset功能，1表示开始Auto Reset功能计时，2表示重新计时开始
+
+BOOL SetC51AddressValue(long lAddress, long lValue)设置C51地址值,这里主要用来和单片机通信（单地址），其中lAddress为需要设置的C51地址，lValue为要设置的值（C51 是MCS-51系列单片机的C语言）
+
+BOOL SetC51BlockValue(long lAddress,ULONG *lValue,long nLen)设置C51地址值（块地址）,这里主要用来和单片机通信，其中lAddress为需要设置的C51地址，lValue为要设置的值的指针，nLen	为需要设置的长度
+
+BOOL SetResetComputerTime(long SecTime)设置自动重启电脑功能的时间，其中SecTime为时间，单位为s
+
+BOOL SetChannelOrder(DWORD ChannelCount, DWORD *pChannelIndex)设置卡的通道切换顺序,其中ChannelCount为切换的通道数量，pChannelIndex切换的通道序号
+
+BOOL SetChannelOrder3016(int nindex, DWORD ChannelCount, DWORD *pChannelIndex)设置3016的通道切换顺序,其中nIndex为当前视频芯片的序号，ChannelCount为切换的通道数量，pChannelIndex切换的通道序号
+
+int Check_6800_6805_Channel(int index)获得6800芯片组或者6805芯片组的对应通道，其中index为原始通道
+
+
+VideoDriverTD3004.cpp
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示卡的序号，ChIndexOfCard为当前卡的通道号
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)得到报警状态，其中pAlarmStatus为每个通道的信号状态的指针，statusNum为数组pAlarmStatus的维数
+
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)设置报警状态（每个3004卡都带了一个报警输出），其中pAlarmStatus为每个通道的信号状态的指针，statusNum为数组pAlarmStatus的维数
+
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])获得默认的通道序号，其中ChNum为控制视频的芯片数量，pChannelIndex[]为对应芯片的序号
+BOOL Is6800()是否为6800芯片组,这里必为真。
+
+
+VideoDriverTD3008.cpp
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)报警输出，对于3008的报警处理是通过报警板，所以调用API处理，这里必返回TRUE
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示，卡的序号，ChIndexOfCard为当前卡的通道号
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])获得默认的通道序号，其中ChNum为控制视频的芯片数量，pChannelIndex[]为对应芯片的序号
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)设置报警状态(目前只返回TRUE)
+BOOL Is6800()是否为6800芯片组,这里必为真。
+
+
+VideoDriverTD3016.cpp
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示卡的序号，ChIndexOfCard为当前卡的通道号
+
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)得到报警状态,实际上对于3016只有第四个芯片的GPIO才能进行报警输入输出,在CDeviceManagerSCCom有控制
+
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)设置报警输出状态,实际上对于31016只有第四个芯片的GPIO才能进行报警输入输出,在CDeviceManagerSCCom有控制
+
+BOOL CallMonitor(long VideoIndex)设置CallMonitor的视频通道，其中VideoIndex为视频通道序号
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])获得默认的通道序号，其中ChNum为控制视频的芯片数量，pChannelIndex[]为对应芯片的序号
+BOOL Is6800()是否为6800芯片组,这里必为真。
+
+BOOL InitializeDriver(long DeviceIndex, DWORD dwVideoFormat, CAPTURECALLBACK *pVideoCallBack)初始化驱动，其中DeviceIndex为设备序号，dwVideoFormat为视频制示，pVideoCallBack为视频捕捉回调函数
+
+BOOL SetResetComputerTime(long SecTime)设置自动重启电脑功能的时间，其中SecTime为时间，单位为s
+
+BOOL ResetComputer(DWORD dwStart)判断是否有自动重启电脑功能，其中dwStart表示控制参数，0表示结束Auto Reset功能计时,并退出AutoReset功能，1表示开始Auto Reset功能计时，2表示重新计时开始
+
+
+VideoDriverTD3108.cpp
+BOOL Is6800()是否为6800芯片组,这里必为真
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)得到报警状态(目前只返回TRUE)
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)设置报警输出状态,其中pAlarmStatus为每个通道的信号状态的指针,statusNum为数组pAlarmStatus的维数
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示卡的序号，ChIndexOfCard为当前卡的通道号
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])得到该芯片的通道Index和通道个数,ChNum为通道个数 pChannelIndex[]为该芯片的每个通道的Index
+
+
+VideoDriverTD3116.cpp
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示卡的序号，ChIndexOfCard为当前卡的通道号
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)得到报警状态，对于3116的报警是通过板子本身的输出输出的
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)设置报警输出，对于3116的报警是通过板子本身的输出输出的
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])得到该芯片的通道Index和通道个数,ChNum为通道个数 pChannelIndex[]为该芯片的每个通道的Index
+BOOL Is6800()是否为6800芯片组,这里必为真。
+
+
+VideoDriverTD3216.cpp
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示卡的序号，ChIndexOfCard为当前卡的通道号
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)得到报警状态，对于3216的报警处理是通过报警板，所以调用API处理
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)报警输出，对于3216的报警处理是通过报警板，所以调用API处理
+BOOL CallMonitor(long VideoIndex)设置CallMonitor的视频通道，其中VideoIndex为视频通道序号
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])得到该芯片的通道Index和通道个数,ChNum为通道个数 pChannelIndex[]为该芯片的每个通道的Index
+BOOL Is6800()是否为6800芯片组,这里必为真。
+
+
+VideoDriverTD3304.cpp
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)报警输出，对于3304的报警处理是通过报警板，所以调用API处理
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示卡的序号，ChIndexOfCard为当前卡的通道号
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])得到该芯片的通道Index和通道个数,ChNum为通道个数 pChannelIndex[]为该芯片的每个通道的Index
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)报警输出，对于3304的报警处理是通过报警板，所以调用API处理
+BOOL Is6800()是否为6800芯片组,这里必为真
+BOOL CallMonitor(long VideoIndex)设置CallMonitor的视频通道，其中VideoIndex为视频通道序号
+
+
+VideoDriverTD3308.cpp
+BOOL GetAlarmStatus(DWORD *pAlarmStatus, long statusNum)报警输出，对于3308的报警处理是通过报警板，所以调用API处理
+long GetChannelIndex(long CardIndex, long ChIndexOfCard)获得通道的实际序号，其中CardIndex表示卡的序号，ChIndexOfCard为当前卡的通道号
+void GetDefaultOrder(DWORD &ChNum, DWORD pChannelIndex[])得到该芯片的通道Index和通道个数,ChNum为通道个数 pChannelIndex[]为该芯片的每个通道的Index
+BOOL SetAlarmStatus(DWORD *pAlarmStatus, long statusNum)报警输出，对于3308的报警处理是通过报警板，所以调用API处理
+BOOL Is6800()是否为6800芯片组,这里必为真
+BOOL CallMonitor(long VideoIndex)设置CallMonitor的视频通道，其中VideoIndex为视频通道序号
