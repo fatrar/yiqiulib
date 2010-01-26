@@ -10,11 +10,8 @@
 //#include "define.h"
 /////////////////////////////////////////////////////////////////////////////
 // CQCDlg dialog
-#include "MyWaveOut.h"
 //#include "testcard.h"
 #include "DirectDraw.h"	// Added by ClassView
-#include "TestRecord.h"
-#include "AccessDB.h"
 //#include "alarmtest.h"
 #include "Overlay.h"	// Added by ClassView
 #include "vfw.h"
