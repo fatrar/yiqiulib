@@ -23,14 +23,6 @@
 #include <atlbase.h>
 #include "define.h"
 #endif // _AFX_NO_AFXCMN_SUPPORT
-//#include <ole2.h>			//ADO
-//*************引入ADO库文件***************//
-#pragma once
-#pragma warning (disable: 4146)
-#import "C:\Program Files\Common Files\System\ado\msado15.dll"\
-no_namespace rename("EOF","adoEOF")
-
-extern int g_6800_6805_check;
 
 #include "DeviceDriver.h"
 

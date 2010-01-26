@@ -16,7 +16,6 @@ class CDeviceSDK :
 {
     // CDeviceManager
 public:
-	BOOL m_bNeedExtractDSPFile;
 	CDeviceSDK();
 	virtual ~CDeviceSDK();
 	
@@ -46,13 +45,13 @@ public:
 	virtual BOOL Password(void);
 	virtual BOOL ReleaseBuffer(DWORD isVideo,DWORD DelBufPara);
 	virtual BOOL GetQuadRect(DWORD sizetype,DWORD &CamNumPerF,CRect pRect[]);
-	HINSTANCE m_hDllModule;
-
-public:
-    CDSP *m_pDSP;
-
-protected:	
 	
+public:
+    // 用类厂导出给外部调用智能方面的功能，不在这个类去实现，可以减少一层的数据传递
+    CDSP *m_pDSP;  
+    HINSTANCE m_hDllModule;
+
+protected:		
 	int m_nCurrentMonitor;	//记录当前Call到的通道号
 
 	int DeleteFiles(DWORD dwVideoFormat);
