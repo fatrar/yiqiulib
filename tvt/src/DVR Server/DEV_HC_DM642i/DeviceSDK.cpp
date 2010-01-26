@@ -357,22 +357,19 @@ BOOL CDeviceSDK::DeviceInitial(DWORD VideoFormat, CAPTURECALLBACK *pVideoCallBac
 	if (m_bInitialized == TRUE)
 		return TRUE;
 
-	m_bNeedExtractDSPFile=TRUE;
     CFile file;
     if (file.Open(s_pOutFileName[VideoFormat], CFile::modeRead))
     {
-        m_bNeedExtractDSPFile=FALSE;
         file.Close();
     }
+    else
+    {
+        if ( ExtractFiles(VideoFormat) != DVRERR_SUCCESS )
+        {
+            return FALSE;
+        }
+    }
 
-	if (m_bNeedExtractDSPFile)
-	{
-		if (ExtractFiles(VideoFormat) != DVRERR_SUCCESS)
-		{
-			return FALSE;
-		}
-	}
-	
 	if (!m_pDSP->Initialize(VideoFormat, pVideoCallBack, pAudioCallBack))
 	{
 		delete m_pDSP;
@@ -382,7 +379,7 @@ BOOL CDeviceSDK::DeviceInitial(DWORD VideoFormat, CAPTURECALLBACK *pVideoCallBac
 
 	m_dwVideoFormat = VideoFormat;
 	m_bInitialized = TRUE;
-	*pProductType = DVR_CARD_TD4104;
+	*pProductType = DVR_CARD_TD4104; // [] 这个地方以后要改成4104的定义
 
 	//WATERMARK	CALLMONITOR
 	for (DWORD i = 0; i < 4 * m_pDSP->GetDevNum(); i++)
@@ -902,8 +899,8 @@ int CDeviceSDK::ExtractFiles(DWORD dwVideoFormat)
 	//CString strName;
 	CFileStatus status;
 
-	DeleteFiles(dwVideoFormat);
-//.OUT
+    // heliang -
+	// DeleteFiles(dwVideoFormat);
 
     hResInfo = ::FindResource(m_hDllModule, s_pStandardName[dwVideoFormat], TEXT("OUTFILE"));
 	if (hResInfo == NULL)
@@ -944,10 +941,6 @@ int CDeviceSDK::ExtractFiles(DWORD dwVideoFormat)
 
 int CDeviceSDK::DeleteFiles(DWORD dwVideoFormat)
 {
-	if (!m_bNeedExtractDSPFile)
-	{
-		return DVRERR_SUCCESS;
-	}
 	if (dwVideoFormat == DVRVIDEO_STANDARD_PAL)
 	{
 		SetFileAttributes(OUT_FILE_NAME_PAL, FILE_ATTRIBUTE_ARCHIVE);

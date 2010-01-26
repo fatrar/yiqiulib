@@ -407,10 +407,6 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="AlarmDefine.h"
-				>
-			</File>
-			<File
 				RelativePath="CodecMgr.h"
 				>
 			</File>

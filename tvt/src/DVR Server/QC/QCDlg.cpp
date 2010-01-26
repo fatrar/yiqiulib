@@ -16,7 +16,6 @@ static char THIS_FILE[] = __FILE__;
 #define FIRSTINVIEW TRUE
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
-#include <atlbase.h>
 
 int CQCDlg::m_View;
 PBYTE CQCDlg::m_pDecodedData;
