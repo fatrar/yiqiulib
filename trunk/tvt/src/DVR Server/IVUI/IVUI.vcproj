@@ -227,6 +227,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IVFunctionSelDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IVRuleDlg.cpp"
 				>
 			</File>
@@ -304,6 +308,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\ZoneAdvDlg.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -314,7 +322,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\DEVICECONTROL\IIVDevice.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IVAlarmOutDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVFunctionSelDlg.h"
 				>
 			</File>
 			<File
@@ -334,11 +350,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IVUIComDef.h"
+				>
+			</File>
+			<File
 				RelativePath="Resource.h"
 				>
 			</File>
 			<File
 				RelativePath="StdAfx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ZoneAdvDlg.h"
 				>
 			</File>
 		</Filter>

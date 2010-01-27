@@ -46,7 +46,7 @@ BOOL FindTBuf(
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-inline	void ReleaseDriverBuffer(PTVT_CAP_STATUS pST)
+void ReleaseDriverBuffer(PTVT_CAP_STATUS pST)
 {
 //	::InterlockedDecrement((PLONG)(&((pST)->dwReserve4)));
 	static CCriticalSection	cs;
@@ -399,57 +399,49 @@ BOOL CDSP::CreateWorkerThread()
 
 void CDSP::DestroyWorkerThread()
 {
-	DWORD dwExitCode;
 	m_bQuit = TRUE;
+    // 先将所有的设置的事件，然后再等待，这样关闭就快一些。以前那种会阻塞
+    // heliang fix
+    for (int j = 0; j < m_nDeviceNum; j++ )
+    {
+        if (m_hThreadPrv[j] != NULL)
+        {	
+            SetEvent(m_hPrvEvent[j]);
+        }
+
+        if (m_hThreadAud[j] != NULL)
+        {
+            SetEvent(m_hAudEvent[j]);
+        }
+
+        if (m_hThreadCompressStrm[j] != NULL)
+        {
+            SetEvent(m_hCompressEvent[j]);
+        }
+    }
+
+#define DestroyThread(h, strlog) \
+    if (h != NULL)\
+    {	DWORD dwStart = GetTickCount();\
+        WaitForSingleObject(h, 1000000); \
+        if (GetExitCodeThread(h, &dwExitCode)) \
+        {   \
+            if (dwExitCode == STILL_ACTIVE) \
+            {\
+                TRACE(strlog, i);\
+                TerminateThread(h, 1);\
+            }\
+        }\
+        TRACE(strlog, GetTickCount()-dwStart);\
+        CloseHandle(h);  h = NULL;\
+    }
+
+    DWORD dwExitCode;
 	for (int i = 0; i < m_nDeviceNum; i++)	//zhangzhen	2007/03/01
 	{
-		if (m_hThreadPrv[i] != NULL)
-		{	
-			SetEvent(m_hPrvEvent[i]);
-			WaitForSingleObject(m_hThreadPrv[i], 2000);
-			if (GetExitCodeThread(m_hThreadPrv[i], &dwExitCode))
-			{
-				if (dwExitCode == STILL_ACTIVE)
-				{
-					TRACE("TerminateThread m_hThreadPrv\n");
-					TerminateThread(m_hThreadPrv[i], 1);
-				}
-			}
-			CloseHandle(m_hThreadPrv[i]);
-			m_hThreadPrv[i] = NULL;
-		}
-
-		if (m_hThreadAud[i] != NULL)
-		{
-			SetEvent(m_hAudEvent[i]);
-			WaitForSingleObject(m_hThreadAud[i], 2000);
-			if (GetExitCodeThread(m_hThreadAud[i], &dwExitCode))
-			{
-				if (dwExitCode == STILL_ACTIVE)
-				{
-					TRACE("TerminateThread m_hThreadAud\n");
-					TerminateThread(m_hThreadAud[i], 1);
-				}
-			}
-			CloseHandle(m_hThreadAud[i]);
-			m_hThreadAud[i] = NULL;
-		}
-
-		if (m_hThreadCompressStrm[i] != NULL)
-		{
-			SetEvent(m_hCompressEvent[i]);
-			WaitForSingleObject(m_hThreadCompressStrm[i], 2000);
-			if (GetExitCodeThread(m_hThreadCompressStrm[i], &dwExitCode))
-			{
-				if (dwExitCode == STILL_ACTIVE)
-				{
-					TRACE("TerminateThread m_hThreadCompressStrm\n");
-					TerminateThread(m_hThreadCompressStrm[i], 1);
-				}
-			}
-			CloseHandle(m_hThreadCompressStrm[i]);
-			m_hThreadCompressStrm[i] = NULL;
-		}
+        DestroyThread(m_hThreadPrv[i], "TerminateThread m_hThreadPrv %d\n");
+        DestroyThread(m_hThreadAud[i], "TerminateThread m_hThreadAud %d\n") ;
+        DestroyThread(m_hThreadCompressStrm[i], "TerminateThread m_hThreadCompressStrm %d\n");
 	}
 }
 
@@ -600,7 +592,7 @@ void CDSP::GetPrvData(int nDevice)
     DWORD dwReturn;
     while (TRUE)	//取出Driver层所有BUF，避免BUF阻塞
     {
-        ControlDriver(
+        BOOL bRc = ControlDriver(
             nDevice,
             IOCTL_VIDEO_GET_DATA_INFO,
             &dwStreamType,
@@ -608,7 +600,7 @@ void CDSP::GetPrvData(int nDevice)
             &pData,
             sizeof(DWORD),
             &dwReturn);
-        if(pData == NULL)//Driver层已没有可用BUF
+        if(!bRc || pData == NULL)//Driver层已没有可用BUF
         {
             break;
         }
@@ -617,6 +609,7 @@ void CDSP::GetPrvData(int nDevice)
         DoIVData(nDevice, pData);
 
         pStatus = (PTVT_CAP_STATUS)pData;
+        
         SetParamToDSP(nDevice);
 
         pStatus->dwReserve4 = 4;	//一次处理整块卡4通道数据
@@ -636,7 +629,8 @@ void CDSP::GetOneChannelPreData(
     PTVT_PREV_VBI pVBI;
 
     pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel);
-    SetSignal(nDevice * CHANNEL_PER_DEVICE + nChannel, pVBI->videoLoss);
+    
+    //SetSignal(nDevice * CHANNEL_PER_DEVICE + nChannel, pVBI->videoLoss);
 
     int nIndex;
     // if channel is close or video loss or is valid
@@ -721,14 +715,14 @@ void CDSP::GetCompressData(int nDevice)
     static DWORD dwStreamType = STREAM_TYPE_CAP;
     while (TRUE)	//取出Driver层所有BUF，避免BUF阻塞
     {
-        ControlDriver(nDevice,
+        BOOL bRc = ControlDriver(nDevice,
             IOCTL_VIDEO_GET_DATA_INFO,
             &dwStreamType,
             sizeof(DWORD),
             &pData,
             sizeof(DWORD),
             &dwReturn);
-        if(pData == NULL)//Driver层已没有可用BUF
+        if(!bRc || pData == NULL)//Driver层已没有可用BUF
         {
             break;
         }
@@ -794,6 +788,8 @@ void CDSP::GetCompressData(int nDevice)
             if(pVBI->byInvalid == 0)	//非法数据不处理
             {
                 pData += pVBI->dwLen;	//现在不会执行到此，保证逻辑结构完整
+
+                // [] heliang 这个地方应该ReleaseBuf
                 continue;
             }
 
@@ -1238,6 +1234,9 @@ int CDSP::CmprssStreamProcessNet_RT(int nDeviceNo, const PTVT_REC_VBI& pVBI, con
 	if(!m_pVideoCallBack(&m_pNetBuf_RT[nDeviceNo][nIndex]))
 	{
 		m_bNextFrameIsKeyNet_RT[nChl] = TRUE;
+
+        // [] heliang
+        // 这个地方看是否在加 release Buf， 主要看失败后，是App调用释放，还是这边
 	}
     else
     {
@@ -1249,9 +1248,11 @@ int CDSP::CmprssStreamProcessNet_RT(int nDeviceNo, const PTVT_REC_VBI& pVBI, con
 
 BOOL CDSP::CaptureStop()
 {
+    BOOL bRc = TRUE;
 	APP_DRIVER_BUFFER_INFO stIn;
 	DWORD dwRtn;
-	DestroyWorkerThread();
+	
+    DestroyWorkerThread();
 
 	memset(&stIn, 0, sizeof(APP_DRIVER_BUFFER_INFO));
 	for (int i = 0; i < m_nDeviceNum; i++)
@@ -1265,11 +1266,14 @@ BOOL CDSP::CaptureStop()
 				&dwRtn);
 		if (bRtn == 0)
 		{
-			return FALSE;
+			bRc = FALSE;
+            break;
 		}
 	}
 
-	return TRUE;
+   
+
+	return bRc;
 }
 
 BOOL CDSP::CaptureStart()

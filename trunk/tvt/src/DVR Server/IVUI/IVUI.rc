@@ -111,6 +111,40 @@ BEGIN
     GROUPBOX        "Function Select",IDC_STATIC,17,8,432,50
 END
 
+IDD_IVFUNCTIONSEL DIALOGEX 0, 0, 275, 190
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,147,169,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,219,169,50,14
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,13,8,251,151
+END
+
+IDD_ZONEADV DIALOGEX 0, 0, 215, 222
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,95,193,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,158,194,50,14
+    LTEXT           "Rule Name:",IDC_RULENAME,17,12,38,8
+    EDITTEXT        IDC_RULENAME_EDIT,75,8,123,16,ES_AUTOHSCROLL
+    GROUPBOX        "View",IDC_VIEW,15,29,184,38
+    CONTROL         "Vertical View",IDC_V_VIEW,"Button",BS_AUTORADIOBUTTON | WS_GROUP,36,45,56,10
+    RADIOBUTTON     "Parallel View",IDC_P_VIEW,129,45,55,10,WS_GROUP
+    GROUPBOX        "Object",IDC_OBJECT,15,71,184,56
+    CONTROL         "Person",IDC_CHECK_PERSON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,86,38,10
+    CONTROL         "Vehicle",IDC_CHECK_VEHICLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,86,38,10
+    CONTROL         "Other",IDC_CHECK_OTHER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,106,35,10
+    CONTROL         "All",IDC_CHECK_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,106,23,10
+    GROUPBOX        "Time(/s)",IDC_TIME,15,129,184,45
+    LTEXT           "Loiters:",IDC_LOITERS,21,149,25,8
+    EDITTEXT        IDC_IDC_LOITERS_EDIT,63,145,25,16,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "LeftBehind:",IDC_LEFTBEHIND,120,148,38,8
+    EDITTEXT        IDC_LEFTBEHIND_EDIT,167,144,25,16,ES_AUTOHSCROLL | ES_NUMBER
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -145,8 +179,31 @@ BEGIN
         TOPMARGIN, 5
         BOTTOMMARGIN, 332
     END
+
+    IDD_ZONEADV, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 208
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 215
+    END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_OK                  "确定"
+    IDS_CANCEL              "取消"
+    IDS_PREV                "上一步"
+    IDS_NEXT                "下一步"
+    IDS_CLOSE               "关闭"
+END
 
 #endif    // Chinese (P.R.C.) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -199,6 +256,76 @@ BEGIN
 END
 
 #endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_OK                  "OK"
+    IDS_CANCEL              "Cancel"
+    IDS_PREV                "Previous"
+    IDS_NEXT                "Next"
+    IDS_CLOSE               "Close"
+    IDS_FINISH              "Finish"
+    IDS_Invade              "Invade"
+    IDS_Leave_Disappear     "Leave Disappear"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_LeftBehind          "LeftBehind"
+    IDS_Loiters             "Loiters"
+    IDS_Statistic           "Statistic"
+    IDS_Vehicle_Retrograde  "Vehicle Retrograde"
+    IDS_Illegal_Parking     "Illegal Parking"
+    IDS_Stage_Change        "Stage Change"
+    IDS_TYPE                "Type"
+    IDS_Description         "Description"
+    IDS_IV_Name_Des         "1"
+    IDS_STRING1017          "2"
+    IDS_STRING1018          "3"
+    IDS_STRING1019          "4"
+    IDS_STRING1020          "5"
+    IDS_STRING1021          "6"
+    IDS_STRING1022          "7"
+    IDS_STRING1023          "8"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING1024          "9"
+    IDS_STRING1025          "10"
+    IDS_RuleName            "Rule Name:"
+    IDS_View                "View"
+    IDS_Vertical_View       "Vertical View"
+    IDS_Parallel_View       "Parallel View"
+    IDS_Object              "Object"
+    IDS_Object_Person       "Person"
+    IDS_Object_Vehicle      "Vehicle"
+    IDS_Object_Other        "Other"
+    IDS_Object_All          "All"
+    IDS_Time_S              "Time(/s)"
+    IDS_Loiters_Time        "Loiters:"
+    IDS_LeftBehind_Time     "LeftBehind:"
+    IDS_RuleName_Alarm      "Rule Name is void! Do you want use a default name?"
+    IDS_Object_Alarm        "Object is not selected.Do you want use a defalt setting?"
+END
+
+#endif    // English (U.K.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
