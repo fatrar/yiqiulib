@@ -256,26 +256,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="DeviceDriver.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="DirectDraw.cpp"
 				>
 				<FileConfiguration
@@ -420,10 +400,6 @@
 			</File>
 			<File
 				RelativePath="DEVICEControl\DeviceControl.h"
-				>
-			</File>
-			<File
-				RelativePath="DeviceDriver.h"
 				>
 			</File>
 			<File

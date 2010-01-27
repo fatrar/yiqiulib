@@ -13,14 +13,20 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
 #define FIRSTINVIEW TRUE
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
 
-int CQCDlg::m_View;
 PBYTE CQCDlg::m_pDecodedData;
 int g_card_id;
 CQCDlg *main;
+
+
+PBYTE CQCDlg::m_pDecodedData_Rec = NULL;//zld 2009/4/29 4408
+PBYTE CQCDlg::m_pDecodedData_Net = NULL;//zld 2009/4/29 4408
+int CQCDlg::m_Vchannel_Num = 0;//zld 2009/4/29 4408
+
 class CAboutDlg : public CDialog
 {
 public:
@@ -65,70 +71,32 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CQCDlg dialog
-BOOL CQCDlg::m_bPreview = TRUE;//播放现场流标志 zld 2009/4/29 4408
-BOOL CQCDlg::m_bRec = FALSE;//播放录像流标志 zld 2009/4/29 4408
-BOOL CQCDlg::m_bNet = FALSE;//播放网络流标志 zld 2009/4/29 4408
-CCriticalSection* CQCDlg::m_CodeLock = new CCriticalSection;
-//HANDLE g_event;
-HANDLE g_eventRec; //zld 2009/4/29 4408
-HANDLE g_eventNet;//zld 2009/4/29 4408
-HANDLE g_eventRec_Format;//zld 2009/4/29 4408
-HANDLE g_eventNet_Format;//zld 2009/4/29 4408
-HANDLE g_eventPreview;//zld 2009/4/29 4408
-PBYTE CQCDlg::m_pDecodedData_Rec = NULL;//zld 2009/4/29 4408
-PBYTE CQCDlg::m_pDecodedData_Net = NULL;//zld 2009/4/29 4408
-int CQCDlg::m_Vchannel_Num = 0;//zld 2009/4/29 4408
 
-static BOOL g_binitNet = TRUE;//by chenlong
-static BOOL g_binitRec = TRUE;//by chenlong
 
 CQCDlg::CQCDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CQCDlg::IDD, pParent)
 {
     main=this;
     //{{AFX_DATA_INIT(CQCDlg)
-    m_view_card_id = _T("");
     m_ch1 = FALSE;
     m_ch2 = FALSE;
     m_ch3 = FALSE;
     m_ch4 = FALSE;
 
     m_view_card_type = _T("");
-    m_RadioView = -1;
     m_nCurrentChnanel = 0;
     m_VideoSize = 0; //by chenlong
-    m_hLossThread = NULL;//by chenlong
     m_RECWidth = 0;//by chenlong
     m_RECHeight = 0;//by chenlong
     m_NetWidth = 0;//by chenlong
     m_NetHeight = 0;//by chenlong
-    m_D1ViewRadio = 0;//by chenlong
     m_bFresh = FALSE;//by chenlong
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_bRun = TRUE;
 	m_CodecMgrH_Rec = new CCodecMgr[16];
-	if (m_CodecMgrH_Rec == NULL)
-	{
-		AfxMessageBox("CQCDlg::CQCDlg m_CodecMgrH_Rec = NULL!");
-	}
-	m_CodecMgrH_Net = new CCodecMgr[16];
-	if (m_CodecMgrH_Net == NULL)
-	{
-		AfxMessageBox("CQCDlg::CQCDlg m_CodecMgrH_Net = NULL!");
-	}
-	/*初始化m_bLoss by chenlong*/
-    for (int n = 0; n < 16; n++)
-    {
-        m_bLoss[n] = 0;
-    }
-	g_eventRec = CreateEvent(NULL,FALSE,TRUE,NULL);
-	g_eventNet = CreateEvent(NULL,FALSE,TRUE,NULL);
-	g_eventPreview = CreateEvent(NULL,FALSE,TRUE,NULL);
-	g_eventRec_Format= CreateEvent(NULL,FALSE,FALSE,NULL);
-	g_eventNet_Format= CreateEvent(NULL,FALSE,FALSE,NULL);
-	
+	m_CodecMgrH_Net = new CCodecMgr[16];	
 }
 
 void CQCDlg::DoDataExchange(CDataExchange* pDX)
@@ -141,35 +109,31 @@ void CQCDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CH2, m_cCh2);
 
     DDX_Control(pDX, IDC_CH1, m_cCh1);
-    DDX_Text(pDX, IDC_CARD_ID_VIEW, m_view_card_id);
     DDX_Check(pDX, IDC_CH1, m_ch1);
     DDX_Check(pDX, IDC_CH2, m_ch2);
     DDX_Check(pDX, IDC_CH3, m_ch3);
     DDX_Check(pDX, IDC_CH4, m_ch4);
 
     DDX_Text(pDX, IDC_CARD_TYPE_VIEW, m_view_card_type);
-    DDX_Radio(pDX, IDC_RADIO_PREVIEW, m_RadioView);
     DDX_Text(pDX, IDC_CURRENTCHANNEL, m_nCurrentChnanel);
 	//}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CQCDlg, CDialog)
-//{{AFX_MSG_MAP(CQCDlg)
-ON_WM_SYSCOMMAND()
-ON_WM_PAINT()
-ON_WM_QUERYDRAGICON()
-ON_BN_CLICKED(IDC_FINISH, OnFinish)
-ON_BN_CLICKED(IDC_CH1, OnCh1)
-ON_BN_CLICKED(IDC_CH2, OnCh2)
-ON_BN_CLICKED(IDC_CH3, OnCh3)
-ON_BN_CLICKED(IDC_CH4, OnCh4)
-ON_WM_TIMER()
-ON_WM_DESTROY()
-ON_BN_CLICKED(IDC_RADIO_CAPTURE, OnRadioCapture)
-ON_BN_CLICKED(IDC_RADIO_PREVIEW, OnRadioPreview)
-ON_BN_CLICKED(IDC_VIEWMODE1, OnViewmode1)
-ON_BN_CLICKED(IDC_VIEWMODE16, OnViewmode16)
-ON_BN_CLICKED(IDC_BTN_NEXTVIEW, OnBtnNextview)
+    //{{AFX_MSG_MAP(CQCDlg)
+    ON_WM_SYSCOMMAND()
+    ON_WM_PAINT()
+    ON_WM_QUERYDRAGICON()
+    ON_BN_CLICKED(IDC_FINISH, OnFinish)
+    ON_BN_CLICKED(IDC_CH1, OnCh1)
+    ON_BN_CLICKED(IDC_CH2, OnCh2)
+    ON_BN_CLICKED(IDC_CH3, OnCh3)
+    ON_BN_CLICKED(IDC_CH4, OnCh4)
+    ON_WM_TIMER()
+    ON_WM_DESTROY()
+    ON_BN_CLICKED(IDC_VIEWMODE1, OnViewmode1)
+    ON_BN_CLICKED(IDC_VIEWMODE16, OnViewmode16)
+    ON_BN_CLICKED(IDC_BTN_NEXTVIEW, OnBtnNextview)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -222,15 +186,6 @@ BOOL CQCDlg::OnInitDialog()
     
     InitialVar();
 
-    if ((!m_card_infor.resSubId) && m_havePciDvrCard)
-    {
-        m_bCanDoSectionTest = FALSE;
-    }
-    
-    if ((!m_card_infor.resDriver) && (m_havePciDvrCard || m_haveUsbDvrCard))
-    {
-        m_bCanDoSectionTest = FALSE;
-    }
     g_card_id = m_card_infor.card_type_id = DVR_CARD_TD4104i;
                
     
@@ -265,7 +220,7 @@ BOOL CQCDlg::OnInitDialog()
     
    // m_DB.SaveMode(sDlg.m_bSignal);
     
-    LoadVideoRadio(0, 16, TRUE);//by chenlong
+    LoadVideoRadio(0, 4, TRUE);//by chenlong
     
     /*加载匹配的dll*/
     m_DSPDLL = NULL;
@@ -303,15 +258,10 @@ BOOL CQCDlg::OnInitDialog()
     
     UpdateData(FALSE);
     m_card_infor.disname = "TD4104i";
-    bresu = m_MyDSP->VideoCaptureStart(0, RecBmpHeader);
-    
-    if (!bresu) 
-    {
-        return FALSE;
-    }
     m_MyDSP->SetSwitch(pDSPSwitch, 4);
   
-    
+    m_MyDSP->VideoCaptureStart(0,RecBmpHeader);
+
     for (i = 0; i < m_Vchannel_Num; i++)
     {
         m_MyDSP->SetChannelStatus(CHSTATUS_SET_AUDIO_ENABLE, i, 0);
@@ -320,7 +270,6 @@ BOOL CQCDlg::OnInitDialog()
     
     RefreshMainControl();
     VideoChannelControl(m_card_infor.video_channel_number);
-    RefreshChannelCheckStatus(0);
     UpdateData(FALSE);
     m_bCanDoSectionTest = TRUE;
 
@@ -415,18 +364,7 @@ void CQCDlg::OnFinish()
     UpdateData(TRUE);
 
     m_bRun = FALSE;
-       
-    if (m_hLossThread != NULL)
-    {
-        TerminateThread(m_hLossThread,1);
-        CloseHandle(m_hLossThread);
-        m_hLossThread = NULL;
-    }
     
-	/*以下三个变量是为了加快退出的速度 by chenlong*/
-    m_bPreview = FALSE;
-    m_bRec = FALSE;
-    m_bNet = FALSE;
  
     /*增加了3304S,3308S by chenlong*/
     if (m_card_infor.card_type_id == DVR_CARD_TD4104 ||
@@ -448,25 +386,11 @@ void CQCDlg::OnFinish()
         m_card_infor.resResult = TRUE;
     }
     
-    if (m_havePciDvrCard||m_haveUsbDvrCard)
-    {
-        VideoCaptureStop();
-    }
-    KillTimer(ON_TIME_AUTOCALLMONITOR);
-    
-    //m_TestCard.FreeDevice();
-    
     delete []m_CodecMgrH_Net;
     m_CodecMgrH_Net = NULL;
     delete []m_CodecMgrH_Rec;
     m_CodecMgrH_Rec = NULL;
-    delete m_CodeLock;
-    m_CodeLock = NULL;
-    CloseHandle(g_eventRec);
-    CloseHandle(g_eventNet);
-    CloseHandle(g_eventPreview);
-    CloseHandle(g_eventRec_Format);
-    CloseHandle(g_eventNet_Format);
+
     CDialog::OnOK();
 }
 
@@ -516,42 +440,18 @@ void CQCDlg::VideoChannelControl(int ch_num)
 
 void CQCDlg::OnCh1() 
 {
-    if (!m_bCapturing)
-    {
-        return ;
-    }
-    
-    RefreshChannelCheckStatus(0); 
 }
 
 void CQCDlg::OnCh2() 
 {
-    if (!m_bCapturing)
-    {
-        return ;
-    }
-
-    RefreshChannelCheckStatus(1);
 }
 
 void CQCDlg::OnCh3() 
 {
-    if (!m_bCapturing)
-    {
-        return ;
-    }
-
-    RefreshChannelCheckStatus(2);  
 }
 
 void CQCDlg::OnCh4() 
 {
-    if (!m_bCapturing)
-    {
-        return ;
-    }
-
-    RefreshChannelCheckStatus(3);
 }
 
 void CQCDlg::InitialVar()
@@ -566,9 +466,6 @@ void CQCDlg::InitialVar()
     m_ChChecked[2]=m_ch3=FIRSTINVIEW;
     m_ChChecked[3]=m_ch4=FIRSTINVIEW;
     m_bCanDoSectionTest=FALSE;
-    m_bCapturing=FALSE;
-    m_havePciDvrCard=FALSE;
-    m_haveUsbDvrCard=FALSE;
     m_haveAlarmCard=FALSE;
     m_dwVideoFormat=DVRVIDEO_STANDARD_PAL;
     m_video_size_type=DVRVIDEO_SIZE_320x240;
@@ -579,27 +476,14 @@ void CQCDlg::InitialVar()
     {
         m_ExePath=szBuf;
         m_ExePath=m_ExePath.Left(m_ExePath.ReverseFind ('\\')+1);
-    }
-    
-}
-
-void CQCDlg::RefreshChannelCheckStatus(int index)
-{
-    if ((m_havePciDvrCard || m_haveUsbDvrCard))
-    {
-        //heliang -
-       // m_TestCard.SetChannelOrder(m_card_infor.video_channel_number, (DWORD *)m_ChChecked);
-        RedrawWindow();
-    }
-    //	TRACE("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",m_ChChecked[0],m_ChChecked[1],m_ChChecked[2],m_ChChecked[3],m_ChChecked[4],m_ChChecked[5],m_ChChecked[6],m_ChChecked[7],m_ChChecked[8],m_ChChecked[9],m_ChChecked[10],m_ChChecked[11],m_ChChecked[12],m_ChChecked[13],m_ChChecked[14],m_ChChecked[15]);
+    }  
 }
 
 BOOL CQCDlg::AudioCALLBACKFUNC(FRAMEBUFSTRUCT *bufs)
 {
-    main->m_MyDSP->ReleaseBuffer(0, bufs->BufferPara);
-    return TRUE;
+    // 暂时不处理声音
+    return FALSE;
 }
-CCriticalSection g_CodeLock;
 
 BOOL CQCDlg::VideoCALLBACKFUNC(FRAMEBUFSTRUCT *bufs)
 {
@@ -608,76 +492,15 @@ BOOL CQCDlg::VideoCALLBACKFUNC(FRAMEBUFSTRUCT *bufs)
         return FALSE;
     }
 
+    // 暂时只管live stream
     if (bufs->nStreamID == VIDEO_STREAM_PREVIEW)
     {
         main->m_ddraw->ShowDSP(bufs->ChannelIndex, bufs->pBuf, main->m_card_infor.video_channel_number,YUV422); 
         main->m_MyDSP->ReleaseBuffer(1, bufs->BufferPara);
+        return TRUE;
 	}
-	else if (bufs->nStreamID == VIDEO_STREAM_CAPTURE)//zld 2009/4/24 4408 添加录像流功能
-	{
-		if (!m_bRec)
-		{
-			if (bufs->ChannelIndex >= 0 && bufs->ChannelIndex < 16)
-			{
-				main->m_MyDSP->ReleaseBuffer(1, bufs->BufferPara);
-			}
-			
-			return FALSE;
-		}
-	}
-	else if (bufs->nStreamID == VIDEO_STREAM_NET)//zld 2009/4/24 4408 添加网络流测试功能
-	{
-		if (!m_bNet)
-		{
-			main->m_MyDSP->ReleaseBuffer(1, bufs->BufferPara);
-			return FALSE;
-		}
-    }
-    else
-    {
-        return FALSE;
-    } 
 
-    return TRUE;
-}
-
-void CQCDlg::FillAviHead(int bmptype)
-{
-    memset(&bitmapinfohead, 0, sizeof(BITMAPINFOHEADER));
-    bitmapinfohead.biSize = sizeof(BITMAPINFOHEADER);
-    switch (bmptype) {
-    case 0:
-        bitmapinfohead.biWidth = 352;//nWidth;
-        bitmapinfohead.biHeight = 288;//nHeight;
-        break;
-    case 1:
-        bitmapinfohead.biWidth = 320;//nWidth;
-        bitmapinfohead.biHeight = 240;//nHeight;
-        break;
-    case 2:
-        bitmapinfohead.biWidth = 352;//nWidth;
-        bitmapinfohead.biHeight = 240;//nHeight;
-        break;
-    case 3:
-        bitmapinfohead.biWidth = 640;//nWidth;
-        bitmapinfohead.biHeight = 480;//nHeight;
-        break;
-    default:
-        bitmapinfohead.biWidth = 640;//nWidth;
-        bitmapinfohead.biHeight = 480;//nHeight;
-    }
-    
-    bitmapinfohead.biPlanes = 1;
-    bitmapinfohead.biBitCount = 24;
-    //bitmapinfohead.biCompression =mmioFOURCC('M','P','4','2');// uVideoMode;
-    //bitmapinfohead.biCompression =mmioFOURCC('T','V','T','A');// uVideoMode;
-    bitmapinfohead.biCompression =mmioFOURCC('Y','U','Y','2');// uVideoMode;
-    //	memcpy(&strfVideo.biCompression, "divx", 4);
-    bitmapinfohead.biSizeImage = bitmapinfohead.biWidth*bitmapinfohead.biHeight*bitmapinfohead.biBitCount/8;
-    bitmapinfohead.biXPelsPerMeter = 0;
-    bitmapinfohead.biYPelsPerMeter = 0;
-    bitmapinfohead.biClrUsed = 0;
-    bitmapinfohead.biClrImportant = 0;
+    return FALSE;
 }
 
 BOOL CQCDlg::PreTranslateMessage(MSG* pMsg) 
@@ -703,19 +526,6 @@ BOOL CQCDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void CQCDlg::OnTimer(UINT nIDEvent) 
 {
-    /*增加了新的time事件 by chenlong*/
-   /* if (nIDEvent == ON_TIME_AUTOCALLMONITOR)
-    {
-        CallMonitor(TRUE);
-    }*/
-    if (nIDEvent == ON_TIME_CHECKSINGAL)
-    {
-        /*if (m_TestCard.GetInvalidateFlag(m_TestCard.m_pVideoDriver[0]->GetDeviceNumber()))
-        {
-            Invalidate(FALSE);
-        }*/
-    }
-
     CDialog::OnTimer(nIDEvent);
 }
 
@@ -723,41 +533,6 @@ void CQCDlg::OnTimer(UINT nIDEvent)
 void CQCDlg::RefreshMainControl()
 {
     m_view_card_type = m_card_infor.disname;	//Card Type窗口	
-    
-    if (!this->m_haveAlarmCard)
-    {
-        if (m_card_infor.card_id != "")
-        {
-            m_view_card_id = m_card_infor.card_id.Mid(22, m_card_infor.card_id.GetLength() - 22);
-        }   
-    }
-}
-
-BOOL CQCDlg::VideoCaptureStart()
-{
-    //if ((m_havePciDvrCard||m_haveUsbDvrCard) && m_bCanDoSectionTest && !m_bCapturing)
-    //{
-    //    m_bCapturing = TRUE;//m_video_size_type
-    //    SetTimer(ON_TIME_CHECKSINGAL, 200, NULL);//创建新的time事件
-    //    return m_TestCard.VideoCaptureStart(m_video_size_type,bitmapinfohead);
-    //}
-    //else
-        return TRUE;
-}
-
-void CQCDlg::VideoCaptureStop()
-{
-   /* if ((m_havePciDvrCard || m_haveUsbDvrCard) && m_bCanDoSectionTest && m_bCapturing)
-    {
-        m_bCapturing = FALSE;
-        m_TestCard.VideoCaptureStop();
-    }*/
-}
-
-BOOL CQCDlg::GetUserInfor(CString user_name)
-{
-    user_name="";
-    return FALSE;
 }
 
 /*获得通道数 by chenlong*/
@@ -812,72 +587,13 @@ void CQCDlg::OnDestroy()
     
 	// heliang -
     if (m_card_infor.card_type_id == DVR_CARD_TD4104 ||
-		m_card_infor.card_type_id == DVR_CARD_TD4104i ||
-        m_card_infor.card_type_id == DVR_CARD_TD4108 || //djx 2008/7/22 4108
-        m_card_infor.card_type_id == DVR_CARD_TD4116)
+		m_card_infor.card_type_id == DVR_CARD_TD4104i )
     {
         m_ddraw->FreeDSPBack();
     }
     
-    KillTimer(ON_TIME_CHECKSINGAL);
-    delete m_ddraw;
-    // TODO: Add your message handler code here
-    
+    delete m_ddraw;  
 }
-
-/*优化了点击“录象数据”按钮的处理 by chenlong*/
-void CQCDlg::OnRadioCapture() 
-{
-    if (m_bRec)
-    {
-        return;
-    }
-    
-	// heliang -
-    GetDlgItem(IDC_BMP_VIEWMODE1)->ShowWindow(FALSE);
-    GetDlgItem(IDC_BMP_VIEWMODE4)->ShowWindow(FALSE);
-    GetDlgItem(IDC_BMP_VIEWMODE16)->ShowWindow(FALSE);
-    GetDlgItem(IDC_VIEWMODE1)->ShowWindow(FALSE);
-    GetDlgItem(IDC_VIEWMODE4)->ShowWindow(FALSE);
-    GetDlgItem(IDC_VIEWMODE16)->ShowWindow(FALSE);
-    GetDlgItem(IDC_BTN_NEXTVIEW)->ShowWindow(FALSE);
-    GetDlgItem(IDC_STATIC_CURRENTCHANNEL)->ShowWindow(FALSE);
-    GetDlgItem(IDC_CURRENTCHANNEL)->ShowWindow(FALSE);
-    
-    UpdateData(TRUE);
-    m_View = m_RadioView;
-
-    m_ddraw->ShowOverlay(FALSE);		
-}
-
-/*优化了点击“现场数据”按钮的处理 by chenlong*/
-void CQCDlg::OnRadioPreview() 
-{
-    if (m_bPreview)
-    {
-        return;
-    }
-
-	// heliang -
-    GetDlgItem(IDC_BMP_VIEWMODE1)->ShowWindow(TRUE);
-    GetDlgItem(IDC_BMP_VIEWMODE16)->ShowWindow(TRUE);
-    
-    GetDlgItem(IDC_VIEWMODE1)->ShowWindow(TRUE);
-    GetDlgItem(IDC_VIEWMODE16)->ShowWindow(TRUE);
-    
-    ((CButton*)GetDlgItem(IDC_VIEWMODE16))->SetCheck(1);
-    ((CButton*)GetDlgItem(IDC_VIEWMODE1))->SetCheck(0);
-    
-    OnViewmode16();
-}
-
-DWORD WINAPI CQCDlg::LossThread(PVOID pParam)
-{
-    /*方便以后增加新条件，内部改为if, 增加了4408的条件用来刷新界面 by chenlong*/
-    // heiang -
-    return 0;
-}
-
 
 void CQCDlg::OnViewmode1() 
 {
@@ -886,7 +602,6 @@ void CQCDlg::OnViewmode1()
     GetDlgItem(IDC_CURRENTCHANNEL)->ShowWindow(TRUE);
     GetDlgItem(IDC_BTN_NEXTVIEW)->ShowWindow(TRUE);
     UpdateData(TRUE);
-    m_View = m_RadioView;
     
     BYTE array[18];
     array[0] = 0;
@@ -907,7 +622,6 @@ void CQCDlg::OnViewmode16()
     GetDlgItem(IDC_BTN_NEXTVIEW)->ShowWindow(FALSE);
     
     UpdateData(TRUE);
-    m_View = m_RadioView;
     
     BYTE array[18];
     array[0] = 7;
@@ -933,15 +647,6 @@ void CQCDlg::OnBtnNextview()
     
     OnViewmode1();
 }
-
-void CQCDlg::FreshAcceptButton() //djx
-{
-    m_card_infor.resResult = TRUE;
-    
-    if (m_card_infor.card_type_id == DVR_CARD_TDNULL)
-        m_card_infor.resResult = FALSE;
-}
-
 
 VOID CQCDlg::YUV420_YUV422Pack(void *pDst, void *pSrc, unsigned int nWidth, unsigned int nHeight, unsigned int nPitch, INT src420Subtype)
 {
@@ -1113,19 +818,10 @@ void CQCDlg::VideoFormatChange(DWORD videoformat)
         RecBmpHeader.biWidth = width;
         RecBmpHeader.biHeight = height;
         DWORD pSwitch[16];
-        if (m_bRec)
+
+        for (int i = 0; i < m_Vchannel_Num; i++)
         {
-            for (int i = 0; i < m_Vchannel_Num; i++)
-            {
-                pSwitch[i] = 1;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < m_Vchannel_Num; i++)
-            {
-                pSwitch[i] = 0;
-            }
+            pSwitch[i] = 0;
         }
         
         m_MyDSP->VideoCaptureStop();
@@ -1146,22 +842,14 @@ void CQCDlg::VideoFormatChange(DWORD videoformat)
         int nChannelNum = GetChannelNum(m_card_infor.card_type_id);
         
         m_ddraw->FreeDSPBack();
-        if (m_card_infor.card_type_id == DVR_CARD_TD4108) //djx 2008/7/22 4108
-        {
-            m_ddraw->InitDSPD1Back(m_dwVideoFormat, nChannelNum);
-        }
-        else
-        {
-            m_ddraw->InitDSPBack(m_dwVideoFormat, nChannelNum);
-        }
         
         DWORD dwType;
         m_MyDSP->DeviceInitial(m_dwVideoFormat, VideoCALLBACKFUNC, AudioCALLBACKFUNC, m_hWnd, &dwType);	
         m_card_infor.resPassWord = m_MyDSP->Password();
         
-        m_MyDSP->VideoCaptureStart(0, RecBmpHeader);
            
         m_MyDSP->SetSwitch(pSwitch, nChannelNum);
+        m_MyDSP->VideoCaptureStart(0,RecBmpHeader);
     }
    // heliang -
 }
