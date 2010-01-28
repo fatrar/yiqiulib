@@ -45,6 +45,7 @@ struct IIVCfgMgr
 
 
     virtual IVVistor Begin(int nChannelID) = 0;
+    virtual const IIVCfgMgr::IVVistor& End();
 
     virtual bool AddIVRule(int nChannelID, const WPG_Rule& Rule) = 0;
     virtual bool AddIVSchedule(int nChannelID, const ScheduleSettings& Sch) = 0;
