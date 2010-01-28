@@ -1,4 +1,23 @@
-#pragma once
+/*H***************************************************************************
+ File            : ZoneAdvDlg.h
+ Subsystem       : 
+ Function Name(s): CZoneAdvDlg
+ Author          : YiQiu
+ Date            : 2010-1-28  
+ Time            : 11:47
+ Description     : 
+
+ Revision        : 
+
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+***************************************************************************H*/
+#ifndef _ZONEADVDLG_H_2010_
+#define _ZONEADVDLG_H_2010_
+
 #include "afxwin.h"
 
 
@@ -16,7 +35,7 @@ public:
 	enum { IDD = IDD_ZONEADV };
 
 public:
-    void SetRuleName(const CString& strRuleName);
+    void Init(IVRuleType type, const CString& strRuleName);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -52,9 +71,24 @@ private:
     CString m_strLeftBehind;
     int m_nLoitersEdit;      // Max 10 min
     int m_nLeftBehindEdit;   // Max 10 min  
+
+    BOOL m_IsInit;
    
 private:
     void SetAllCheck();  
     bool CheckUserSet();
  
 };
+
+
+
+
+
+
+
+
+
+#endif  // _ZONEADVDLG_H_2010_
+
+
+// End of file

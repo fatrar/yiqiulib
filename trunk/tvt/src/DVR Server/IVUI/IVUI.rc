@@ -132,7 +132,7 @@ BEGIN
     EDITTEXT        IDC_RULENAME_EDIT,75,8,123,16,ES_AUTOHSCROLL
     GROUPBOX        "View",IDC_VIEW,15,29,184,38
     CONTROL         "Vertical View",IDC_V_VIEW,"Button",BS_AUTORADIOBUTTON | WS_GROUP,36,45,56,10
-    RADIOBUTTON     "Parallel View",IDC_P_VIEW,129,45,55,10,WS_GROUP
+    CONTROL         "Parallel View",IDC_P_VIEW,"Button",BS_AUTORADIOBUTTON | WS_GROUP,129,45,55,10
     GROUPBOX        "Object",IDC_OBJECT,15,71,184,56
     CONTROL         "Person",IDC_CHECK_PERSON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,86,38,10
     CONTROL         "Vehicle",IDC_CHECK_VEHICLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,86,38,10
@@ -143,6 +143,52 @@ BEGIN
     EDITTEXT        IDC_IDC_LOITERS_EDIT,63,145,25,16,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "LeftBehind:",IDC_LEFTBEHIND,120,148,38,8
     EDITTEXT        IDC_LEFTBEHIND_EDIT,167,144,25,16,ES_AUTOHSCROLL | ES_NUMBER
+END
+
+IDD_STAGECHANGEADV DIALOGEX 0, 0, 215, 143
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,95,121,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,158,122,50,14
+    LTEXT           "Rule Name:",IDC_RULENAME,17,12,38,8
+    EDITTEXT        IDC_RULENAME_EDIT,75,8,123,16,ES_AUTOHSCROLL
+    GROUPBOX        "Event",IDC_Event,15,36,184,73
+    CONTROL         "Montion",IDC_CHECK_Montion,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,71,41,10
+    CONTROL         "Other",IDC_CHECK_Other2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,71,35,10
+    CONTROL         "Anything",IDC_CHECK_Anything,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,91,45,10
+    CONTROL         "Light on",IDC_CHECK_Light_on,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,51,41,10
+    CONTROL         "Light off",IDC_CHECK_Light_off,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,51,43,10
+END
+
+IDD_LINEADV DIALOGEX 0, 0, 215, 119
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,95,98,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,158,99,50,14
+    LTEXT           "Rule Name:",IDC_RULENAME,17,12,38,8
+    EDITTEXT        IDC_RULENAME_EDIT,75,8,123,16,ES_AUTOHSCROLL
+    GROUPBOX        "Object",IDC_OBJECT,15,30,184,56
+    CONTROL         "Person",IDC_CHECK_PERSON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,45,38,10
+    CONTROL         "Vehicle",IDC_CHECK_VEHICLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,45,38,10
+    CONTROL         "Other",IDC_CHECK_OTHER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,37,65,35,10
+    CONTROL         "All",IDC_CHECK_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,65,23,10
+END
+
+IDD_FILTER DIALOGEX 0, 0, 251, 286
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,121,262,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,184,262,50,14
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,13,8,225,56
+    EDITTEXT        IDC_EDIT1,15,69,221,25,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    CONTROL         "On",IDC_FILTER_ON,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,55,101,25,10
+    CONTROL         "Off",IDC_FILTER_OFF,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,157,101,27,10
 END
 
 
@@ -187,6 +233,30 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 215
     END
+
+    IDD_STAGECHANGEADV, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 208
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 136
+    END
+
+    IDD_LINEADV, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 208
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+
+    IDD_FILTER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 279
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -199,10 +269,10 @@ END
 STRINGTABLE 
 BEGIN
     IDS_OK                  "确定"
-    IDS_CANCEL              "取消"
-    IDS_PREV                "上一步"
-    IDS_NEXT                "下一步"
-    IDS_CLOSE               "关闭"
+    IDS_Cancel              "取消"
+    IDS_Previous            "上一步"
+    IDS_Next                "下一步"
+    IDS_Close               "关闭"
 END
 
 #endif    // Chinese (P.R.C.) resources
@@ -276,11 +346,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 STRINGTABLE 
 BEGIN
     IDS_OK                  "OK"
-    IDS_CANCEL              "Cancel"
-    IDS_PREV                "Previous"
-    IDS_NEXT                "Next"
-    IDS_CLOSE               "Close"
-    IDS_FINISH              "Finish"
+    IDS_Cancel              "Cancel"
+    IDS_Previous            "Previous"
+    IDS_Next                "Next"
+    IDS_Close               "Close"
+    IDS_Finish              "Finish"
     IDS_Invade              "Invade"
     IDS_Leave_Disappear     "Leave Disappear"
 END
@@ -293,7 +363,7 @@ BEGIN
     IDS_Vehicle_Retrograde  "Vehicle Retrograde"
     IDS_Illegal_Parking     "Illegal Parking"
     IDS_Stage_Change        "Stage Change"
-    IDS_TYPE                "Type"
+    IDS_Type                "Type"
     IDS_Description         "Description"
     IDS_IV_Name_Des         "1"
     IDS_STRING1017          "2"
@@ -323,6 +393,20 @@ BEGIN
     IDS_LeftBehind_Time     "LeftBehind:"
     IDS_RuleName_Alarm      "Rule Name is void! Do you want use a default name?"
     IDS_Object_Alarm        "Object is not selected.Do you want use a defalt setting?"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_Event               "Event"
+    IDS_Event_Light_on      "Light on"
+    IDS_Event_Light_off     "Light off"
+    IDS_Event_Montion       "Montion"
+    IDS_Event_Other         "Other"
+    IDS_Event_Anything      "Anything"
+    IDS_Filter_MaxObj       "Max Object Filter"
+    IDS_Filter_MinObj       "Min Object Filter"
+    IDS_Filter_Size_Change  "Size Change Filter"
+    IDS_Filter_Shape_Direction "Shape and Direction Filter"
 END
 
 #endif    // English (U.K.) resources

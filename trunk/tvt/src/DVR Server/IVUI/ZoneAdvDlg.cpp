@@ -21,6 +21,7 @@ CZoneAdvDlg::CZoneAdvDlg(CWnd* pParent /*=NULL*/)
     , m_strLeftBehind(_T(""))
     , m_nLoitersEdit(Loiters_Default_Time)
     , m_nLeftBehindEdit(LeftBehind_Default_Time)
+    , m_IsInit(FALSE)
 {
 
 }
@@ -119,8 +120,23 @@ void CZoneAdvDlg::OnBnClickedCancel()
     OnCancel();
 }
 
-void CZoneAdvDlg::SetRuleName( const CString& strRuleName )
+void CZoneAdvDlg::Init(IVRuleType type, const CString& strRuleName )
 {
+    switch (type)
+    {
+    case IV_Invade:
+    	break;
+    case IV_Leave_Disappear:
+    	break;
+    case IV_LeftBehind:
+    	break;
+    case IV_Loiters:
+        break;
+    default:
+    	return;
+    }
+
+    m_IsInit = TRUE;
     m_strDefaultRuleName = m_strRuleNameEdit = strRuleName;
 }
 

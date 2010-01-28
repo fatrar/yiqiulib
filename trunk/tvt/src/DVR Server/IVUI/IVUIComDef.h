@@ -54,34 +54,19 @@ enum
 // GROUND_PLANE=Parallel=地面场景, IMAGE_PLANE=垂直场景=Vertical WPG_PLANE_TYPE
 
 
-struct IZoneInvadeAdvSet
+struct ILineAdvSet
 {
-    virtual void OnZoneAdvSet(
-        const CString& strRuleName,
-        bool bView,    // true is Parallel, otherwise， Vertical
-        DWORD nTargetObj) = 0;
+    virtual void SetRuleName(const CString& strRuleName)=0;
+    virtual void SetTargetObj(DWORD nTargetObj)=0;
 };
 
-typedef IZoneInvadeAdvSet IZoneLeaveAdvSet;
-
-struct IZoneLeftBehindAdvSet
+struct IZoneAdvSet : public ILineAdvSet
 {
-    virtual void OnZoneAdvSet(
-        const CString& strRuleName,
-        bool bView,    // true is Parallel, otherwise， Vertical
-        DWORD nTargetObj,
-        DWORD nTime ) = 0;
+    virtual void SetViewType(bool bView)=0; // true is Parallel, otherwise,Vertical
+    virtual void SetTime(DWORD nTime){};
 };
 
-typedef IZoneLeftBehindAdvSet IZoneLoitersAdvSet;
 
-struct IZoneStageChangeAdvSet
-{
-    virtual void OnZoneAdvSet(
-        const CString& strRuleName,
-        bool bView   // true is Parallel, otherwise， Vertical
-        ) = 0;
-};
 
 
 
