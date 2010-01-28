@@ -9,39 +9,20 @@
 #define IDC_ALARMOUT                    1001
 #define IDS_CANCEL                      1001
 #define IDS_Cancel                      1001
-#define IDS_CANCEL                      1001
-#define IDS_Cancel                      1001
-#define IDS_CANCEL                      1001
-#define IDS_Cancel                      1001
 #define IDD_IVSCHUDULE                  1002
 #define IDC_BUTTON3                     1002
 #define IDC_SCHUDULE                    1002
 #define IDS_PREV                        1002
 #define IDS_Prev                        1002
-#define IDS_PREV                        1002
-#define IDS_Prev                        1002
-#define IDS_PREV                        1002
-#define IDS_Prev                        1002
+#define IDS_Previous                    1002
 #define IDD_IVTAB                       1003
 #define IDS_NEXT                        1003
 #define IDS_Next                        1003
-#define IDS_NEXT                        1003
-#define IDS_Next                        1003
-#define IDS_NEXT                        1003
-#define IDS_NEXT                        1003
-#define IDS_Next                        1003
-#define IDS_NEXT                        1003
 #define IDC_SCHUDULE_CAMERA_TREE        1004
 #define IDD_IVFUNCTIONSEL               1004
 #define IDS_CLOSE                       1004
 #define IDS_Close                       1004
-#define IDS_CLOSE                       1004
-#define IDS_Close                       1004
-#define IDS_CLOSE                       1004
-#define IDS_Close                       1004
 #define IDC_ALARMOUT_CAMERA_TREE        1005
-#define IDS_FINISH                      1005
-#define IDS_Finish                      1005
 #define IDS_FINISH                      1005
 #define IDS_Finish                      1005
 #define IDC_RULE_CAMERA_TREE            1006
@@ -52,10 +33,13 @@
 #define IDS_LeftBehind                  1008
 #define IDD_ZONEADV                     1008
 #define IDS_Loiters                     1009
+#define IDD_STAGECHANGEADV              1009
 #define IDC_ALARM_HOLD_TIME             1010
 #define IDS_Statistic                   1010
+#define IDD_LINEADV                     1010
 #define IDC_CHECK1                      1011
 #define IDS_Vehicle_Retrograde          1011
+#define IDD_FILTER                      1011
 #define IDC_CHECK2                      1012
 #define IDC_LIST1                       1012
 #define IDS_Illegal_Parking             1012
@@ -65,7 +49,6 @@
 #define IDC_CHECK4                      1014
 #define IDS_TYPE                        1014
 #define IDS_Type                        1014
-#define IDS_TYPE                        1014
 #define IDC_V_VIEW                      1014
 #define IDC_CHECK5                      1015
 #define IDS_Description                 1015
@@ -98,27 +81,47 @@
 #define IDS_View                        1027
 #define IDC_TIME                        1028
 #define IDS_Vertical_View               1028
+#define IDC_CHECK_Light_on              1028
 #define IDC_LOITERS                     1029
 #define IDS_Parallel_View               1029
+#define IDC_CHECK_Light_off             1029
 #define IDC_LEFTBEHIND                  1030
 #define IDS_Object                      1030
 #define IDS_Object_Person               1031
+#define IDC_Event                       1031
 #define IDS_Object_Vehicle              1032
+#define IDC_CHECK_Montion               1032
 #define IDS_Object_Other                1033
+#define IDC_CHECK_Other2                1033
 #define IDS_Object_All                  1034
+#define IDC_CHECK_Anything              1034
 #define IDS_Time_S                      1035
+#define IDC_EDIT1                       1035
 #define IDS_Loiters_Time                1036
+#define IDC_FILTER_ON                   1036
 #define IDS_LeftBehind_Time             1037
+#define IDC_FILTER_OFF                  1037
 #define IDS_RuleName_Alarm              1038
 #define IDS_Object_Alarm                1039
+#define IDS_Event                       1040
+#define IDS_Event_Light_on              1041
+#define IDS_Event_Light_off             1042
+#define IDS_Event_Montion               1043
+#define IDS_Event_Other                 1044
+#define IDS_Event_Anything              1045
+#define IDS_Filter_MaxObj               1046
+#define IDS_Filter_MinObj               1047
+#define IDS_Filter_Size_Change          1048
+#define IDS_Shape_Direction             1049
+#define IDS_Filter_Shape_Direction      1049
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1009
+#define _APS_NEXT_RESOURCE_VALUE        1012
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1031
+#define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif
