@@ -29,7 +29,7 @@ public:
 
 public:
     virtual IIVCfgMgr::IVVistor Begin(int nChannelID);
-    virtual IIVCfgMgr::IVVistor End();
+    virtual const IIVCfgMgr::IVVistor& End();
 
     virtual bool AddIVRule(int nChannelID, const WPG_Rule& Rule);
     virtual bool AddIVSchedule(int nChannelID, const ScheduleSettings& Sch);

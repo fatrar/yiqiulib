@@ -39,7 +39,11 @@ IIVCfgMgr::IVVistor CIVCfgMgr::Begin( int nChannelID )
     return IVVistor(m_Doc.FirstChildElement(szBuf));
 }
 
-IIVCfgMgr::IVVistor CIVCfgMgr::End(){ return IVVistor(NULL); }
+const IIVCfgMgr::IVVistor& CIVCfgMgr::End()
+{ 
+    static const IVVistor v(NULL);
+    return v; 
+}
 
 bool CIVCfgMgr::AddIVRule( int nChannelID, const WPG_Rule& Rule )
 {
