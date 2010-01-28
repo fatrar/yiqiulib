@@ -60,10 +60,26 @@ struct IIVStatistic
     virtual BOOL GetStatisticState(int nChannelID, bool& bFlag)=0;
 };
 
+#define MaxScheduleday  24
+
+struct Scheduleday
+{
+    int  useNo;//已经使用的个数，即排程的个数
+    int  starttime[MaxScheduleday];//以分钟为单位的24小时制开始时间
+    int	 endtime[MaxScheduleday];//以分钟为单位的24小时制结束时间
+    //每一个排程项用下标相同的起始和终止时间来表示
+};
+
+struct ScheduleSettings
+{
+    ScheduleSettings(){ ZeroMemory(this, sizeof(ScheduleSettings));}
+    Scheduleday s[7];
+};
 
 // Alarm 回调输出数据，下面bool代表对应项是否输出
 struct AlarmOutTable
 {
+    AlarmOutTable(){memset(this, 0xffffffff, sizeof(AlarmOutTable));}
     bool EMail:1;
     bool EMap:1;
     bool TelphoneCall:1;
@@ -74,8 +90,18 @@ struct AlarmOutTable
     bool FullScreen:1;
     bool PlaySound:1;
     bool AlarmRecord:1;
+    bool resvr1:1;
     bool resvr2:1;
     bool resvr3:1;
+    bool resvr4:1;
+    bool resvr5:1;
+    bool resvr6:1;
+};
+
+struct AlarmOutSettings
+{
+    int nHoldTime;
+    AlarmOutTable table;
 };
 
 // 现有智能的八种类型

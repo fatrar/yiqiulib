@@ -189,6 +189,8 @@ BEGIN
     EDITTEXT        IDC_EDIT1,15,69,221,25,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     CONTROL         "On",IDC_FILTER_ON,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,55,101,25,10
     CONTROL         "Off",IDC_FILTER_OFF,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,157,101,27,10
+    EDITTEXT        IDC_EDIT2,105,124,35,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Multiplier:",IDC_Multiplier,57,126,45,8
 END
 
 
@@ -407,6 +409,18 @@ BEGIN
     IDS_Filter_MinObj       "Min Object Filter"
     IDS_Filter_Size_Change  "Size Change Filter"
     IDS_Filter_Shape_Direction "Shape and Direction Filter"
+    IDS_Filter_MaxObj_Info  "Max Object Filter"
+    IDS_Filter_MinObj_Info  "Min Object Filter"
+    IDS_Filter_Size_Change_Info "Size Change Filter"
+    IDS_Filter_Shape_Direction_Info "Shape and Direction Filter"
+    IDS_Filter_Head_Type    "Type"
+    IDS_Filter_Head_State   "State"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_Filter_On           "On"
+    IDS_Filter_Off          "Off"
 END
 
 #endif    // English (U.K.) resources

@@ -28,9 +28,19 @@ public:
     ~CIVCfgMgr();
 
 public:
+    virtual IIVCfgMgr::IVVistor Begin(int nChannelID);
+    virtual IIVCfgMgr::IVVistor End();
+
+    virtual bool AddIVRule(int nChannelID, const WPG_Rule& Rule);
+    virtual bool AddIVSchedule(int nChannelID, const ScheduleSettings& Sch);
+    virtual bool AddIVSAlarmOut(int nChannelID, const AlarmOutTable& table);
+
+    virtual bool ModifyIVRule(int nChannelID, const WPG_Rule& Rule) = 0;
+    virtual bool ModifyIVSchedule(int nChannelID, const ScheduleSettings& Sch);
+    virtual bool ModifyIVSAlarmOut(int nChannelID, const AlarmOutTable& table);
 
 private:
-    
+    TiXmlDocument m_Doc;     
 };
 
 

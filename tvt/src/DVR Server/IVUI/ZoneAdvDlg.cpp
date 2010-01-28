@@ -99,7 +99,7 @@ BOOL CZoneAdvDlg::OnInitDialog()
     m_strLeftBehind.LoadString(IDS_LeftBehind_Time);
 
     // [] 看需要刷新不？
-
+    UpdateData(FALSE);
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
