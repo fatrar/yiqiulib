@@ -35,6 +35,13 @@ enum
 
     Loiters_Default_Time = 30,     // 10min
     LeftBehind_Default_Time = 30,  // 10min
+
+    // Filter
+    Filter_Name_Start = IDS_Filter_MaxObj,
+    Filter_DIR_Start = IDS_Filter_MaxObj_Info,
+    Filter_Number = 4,
+
+
 };
 
 //// 现有智能的八种类型

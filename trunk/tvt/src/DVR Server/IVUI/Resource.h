@@ -102,8 +102,11 @@
 #define IDS_LeftBehind_Time             1037
 #define IDC_FILTER_OFF                  1037
 #define IDS_RuleName_Alarm              1038
+#define IDC_SPIN1                       1038
 #define IDS_Object_Alarm                1039
+#define IDC_EDIT2                       1039
 #define IDS_Event                       1040
+#define IDC_Multiplier                  1040
 #define IDS_Event_Light_on              1041
 #define IDS_Event_Light_off             1042
 #define IDS_Event_Montion               1043
@@ -112,8 +115,15 @@
 #define IDS_Filter_MaxObj               1046
 #define IDS_Filter_MinObj               1047
 #define IDS_Filter_Size_Change          1048
-#define IDS_Shape_Direction             1049
 #define IDS_Filter_Shape_Direction      1049
+#define IDS_Filter_MaxObj_Info          1050
+#define IDS_Filter_MinObj_Info          1051
+#define IDS_Filter_Size_Change_Info     1052
+#define IDS_Filter_Shape_Direction_Info 1053
+#define IDS_Filter_Head_Type            1054
+#define IDS_Filter_Head_State           1055
+#define IDS_Filter_On                   1056
+#define IDS_Filter_Off                  1057
 
 // Next default values for new objects
 // 
@@ -121,7 +131,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1012
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1041
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif
