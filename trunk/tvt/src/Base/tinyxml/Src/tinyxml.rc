@@ -72,7 +72,7 @@ BEGIN
             VALUE "FileDescription", "tinyxml Library"
             VALUE "FileVersion", "1,0,1,0"
             VALUE "InternalName", "tinyxml"
-            VALUE "LegalCopyright", "Copyright (C) DOWSHU Electronica (China) Ltd "
+            VALUE "LegalCopyright", "Copyright (C) xxx Ltd "
             VALUE "OriginalFilename", "tinyxml.lib"
             VALUE "ProductName", "tinyxml Library"
             VALUE "ProductVersion", "1,0,1,0"
