@@ -28,5 +28,5 @@
 #include <windows.h>
 
 
-#pragma warning(disable: 4996)
+#include "Common.h"
 // TODO: reference additional headers your program requires here

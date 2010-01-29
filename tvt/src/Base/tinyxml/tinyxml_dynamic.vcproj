@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tinyxml"
-	ProjectGUID="{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}"
+	Name="tinyxml_dynamic"
+	ProjectGUID="{F6F48206-B09B-403A-A0CD-8CCF18E5749B}"
 	RootNamespace="tinyxml"
 	>
 	<Platforms>
@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)_static.lib"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

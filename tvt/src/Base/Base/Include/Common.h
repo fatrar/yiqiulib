@@ -62,15 +62,15 @@
 //#endif
 
 
-#if defined(_LIB) || defined(_USELIB) || defined(BASE_STATIC_LIB)
-#	define RKT_API	extern "C"
-//#		pragma comment(lib, MAKE_LIB_NAME(Base))
-#elif defined(BASE_EXPORTS)
-#	define RKT_API	extern "C" OCI_EXPORT
-#else
-#	define RKT_API	extern "C"
-//#		pragma comment(lib, MAKE_DLL_LIB_NAME(Base))
-#endif
+//#if defined(_LIB) || defined(_USELIB) || defined(BASE_STATIC_LIB)
+//#	define OCI_API	extern "C"
+////#		pragma comment(lib, MAKE_LIB_NAME(Base))
+//#elif defined(BASE_EXPORTS)
+//#	define OCI_API	extern "C" OCI_EXPORT
+//#else
+//#	define OCI_API	extern "C"
+////#		pragma comment(lib, MAKE_DLL_LIB_NAME(Base))
+//#endif
 
 
 /*
