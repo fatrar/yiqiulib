@@ -60,21 +60,31 @@ struct IIVStatistic
     virtual BOOL GetStatisticState(int nChannelID, bool& bFlag)=0;
 };
 
-#define MaxScheduleday  24
+enum
+{
+    Max_Schedule_day = 24,
+    Default_Hold_Time = 5,
+};
 
 struct Scheduleday
 {
+    Scheduleday() : useNo(1)
+    {
+        starttime[0] = 0;
+        endtime[0] = 24*60-1;
+    }
     int  useNo;//已经使用的个数，即排程的个数
-    int  starttime[MaxScheduleday];//以分钟为单位的24小时制开始时间
-    int	 endtime[MaxScheduleday];//以分钟为单位的24小时制结束时间
+    int  starttime[Max_Schedule_day];//以分钟为单位的24小时制开始时间
+    int	 endtime[Max_Schedule_day];//以分钟为单位的24小时制结束时间
     //每一个排程项用下标相同的起始和终止时间来表示
 };
 
 struct ScheduleSettings
 {
-    ScheduleSettings(){ ZeroMemory(this, sizeof(ScheduleSettings));}
     Scheduleday s[7];
 };
+
+static const ScheduleSettings g_DefaultScheduleSettings;
 
 // Alarm 回调输出数据，下面bool代表对应项是否输出
 struct AlarmOutTable
@@ -100,13 +110,17 @@ struct AlarmOutTable
 
 struct AlarmOutSettings
 {
+    AlarmOutSettings():nHoldTime(Default_Hold_Time){};
     int nHoldTime;
     AlarmOutTable table;
 };
 
+static const AlarmOutSettings g_DefaultAlarmOutSettings;
+
 // 现有智能的八种类型
 enum IVRuleType
 {
+    IV_UnKnown = -1, 
     IV_Invade,              // 入侵
     IV_Leave_Disappear,     // 消失/离开
     IV_LeftBehind,          // 遗留
@@ -121,6 +135,16 @@ union IV_RuleID
 {
     struct RULE_ID
     {
+        static DWORD s_dwID;
+        void Init(IVRuleType type)
+        {
+            ID = s_dwID++;
+            nType = type;
+            SYSTEMTIME syt;
+            GetLocalTime(&syt);
+            SystemTimeToFileTime(&syt, &SetTime);
+        }
+
         DWORD ID;          // 0x00
         FILETIME SetTime;  // 0x04
         BYTE nType;        // 0xC
@@ -129,6 +153,8 @@ union IV_RuleID
 
     unsigned char szRuleId[16];
 };
+
+DWORD IV_RuleID::RULE_ID::s_dwID = 0;
 
 // 第三个为通道，第四个为时间戳，第五个为回调传过来的用户参数
 typedef BOOL (*AlarmCallBackFn)(const AlarmOutTable&,IVRuleType,int,const FILETIME*,void* pParm);
