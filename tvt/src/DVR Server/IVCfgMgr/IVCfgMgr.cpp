@@ -18,13 +18,36 @@
 #include "stdafx.h"
 #include "IVCfgMgr.h"
 
+#define _RootName       "IV"
 
-#define _ChannelName "Ch"
+#define _ChannelName    "Ch"
+#define _IdentityID     "ID"
+#define _RuleName       "Name"
+#define _RuleEnable     "Enable"
+#define _RuleType       "Type"
 
+#define _Rule           "Rule"
+#define _Schudule       "Schudule"
+#define _AlarmOut       "AlarmOut"
+
+
+#define _IV_Config_File_Path  "C:\\IV_Settings.xml"
+
+#define GetChannelName(i, szBuf) \
+    char szBuf[32] = {0}; \
+    sprintf(szBuf, "%s%d", _ChannelName, i);
 
 CIVCfgMgr::CIVCfgMgr()
 {
+    bool bRc = m_Doc.LoadFile(_IV_Config_File_Path, TIXML_ENCODING_UTF8);
+    if ( !bRc || 
+         NULL == (m_pRootEle = m_Doc.RootElement()) )
+    {
+        m_pRootEle = new TiXmlElement(_RootName);
+        m_Doc.LinkEndChild(m_pRootEle);
 
+        assert( m_Doc.SaveFile() );
+    }
 }
 
 CIVCfgMgr::~CIVCfgMgr()
@@ -34,9 +57,9 @@ CIVCfgMgr::~CIVCfgMgr()
 
 IIVCfgMgr::IVVistor CIVCfgMgr::Begin( int nChannelID )
 {
-    char szBuf[32] = {0};
-    sprintf(szBuf, "%s%d", _ChannelName, nChannelID);
-    return IVVistor(m_Doc.FirstChildElement(szBuf));
+    assert(m_pRootEle);
+    GetChannelName(nChannelID, szBuf);
+    return IVVistor(m_pRootEle->FirstChildElement(szBuf));
 }
 
 const IIVCfgMgr::IVVistor& CIVCfgMgr::End()
@@ -45,37 +68,36 @@ const IIVCfgMgr::IVVistor& CIVCfgMgr::End()
     return v; 
 }
 
-bool CIVCfgMgr::AddIVRule( int nChannelID, const WPG_Rule& Rule )
+IIVCfgMgr::IVVistor CIVCfgMgr::AddRule(
+    int nChannelID,
+    const WPG_Rule& Rule,
+    const ScheduleSettings& Sch,
+    const AlarmOutSettings& Alarm )
 {
-    return true;
+    GetChannelName(nChannelID, szBuf);
+    TiXmlElement* pChannelEle = TinyXmlUtil::CreateChildEle(
+        &m_Doc, szBuf );
+
+
+    TiXmlElement* pRuleEle = TinyXmlUtil::CreateChildEle(
+        pChannelEle, _Rule);
+    pRuleEle->SetAttribute(_RuleName, Rule.ruleName);
+    TinyXmlUtil::SetAttributeData(pRuleEle, _IdentityID, Rule.ruleId, 16);
+
+    TinyXmlUtil::SetChildElementTextData(pRuleEle, _Rule, Rule);
+    TinyXmlUtil::SetChildElementTextData(pRuleEle, _Schudule, Sch);
+    TinyXmlUtil::SetChildElementTextData(pRuleEle, _AlarmOut, Alarm);
+    return IVVistor(pRuleEle);
 }
 
-bool CIVCfgMgr::AddIVSchedule( int nChannelID, const ScheduleSettings& Sch )
+bool CIVCfgMgr::Apply()
 {
-    return true;
+    return m_Doc.SaveFile();
 }
 
-bool CIVCfgMgr::AddIVSAlarmOut( int nChannelID, const AlarmOutTable& table )
-{
-    return true;
-}
-
-bool CIVCfgMgr::ModifyIVRule( int nChannelID, const WPG_Rule& Rule )
-{
-    return true;
-}
-
-bool CIVCfgMgr::ModifyIVSchedule( int nChannelID, const ScheduleSettings& Sch )
-{
-    return true;
-}
-
-bool CIVCfgMgr::ModifyIVSAlarmOut( int nChannelID, const AlarmOutTable& table )
-{
-    return true;
-}
-
-IIVCfgMgr::IVVistor::IVVistor() : m_pEle(NULL) {}
+//
+// **********************  IVVistor *************************     
+// {
 IIVCfgMgr::IVVistor::IVVistor(TiXmlElement* pEle): m_pEle(pEle) {}
 
 
@@ -86,28 +108,96 @@ bool IIVCfgMgr::IVVistor::operator == (const IIVCfgMgr::IVVistor& v) const
 
 IIVCfgMgr::IVVistor IIVCfgMgr::IVVistor::Next()
 {
+    assert(m_pEle);
     return IVVistor( m_pEle->NextSiblingElement() );
 }
 
-bool IIVCfgMgr::IVVistor::GetIVRule( int nChannelID, WPG_Rule& Rule )
+// Get
+// {
+const char* IIVCfgMgr::IVVistor::GetIdentityID()
 {
-    return true;
+    assert(m_pEle);
+    return m_pEle->Attribute(_IdentityID);
 }
 
-bool IIVCfgMgr::IVVistor::GetIVSchedule( int nChannelID, ScheduleSettings& Sch )
+const char* IIVCfgMgr::IVVistor::GetRuleName()
 {
-    return true;
+    assert(m_pEle);
+    return m_pEle->Attribute(_RuleName);
 }
 
-bool IIVCfgMgr::IVVistor::GetIVSAlarmOut( int nChannelID, AlarmOutTable& table )
+bool IIVCfgMgr::IVVistor::IsAutoEnbale()
 {
-    return true;
+    assert(m_pEle);
+    int nEnbale = 0;
+    m_pEle->Attribute(_RuleEnable, &nEnbale); 
+    return (bool)nEnbale;
 }
 
+IVRuleType IIVCfgMgr::IVVistor::GeRuleType()
+{
+    assert(m_pEle);
+    int nRuleType = 0;
+    m_pEle->Attribute(_RuleType, &nRuleType); 
+    return (IVRuleType)nRuleType;
+}
 
+bool IIVCfgMgr::IVVistor::GetRule(WPG_Rule& Rule)
+{
+    assert(m_pEle);
+    return TinyXmlUtil::GetChildElementTextData(m_pEle, _Rule, Rule);
+}
 
+bool IIVCfgMgr::IVVistor::GetSchedule(ScheduleSettings& Sch)
+{
+    assert(m_pEle);
+    return TinyXmlUtil::GetChildElementTextData(m_pEle, _Schudule, Sch);
+}
 
+bool IIVCfgMgr::IVVistor::GetAlarmOut(AlarmOutSettings& Alarm)
+{
+    assert(m_pEle);
+    return TinyXmlUtil::GetChildElementTextData(m_pEle, _AlarmOut, Alarm);
+}
 
+// }
+// Get
+
+// Modify
+// {
+bool IIVCfgMgr::IVVistor::ModifyRule(const WPG_Rule& Rule)
+{
+    assert(m_pEle);
+    m_pEle->SetAttribute(_RuleName, Rule.ruleName);
+    m_pEle->SetAttribute(_RuleEnable, Rule.isEnabled);
+    return TinyXmlUtil::SetChildElementTextData(m_pEle, _Rule, Rule);
+}
+
+bool IIVCfgMgr::IVVistor::ModifySchedule(const ScheduleSettings& Sch)
+{
+    assert(m_pEle);
+    return TinyXmlUtil::SetChildElementTextData(m_pEle, _Schudule, Sch);
+}
+
+bool IIVCfgMgr::IVVistor::ModifyAlarmOut(const AlarmOutSettings& Alarm)
+{
+    assert(m_pEle);
+    return TinyXmlUtil::SetChildElementTextData(m_pEle, _AlarmOut, Alarm);
+}
+// } 
+// Modify
+
+// }
+// **********************  IVVistor *************************     
+// 
+
+namespace IIVCfgMgrFactory
+{
+    IIVCfgMgr* GetIIVCfgMgr()
+    {
+        return CIVCfgMgr::getInstancePtr();
+    }
+}
 
 
 // End of file

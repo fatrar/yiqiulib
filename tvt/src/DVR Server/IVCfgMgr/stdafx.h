@@ -27,8 +27,11 @@
 // Windows Header Files:
 #include <windows.h>
 
-
+#pragma warning(disable: 4996)
 #include "..\..\Base\tinyxml\Include\tinyxml.h"
 #include "..\..\Base\tinyxml\Include\tinyxmlUtil.h"
+#include "..\..\Base\Base\Include\TransformUtil.h"
+#include "..\..\Base\Base\Include\Singleton.h"
+using namespace OCI;
 
 // TODO: reference additional headers your program requires here

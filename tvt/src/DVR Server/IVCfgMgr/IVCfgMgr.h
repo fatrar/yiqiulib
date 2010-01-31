@@ -20,27 +20,31 @@
 
 #include ".\Include\IIVCfgMgr.h"
 
+
 class CIVCfgMgr :
-    public IIVCfgMgr
+    public IIVCfgMgr ,
+    public Singleton<CIVCfgMgr>
 {
 public:
     CIVCfgMgr();
     ~CIVCfgMgr();
 
+    typedef IIVCfgMgr::IVVistor IVVistor;
 public:
-    virtual IIVCfgMgr::IVVistor Begin(int nChannelID);
-    virtual const IIVCfgMgr::IVVistor& End();
+    virtual IVVistor Begin(int nChannelID);
+    virtual const IVVistor& End();
 
-    virtual bool AddIVRule(int nChannelID, const WPG_Rule& Rule);
-    virtual bool AddIVSchedule(int nChannelID, const ScheduleSettings& Sch);
-    virtual bool AddIVSAlarmOut(int nChannelID, const AlarmOutTable& table);
+    virtual IVVistor AddRule(
+        int nChannelID,
+        const WPG_Rule& Rule,
+        const ScheduleSettings& Sch = g_DefaultScheduleSettings,
+        const AlarmOutSettings& Alarm = g_DefaultAlarmOutSettings);
 
-    virtual bool ModifyIVRule(int nChannelID, const WPG_Rule& Rule) = 0;
-    virtual bool ModifyIVSchedule(int nChannelID, const ScheduleSettings& Sch);
-    virtual bool ModifyIVSAlarmOut(int nChannelID, const AlarmOutTable& table);
+    virtual bool Apply();
 
 private:
-    TiXmlDocument m_Doc;     
+    TiXmlDocument m_Doc;
+    TiXmlElement* m_pRootEle;
 };
 
 

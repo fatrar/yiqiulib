@@ -1,0 +1,20 @@
+﻿<IV>
+  <Ch1>
+    <Rule ID="23432-GUID" Name="" Enable="1"  Type="1">
+      <Rule TypeID="1">Hash+Base64Encode-d4A+=</Rule>
+      <Schedule>Hash+Base64Encode-d4A+=</Schedule>
+      <AlarmOut>Hash+Base64Encode-d4A+=</AlarmOut>
+    </Rule>
+    
+    <Rule ID="23435-GUID">
+      <Rule TypeID="1">Hash+Base64Encode-d4A+=</Rule>
+      <Schedule>Hash+Base64Encode-d4A+=</Schedule>
+      <AlarmOut>Hash+Base64Encode-d4A+=</AlarmOut>
+    </Rule>
+    <!--Rule x ..-->
+  </ch1>
+  
+  <Ch2></Ch2>
+  <Ch3></Ch3>
+  <Ch4></Ch4>
+</IV>
