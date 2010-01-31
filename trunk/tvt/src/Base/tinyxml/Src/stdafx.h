@@ -28,5 +28,14 @@
 #include <windows.h>
 
 
+
+void Base64Encode(
+    const BYTE* pIn, size_t nInLen,
+    unsigned char*& pOut, size_t& nOutLen );
+
+void Base64Decode(
+    const BYTE* pIn, size_t nInLen,
+    unsigned char*& pOut, size_t& nOutLen );
+
 #pragma warning(disable: 4996)
 // TODO: reference additional headers your program requires here

@@ -1,14 +1,16 @@
 /*H***************************************************************************
 File            : TinyXmlUtil.h
 Subsystem       : 
-Function Name(s): CTinyXmlUtil
+Function Name(s): TinyXmlUtil
 
-Description     : 
+Description     : TinyXml简单的封装函数
 Author          : Yiqiu
 Date            : 2009/1/15
-Revision        : 
-
+Revision        : 1.1
 History
+1.0  提供TinyXml一些简单的封装函数，这些函数为XML做配置文件而编写的
+1.1  将XML Text和Attribute 单独以一个文件形式定义，
+     现在这个文件留下的只是取节点和创建节点
 -------
 XML like
 1.              2.          3. 
@@ -17,30 +19,18 @@ XML like
     <3> <3/>      <1.2 />     <Name ID="2"/>
   </2>            <1.3 />     <Name ID="3"/>
 </1>            </1>        </1>
+-------
 Copyright (c) DOWSHU Electronica (China) Ltd.
 ***************************************************************************H*/
 #ifndef _TINYXMLUTIL_H_2009_1_
 #define _TINYXMLUTIL_H_2009_1_
 
-class TiXmlElement;
-class TiXmlDocument;
 
-#ifdef TINYXML_EXPORTS
-//    #define TINYXML_API __declspec(dllexport)
-#else
-    //#define TINYXML_API __declspec(dllimport)
-    #ifndef TINYXML_LINK
-        #define TINYXML_LINK
-        #ifdef _DEBUG
-            #pragma comment(lib, "tinyxml_debug.lib")
-            #pragma message("Automatically linking with tinyxml_debug.lib") 
-        #else
-            #pragma comment(lib, "tinyxml.lib")
-            #pragma message("Automatically linking with tinyxml.lib") 
-        #endif // _DEBUG
-    #endif
-#endif
+#include "tinyxml.h"
 
+
+// 以后写，因为这个可以用CreateChildAndSetChildText代替。
+// 区分一个Get和Create两个的区别是，get如果child不在就会失败，Create则会创建
 
 namespace TinyXmlUtil
 { 

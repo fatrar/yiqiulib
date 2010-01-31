@@ -32,18 +32,21 @@
     #endif
 #endif
 
+#include "common.h"
+
+
 BEGIN_BASE_ENGINE
 
 namespace TransformUtil
 {
     TRANSFORMUTIL_API void Base64Encode(
         const BYTE* pIn, size_t nInLen,
-        unsigned char*& pOut, size_t& nOutLen );
+        BYTE*& pOut, size_t& nOutLen );
 
     TRANSFORMUTIL_API void Base64Decode(
         const BYTE* pIn, size_t nInLen,
-        unsigned char*& pOut, size_t& nOutLen );
-}
+        BYTE*& pOut, size_t& nOutLen );
+};
 
 END_BASE_ENGINE
 

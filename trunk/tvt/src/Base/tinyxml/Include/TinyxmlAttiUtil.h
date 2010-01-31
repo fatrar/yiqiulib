@@ -24,7 +24,7 @@ class TiXmlDocument;
 
 namespace TinyXmlUtil
 {
-// Get Attribute
+    // Get Attribute
     // {
     const char* GetElementAttributeData(
         TiXmlElement* pEle,          // User Element
@@ -82,6 +82,21 @@ namespace TinyXmlUtil
 
     // Set Attribute ( if ChildElement not exist, Create a new.) 
     // {  
+    bool SetAttributeData(
+        TiXmlElement* pEle,
+        const char* pChildAttrName,
+        const void* pValue, 
+        size_t nLen );
+
+    template<typename T>
+    bool SetAttributeData(
+        TiXmlElement* pEle,
+        const char* pChildAttrName,
+        const T& Value )
+    {
+        return SetAttributeData(pEle, pChildAttrName, (void*)&Value, sizeof(T));
+    }
+
     bool SetChildElementAttributeData(
         TiXmlElement* pEle,          // User Element
         const char* pChildEleName,   // Will Get Data Child Element Name
