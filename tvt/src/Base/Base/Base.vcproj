@@ -208,6 +208,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\Src\Memory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -241,6 +245,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\Include\Memory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\stdafx.h"
 				>
 			</File>
@@ -253,10 +261,6 @@
 		<Filter
 			Name="Include"
 			>
-			<File
-				RelativePath=".\Include\TransformUtil\CodeTransform.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Include\Common.h"
 				>

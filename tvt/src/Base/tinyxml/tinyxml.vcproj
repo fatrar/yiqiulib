@@ -48,7 +48,7 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)_debug.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_static_debug.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -179,6 +179,7 @@
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -327,6 +328,43 @@
 					/>
 				</FileConfiguration>
 			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl"
+			>
+			<File
+				RelativePath="Include\tinystr.h"
+				>
+			</File>
+			<File
+				RelativePath="Include\tinyxml.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Util"
+			>
+			<File
+				RelativePath=".\Src\Base64.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\TinyxmlAttiUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\TinyxmlAttiUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\TinyxmlTextUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\TinyxmlTextUtil.h"
+				>
+			</File>
 			<File
 				RelativePath="Src\TinyXmlUtil.cpp"
 				>
@@ -348,27 +386,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl"
-			>
-			<File
-				RelativePath="Include\tinystr.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\tinyxml.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Include\TinyxmlAttiUtil.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Include\TinyxmlTextUtil.h"
-				>
 			</File>
 			<File
 				RelativePath="Include\TinyXmlUtil.h"

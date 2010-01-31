@@ -1,12 +1,15 @@
 /*H***************************************************************************
  File            : Base64.cpp
  Subsystem       : 
- Function Name(s): 
+ Function Name(s): BaseUtil
  Author          : YiQiu
  Date            : 2010-1-29  
  Time            : 14:50
  Description     : 
- 
+ 从base拷贝过来，不同是Base64Decode的内存模型是调用者申请好
+ 目地是为了减少基础模块之间的依赖，
+ 在我看来tinyxml和Base是最底层的模块。
+ 本来想实现一次内存拷贝就完成去数据的，但是Base算法要改成那样，代码会比较恶心。
  Revision        : 
 
  History
@@ -16,11 +19,6 @@
  Copyright (c) xxxx Ltd.
 ***************************************************************************H*/
 #include "stdafx.h"
-#include "..\Include\TransformUtil.h"
-
-
-using namespace OCI;
-
 
 /*
 ** Translation Table as described in RFC1113
@@ -41,9 +39,9 @@ void InitBase64DecodeTable()
     bdtable = true;
 }
 
-void TransformUtil::Base64Encode(
+void Base64Encode(
     const BYTE* pIn, size_t nInLen,
-    BYTE*& pOut, size_t& nOutLen )
+    unsigned char*& pOut, size_t& nOutLen )
 {
     size_t nMod = nInLen%3;
     size_t nGroup = nInLen/3;
@@ -89,9 +87,9 @@ void TransformUtil::Base64Encode(
 /**
 // 参考 git://android.git.kernel.org/platform/external/wpa_supplicant.git  > base64.c
 */
-void TransformUtil::Base64Decode(
+void Base64Decode(
     const BYTE* pIn, size_t nInLen,
-    BYTE*& pOut, size_t& nOutLen )
+    unsigned char*& pOut, size_t& nOutLen )
 {
     if ( !bdtable )
     {
