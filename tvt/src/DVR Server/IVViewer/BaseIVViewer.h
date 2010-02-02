@@ -29,7 +29,19 @@ public:
     virtual ~CBaseIVViewer(void);
 
 public:
-    virtual GetIVData();
+    virtual TargetQueue* GetIVData(int nChannelID) = 0;
+
+    // bState=true显示目标和路径，否则隐藏
+    virtual BOOL ShowObjTrace(int nChannelID, bool bState);
+
+    // 得到目标和路径是否正在显示
+    virtual BOOL GetObjTraceState(int nChannelID, bool& bState);
+
+    virtual void SetDataShowState(int nChannelID, int nState);
+
+protected:
+    int m_nState;
+    BOOL m_bShow;
 };
 
 
