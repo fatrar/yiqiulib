@@ -32,6 +32,7 @@
 #include "..\..\Base\tinyxml\Include\tinyxmlUtil.h"
 #include "..\..\Base\Base\Include\TransformUtil.h"
 #include "..\..\Base\Base\Include\Singleton.h"
+#include "..\..\Base\Base\Include\StringHelp.h"
 using namespace OCI;
 
 // TODO: reference additional headers your program requires here

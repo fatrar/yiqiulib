@@ -19,8 +19,11 @@
 #include "IVCfgMgr.h"
 
 #define _RootName       "IV"
+#define _AutoRunChannel "AutoRun"
 
 #define _ChannelName    "Ch"
+#define _DataShowState  "ShowState"
+
 #define _IdentityID     "ID"
 #define _RuleName       "Name"
 #define _RuleEnable     "Enable"
@@ -68,7 +71,7 @@ const IIVCfgMgr::IVVistor& CIVCfgMgr::End()
     return v; 
 }
 
-IIVCfgMgr::IVVistor CIVCfgMgr::AddRule(
+IIVCfgMgr::IVVistor CIVCfgMgr::Add(
     int nChannelID,
     const WPG_Rule& Rule,
     const ScheduleSettings& Sch,
@@ -93,6 +96,66 @@ IIVCfgMgr::IVVistor CIVCfgMgr::AddRule(
 bool CIVCfgMgr::Apply()
 {
     return m_Doc.SaveFile();
+}
+
+bool CIVCfgMgr::Remove( const IVVistor& Vistor )
+{
+    assert(m_pRootEle);
+    TiXmlElement* pEle = Ele(Vistor);
+    if ( pEle == NULL )
+    {
+        return false;
+    }
+
+    return m_pRootEle->RemoveChild(pEle);
+}
+
+bool CIVCfgMgr::SetAutoRunChannel(
+    const int szChannel[_MaxAutoChannel],
+    size_t nCount )
+{
+    StringHelp::CMakeString<> strMake;
+    for ( size_t i=0; i< min(nCount, _MaxAutoChannel); ++i )
+        strMake << szChannel[i];
+    m_pRootEle->SetAttribute(_AutoRunChannel, strMake.str());
+    return true;
+}
+
+bool CIVCfgMgr::GetAutoRunChannel( 
+    int szChannel[_MaxAutoChannel],
+    size_t& nCount )
+{
+    const char* pTmpStr = m_pRootEle->Attribute(_AutoRunChannel);
+    if ( pTmpStr == NULL )
+    {
+        nCount = 0;
+        return true;
+    }
+
+    StringHelp::CParseString<> strParse(pTmpStr);
+    nCount = min(strParse.Count(), _MaxAutoChannel);
+    for ( size_t i=0; i< nCount; ++i )
+    {
+        strParse.At(i, szChannel[i]);
+    }
+    return true;
+}
+
+void CIVCfgMgr::SetDataShowState(int nChannelID, int nState)
+{
+    GetChannelName(nChannelID, szBuf);
+    TiXmlElement* pChannelEle = TinyXmlUtil::CreateChildEle(
+        &m_Doc, szBuf );
+    pChannelEle->SetAttribute(_DataShowState, nState);
+}
+
+void CIVCfgMgr::GetDataShowState(int nChannelID,int& nState)
+{
+    GetChannelName(nChannelID, szBuf);
+    TiXmlElement* pChannelEle = TinyXmlUtil::CreateChildEle(
+        &m_Doc, szBuf );
+    TinyXmlUtil::GetElementAttributeData(
+        pChannelEle, _DataShowState, nState, IV_Show_All);
 }
 
 //
@@ -129,9 +192,10 @@ const char* IIVCfgMgr::IVVistor::GetRuleName()
 bool IIVCfgMgr::IVVistor::IsAutoEnbale()
 {
     assert(m_pEle);
-    int nEnbale = 0;
-    m_pEle->Attribute(_RuleEnable, &nEnbale); 
-    return (bool)nEnbale;
+    bool bEnbale = false;
+    TinyXmlUtil::GetElementAttributeData(
+        m_pEle, _RuleEnable, bEnbale, false);
+    return bEnbale;
 }
 
 IVRuleType IIVCfgMgr::IVVistor::GeRuleType()

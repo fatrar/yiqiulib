@@ -78,11 +78,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\AlarmCard\AlarmCard.lib"
-				OutputFile=".\Release/DEV_HC_DM642i.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\DEV_HC_DM642i.def"
-				ProgramDatabaseFile=".\Release/DEV_HC_DM642i.pdb"
 				SubSystem="2"
 				ImportLibrary="../../lib/$(TargetName).lib"
 				TargetMachine="1"
@@ -112,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="CopyFiles.bat"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration

@@ -70,6 +70,15 @@ BOOL CIVDataBuf::OnIVDataSend(
     return TRUE;
 }
 
+BOOL CIVDataBuf::ShowObjTrace(int nChannelID,  bool bState )
+{
+    return TRUE;
+}
+
+BOOL CIVDataBuf::GetObjTraceState(int nChannelID,  bool& bState )
+{
+    return TRUE;
+}
 
 //
 // IIVDataSaver

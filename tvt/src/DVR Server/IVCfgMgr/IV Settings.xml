@@ -1,5 +1,5 @@
-﻿<IV>
-  <Ch1>
+﻿<IV AutoRun="1;">
+  <Ch1 ShowState="1">
     <Rule ID="23432-GUID" Name="" Enable="1"  Type="1">
       <Rule TypeID="1">Hash+Base64Encode-d4A+=</Rule>
       <Schedule>Hash+Base64Encode-d4A+=</Schedule>

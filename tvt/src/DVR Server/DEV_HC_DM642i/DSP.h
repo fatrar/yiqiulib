@@ -16,6 +16,22 @@ class CTiCoffFile;
 extern inline	void ReleaseDriverBuffer(PTVT_CAP_STATUS pST);
 #define NET_FRAME_RATE_TOTAL 32
 
+#define Device_Free_Flag     (-1)
+#define MAX_IV_Parm_Buf_Size (sizeof(DWORD) + sizeof(PARAMPACK) + sizeof(WPG_Rule))
+
+struct IVParmData
+{
+    PARAMPACK Commadparm;
+    WPG_Rule Rule;
+};
+
+struct IVPACK
+{
+    CCriticalSection CS;
+    deque<IVParmData> param;
+};
+
+
 class CDSP :
     public IIVDeviceBase,
     public IIVStatistic,
@@ -68,11 +84,20 @@ protected:
 	
     SIGNAL m_pSignal[MAX_CHANNEL_NUM];
 	PACK m_pPack[MAX_DEVICE_NUM];
+    IVPACK m_pIVPack[MAX_DEVICE_NUM];          // IV new Add
+    BYTE* m_pIVParmBuf[MAX_DEVICE_NUM];        // IV new Add
+
     DWORD m_pSwitch[MAX_CHANNEL_NUM];
     DWORD m_pAudioSwitch[MAX_CHANNEL_NUM];
 
     void SetSignal(int nChannel, UINT iS);
-    BOOL SetParamToDSP(INT nDevice);
+    BOOL SetParamToDSP(int nDevice);       
+
+    BOOL SetIVParamToDSP(int nDevice);       // IV new Add
+    BOOL SetIVSpecialParam(
+        int nType, int nChannel, int nValue, // nValue 预留，默认填0就好
+        const WPG_Rule& Rule );              // IV new Add
+
 	void ReleaseCapBuf(INT nDevice, INT nIndex);
 	BOOL FindCapBuf(INT nDevice, INT &nIndex);
 	BOOL FindNetBuf_RT(INT nDevice, INT &nIndex);	//<REC-NET>
@@ -154,7 +179,7 @@ protected:
         DWORD dwDeviceID;
     };
 
-    // New Add
+    // IV New Add
 private:
     void GetPrvData(int nDevice);
 
@@ -173,9 +198,33 @@ private:
 public:
     virtual BOOL IsUse(int nChannelID);
     virtual BOOL Use(int nChannelID, bool bState);
-    virtual BOOL ShowObjTrace(bool bState);
-    virtual BOOL GetObjTraceState(bool& bState);
     virtual BOOL IsHaveFreeDevice(void);
+
+    // IIVDeviceBase2
+public:
+    virtual BOOL Add(
+        int nChannelID,
+        const WPG_Rule& Rule,
+        const ScheduleSettings& Sch = g_DefaultScheduleSettings,
+        const AlarmOutSettings& Alarm = g_DefaultAlarmOutSettings);
+
+    virtual BOOL Remove(
+        int nChannelID,
+        const IV_RuleID& RuleID);
+
+    virtual BOOL ModifyRule(
+        int nChannelID,
+        const WPG_Rule& Rule);
+
+    virtual BOOL ModifySchedule(
+        int nChannelID,
+        const IV_RuleID& RuleID,
+        const ScheduleSettings& Sch );
+
+    virtual BOOL ModifyAlarmOut(
+        int nChannelID,
+        const IV_RuleID& RuleID,
+        const AlarmOutSettings& Alarm );
 
     // IIVStatistic
 public:
@@ -202,10 +251,15 @@ private:
     void DoIVAlarm(
         int nChannelID,
         const WPG_EventOccurrence* pEvent, 
-        FILETIME* pTime);
+        FILETIME* pTime,
+        const AlarmOutTable* pTable);
 
 private:
-    bool GetDeviceIDByChannel(int nChannelID, int& nDeviceID);
+    bool IsNeedAlarmOut(
+        int nDevice,
+        const IV_RuleID& RuleID,
+        const FILETIME& test,
+        const AlarmOutTable*& pTable );
 
 private:
     AlarmCallBackFn m_AlarmCallBackFn;
@@ -213,15 +267,32 @@ private:
     IIVDataSender* m_pIVDataSender;
     ISnapShotSender* m_pSnapShotSender;
     int m_szCurrentIVChannel[MAX_DEVICE_NUM];
+    BOOL m_szHaveStatistic[MAX_DEVICE_NUM];
+    
+    struct CurrentRuleSetting
+    {
+        CurrentRuleSetting(
+            WPG_Rule _Rule,
+            ScheduleSettings _Sch,
+            AlarmOutSettings _Alarm)
+            : Rule(_Rule)
+            , Sch(_Sch)
+            , Alarm(_Alarm)
+            , nLastHoldTime(0) {}
+            
+        WPG_Rule Rule;
+        ScheduleSettings Sch;
+        AlarmOutSettings Alarm;
+        __int64 nLastHoldTime;
+    };
+
+    typedef map<IV_RuleID, CurrentRuleSetting*> RuleSettingMap;
+    RuleSettingMap m_RuleCfgMap[MAX_DEVICE_NUM];
+    CCriticalSection m_CfgMapCS[MAX_DEVICE_NUM];	
 
     BOOL m_ShowSnapShot;
 };
 
-//typedef struct WPG_EventOccurrence
-//{
-//    unsigned char ruleId[16];
-//}
- 
 
 
 

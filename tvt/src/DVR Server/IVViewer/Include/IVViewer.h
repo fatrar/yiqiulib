@@ -19,7 +19,6 @@
 #define _IIVVIEWER_H_2010_
 
 
-
 struct IIVDataSaver
 {
     // 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
@@ -43,6 +42,12 @@ struct IIVViewer
         const HDC dc,
         const RECT& rect,
         const FILETIME& time)=0;
+
+    // bState=true显示目标和路径，否则隐藏
+    virtual BOOL ShowObjTrace(int nChannelID, bool bState)=0;
+
+    // 得到目标和路径是否正在显示
+    virtual BOOL GetObjTraceState(int nChannelID, bool& bState)=0;
 };
 
 // 得到对应的对象指针

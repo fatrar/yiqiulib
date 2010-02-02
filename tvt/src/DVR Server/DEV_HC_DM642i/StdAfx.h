@@ -43,7 +43,9 @@
 #include "winioctl.h"
 //#include "ioctl.h"
 #pragma warning(disable: 4996)
+#include <list>
 #include <deque>
+#include <map>
 using namespace std;
 
 #include "common.h"
