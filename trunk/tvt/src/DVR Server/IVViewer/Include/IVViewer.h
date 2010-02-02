@@ -48,6 +48,9 @@ struct IIVViewer
 
     // 得到目标和路径是否正在显示
     virtual BOOL GetObjTraceState(int nChannelID, bool& bState)=0;
+
+    // 设置显示哪些，是目标还是轨迹
+    virtual void SetDataShowState(int nChannelID, int nState) = 0;
 };
 
 // 得到对应的对象指针
