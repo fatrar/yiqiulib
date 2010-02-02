@@ -46,6 +46,7 @@ namespace TransformUtil
     TRANSFORMUTIL_API void Base64Decode(
         const BYTE* pIn, size_t nInLen,
         BYTE*& pOut, size_t& nOutLen );
+
 };
 
 END_BASE_ENGINE

@@ -21,9 +21,9 @@
 #include "Common.h"
 
 #ifdef BASE_EXPORTS
-    #define MEMORYUTIL API_EXPORT
+    #define MEMORYUTIL_API API_EXPORT
 #else    
-    #define MEMORYUTIL API_IMPORT
+    #define MEMORYUTIL_API API_IMPORT
     #ifndef BASE_LINK
         #define BASE_LINK
         #pragma comment(lib, "Base.lib")
@@ -35,8 +35,8 @@ BEGIN_BASE_ENGINE
 
 namespace MemoryUtil
 {
-    API_EXPORT void Delete(void* p);
-    API_EXPORT void DeleteArray(void* p);
+    MEMORYUTIL_API void Delete(void* p);
+    MEMORYUTIL_API void DeleteArray(void* p);
 };
 
 

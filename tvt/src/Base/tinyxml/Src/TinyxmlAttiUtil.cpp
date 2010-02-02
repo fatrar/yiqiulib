@@ -26,16 +26,16 @@
 //
 const char* TinyXmlUtil::GetElementAttributeData(
     TiXmlElement* pEle, /* User Element */
-    const char* pChildAttrName, 
+    const char* pAttrName, 
     const char* pDefault /*= NULL */ )
 {
     if ( NULL == pEle ||
-        !isValidString(pChildAttrName) )
+        !isValidString(pAttrName) )
     {
         return pDefault;
     }
 
-    const char* pData = pEle->Attribute(pChildAttrName);
+    const char* pData = pEle->Attribute(pAttrName);
     if ( NULL == pData )
     {
         return pDefault;
@@ -46,18 +46,18 @@ const char* TinyXmlUtil::GetElementAttributeData(
 
 bool TinyXmlUtil::GetElementAttributeData(
     TiXmlElement* pEle, /* User Element */ 
-    const char* pChildAttrName,
+    const char* pAttrName,
     int& nValue,
     int nDefault /*= 0 */ )
 {
     if ( NULL == pEle ||
-        !isValidString(pChildAttrName) )
+        !isValidString(pAttrName) )
     {
         nValue = nDefault; 
         return false;
     }
 
-    const char* pData = pEle->Attribute(pChildAttrName, &nValue);
+    const char* pData = pEle->Attribute(pAttrName, &nValue);
     if ( NULL == pData )
     {
         nValue = nDefault; 
@@ -69,19 +69,19 @@ bool TinyXmlUtil::GetElementAttributeData(
 
 bool TinyXmlUtil::GetElementAttributeData(
     TiXmlElement* pEle, /* User Element */
-    const char* pChildAttrName,
+    const char* pAttrName,
     bool& bValue, 
     bool bDefault /*= false */ )
 {
     if ( NULL == pEle ||
-        !isValidString(pChildAttrName) )
+        !isValidString(pAttrName) )
     {
         bValue = bDefault; 
         return false;
     }
 
     int nValue;
-    const char* pData = pEle->Attribute(pChildAttrName, &nValue);
+    const char* pData = pEle->Attribute(pAttrName, &nValue);
     if ( NULL == pData )
     {
         bValue = bDefault; 

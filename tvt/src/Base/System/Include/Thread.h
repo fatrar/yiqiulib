@@ -15,8 +15,8 @@
 
  Copyright (c) xxxx Ltd.
 ***************************************************************************H*/
-#ifndef _THREAD_H_2010_
-#define _THREAD_H_2010_
+#ifndef _THREAD_H_2010_1_
+#define _THREAD_H_2010_1_
 
 
 

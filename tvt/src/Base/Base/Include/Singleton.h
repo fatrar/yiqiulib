@@ -1,11 +1,11 @@
 /*H***************************************************************************
  File            : Singleton.h
  Subsystem       : 
- Function Name(s): CSingleton
+ Function Name(s): 
  Author          : YiQiu
- Date            : 2010-1-13  
+ Date            : 2008-5-13  
  Time            : 13:42
- Description     : 
+ Description     : µ¥ÊµÀýÄ£°å
 
  Revision        : 
 

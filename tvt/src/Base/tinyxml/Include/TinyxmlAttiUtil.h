@@ -28,7 +28,7 @@ namespace TinyXmlUtil
     // {
     const char* GetElementAttributeData(
         TiXmlElement* pEle,          // User Element
-        const char* pChildAttrName,
+        const char* pAttrName,
         const char* pDefault = NULL );
 
 // look in TinyXmlUtil_VC6.h
@@ -41,13 +41,13 @@ namespace TinyXmlUtil
 
     bool GetElementAttributeData(
         TiXmlElement* pEle,         // User Element
-        const char* pChildAttrName,
+        const char* pAttrName,
         int& nValue,
         int nDefault = 0 );
 
     bool GetElementAttributeData(
         TiXmlElement* pEle,         // User Element
-        const char* pChildAttrName,
+        const char* pAttrName,
         bool& bValue,
         bool bDefault = false );
 

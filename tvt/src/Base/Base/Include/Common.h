@@ -46,6 +46,23 @@
 #	define API_IMPORT		extern "C" __declspec(dllimport)
 #endif
 
+//#define Conn(x,y) Conn1(x,y)
+//#define Conn1(x,y) x##y
+//
+//#define OCI_DllExport_Define(Project, Package) \
+//#ifdef Conn(Project, _EXPORTS)\
+//    #define ##Package_API API_EXPORT\
+//    #define ##Package_CLASS CLASS_EXPORT\
+//#else    \
+//    #define ##Package_API API_IMPORT\
+//    #define ##Package_CLASS CLASS_IMPORT\
+//    #ifndef BASE_LINK\
+//        #define ##Project_LINK\
+//        #pragma comment(lib, #Project".lib")\
+//        #pragma message("Automatically linking with "#Project"Base.dll") \
+//    #endif\
+//#endif
+
 
 //#if defined(_LIB) || defined(_USELIB) || defined(BASE_STATIC_LIB) || defined(BASE_STATIC_LIB_MD)
 //#	define OCI_EXPORT
