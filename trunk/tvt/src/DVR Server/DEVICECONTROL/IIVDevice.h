@@ -35,12 +35,6 @@ struct IIVDeviceBase
     // 对这个通道使用智能
     virtual BOOL Use(int nChannelID, bool bState)=0;
 
-    // bState=true显示目标和路径，否则隐藏
-    virtual BOOL ShowObjTrace(bool bState)=0;
-
-    // 得到目标和路径是否正在显示
-    virtual BOOL GetObjTraceState(bool& bState)=0;
-
     // 是否还有空闲的智能设备
     virtual BOOL IsHaveFreeDevice(void)=0;
 };
@@ -66,6 +60,7 @@ enum
     Default_Hold_Time = 5,
 };
 
+// 时间是按顺序排，从小到大
 struct Scheduleday
 {
     Scheduleday() : useNo(1)
@@ -81,7 +76,7 @@ struct Scheduleday
 
 struct ScheduleSettings
 {
-    Scheduleday s[7];
+    Scheduleday s[7]; //按微软的排。 先是星期天 然后1，。。
 };
 
 static const ScheduleSettings g_DefaultScheduleSettings;
@@ -131,6 +126,15 @@ enum IVRuleType
     IV_Stage_Change,        // 场景变换
 };
 
+enum IVDataShowState
+{
+    IV_Show_Object = 0x1,
+    IV_Show_Trace  = 0x2,
+
+    IV_Show_All = IV_Show_Object|IV_Show_Trace,
+};
+
+
 union IV_RuleID
 {
     struct RULE_ID
@@ -152,6 +156,21 @@ union IV_RuleID
     } RuleID;
 
     unsigned char szRuleId[16];
+
+    bool operator == (const IV_RuleID& a) const
+    {
+        return memcmp(szRuleId, a.szRuleId, sizeof(szRuleId))==0;
+    }
+
+    bool operator < (const IV_RuleID& a) const
+    {
+        return memcmp(szRuleId, a.szRuleId, sizeof(szRuleId))<0;
+    }
+
+    bool operator > (const IV_RuleID& a) const
+    {
+        return memcmp(szRuleId, a.szRuleId, sizeof(szRuleId))>0;
+    }
 };
 
 DWORD IV_RuleID::RULE_ID::s_dwID = 0;
@@ -176,6 +195,36 @@ struct ISnapShotSender
         BYTE* pData,
         size_t nLen) = 0;
 };
+
+// 板卡这边只关心正在运行的规则
+struct IIVDeviceBase2 :
+    public IIVDeviceBase
+{
+    virtual BOOL Add(
+        int nChannelID,
+        const WPG_Rule& Rule,
+        const ScheduleSettings& Sch = g_DefaultScheduleSettings,
+        const AlarmOutSettings& Alarm = g_DefaultAlarmOutSettings)=0;
+
+    virtual BOOL Remove(
+        int nChannelID,
+        const IV_RuleID& RuleID)=0;
+
+    virtual BOOL ModifyRule(
+        int nChannelID,
+        const WPG_Rule& Rule)=0;
+
+    virtual BOOL ModifySchedule(
+        int nChannelID,
+        const IV_RuleID& RuleID,
+        const ScheduleSettings& Sch )=0;
+
+    virtual BOOL ModifyAlarmOut(
+        int nChannelID,
+        const IV_RuleID& RuleID,
+        const AlarmOutSettings& Alarm )=0;
+};
+
 
 namespace DeviceFactory
 {

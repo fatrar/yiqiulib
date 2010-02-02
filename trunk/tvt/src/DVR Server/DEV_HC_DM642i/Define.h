@@ -18,8 +18,10 @@
 #define STREAM_TYPE_CAP			1
 #define STREAM_TYPE_NET			2
 #define STREAM_TYPE_AUD			3
+
 #define MAX_PARAM_ONETIME		30
 #define MAX_PARAMDATA_SIZE		364
+
 #define PRV_TEMP_BUF_SIZE		(352 * 288 * 2)
 
 typedef struct _NETBUF_DEQUE
@@ -27,6 +29,7 @@ typedef struct _NETBUF_DEQUE
 	CCriticalSection CS;
 	deque<FRAMEBUFSTRUCT *> Deque;
 }NETBUF_DEQUE, *PNETBUF_DEQUE;
+
 typedef struct _PACK
 {
 	CCriticalSection CS;

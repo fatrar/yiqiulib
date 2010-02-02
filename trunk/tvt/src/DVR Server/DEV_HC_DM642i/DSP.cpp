@@ -154,7 +154,7 @@ CDSP::CDSP()
     {
         m_bNextFrameIsKeyRcd[i]	= TRUE;	//zhangzhen	2007/03/01
         m_bNextFrameIsKeyNet[i]	= TRUE;	//zhangzhen	2007/03/01
-        m_bNextFrameIsKeyMobile[i]	= TRUE;	//zhangzhen	2007/03/01
+        m_bNextFrameIsKeyMobile[i] = TRUE;	//zhangzhen	2007/03/01
         m_nFrameCntRcd[i]	= 0;
         m_nFrameCntNet[i]	= 0;
         m_nFrameCntMobile[i]	= 0;
@@ -168,8 +168,10 @@ CDSP::CDSP()
     m_nNetFrameRateInc = 0;
 
     // IV .. Init
-    memset(m_szCurrentIVChannel, -1, sizeof(m_szCurrentIVChannel));
+    memset(m_szCurrentIVChannel, Device_Free_Flag, sizeof(m_szCurrentIVChannel));
     m_szCurrentIVChannel[0] = 1;
+
+    ZeroMemory(m_szHaveStatistic, sizeof(m_szHaveStatistic));
 }
 
 CDSP::~CDSP()
@@ -251,18 +253,37 @@ BOOL CDSP::DeviceInit()
 		m_pTiCoffFile[i]->Wait();
 		delete m_pTiCoffFile[i];
 	}
+
 	return TRUE;
+}
+
+template<class T>void STLDeleteAssociate(T &t)
+{
+    typename T::iterator i = t.begin();
+    for(; i != t.end(); ++i)
+    {
+        safeDelete((*i).second);
+    }
+    t.clear();
 }
 
 void CDSP::DeviceExit()
 {
-	for (int i = 0; i < m_nDeviceNum; i++)	//zhangzhen	2007/03/01
+    int i;
+	for (i = 0; i < m_nDeviceNum; i++)	//zhangzhen	2007/03/01
 	{
         safeCloseHandle(m_hDevice[i]);
         safeCloseHandle(m_hPrvEvent[i]);
         safeCloseHandle(m_hCompressEvent[i]);
         safeCloseHandle(m_hAudEvent[i]);
+
+        {
+            AutoLockAndUnlock(m_CfgMapCS[i]);
+            STLDeleteAssociate(m_RuleCfgMap[i]);
+        }
 	}
+
+
 }
 
 BOOL CDSP::Initialize(DWORD dwVideoFormat, CAPTURECALLBACK *pVideoCallBack, CAPTURECALLBACK *pAudioCallBack)
@@ -423,7 +444,7 @@ void CDSP::DestroyWorkerThread()
 #define DestroyThread(h, strlog) \
     if (h != NULL)\
     {	DWORD dwStart = GetTickCount();\
-        WaitForSingleObject(h, 1000000); \
+        WaitForSingleObject(h, 2000); \
         if (GetExitCodeThread(h, &dwExitCode)) \
         {   \
             if (dwExitCode == STILL_ACTIVE) \
@@ -492,6 +513,8 @@ BOOL CDSP::CreateBuffer()
 			m_pNetBuf_RT[i][j].pBuf = new BYTE[CAP_BUF_SIZE];	//<REC-NET>
 			m_pNetBuf_RT[i][j].nVLostFlag = 1;
 		}
+
+        m_pIVParmBuf[i] = new BYTE[MAX_IV_Parm_Buf_Size];
 	}
 
 	return TRUE;
@@ -522,6 +545,8 @@ void CDSP::DestroyBuffer()
             safeDeleteArray(m_pDrvHeadOfPrvBuf[i][j]); 
         }
 #endif
+
+        safeDeleteArray(m_pIVParmBuf[i]);
 	}
 }
 
@@ -611,6 +636,7 @@ void CDSP::GetPrvData(int nDevice)
         pStatus = (PTVT_CAP_STATUS)pData;
         
         SetParamToDSP(nDevice);
+        SetIVParamToDSP(nDevice);
 
         pStatus->dwReserve4 = 4;	//一次处理整块卡4通道数据
         for (int nChannel = 0; nChannel < CHANNEL_PER_DEVICE; nChannel++)
@@ -659,7 +685,7 @@ void CDSP::GetOneChannelPreData(
     m_pPrvBuf[nDevice][nIndex].BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
 
     PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
-    m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
+    BOOL bRc = m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
 
 
 #ifdef PRECOPY 
@@ -1367,60 +1393,48 @@ BOOL CDSP::SetParam(int nType, int nChannel, int nValue)
 	return TRUE;
 }
 
-BOOL CDSP::SetParamToDSP(INT nDevice)
+BOOL CDSP::SetParamToDSP(int nDevice)
 {
-	PPARAMPACK pPack;
-	PDWORD pNum;
-	DWORD dwPackSize;
-	DWORD dwRtn;
+    size_t nQueueSize = m_pPack[nDevice].param.size();
+    if ( nQueueSize == 0 )
+    {
+        return TRUE;
+    }
 
+	DWORD dwRtn;
 	TVT_AP_SET stApSet; //heliang fix
 
 	//判断dsp程序有没有提取上次设定的参数。
 	stApSet.dwAddress = PCI_VIDEO_MEMADDR_SIZE;
 	ControlDriver(nDevice,
 			IOCTL_GET_DSP_PARAM,
-			&stApSet,
-			sizeof(stApSet),
-			&stApSet,
-			sizeof(stApSet),
+			&stApSet, sizeof(stApSet),
+			&stApSet, sizeof(stApSet),
 			&dwRtn);
 	if(stApSet.dwValue != 0)	//如果没有则取消当次设定。
 	{
 		return TRUE;
 	}
 
-	m_pPack[nDevice].CS.Lock();
+    BYTE szParamData[MAX_PARAMDATA_SIZE] = {0}; 
+    PDWORD pNum = (PDWORD)&szParamData;
+    *pNum = nQueueSize>30 ? 30:nQueueSize;
+    PPARAMPACK pPack = (PPARAMPACK)(pNum + 1);
+    {
+        AutoLockAndUnlock(m_pPack[nDevice].CS);
+        for (int i = 0; i < *pNum; i++)
+        {
+            pPack[i] = m_pPack[nDevice].param.front();
+            m_pPack[nDevice].param.pop_front();
+        }
+    }
 
-	dwPackSize = m_pPack[nDevice].param.size();
-	if (dwPackSize != 0)
-	{
-        BYTE szParamData[MAX_PARAMDATA_SIZE] = {0};
-		pNum = (PDWORD)&szParamData[nDevice];
-		pPack = (PPARAMPACK)(&szParamData[nDevice] + sizeof(DWORD));
-
-		if (dwPackSize > 30)
-			dwPackSize = 30;
-		*pNum = dwPackSize;
-		
-		for (int i = 0; i < dwPackSize; i++)
-		{
-			pPack[i] = m_pPack[nDevice].param.front();
-			m_pPack[nDevice].param.pop_front();
-		}
-
-		ControlDriver(nDevice,
-				IOCTL_SET_DSP_MULT_PARAM,
-				szParamData,
-				MAX_PARAMDATA_SIZE,
-				NULL,
-				0,
-				&dwRtn);
-	}
-
-	m_pPack[nDevice].CS.Unlock();
-
-	return TRUE;
+	return ControlDriver(
+            nDevice,
+			IOCTL_SET_DSP_MULT_PARAM,
+			szParamData, MAX_PARAMDATA_SIZE,
+			NULL, 0,
+			&dwRtn);
 }
 
 void CDSP::CheckVideoLoss(DWORD *pStatus, DWORD dwLen)
@@ -1753,5 +1767,6 @@ DWORD CDSP::NetFrameRateInc(int inc)
 
 	return RefreshNetFrameRate();
 }
+
 
 // end of file  old -> 2114

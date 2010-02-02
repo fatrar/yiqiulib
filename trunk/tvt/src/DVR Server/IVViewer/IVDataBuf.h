@@ -49,6 +49,16 @@ public:
         const WPG_Target* pData,
         size_t nLen );
 
+    // bState=true显示目标和路径，否则隐藏
+    virtual BOOL ShowObjTrace(
+        int nChannelID,
+        bool bState);
+
+    // 得到目标和路径是否正在显示
+    virtual BOOL GetObjTraceState(
+        int nChannelID,
+        bool& bState);
+
     // IIVDataSaver
 public:
     // 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
