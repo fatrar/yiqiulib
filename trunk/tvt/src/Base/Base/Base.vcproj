@@ -52,12 +52,9 @@
 				AdditionalIncludeDirectories=".\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BASE_EXPORTS"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -146,7 +143,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BASE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -231,6 +228,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\Src\StringUtil.cpp"
+				>
+			</File>
 			<Filter
 				Name="TransformUtil"
 				>
@@ -249,7 +250,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Include\ParseString.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\StlHelper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\StringHelp.h"
 				>
 			</File>
 		</Filter>
