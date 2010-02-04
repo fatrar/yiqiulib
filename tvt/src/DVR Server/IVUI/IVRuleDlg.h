@@ -21,4 +21,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
     CTreeCtrl m_CameraTree;
+    virtual BOOL OnInitDialog();
 };

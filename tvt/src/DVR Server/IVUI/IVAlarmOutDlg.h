@@ -16,6 +16,9 @@ public:
 // Dialog Data
 	enum { IDD = IDD_IVALARMOUT };
 
+public:
+    BOOL Init(CWnd* pWnd, const CRect& rect);
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -29,4 +32,5 @@ private:
     CComboBox m_AlarmOutHoldTimeComb;
     CButton m_AlarmCheck[ALARM_CHECK_NUM];
     CTreeCtrl m_CameraTree;
+    virtual BOOL OnInitDialog();
 };
