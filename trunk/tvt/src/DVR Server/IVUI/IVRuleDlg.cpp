@@ -32,3 +32,13 @@ END_MESSAGE_MAP()
 
 
 // CIVRuleDlg message handlers
+
+BOOL CIVRuleDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // TODO:  Add extra initialization here
+
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // EXCEPTION: OCX Property Pages should return FALSE
+}

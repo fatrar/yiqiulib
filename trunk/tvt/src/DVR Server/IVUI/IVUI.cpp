@@ -6,17 +6,13 @@
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
 //
-//	Note!
-//
-//		If this DLL is dynamically linked against the MFC
-//		DLLs, any functions exported from this DLL which
-//		call into MFC must have the AFX_MANAGE_STATE macro
-//		added at the very beginning of the function.
+//TODO: If this DLL is dynamically linked against the MFC DLLs,
+//		any functions exported from this DLL which call into
+//		MFC must have the AFX_MANAGE_STATE macro added at the
+//		very beginning of the function.
 //
 //		For example:
 //
@@ -37,17 +33,13 @@ static char THIS_FILE[] = __FILE__;
 //		details.
 //
 
-/////////////////////////////////////////////////////////////////////////////
+
 // CIVUIApp
 
 BEGIN_MESSAGE_MAP(CIVUIApp, CWinApp)
-	//{{AFX_MSG_MAP(CIVUIApp)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code!
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
+
 // CIVUIApp construction
 
 CIVUIApp::CIVUIApp()
@@ -56,7 +48,17 @@ CIVUIApp::CIVUIApp()
 	// Place all significant initialization in InitInstance
 }
 
-/////////////////////////////////////////////////////////////////////////////
+
 // The one and only CIVUIApp object
 
 CIVUIApp theApp;
+
+
+// CIVUIApp initialization
+
+BOOL CIVUIApp::InitInstance()
+{
+	CWinApp::InitInstance();
+
+	return TRUE;
+}

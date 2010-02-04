@@ -32,3 +32,19 @@ END_MESSAGE_MAP()
 
 
 // CIVSchuduleDlg message handlers
+
+BOOL CIVSchuduleDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // TODO:  Add extra initialization here
+
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& rect )
+{
+     Create(CIVSchuduleDlg::IDD, pWnd);
+     return TRUE;
+}

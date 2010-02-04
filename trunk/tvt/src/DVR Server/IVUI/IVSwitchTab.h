@@ -34,4 +34,9 @@ private:
     /*CButton m_RuleTabBt;
     CButton m_AlarmOutTabBt;
     CButton m_SchuduleTabBt;*/
+
+    CIVRuleDlg m_IVRuleDlg;
+    CIVSchuduleDlg m_IVSchuduleDlg;
+    CIVAlarmOutDlg m_IVAlarmOutDlg;
+    virtual BOOL OnInitDialog();
 };

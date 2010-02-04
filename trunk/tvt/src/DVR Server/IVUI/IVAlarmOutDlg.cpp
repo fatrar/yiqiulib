@@ -37,3 +37,19 @@ END_MESSAGE_MAP()
 
 
 // CIVAlarmOutDlg message handlers
+
+BOOL CIVAlarmOutDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // TODO:  Add extra initialization here
+
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+BOOL CIVAlarmOutDlg::Init( CWnd* pWnd, const CRect& rect )
+{
+    Create(CIVAlarmOutDlg::IDD, pWnd);
+    return TRUE;
+}
