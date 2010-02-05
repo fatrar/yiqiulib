@@ -16,57 +16,40 @@
 #include "Overlay.h"	// Added by ClassView
 #include "vfw.h"
 #include ".\devicecontrol\devicecontrol.h"
-#include "CodecMgr.h"
+//#include "CodecMgr.h"
 #include "TextStatic.h"
+
+#include "IVUIInterface.h"
 
 class CDirectDraw;
 class CQCDlg : public CDialog
 {
 public:
-	static PBYTE m_pDecodedData;
-	CCodecMgr m_CodecMgr;	//
-//	COverlay m_Overlay;
-//	CTestCard m_TestCard;	//
 	CARD_INFOR m_card_infor;
-	CCodecMgr* m_CodecMgrH_Rec;//zld 2009/4/27 4408
-	CCodecMgr* m_CodecMgrH_Net;//zld 2009/4/27 4408
-	static PBYTE m_pDecodedData_Rec; //zld 2009/4/29 4408
-	static PBYTE m_pDecodedData_Net; //zld 2009/4/29 4408
-	static int m_Vchannel_Num;//视频通道数 zld 2009/4/29 4408
-	int m_Achannel_Num;//音频通道数 zld 2009/4/29 4408
-//    int m_PreWidth;
-//    int m_Preheight;
-    int m_RECWidth;//by chenlong
-    int m_RECHeight;//by chenlong
-    int m_NetWidth;//by chenlong
-    int m_NetHeight;//by chenlong
-    BOOL m_bFresh;//by chenlong
+
+    int m_Vchannel_Num;//视频通道数 zld 2009/4/29 4408
+
 // Construction
 public:
 
 	BOOL m_bRun;
-	CString m_strUser;
 	DWORD m_dwVideoFormat;
 	CDirectDraw *m_ddraw;	//
 	DVRENUM_VIDEO_SIZE_TYPE m_video_size_type;
 	BOOL WriterConfigInfor();
 	BOOL GetConfigInfor();
 	BOOL m_bCanDoSectionTest;
-	void RefreshMainControl();
 
 	CString m_ExePath;
 	BITMAPINFOHEADER bitmapinfohead;
 	static BOOL VideoCALLBACKFUNC(FRAMEBUFSTRUCT *bufs);
 	static BOOL AudioCALLBACKFUNC(FRAMEBUFSTRUCT *bufs);
 	void InitialVar();
-	BOOL m_ChShow[16];
-	BOOL m_ChChecked[16];
+
 	void VideoChannelControl(int ch_num);
-	BOOL m_haveAlarmCard;
 	CQCDlg(CWnd* pParent = NULL);	// standard constructor
     void InitChangeVideoSize(int nID);
     int GetChannelNum(int nId);
-    void FormatCodecMgrH(int nIndex, int codecType);
     void VideoFormatChange(DWORD videoformat);
     BOOL LoadMatchLibrary(int nId);
     void LoadVideoRadio(int nBegin, int nEnd, BOOL bShow);
@@ -89,15 +72,14 @@ public:
 	BOOL	m_ch3;
 	BOOL	m_ch4;
 
-	CString	m_view_card_type;
 	int		m_nCurrentChnanel;
 	//}}AFX_DATA
 
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CQCDlg)
-	public:
+public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	//}}AFX_VIRTUAL
@@ -107,6 +89,8 @@ protected:
 	/*CDeviceManager *m_MyDSP;*/	//
 	HINSTANCE m_DSPDLL;
 	HICON m_hIcon;
+
+    CDialog* m_pIVDlg;
 
 	// Generated message map functions
 	//{{AFX_MSG(CQCDlg)
@@ -128,6 +112,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	VOID YUV420_YUV422Pack(void *pDst, void *pSrc, unsigned int nWidth, unsigned int nHeight, unsigned int nPitch,INT src420Subtype);
+    afx_msg void OnBnClickedShowIvConfig();
+    afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+
+private:
 };
 
 //{{AFX_INSERT_LOCATION}}

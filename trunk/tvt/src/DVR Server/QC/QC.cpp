@@ -57,7 +57,6 @@ BOOL CQCApp::InitInstance()
 
 	CQCDlg dlg;
 	m_pMainWnd = &dlg;
-	//dlg.m_strUser = loginDlg.m_sUser;
 	int nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
 	{

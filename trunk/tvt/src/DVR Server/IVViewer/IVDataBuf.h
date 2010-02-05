@@ -36,10 +36,9 @@ public:
 
     // IIVDataBuf
 public:
-    virtual BOOL GetData(
+    virtual TargetQueue* GetData(
         int nChannelID,
-        const FILETIME& time,
-        TargetQueue*& DataQueue );
+        const FILETIME& time );
 
     // IIVDataSender
 public:
@@ -49,15 +48,21 @@ public:
         const WPG_Target* pData,
         size_t nLen );
 
-    // bState=true显示目标和路径，否则隐藏
-    virtual BOOL ShowObjTrace(
-        int nChannelID,
-        bool bState);
+    virtual BOOL Init(
+        int nDeviceCount,
+        int nEveryDeviceChannelNum );
 
-    // 得到目标和路径是否正在显示
-    virtual BOOL GetObjTraceState(
-        int nChannelID,
-        bool& bState);
+    virtual BOOL Unit();
+
+    //// bState=true显示目标和路径，否则隐藏
+    //virtual BOOL ShowObjTrace(
+    //    int nChannelID,
+    //    bool bState);
+
+    //// 得到目标和路径是否正在显示
+    //virtual BOOL GetObjTraceState(
+    //    int nChannelID,
+    //    bool& bState);
 
     // IIVDataSaver
 public:
@@ -79,38 +84,62 @@ public:
 
 protected:
     static size_t WINAPI SaveFileThread(void* pParm);
-    size_t SaveFileLoopFun();
+    size_t SaveFileLoopFun(HANDLE h);
 
+    
+    void DoSaveFileEvent(DWORD dwChannel);
+    void DoOpenFileEvevt(DWORD dwChannel);
+    void DoCloseFileEvent(DWORD dwChannel);
+
+    int FindBuf();
 protected:
     class ChannelTarget
     {
     public:
         ChannelTarget()
         {
-            iterIndex = TargetList.end();
+            //iterIndex = TargetList.end();
         }
 
         GroupTarget* Find(const FILETIME& time);
 
         inline void PushBack(GroupTarget* pGroupTarget);
 
+        long GetTimeMaxBetween();
+
+
+        bool SaveSome();
+
     public:
         list<GroupTarget*> TargetList;
-        list<GroupTarget*>::iterator iterIndex;
+        //list<GroupTarget*>::iterator iterIndex;
         //CFile File;
+
+        list<GroupTarget*> TargetSaveList;
         string strNewFilePath;
     };
 
-    typedef map<int, ChannelTarget> AllChannelTarget;
+    //typedef map<int, ChannelTarget> AllChannelTarget;
+    typedef ChannelTarget* AllChannelTarget;
 
     AllChannelTarget m_TargetMap;
     CriticalSection m_cs;
 
    
     HANDLE m_Thread;
-    HANDLE m_Event[3]; // Open/close File + 
+    size_t m_nThreadID;
+
+    HANDLE* m_Event; // Save File, Open/close File +
+    int m_nDeviceCount;
+    int m_nEveryDeviceChannelNum;
+    BOOL m_IsInit;
 
     int m_nPreAlarmTime;
+
+protected:
+    TargetQueue* m_pTargetBuf;
+    WORD m_nBufRemain;
+    WORD m_nLastPos;
 };
 
 

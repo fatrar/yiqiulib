@@ -64,11 +64,11 @@ END
 // Dialog
 //
 
-IDD_IVRULE DIALOGEX 0, 0, 424, 300
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_BORDER
+IDD_IVRULE DIALOGEX 0, 0, 424, 301
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_CLIPCHILDREN | WS_BORDER
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_RULE_CAMERA_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,8,6,110,284
+    CONTROL         "",IDC_RULE_CAMERA_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_TRACKSELECT | WS_BORDER | WS_TABSTOP,8,6,110,284
 END
 
 IDD_IVALARMOUT DIALOGEX 0, 0, 410, 288
@@ -108,7 +108,7 @@ BEGIN
     CONTROL         "Rule",IDC_RULE,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,58,22,59,27
     CONTROL         "Alarm Out",IDC_ALARMOUT,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,204,22,59,27
     CONTROL         "Schudule",IDC_SCHUDULE,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,345,22,59,27
-    GROUPBOX        "Function Select",IDC_STATIC,17,8,432,50
+    GROUPBOX        "Function Select",IDC_IV_Tab_Group,17,8,432,50
 END
 
 IDD_IVFUNCTIONSEL DIALOGEX 0, 0, 275, 190
@@ -205,7 +205,7 @@ BEGIN
     IDD_IVRULE, DIALOG
     BEGIN
         RIGHTMARGIN, 417
-        BOTTOMMARGIN, 299
+        BOTTOMMARGIN, 300
     END
 
     IDD_IVALARMOUT, DIALOG
@@ -339,6 +339,65 @@ END
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 #pragma code_page(1252)
 #endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_Camera_Menu MENU 
+BEGIN
+    POPUP "Rule"
+    BEGIN
+        MENUITEM "New Rule",                    ID_RULE_NEWRULE
+        MENUITEM SEPARATOR
+        MENUITEM "Enable All Rule",             ID_RULE_ENABLEALLRULE
+        MENUITEM "Disable All Rule",            ID_RULE_DISABLEALLRULE
+        MENUITEM SEPARATOR
+        MENUITEM "Use",                         ID_RULE_USE
+        MENUITEM SEPARATOR
+        MENUITEM "Show Object",                 ID_RULE_SHOWOBJECT
+        MENUITEM "Show Trace",                  ID_RULE_SHOWTRACE
+        MENUITEM "Show Obj&&Trace",             ID_RULE_SHOWOBJTRACE
+    END
+    MENUITEM "Schudule",                    0
+    MENUITEM "AlarmOut",                    0
+END
+
+IDR_Rule_Menu MENU 
+BEGIN
+    POPUP "Rule"
+    BEGIN
+        MENUITEM "Delete Rule",                 ID_RULE_DELETERULE
+        MENUITEM "Edit Rule",                   ID_RULE_EDITRULE
+        MENUITEM SEPARATOR
+        MENUITEM "Rename Rule",                 ID_RULE_RENAMERULE
+        MENUITEM SEPARATOR
+        MENUITEM "Enable Rule",                 ID_RULE_ENABLERULE
+        MENUITEM "Disable Rule",                ID_RULE_DISABLERULE
+    END
+    POPUP "Schudule"
+    BEGIN
+        MENUITEM "Full",                        ID_SCHUDULE_FULL
+        MENUITEM "Empty",                       ID_SCHUDULE_EMPTY
+        MENUITEM SEPARATOR
+        MENUITEM "Copy",                        ID_SCHUDULE_COPY
+        MENUITEM "Paste",                       ID_SCHUDULE_PASTE
+        MENUITEM SEPARATOR
+        MENUITEM "Use To All",                  ID_SCHUDULE_USETOALL
+    END
+    POPUP "Schudule"
+    BEGIN
+        MENUITEM "Full",                        ID_SCHUDULE_FULL
+        MENUITEM "Empty",                       ID_SCHUDULE_EMPTY
+        MENUITEM SEPARATOR
+        MENUITEM "Copy",                        ID_SCHUDULE_COPY
+        MENUITEM "Paste",                       ID_SCHUDULE_PASTE
+        MENUITEM SEPARATOR
+        MENUITEM "Use To All",                  ID_SCHUDULE_USETOALL
+    END
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

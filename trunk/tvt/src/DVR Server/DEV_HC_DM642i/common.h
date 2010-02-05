@@ -145,8 +145,8 @@ typedef struct _TVT_AP_SET{
 
 typedef struct _TVT_PREV_VBI
 {
-	unsigned char byInvalid;//status of this buff 
-	unsigned char byVideoFormat;//1     	:422,2:411,3:420
+	unsigned char byInvalid;       // status of this buff 
+	unsigned char byVideoFormat;   // 1:422,2:411,3:420
 	unsigned short  wStride;//
 	unsigned int dwWidth;//width
 	unsigned int dwHeight;//height

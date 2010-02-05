@@ -34,7 +34,15 @@ public :
 	HANDLE m_OverlayUpdate;
 	static DWORD WINAPI TimeUpdateOverlay(LPVOID lpParameter);
 
-	void ShowDSP(long lIndex, BYTE *pBuf, int nChanNum, DWORD format,INT src420Subtype=0);//djx 2008/7/22 4108
+	void ShowDSP(
+        const CRect& rect,
+        const FILETIME& time,
+        long lIndex, 
+        BYTE *pBuf,
+        int nChanNum,
+        DWORD format,
+        INT src420Subtype=0);//djx 2008/7/22 4108
+
 	void FreeDSPBack();
 	void InitDSPBack(DWORD dwFormat, int nChanNum);
 	void InitDSPD1Back(DWORD dwFormat, int nChanNum);//djx 2008/7/22 4108

@@ -343,13 +343,13 @@ BOOL CDirectDraw::IniDirectDraw()
         if(FAILED(hr))
         {
 			AfxMessageBox("DirectDrawCreate Error!");
-			return hr == S_OK;
+			return FALSE;
         }
     }
 	hr = m_pDD7->SetCooperativeLevel(m_hWnd, DDSCL_NORMAL);
     if(FAILED(hr))
     {
-        return hr == S_OK;
+        return FALSE;
     }
 	
     DDSURFACEDESC2 ddsd;
@@ -360,7 +360,6 @@ BOOL CDirectDraw::IniDirectDraw()
     ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;// | DDSCAPS_VIDEOMEMORY;
 	
     m_pDD7->CreateSurface(&ddsd, &m_pddsPrimary, NULL);
-	
 	hr = m_pDD7->CreateClipper(0, &m_lpClipper, NULL);
 	if (hr != DD_OK )
 	{
@@ -444,12 +443,12 @@ void CDirectDraw::FreeDirectDraw()
 		WaitForSingleObject(m_OverlayUpdate,100);
 		DWORD ExitCode;
 		if (GetExitCodeThread(m_OverlayUpdate, &ExitCode))
+		{
+			if (ExitCode == STILL_ACTIVE)
 			{
-				if (ExitCode == STILL_ACTIVE)
-				{
-					TerminateThread(m_OverlayUpdate, 1);
-				}
+				TerminateThread(m_OverlayUpdate, 1);
 			}
+		}
 		CloseHandle(m_OverlayUpdate);
 		m_OverlayUpdate=NULL;
 	}
@@ -641,8 +640,10 @@ void CDirectDraw::DrawBack()
 	HDC hDc;
 	
 	hDc = GetDC(m_hWnd);
-	HBRUSH hBr = CreateSolidBrush(RGB(128, 128, 128)); 
-	::FillRect(hDc, channel_rect[16], hBr);
+	HBRUSH hBr = CreateSolidBrush(RGB(128, 128, 128));
+    
+    ::FillRect(hDc, USB_RECT[4], hBr);
+	//::FillRect(hDc, channel_rect[16], hBr);
 	DeleteObject(hBr);
 	ReleaseDC(m_hWnd,hDc);
 }
@@ -922,7 +923,10 @@ void CDirectDraw::FreeDSPBack()
 	}
 }
 																//djx 2008/7/22 4108
-void CDirectDraw::ShowDSP(long lIndex, BYTE *pBuf, int nChanNum, DWORD format,INT src420Subtype)
+void CDirectDraw::ShowDSP(
+    const CRect& rect,
+    const FILETIME& time,
+    long lIndex, BYTE *pBuf, int nChanNum, DWORD format,INT src420Subtype)
 {
 	DDSURFACEDESC2 ddsd;
 	memset(&ddsd, 0, sizeof(ddsd));
@@ -973,13 +977,23 @@ void CDirectDraw::ShowDSP(long lIndex, BYTE *pBuf, int nChanNum, DWORD format,IN
 
 	if (nChanNum == 4)
 	{
-		m_pddsPrimary->Blt(&USB_RECT[lIndex], m_pDDSBackYUY2[lIndex], NULL, DDBLT_ASYNC, NULL);
-	}
+        CPoint p(rect.left, rect.top);
+        CRect R = USB_RECT[lIndex] + p;
+		m_pddsPrimary->Blt(&R, m_pDDSBackYUY2[lIndex], NULL, DDBLT_ASYNC, NULL);
+
+        // 显示智能矩形框和路径
+        HDC dc;
+        m_pddsPrimary->GetDC(&dc);
+
+        IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
+        pViewer->Paint(lIndex, dc, R, time);
+        
+        m_pddsPrimary->ReleaseDC(dc);	
+    }
 	else
 	{
 		m_pddsPrimary->Blt(&channel_rect[lIndex], m_pDDSBackYUY2[lIndex], NULL, DDBLT_ASYNC, NULL);
 	}
-	
 }
 
 DWORD WINAPI CDirectDraw::TimeUpdateOverlay(LPVOID lpParameter)

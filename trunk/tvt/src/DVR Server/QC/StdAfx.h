@@ -25,7 +25,16 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 
+#include "..\devicecontrol\IIVDevice.h"
+#include "..\IVViewer\Include\IVViewer.h"
+
+
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_STDAFX_H__FEAC91D6_3417_4B52_BB16_BE700F2CD3E1__INCLUDED_)
+
+
+
+

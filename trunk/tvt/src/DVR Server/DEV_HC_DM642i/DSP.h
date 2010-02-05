@@ -291,6 +291,10 @@ private:
     CCriticalSection m_CfgMapCS[MAX_DEVICE_NUM];	
 
     BOOL m_ShowSnapShot;
+
+
+    // just test
+    SYSTIME  m_prevVideoTime;
 };
 
 

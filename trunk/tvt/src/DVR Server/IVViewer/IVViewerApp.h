@@ -8,33 +8,33 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifndef __AFXWIN_H__
-	#error include 'stdafx.h' before including this file for PCH
-#endif
-
-#include "resource.h"		// main symbols
-
-/////////////////////////////////////////////////////////////////////////////
-// CIVViewerApp
-// See IVViewer.cpp for the implementation of this class
+//#ifndef __AFXWIN_H__
+//	#error include 'stdafx.h' before including this file for PCH
+//#endif
 //
-
-class CIVViewerApp : public CWinApp
-{
-public:
-	CIVViewerApp();
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CIVViewerApp)
-	//}}AFX_VIRTUAL
-
-	//{{AFX_MSG(CIVViewerApp)
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-};
+//#include "resource.h"		// main symbols
+//
+///////////////////////////////////////////////////////////////////////////////
+//// CIVViewerApp
+//// See IVViewer.cpp for the implementation of this class
+////
+//
+//class CIVViewerApp : public CWinApp
+//{
+//public:
+//	CIVViewerApp();
+//
+//// Overrides
+//	// ClassWizard generated virtual function overrides
+//	//{{AFX_VIRTUAL(CIVViewerApp)
+//	//}}AFX_VIRTUAL
+//
+//	//{{AFX_MSG(CIVViewerApp)
+//		// NOTE - the ClassWizard will add and remove member functions here.
+//		//    DO NOT EDIT what you see in these blocks of generated code !
+//	//}}AFX_MSG
+//	DECLARE_MESSAGE_MAP()
+//};
 
 
 /////////////////////////////////////////////////////////////////////////////
