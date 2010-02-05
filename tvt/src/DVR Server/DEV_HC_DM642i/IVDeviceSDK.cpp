@@ -119,7 +119,8 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     unsigned int& dwNumberOfTargets = pIVVBI->dwNumberOfTargets;
     unsigned int& dwNumberOfEvents = pIVVBI->dwNumberOfEvents;
     
-    LONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
+    LONGLONG nTime = ChangeTime(m_prevVideoTime);
+    //LONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
     FILETIME* pTime = (FILETIME*)&nTime;
     
     // 1. Do Obj&Trace
@@ -536,6 +537,7 @@ void CDSP::SetIVDataCallBack(
     IIVDataSender* pIVDataSender )
 {
      m_pIVDataSender = pIVDataSender;
+     m_pIVDataSender->Init(m_nDeviceNum, CHANNEL_PER_DEVICE);
 }
 
 

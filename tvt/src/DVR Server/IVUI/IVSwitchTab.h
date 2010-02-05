@@ -20,15 +20,16 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-	DECLARE_MESSAGE_MAP()
-public:   
+    virtual BOOL OnInitDialog();
     afx_msg void ClickTabBt(UINT ID/*, WPARAM w, LPARAM l*/);
+	DECLARE_MESSAGE_MAP()
 
+public:   
     enum
     {
         TAB_BT_NUM = 3,
     };
+
 private:
     CButton m_TabBt[TAB_BT_NUM];
     /*CButton m_RuleTabBt;
@@ -38,5 +39,8 @@ private:
     CIVRuleDlg m_IVRuleDlg;
     CIVSchuduleDlg m_IVSchuduleDlg;
     CIVAlarmOutDlg m_IVAlarmOutDlg;
-    virtual BOOL OnInitDialog();
+    
+private:
+    CStatic m_IVTabGroup;
+    afx_msg void OnBnClickedRule();
 };

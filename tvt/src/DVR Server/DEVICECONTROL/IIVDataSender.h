@@ -21,6 +21,10 @@
 
 #include "WPG_EventOccurrence.h"
 
+#ifndef TARGET_MAX_NUM
+    #define TARGET_MAX_NUM	50
+#endif
+
 
 struct IIVDataSender
 {
@@ -30,6 +34,12 @@ struct IIVDataSender
         const FILETIME& time,
         const WPG_Target* pData,
         size_t nLen ) = 0;
+
+    virtual BOOL Init(
+        int nDeviceCount,
+        int nEveryDeviceChannelNum )=0;
+
+    virtual BOOL Unit()=0;
 };
 
 

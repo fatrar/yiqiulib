@@ -33,6 +33,7 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CIVAlarmOutDlg, CDialog)
+    ON_NOTIFY(NM_RCLICK, IDC_ALARMOUT_CAMERA_TREE, &CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree)
 END_MESSAGE_MAP()
 
 
@@ -50,6 +51,28 @@ BOOL CIVAlarmOutDlg::OnInitDialog()
 
 BOOL CIVAlarmOutDlg::Init( CWnd* pWnd, const CRect& rect )
 {
-    Create(CIVAlarmOutDlg::IDD, pWnd);
+    Create(IDD, pWnd);
+    InitCameraTree(m_CameraTree);
     return TRUE;
+}
+
+void CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    PopUpCameraMemu(m_CameraTree, 0, this, this);
+}
+
+void CIVAlarmOutDlg::OnUpdateMemu( CMenu* pMenu,WhichMemu Which )
+{
+    switch (Which)
+    {
+    case Root:
+        break;
+    case Camera:
+        break;
+    case Rule:
+        break;
+    default:
+        break;
+    }
 }

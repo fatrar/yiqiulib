@@ -40,23 +40,23 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CIVViewerApp
 
-BEGIN_MESSAGE_MAP(CIVViewerApp, CWinApp)
-	//{{AFX_MSG_MAP(CIVViewerApp)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code!
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CIVViewerApp construction
-
-CIVViewerApp::CIVViewerApp()
-{
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// The one and only CIVViewerApp object
-
-CIVViewerApp theApp;
+//BEGIN_MESSAGE_MAP(CIVViewerApp, CWinApp)
+//	//{{AFX_MSG_MAP(CIVViewerApp)
+//		// NOTE - the ClassWizard will add and remove mapping macros here.
+//		//    DO NOT EDIT what you see in these blocks of generated code!
+//	//}}AFX_MSG_MAP
+//END_MESSAGE_MAP()
+//
+///////////////////////////////////////////////////////////////////////////////
+//// CIVViewerApp construction
+//
+//CIVViewerApp::CIVViewerApp()
+//{
+//	// TODO: add construction code here,
+//	// Place all significant initialization in InitInstance
+//}
+//
+///////////////////////////////////////////////////////////////////////////////
+//// The one and only CIVViewerApp object
+//
+//CIVViewerApp theApp;

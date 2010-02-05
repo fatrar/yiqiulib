@@ -553,24 +553,27 @@ void CDSP::DestroyBuffer()
 DWORD WINAPI CDSP::OnThreadAud(PVOID pParam)
 {
     ThreadParm* pThreadParm = (ThreadParm*)pParam;
-	pThreadParm->pthis->ProcessAud(pThreadParm->dwDeviceID);
+    ThreadParm p = *pThreadParm;
     delete pThreadParm;
+    p.pthis->ProcessAud(p.dwDeviceID);
 	return 0;
 }
 
 DWORD WINAPI CDSP::OnThreadPrv(PVOID pParam)
 {
 	ThreadParm* pThreadParm = (ThreadParm*)pParam;
-	pThreadParm->pthis->ProcessPrv(pThreadParm->dwDeviceID);
+    ThreadParm p = *pThreadParm;
     delete pThreadParm;
+	p.pthis->ProcessPrv(p.dwDeviceID);  
 	return 0;
 }
 
 DWORD WINAPI CDSP::OnThreadCompressStrm(PVOID pParam)
 {
 	ThreadParm* pThreadParm = (ThreadParm*)pParam;
-	pThreadParm->pthis->ProcessCompressStreams(pThreadParm->dwDeviceID);
-	delete pThreadParm;
+    ThreadParm p = *pThreadParm;
+    delete pThreadParm;
+    p.pthis->ProcessCompressStreams(p.dwDeviceID);
     return 0;
 }
 
@@ -617,6 +620,9 @@ void CDSP::GetPrvData(int nDevice)
     DWORD dwReturn;
     while (TRUE)	//取出Driver层所有BUF，避免BUF阻塞
     {
+        SetParamToDSP(nDevice);
+        SetIVParamToDSP(nDevice);
+
         BOOL bRc = ControlDriver(
             nDevice,
             IOCTL_VIDEO_GET_DATA_INFO,
@@ -630,14 +636,17 @@ void CDSP::GetPrvData(int nDevice)
             break;
         }
 
-        // 先处理智能的数据，因为live数据模式如果是copy模式，马上会释放所有引用
-        DoIVData(nDevice, pData);
+
+        PTVT_PREV_VBI pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE );        // 先处理智能的数据，因为live数据模式如果是copy模式，马上会释放所有引用
+        if ( pVBI->byAIProcess )
+        {
+             m_prevVideoTime = pVBI->prevVideoTime;
+             DoIVData(nDevice, pData);
+        }
+       
 
         pStatus = (PTVT_CAP_STATUS)pData;
         
-        SetParamToDSP(nDevice);
-        SetIVParamToDSP(nDevice);
-
         pStatus->dwReserve4 = 4;	//一次处理整块卡4通道数据
         for (int nChannel = 0; nChannel < CHANNEL_PER_DEVICE; nChannel++)
         {
@@ -656,7 +665,7 @@ void CDSP::GetOneChannelPreData(
 
     pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel);
     
-    //SetSignal(nDevice * CHANNEL_PER_DEVICE + nChannel, pVBI->videoLoss);
+    SetSignal(nDevice * CHANNEL_PER_DEVICE + nChannel, pVBI->videoLoss);
 
     int nIndex;
     // if channel is close or video loss or is valid
@@ -679,6 +688,9 @@ void CDSP::GetOneChannelPreData(
     m_pPrvBuf[nDevice][nIndex].pBuf = pBuf;
     m_pDrvHeadOfPrvBuf[nDevice][nIndex] = pStatus;
 #endif // PRECOPY
+    //m_pPrvBuf[nDevice][nIndex].localTime = pVBI->;
+    m_pPrvBuf[nDevice][nIndex].localTime = ChangeTime(pVBI->prevVideoTime);
+    m_pPrvBuf[nDevice][nIndex].FrameTime = m_pPrvBuf[nDevice][nIndex].localTime;
     m_pPrvBuf[nDevice][nIndex].ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
     m_pPrvBuf[nDevice][nIndex].BufLen = m_dwPrvBufSize;
     m_pPrvBuf[nDevice][nIndex].nStreamID = VIDEO_STREAM_PREVIEW;
@@ -1297,8 +1309,7 @@ BOOL CDSP::CaptureStop()
 		}
 	}
 
-   
-
+    m_pIVDataSender->Unit();
 	return bRc;
 }
 
@@ -1338,6 +1349,9 @@ BOOL CDSP::CaptureStart()
 		//现场压缩流
 		SetParam(PT_PCI_SET_ENCODE_IINTERVAL, i, 100);
 	}
+
+    Use(0, true);
+
 	return TRUE;
 }
 

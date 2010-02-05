@@ -22,7 +22,8 @@
 
 
 class CIVLiveViewer :
-    public IIVViewer
+    public CBaseIVViewer,
+    public Singleton<CIVLiveViewer>
 {
 public:
     CIVLiveViewer(void);
@@ -30,22 +31,15 @@ public:
 
     // IIVViewer
 public:
-    // 显示目标矩形框和路径时的回调，
-    // 传入DC和正在播放的数据帧的时间
-    virtual BOOL Paint(
-        int nChannelID, 
-        const HDC dc,
-        const RECT& rect,
+    virtual TargetQueue* GetIVData(
+        int nChannelID,
         const FILETIME& time);
 
 public:
     static IIVDataBuf* s_pIVDataBuf;
 
 private:
-    typedef deque<WPG_PointF> PointList;
-    typedef map<size_t, PointList> ChannelPoint;
-    typedef map<int, ChannelPoint> AllChannelPoint;
-    AllChannelPoint m_PointRecord;
+   
 };
 
 

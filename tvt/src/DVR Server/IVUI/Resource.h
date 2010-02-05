@@ -43,9 +43,11 @@
 #define IDC_CHECK2                      1012
 #define IDC_LIST1                       1012
 #define IDS_Illegal_Parking             1012
+#define IDR_Camera_Menu                 1012
 #define IDC_CHECK3                      1013
 #define IDS_Stage_Change                1013
 #define IDC_RULENAME_EDIT               1013
+#define IDR_Rule_Menu                   1013
 #define IDC_CHECK4                      1014
 #define IDS_TYPE                        1014
 #define IDS_Type                        1014
@@ -108,6 +110,7 @@
 #define IDS_Event                       1040
 #define IDC_Multiplier                  1040
 #define IDS_Event_Light_on              1041
+#define IDC_IV_Tab_Group                1041
 #define IDS_Event_Light_off             1042
 #define IDS_Event_Montion               1043
 #define IDS_Event_Other                 1044
@@ -124,14 +127,33 @@
 #define IDS_Filter_Head_State           1055
 #define IDS_Filter_On                   1056
 #define IDS_Filter_Off                  1057
+#define ID__NEW                         32771
+#define ID_RULE_ENABLEALLRULE           32772
+#define ID_RULE_DISABLEALLRULE          32773
+#define ID_RULE_USE                     32774
+#define ID_RULE_SHOWOBJECT              32775
+#define ID_RULE_SHOWTRACE               32776
+#define ID_RULE_SHOWOBJTRACE            32777
+#define ID_RULE_DELETERULE              32778
+#define ID_RULE_EDITRULE                32779
+#define ID_RULE_RENAMERULE              32780
+#define ID_RULE_ENABLERULE              32781
+#define ID_RULE_DISABLERULE             32782
+#define ID_SCHUDULE_FULL                32783
+#define ID_SCHUDULE_EMPTY               32784
+#define ID_SCHUDULE_COPY                32785
+#define ID_SCHUDULE_PASTE               32786
+#define ID_SCHUDULE_USETOALL            32787
+#define ID_NEW                          32788
+#define ID_RULE_NEWRULE                 32789
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1012
-#define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1041
+#define _APS_NEXT_RESOURCE_VALUE        1014
+#define _APS_NEXT_COMMAND_VALUE         32790
+#define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif

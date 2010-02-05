@@ -28,6 +28,7 @@ void CIVSchuduleDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CIVSchuduleDlg, CDialog)
+    ON_NOTIFY(NM_RCLICK, IDC_SCHUDULE_CAMERA_TREE, &CIVSchuduleDlg::OnNMRclickSchuduleCameraTree)
 END_MESSAGE_MAP()
 
 
@@ -45,6 +46,28 @@ BOOL CIVSchuduleDlg::OnInitDialog()
 
 BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& rect )
 {
-     Create(CIVSchuduleDlg::IDD, pWnd);
-     return TRUE;
+    Create(CIVSchuduleDlg::IDD, pWnd);
+    InitCameraTree(m_CameraTree);
+    return TRUE;
+}
+
+void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    PopUpCameraMemu(m_CameraTree, 0, this, this);
+}
+
+void CIVSchuduleDlg::OnUpdateMemu( CMenu* pMenu,WhichMemu Which )
+{
+    switch (Which)
+    {
+    case Root:
+        break;
+    case Camera:
+        break;
+    case Rule:
+        break;
+    default:
+        break;
+    }
 }

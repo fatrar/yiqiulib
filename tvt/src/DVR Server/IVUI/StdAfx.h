@@ -55,9 +55,10 @@
 
 #include "IVUIComDef.h"
 
+
 #include "IVRuleDlg.h"
 #include "IVAlarmOutDlg.h"
 #include "IVSchuduleDlg.h"
-
+#include "IVUICommon.h"
 
 #include ".\Include\IVUIInterface.h"
