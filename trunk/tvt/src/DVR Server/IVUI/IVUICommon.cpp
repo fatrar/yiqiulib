@@ -29,9 +29,19 @@
 
 HTREEITEM InitCameraTree(
     CTreeCtrl& CameraTree,
-    IInitCameraTree* pCameraTreeInitor )
+    IInitCameraTree* pCameraTreeInitor,
+    CStatic& Group,
+    UINT GroupStringID,
+    int nHeight )
 {
     // Set Attribute
+    Group.MoveWindow(
+        TreeGroup_Start_X, TreeGroup_Start_Y, TreeGroup_Width,
+        nHeight - 2*TreeGroup_Start_Y );
+    CameraTree.MoveWindow(
+        Tree_Start_X, Tree_Start_Y, Tree_Width,
+        nHeight-Tree_Start_Y-Tree_Between_Group_Y);
+
     CameraTree.DeleteAllItems();
     CameraTree.SetItemHeight(30);
     

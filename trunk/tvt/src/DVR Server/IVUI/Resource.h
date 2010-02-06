@@ -118,8 +118,12 @@
 #define IDS_Event_Montion               1043
 #define IDC_Erase_CHECK                 1043
 #define IDS_Event_Other                 1044
+#define IDC_Rule_Group                  1044
 #define IDS_Event_Anything              1045
+#define IDC_Schudule_Group              1045
 #define IDS_Filter_MaxObj               1046
+#define IDC_AlarmOut_Group              1046
+#define IDC_AlarmOut_Group2             1046
 #define IDS_Filter_MinObj               1047
 #define IDS_Filter_Size_Change          1048
 #define IDS_Filter_Shape_Direction      1049
@@ -164,7 +168,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1025
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1044
+#define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif

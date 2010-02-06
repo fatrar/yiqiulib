@@ -49,4 +49,6 @@ private:
     CButton m_AlarmCheck[ALARM_CHECK_NUM];
     CTreeCtrl m_CameraTree;
   
+private:
+    CStatic m_AlarmOutGroup;
 };
