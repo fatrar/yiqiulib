@@ -1,6 +1,7 @@
 #pragma once
 #include "afxcmn.h"
 #include "IVUICommon.h"
+#include "afxwin.h"
 
 
 // CIVRuleDlg dialog
@@ -48,4 +49,5 @@ protected:
 
 private:
     CTreeCtrl m_CameraTree;
+    CStatic m_RuleGroup;
 };

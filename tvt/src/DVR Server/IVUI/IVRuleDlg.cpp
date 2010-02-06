@@ -24,6 +24,7 @@ void CIVRuleDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_RULE_CAMERA_TREE, m_CameraTree);
+    DDX_Control(pDX, IDC_Rule_Group, m_RuleGroup);
 }
 
 
@@ -55,7 +56,7 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
 {
     Create(IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this);
+    InitCameraTree(m_CameraTree, this, m_RuleGroup, 0,Rect.Height());
     return TRUE;
 }
 

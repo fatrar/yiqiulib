@@ -26,6 +26,7 @@ void CIVSchuduleDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_SCHUDULE_CAMERA_TREE, m_CameraTree);
     DDX_Control(pDX, IDC_Add_CHECK, m_AddCheck);
     DDX_Control(pDX, IDC_Erase_CHECK, m_EraseCheck);
+    DDX_Control(pDX, IDC_Schudule_Group, m_SchuduleGroup);
 }
 
 
@@ -55,12 +56,12 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
     //
     Create(CIVSchuduleDlg::IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this);
+    InitCameraTree(m_CameraTree, this, m_SchuduleGroup, 0, Rect.Height());
     
     //
     // 2. Init ScheduleCtrl
     //
-    int nSchCtrlWidth = Rect.Width()-Week_Ctrl_X_Offset-Tree_Width;
+    int nSchCtrlWidth = Rect.Width()-Week_Ctrl_X_Offset-CameraCtrl_Width;
 
     int nMed = Rect.Width() - nSchCtrlWidth/2;
     m_AddCheck.MoveWindow(nMed-BT_X_Offset-BT_Width, BT_Start_Y, BT_Width, BT_Height);
@@ -74,7 +75,7 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
     int nYMove = Week_Ctrl_Between_Off+nSchCtrlHeight;
     CString strName;
     CRect TmpRect(
-        Tree_Width+Week_Ctrl_X_Offset, 
+        CameraCtrl_Width+Week_Ctrl_X_Offset, 
         BT_Start_Y*2+ BT_Height,
         nSchCtrlRight,
         BT_Start_Y*2+ BT_Height+nSchCtrlHeight );
@@ -127,6 +128,7 @@ void CIVSchuduleDlg::OnInitCameraTree(
 {
 
 }
+
 void CIVSchuduleDlg::OnBnClickedAddCheck()
 {
     if ( m_AddCheck.GetCheck() == BST_UNCHECKED )

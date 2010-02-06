@@ -74,14 +74,29 @@ struct ItemAttribute
 
 enum CameraTreeAttibute
 {
-    Tree_Start_X = 30,
-    Tree_Start_Y = 80,
-    Tree_Width   = 200,
+    TreeGroup_Start_X = 7,
+    TreeGroup_Start_Y = 7,
+    TreeGroup_Width   = 150,
+
+    Tree_Between_BT_Y = 5,
+    Tree_BT_Height = 25,
+
+    Tree_Between_Group_X = 7,
+    Tree_Between_Group_Y = 7,
+
+    Tree_Start_X = TreeGroup_Start_X + Tree_Between_Group_X,
+    Tree_Start_Y = TreeGroup_Start_Y + 2*Tree_Between_BT_Y+Tree_BT_Height,
+    Tree_Width   = TreeGroup_Width - 2*Tree_Between_Group_X,
+
+    CameraCtrl_Width = TreeGroup_Width + 2*TreeGroup_Start_X,
 };
 
 HTREEITEM InitCameraTree(
     CTreeCtrl& CameraTree, 
-    IInitCameraTree* pCameraTreeInitor);
+    IInitCameraTree* pCameraTreeInitor,
+    CStatic& Group,
+    UINT GroupStringID,
+    int nHeight );
 
 void UnitCameraTree(CTreeCtrl& CameraTree);
 

@@ -29,6 +29,7 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
         DDX_Control(pDX, IDC_CHECK1+i, m_AlarmCheck[i]);
     }
     DDX_Control(pDX, IDC_ALARMOUT_CAMERA_TREE, m_CameraTree);
+    DDX_Control(pDX, IDC_AlarmOut_Group, m_AlarmOutGroup);
 }
 
 
@@ -53,7 +54,7 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
 {
     Create(IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this);
+    InitCameraTree(m_CameraTree, this, m_AlarmOutGroup, 0, Rect.Height());
     return TRUE;
 }
 

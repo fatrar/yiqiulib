@@ -62,4 +62,6 @@ private:
     CButton m_EraseCheck;
     afx_msg void OnBnClickedAddCheck();
     afx_msg void OnBnClickedEraseCheck();
+private:
+    CStatic m_SchuduleGroup;
 };
