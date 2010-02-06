@@ -22,23 +22,37 @@
 
 #define IV_Root_Name  _T("IV")
 #define Channel_Name  _T("Ch%d")
-#define Channel_Item_Data  3721
+#define Max_Channel               4
 
 //HTREEITEM InsertItem(LPCTSTR lpszItem, int nImage, int nSelectedImage,
 //    HTREEITEM hParent = TVI_ROOT, HTREEITEM hInsertAfter = TVI_LAST
 
-HTREEITEM InitCameraTree(CTreeCtrl& CameraTree)
+HTREEITEM InitCameraTree(
+    CTreeCtrl& CameraTree,
+    IInitCameraTree* pCameraTreeInitor )
 {
+    // Set Attribute
     CameraTree.DeleteAllItems();
-
     CameraTree.SetItemHeight(30);
-    CString strCameraName;
+    
+    // Init Item
     HTREEITEM Root = CameraTree.InsertItem(IV_Root_Name);
-    for ( int i = 0; i< 4; ++i )
+    ItemAttribute* pInfo = new ItemAttribute(IUpdateMemu::Root, -1, NULL);
+    CameraTree.SetItemData(Root, (DWORD_PTR)pInfo);
+
+    CString strCameraName;
+    for ( DWORD i = 0; i< Max_Channel; ++i )
     {
         strCameraName.Format(Channel_Name, i);
         HTREEITEM CurrentItem = CameraTree.InsertItem(strCameraName, Root);
-        CameraTree.SetItemData(CurrentItem, Channel_Item_Data);
+        
+        pInfo = new ItemAttribute(IUpdateMemu::Camera, i, NULL);
+        CameraTree.SetItemData(CurrentItem, (DWORD_PTR)pInfo);
+
+        if ( pCameraTreeInitor )
+        {
+            pCameraTreeInitor->OnInitCameraTree(i, CurrentItem);
+        }
     }
 
     CameraTree.Expand(Root, TVE_EXPAND);
@@ -61,24 +75,18 @@ void PopUpCameraMemu(
         return;
     }
 
-    IUpdateMemu::WhichMemu Which;
     CameraTree.SelectItem(selDevhItem); 
-    DWORD dwData = (DWORD)CameraTree.GetItemData(selDevhItem);
+    ItemAttribute* pInfo = (ItemAttribute*)CameraTree.GetItemData(selDevhItem);
     CMenu menu; 
-    if ( dwData == Channel_Item_Data )
+    switch ( pInfo->Info.Which )
     {
+    case IUpdateMemu::Camera:
         menu.LoadMenu(IDR_Camera_Menu);
-        Which = IUpdateMemu::Camera;
-    }
-    else if (dwData==0)
-    {
-        TRACE(_T("Click Root, Pass!"));
-        return;
-    }
-    else
-    {
+    case IUpdateMemu::Rule:
         menu.LoadMenu(IDR_Rule_Menu);
-        Which = IUpdateMemu::Rule;
+    case IUpdateMemu::Root:
+    default:
+        return;
     }
     
     CMenu* pPopup = menu.GetSubMenu(nIndex); 
@@ -90,7 +98,11 @@ void PopUpCameraMemu(
 
     if ( pUpdateMemu )
     {
-        pUpdateMemu->OnUpdateMemu(pPopup, Which);
+        pUpdateMemu->OnUpdateMemu(
+            pPopup,
+            pInfo->Info.Which,
+            pInfo->Info.nChannelID,
+            pInfo->pUseData );
     }
 
     pPopup->TrackPopupMenu(
@@ -99,6 +111,32 @@ void PopUpCameraMemu(
         pWnd); 
 }
 
+static void TreeVisitDel(CTreeCtrl& tree, HTREEITEM hItem)   
+{            
+    if ( !tree.ItemHasChildren(hItem) )       
+    {
+        return;   
+    }
+
+    HTREEITEM ChildItem = tree.GetChildItem(hItem);            
+    while(ChildItem!=NULL)       
+    {   
+        ItemAttribute* pInfo = (ItemAttribute*)tree.GetItemData(ChildItem);
+        safeDelete(pInfo);
+
+        TreeVisitDel(tree, ChildItem);  //递归遍历孩子节点       
+        ChildItem = tree.GetNextItem(ChildItem, TVGN_NEXT);       
+    }
+}
+
+void UnitCameraTree( CTreeCtrl& CameraTree )
+{
+    HTREEITEM Root = CameraTree.GetRootItem();
+    ItemAttribute* pInfo = (ItemAttribute*)CameraTree.GetItemData(Root);
+    safeDelete(pInfo);
+
+    TreeVisitDel(CameraTree, Root);
+}
 
 
 

@@ -51,10 +51,11 @@ BOOL CIVRuleDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& rect )
+BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
 {
     Create(IDD, pWnd);
-    InitCameraTree(m_CameraTree);
+    MoveWindow(Rect);
+    InitCameraTree(m_CameraTree, this);
     return TRUE;
 }
 
@@ -101,17 +102,27 @@ void CIVRuleDlg::OnRuleNewrule()
 
 void CIVRuleDlg::OnUpdateMemu(
     CMenu* pMenu,
-    WhichMemu Which )
+    WhichMemu Which,
+    int nChannelID,
+    void* pData )
 {
     switch (Which)
     {
     case Root:
     	break;
     case Camera:
+
     	break;
     case Rule:
     	break;
     default:
     	break;
     }
+}
+
+void CIVRuleDlg::OnInitCameraTree( 
+    int nChannelID,
+    HTREEITEM Item )
+{
+
 }

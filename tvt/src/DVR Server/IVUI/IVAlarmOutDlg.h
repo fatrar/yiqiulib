@@ -8,7 +8,8 @@
 
 class CIVAlarmOutDlg :
     public CDialog,
-    public IUpdateMemu
+    public IUpdateMemu,
+    public IInitCameraTree
 {
 	DECLARE_DYNAMIC(CIVAlarmOutDlg)
 
@@ -20,14 +21,23 @@ public:
 	enum { IDD = IDD_IVALARMOUT };
 
 public:
-    BOOL Init(CWnd* pWnd, const CRect& rect);
+    BOOL Init(CWnd* pWnd,const CRect& Rect);
 
-    virtual void OnUpdateMemu(CMenu* pMenu,WhichMemu Which);
+protected:
+    virtual void OnUpdateMemu(
+        CMenu* pMenu,
+        WhichMemu Which,
+        int nChannelID,
+        void* pData);
+
+    virtual void OnInitCameraTree(
+        int nChannelID,
+        HTREEITEM Item );
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
-      afx_msg void OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
 	DECLARE_MESSAGE_MAP()
 
     enum
