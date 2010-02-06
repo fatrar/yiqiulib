@@ -49,10 +49,11 @@ BOOL CIVAlarmOutDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-BOOL CIVAlarmOutDlg::Init( CWnd* pWnd, const CRect& rect )
+BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
 {
     Create(IDD, pWnd);
-    InitCameraTree(m_CameraTree);
+    MoveWindow(Rect);
+    InitCameraTree(m_CameraTree, this);
     return TRUE;
 }
 
@@ -62,7 +63,11 @@ void CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResul
     PopUpCameraMemu(m_CameraTree, 0, this, this);
 }
 
-void CIVAlarmOutDlg::OnUpdateMemu( CMenu* pMenu,WhichMemu Which )
+void CIVAlarmOutDlg::OnUpdateMemu( 
+    CMenu* pMenu,
+    WhichMemu Which,
+    int nChannelID,
+    void* pData )
 {
     switch (Which)
     {
@@ -75,4 +80,11 @@ void CIVAlarmOutDlg::OnUpdateMemu( CMenu* pMenu,WhichMemu Which )
     default:
         break;
     }
+}
+
+void CIVAlarmOutDlg::OnInitCameraTree(
+    int nChannelID,
+    HTREEITEM Item )
+{
+
 }

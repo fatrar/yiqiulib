@@ -234,6 +234,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ScheduleCtrl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\StageChangeDlg.cpp"
 				>
 			</File>
@@ -316,6 +320,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ScheduleCtrl.h"
+				>
+			</File>
+			<File
 				RelativePath=".\StageChangeDlg.h"
 				>
 			</File>
@@ -334,6 +342,22 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\res\Clear.cur"
+				>
+			</File>
+			<File
+				RelativePath=".\res\cursor1.cur"
+				>
+			</File>
+			<File
+				RelativePath=".\res\cursor2.cur"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Edit.cur"
+				>
+			</File>
+			<File
 				RelativePath=".\IVUI.rc"
 				>
 			</File>
@@ -350,6 +374,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\res\0001.ANI"
+			>
+		</File>
+		<File
+			RelativePath=".\res\0002.ANI"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

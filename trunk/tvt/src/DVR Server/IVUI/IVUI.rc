@@ -99,6 +99,8 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_BORDER
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_SCHUDULE_CAMERA_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,7,4,110,247
+    CONTROL         "Add",IDC_Add_CHECK,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,187,11,39,18
+    CONTROL         "Erase",IDC_Erase_CHECK,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,267,10,39,18
 END
 
 IDD_IVTAB DIALOGEX 0, 0, 464, 338
@@ -262,6 +264,14 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR_ADD          CURSOR                  "res\\cursor1.cur"
+IDC_CURSOR_CLEAR        CURSOR                  "res\\cursor2.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -480,6 +490,13 @@ STRINGTABLE
 BEGIN
     IDS_Filter_On           "On"
     IDS_Filter_Off          "Off"
+    IDS_Schu_Week_Sun       "Sun."
+    IDS_Schu_Week_Mon       "Mon."
+    IDS_Schu_Week_Tue       "Tue."
+    IDS_Schu_Week_Wed       "Wed."
+    IDS_Schu_Week_Thu       "Thu."
+    IDS_Schu_Week_Fri       "Fri."
+    IDS_Schu_Week_Sat       "Sat."
 END
 
 #endif    // English (U.K.) resources

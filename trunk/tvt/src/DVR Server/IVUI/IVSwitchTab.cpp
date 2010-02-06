@@ -9,7 +9,7 @@ enum
 {
     // Tab Button
     BT_Width = 80,
-    BT_Height =40,
+    BT_Height = 40,
     BT_Start_X = 60,
     BT_Start_Y = 40,
 
@@ -59,7 +59,7 @@ END_MESSAGE_MAP()
 // CIVSwitchTab message handlers
 
 
-BOOL CIVSwitchTab::Init( CWnd* pWnd, const CRect& rect )
+BOOL CIVSwitchTab::Init(CWnd* pWnd, const CRect& rect)
 {
     //AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
@@ -81,18 +81,18 @@ BOOL CIVSwitchTab::Init( CWnd* pWnd, const CRect& rect )
     }
 
     CRect FuncRect(FunDlg_Start_X, FunDlg_Start_Y, rect.right-FunDlg_Start_X, rect.bottom-FunDlg_Start_X);
-    m_IVSchuduleDlg.Init(this, rect);
+    m_IVSchuduleDlg.Init(this, FuncRect);
     m_IVSchuduleDlg.ShowWindow(SW_HIDE);
 
-    m_IVAlarmOutDlg.Init(this, rect);
+    m_IVAlarmOutDlg.Init(this, FuncRect);
     m_IVAlarmOutDlg.ShowWindow(SW_HIDE);
 
     m_IVSchuduleDlg.MoveWindow(&FuncRect, FALSE);
-    m_IVAlarmOutDlg.MoveWindow(&FuncRect, FALSE);
+    //m_IVAlarmOutDlg.MoveWindow(&FuncRect, FALSE);
 
-    m_IVRuleDlg.Init(this, rect);
+    m_IVRuleDlg.Init(this, FuncRect);
     m_IVRuleDlg.ShowWindow(SW_SHOW);
-    m_IVRuleDlg.MoveWindow(&FuncRect);
+    //m_IVRuleDlg.MoveWindow(&FuncRect);
 
     MoveWindow(rect);
     ShowWindow(SW_SHOW);
@@ -120,13 +120,13 @@ void CIVSwitchTab::ClickTabBt( UINT ID/*, WPARAM w, LPARAM l*/ )
         break;
     case 1:
         m_IVRuleDlg.ShowWindow(SW_HIDE);
-        m_IVSchuduleDlg.ShowWindow(SW_SHOW);
-        m_IVAlarmOutDlg.ShowWindow(SW_HIDE);
+        m_IVSchuduleDlg.ShowWindow(SW_HIDE);
+        m_IVAlarmOutDlg.ShowWindow(SW_SHOW);
         break;
     case 2:
         m_IVRuleDlg.ShowWindow(SW_HIDE);
-        m_IVSchuduleDlg.ShowWindow(SW_HIDE);
-        m_IVAlarmOutDlg.ShowWindow(SW_SHOW);
+        m_IVSchuduleDlg.ShowWindow(SW_SHOW);
+        m_IVAlarmOutDlg.ShowWindow(SW_HIDE);
         break;
     default:
         // log.. err

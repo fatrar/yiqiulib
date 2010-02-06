@@ -71,10 +71,12 @@
 #define IDC_RULENAME                    1021
 #define IDS_STRING1022                  1022
 #define IDC_VIEW                        1022
+#define IDC_CURSOR_ADD                  1022
 #define IDS_STRING1023                  1023
 #define IDC_OBJECT                      1023
 #define IDS_STRING1024                  1024
 #define IDC_CHECK_PERSON                1024
+#define IDC_CURSOR_CLEAR                1024
 #define IDS_STRING1025                  1025
 #define IDC_CHECK_VEHICLE               1025
 #define IDC_CHECK_OTHER                 1026
@@ -112,7 +114,9 @@
 #define IDS_Event_Light_on              1041
 #define IDC_IV_Tab_Group                1041
 #define IDS_Event_Light_off             1042
+#define IDC_Add_CHECK                   1042
 #define IDS_Event_Montion               1043
+#define IDC_Erase_CHECK                 1043
 #define IDS_Event_Other                 1044
 #define IDS_Event_Anything              1045
 #define IDS_Filter_MaxObj               1046
@@ -127,6 +131,13 @@
 #define IDS_Filter_Head_State           1055
 #define IDS_Filter_On                   1056
 #define IDS_Filter_Off                  1057
+#define IDS_Schu_Week_Sun               1058
+#define IDS_Schu_Week_Mon               1059
+#define IDS_Schu_Week_Tue               1060
+#define IDS_Schu_Week_Wed               1061
+#define IDS_Schu_Week_Thu               1062
+#define IDS_Schu_Week_Fri               1063
+#define IDS_Schu_Week_Sat               1064
 #define ID__NEW                         32771
 #define ID_RULE_ENABLEALLRULE           32772
 #define ID_RULE_DISABLEALLRULE          32773
@@ -151,9 +162,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1014
+#define _APS_NEXT_RESOURCE_VALUE        1025
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1042
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif

@@ -7,7 +7,8 @@
 
 class CIVRuleDlg :
     public CDialog,
-    public IUpdateMemu
+    public IUpdateMemu,
+    public IInitCameraTree
 {
 	DECLARE_DYNAMIC(CIVRuleDlg)
 
@@ -19,9 +20,7 @@ public:
 	enum { IDD = IDD_IVRULE };
 
 public:
-    BOOL Init(CWnd* pWnd, const CRect& rect);
-    
-    virtual void OnUpdateMemu(CMenu* pMenu,WhichMemu Which);
+    BOOL Init(CWnd* pWnd, const CRect& Rect);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -35,6 +34,17 @@ protected:
     afx_msg void OnRuleShowobjtrace();
     afx_msg void OnRuleNewrule();
 	DECLARE_MESSAGE_MAP()
+
+protected:
+    virtual void OnUpdateMemu(
+        CMenu* pMenu,
+        WhichMemu Which,
+        int nChannelID,
+        void* pData);
+
+    virtual void OnInitCameraTree(
+        int nChannelID,
+        HTREEITEM Item );
 
 private:
     CTreeCtrl m_CameraTree;

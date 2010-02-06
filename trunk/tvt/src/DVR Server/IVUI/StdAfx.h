@@ -53,6 +53,7 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 
+#include "..\..\Base\Base\Include\Common.h"
 #include "IVUIComDef.h"
 
 
@@ -62,3 +63,4 @@
 #include "IVUICommon.h"
 
 #include ".\Include\IVUIInterface.h"
+#include "..\devicecontrol\IIVDevice.h"
