@@ -56,7 +56,7 @@ BOOL CIVFunctionSelDlg::OnInitDialog()
     
     CString strHead; 
     strHead.LoadString(IDS_Type);
-    m_FunList.InsertColumn(0, strHead,LVCFMT_LEFT, 150);
+    m_FunList.InsertColumn(0, strHead,LVCFMT_LEFT, 110);
     strHead.LoadString(IDS_Description);
     m_FunList.InsertColumn(1, strHead, LVCFMT_LEFT, 450);
 
@@ -67,7 +67,6 @@ BOOL CIVFunctionSelDlg::OnInitDialog()
         m_FunList.InsertItem(i, strFunctionName);
         strFunctionName.LoadString(IV_Name_DIR_StringID_Start+i);
         m_FunList.SetItemText(i, 1, strFunctionName);
-   
     }
 
     m_FunList.SetSelectedColumn(0);

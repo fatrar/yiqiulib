@@ -98,13 +98,15 @@ void CIVRuleDlg::OnRuleShowobjtrace()
 
 void CIVRuleDlg::OnRuleNewrule()
 {
-    CIVFunctionSelDlg Dlg;
-    if ( IDCANCEL== Dlg.DoModal() )
+    CIVFunctionSelDlg FunctionSelDlg;
+    if ( IDCANCEL== FunctionSelDlg.DoModal() )
     {
         return;
     }
-
-
+    
+    CRuleAddMainDlg RuleAddMainDlg;
+    RuleAddMainDlg.SetIVRuleType(FunctionSelDlg.GetUserSelect());
+    RuleAddMainDlg.DoModal();
 }
 
 void CIVRuleDlg::OnUpdateMemu(

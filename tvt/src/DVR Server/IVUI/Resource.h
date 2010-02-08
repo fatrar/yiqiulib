@@ -79,6 +79,7 @@
 #define IDC_CURSOR_CLEAR                1024
 #define IDS_STRING1025                  1025
 #define IDC_CHECK_VEHICLE               1025
+#define IDD_Add_Rule_Main               1025
 #define IDC_CHECK_OTHER                 1026
 #define IDS_RuleName                    1026
 #define IDC_CHECK_ALL                   1027
@@ -126,17 +127,30 @@
 #define IDC_AlarmOut_Group2             1046
 #define IDS_Filter_MinObj               1047
 #define IDS_Filter_Size_Change          1048
+#define IDC_Adv_BT                      1048
 #define IDS_Filter_Shape_Direction      1049
+#define IDC_Filter_BT                   1049
 #define IDS_Filter_MaxObj_Info          1050
+#define IDC_BUTTON5                     1050
+#define IDC_Simulation_BT               1050
 #define IDS_Filter_MinObj_Info          1051
+#define IDC_Line_Check                  1051
 #define IDS_Filter_Size_Change_Info     1052
+#define IDC_Zone_Check                  1052
 #define IDS_Filter_Shape_Direction_Info 1053
+#define IDC_Select_Check                1053
 #define IDS_Filter_Head_Type            1054
+#define IDC_Right_Check                 1054
 #define IDS_Filter_Head_State           1055
+#define IDC_Left_Check                  1055
 #define IDS_Filter_On                   1056
+#define IDC_Both_Check                  1056
 #define IDS_Filter_Off                  1057
+#define IDC_Colour_BT                   1057
 #define IDS_Schu_Week_Sun               1058
+#define IDC_Rectangle_Check             1058
 #define IDS_Schu_Week_Mon               1059
+#define IDC_Polygon_Check               1059
 #define IDS_Schu_Week_Tue               1060
 #define IDS_Schu_Week_Wed               1061
 #define IDS_Schu_Week_Thu               1062
@@ -168,9 +182,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1025
+#define _APS_NEXT_RESOURCE_VALUE        1026
 #define _APS_NEXT_COMMAND_VALUE         32792
-#define _APS_NEXT_CONTROL_VALUE         1047
+#define _APS_NEXT_CONTROL_VALUE         1060
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif
