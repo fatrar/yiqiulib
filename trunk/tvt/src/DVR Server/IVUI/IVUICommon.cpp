@@ -47,6 +47,7 @@ HTREEITEM InitCameraTree(
     
     // Init Item
     HTREEITEM Root = CameraTree.InsertItem(IV_Root_Name);
+    //CameraTree.InsertItem(IV_Root_Name);
     ItemAttribute* pInfo = new ItemAttribute(IUpdateMemu::Root, -1, NULL);
     CameraTree.SetItemData(Root, (DWORD_PTR)pInfo);
 
@@ -92,8 +93,10 @@ void PopUpCameraMemu(
     {
     case IUpdateMemu::Camera:
         menu.LoadMenu(IDR_Camera_Menu);
+        break;
     case IUpdateMemu::Rule:
         menu.LoadMenu(IDR_Rule_Menu);
+        break;
     case IUpdateMemu::Root:
     default:
         return;

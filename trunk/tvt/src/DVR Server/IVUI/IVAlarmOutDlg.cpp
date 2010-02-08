@@ -61,7 +61,7 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
 void CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    PopUpCameraMemu(m_CameraTree, 0, this, this);
+    PopUpCameraMemu(m_CameraTree, 1, this, this);
 }
 
 void CIVAlarmOutDlg::OnUpdateMemu( 

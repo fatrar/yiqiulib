@@ -16,7 +16,7 @@ public:
 	enum { IDD = IDD_IVFUNCTIONSEL };
 
 public:
-    int GetUserSelect();
+    IVRuleType GetUserSelect();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
