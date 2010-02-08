@@ -5,7 +5,7 @@
 
 #pragma once
 
-struct IDrawer;
+
 
 // CChildView ´°¿Ú
 
@@ -41,5 +41,7 @@ private:
 	IDrawer* pDrawer;
 public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+    virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
+    virtual BOOL OnCreateAggregates();
 };
 
