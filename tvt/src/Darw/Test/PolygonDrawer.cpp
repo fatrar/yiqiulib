@@ -1,0 +1,173 @@
+/*H***************************************************************************
+ File            : PolygonDrawer.cpp
+ Subsystem       : 
+ Function Name(s): CPolygonDrawer
+ Author          : YiQiu
+ Date            : 2010-2-8  
+ Time            : 15:04
+ Description     : 
+
+ Revision        : 
+
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+***************************************************************************H*/
+#include "StdAfx.h"
+#include "PolygonDrawer.h"
+
+
+IMPLEMENT_DYNAMIC(CPolygonDrawer, CWnd)
+
+CPolygonDrawer::CPolygonDrawer(void)
+{
+}
+
+CPolygonDrawer::~CPolygonDrawer(void)
+{
+}
+
+BEGIN_MESSAGE_MAP(CPolygonDrawer, CWnd)
+    ON_WM_MOUSEMOVE()
+    ON_WM_LBUTTONUP()
+    ON_WM_LBUTTONDOWN()
+    ON_WM_PAINT()
+END_MESSAGE_MAP()
+
+
+void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
+{
+    if ( !(nFlags&MK_LBUTTON) )
+    {
+        return;
+    }
+
+    if ( m_bDragging )
+    {
+        TRACE("OnMouseMove %d\n", m_nDragIndex);
+        ReFreshPoint(m_nDragIndex, point);
+        ParentInvalidate();
+        return;
+    }
+
+    if ( m_bDrawing )
+    {
+        TRACE("OnMouseMove m_bDrawing\n");
+        ReFreshPoint(m_PointQueue.size(), point);  //[] ?
+        ParentInvalidate();
+        return;
+    }
+
+    ParentInvalidate();
+}
+
+void CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint point)
+{
+    if ( m_bDrawing ) 
+    {
+        //if ( Distance(point, m_PointQueue.back()) <= Point_Radii )
+        //{
+        //     UnLockCursor();
+        //     m_bDrawing = false;
+        //}
+        //else
+        //{
+        //    m_PointQueue.push_back(point);
+        //    //ReFreshPoint(2, point);
+        //}
+   
+        //return;
+    }
+
+    if ( m_bDragging )
+    {
+        UnLockCursor();
+        m_bDragging = false;
+        ReFreshPoint(m_nDragIndex, point);
+        m_nDragIndex = -1;
+        return;
+    }
+}
+
+void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
+{
+    if ( m_bDrawing )
+    {
+        // Log
+        //TRACE( CString(L"m_bIsStartDraw is True! function name is ") + __FUNCDNAME__ );
+    }
+
+    CRect Rect;
+    GetClientRect(&Rect);
+    ClientToScreen(&Rect);
+
+    if ( m_bIsOK )
+    {
+        if ( IsDargPoint(point) )
+        {
+            LockCursor(Rect);
+            m_bDragging = true;
+            return;
+        }
+    }
+
+    LockCursor(Rect);
+    m_PointQueue.push_back(point);
+    m_PointQueue.push_back(point);
+    ParentInvalidate();
+}
+
+void CPolygonDrawer::OnPaint()
+{
+    if (!m_bIsOK)
+    {
+        return;
+    }
+
+     
+    size_t nSize = m_PointQueue.size();
+    if ( nSize == 0 )
+    {
+        return;
+    }
+
+    CPaintDC dc(this);
+    CGdiObject *pOldObject= dc.SelectStockObject(NULL_BRUSH);
+    deque<CPoint>::iterator iter = m_PointQueue.begin();
+    for  ( ; iter != m_PointQueue.end(); ++iter )
+    {
+        CPoint& point = *iter;
+        dc.Ellipse(
+            point.x-Point_Radii,
+            point.y-Point_Radii,
+            point.x+Point_Radii,
+            point.y+Point_Radii );
+    }
+    dc.SelectObject(pOldObject);
+
+    if ( nSize == 1 )
+    {
+        return;
+    }
+ 
+    iter = m_PointQueue.begin();
+    dc.MoveTo(*iter);
+    for  ( ++iter; iter != m_PointQueue.end(); ++iter )
+    {
+        dc.MoveTo(*iter);
+    }    
+}
+
+void CPolygonDrawer::ReFreshPoint( 
+    int nIndex, const CPoint& point )
+{
+    m_PointQueue[nIndex] = point;
+}
+
+size_t CPolygonDrawer::GetUserInput( CPoint (&szPoint)[Max_Point] )
+{
+    return 0;
+}
+// End of file
