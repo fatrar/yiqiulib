@@ -198,6 +198,30 @@ BEGIN
     LTEXT           "Multiplier:",IDC_Multiplier,57,126,45,8
 END
 
+IDD_Add_Rule_Main DIALOGEX 0, 0, 451, 310
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,300,281,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,384,281,50,14
+    GROUPBOX        "Draw Tool",IDC_STATIC,21,4,77,186
+    GROUPBOX        "",IDC_STATIC,21,82,77,78
+    GROUPBOX        "Adv.",IDC_STATIC,21,191,78,48
+    CONTROL         "Line",IDC_Line_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,39,15,39,19
+    CONTROL         "Zone",IDC_Zone_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,39,39,39,19
+    CONTROL         "Select",IDC_Select_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,39,63,39,19
+    CONTROL         "Polygon",IDC_Polygon_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,75,130,39,19
+    CONTROL         "Right",IDC_Right_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,39,91,39,19
+    CONTROL         "Left",IDC_Left_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,39,114,39,19
+    CONTROL         "Both",IDC_Both_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,39,137,39,19
+    PUSHBUTTON      "Adv. ..",IDC_Adv_BT,35,201,50,14
+    PUSHBUTTON      "Filter ..",IDC_Filter_BT,35,219,50,14
+    PUSHBUTTON      "Simulation",IDC_Simulation_BT,22,246,74,14
+    CONTROL         "Rectangle",IDC_Rectangle_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,75,101,39,19
+    PUSHBUTTON      "Colour",IDC_Colour_BT,37,165,43,18
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -263,6 +287,13 @@ BEGIN
         RIGHTMARGIN, 244
         TOPMARGIN, 7
         BOTTOMMARGIN, 279
+    END
+
+    IDD_Add_Rule_Main, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 445
+        BOTTOMMARGIN, 303
     END
 END
 #endif    // APSTUDIO_INVOKED

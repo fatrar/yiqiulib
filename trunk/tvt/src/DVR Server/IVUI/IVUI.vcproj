@@ -234,6 +234,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RuleAddMainDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ScheduleCtrl.cpp"
 				>
 			</File>
@@ -320,6 +324,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RuleAddMainDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ScheduleCtrl.h"
 				>
 			</File>
@@ -374,14 +382,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\res\0001.ANI"
-			>
-		</File>
-		<File
-			RelativePath=".\res\0002.ANI"
-			>
-		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

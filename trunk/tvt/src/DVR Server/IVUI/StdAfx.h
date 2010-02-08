@@ -65,3 +65,7 @@
 #include "IVSchuduleDlg.h"
 #include "IVUICommon.h"
 #include "IVFunctionSelDlg.h"
+#include "RuleAddMainDlg.h"
+#include "LineAdvDlg.h"
+#include "ZoneAdvDlg.h"
+#include "FilterDlg.h"

@@ -26,7 +26,7 @@ enum
     // IVFunctionSelDlg Define
     IV_Name_StringID_Start = IDS_Invade,
     IV_Name_DIR_StringID_Start = IDS_IV_Name_Des,
-    IV_Name_Number = 10,
+    IV_Name_Number = 8,
 
     // ZoneAdvDlg Define
     Max_Rule_Name = 20,
