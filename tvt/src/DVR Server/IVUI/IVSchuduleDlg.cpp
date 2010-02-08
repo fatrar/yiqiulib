@@ -100,7 +100,7 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
 void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    PopUpCameraMemu(m_CameraTree, 0, this, this);
+    PopUpCameraMemu(m_CameraTree, 2, this, this);
 }
 
 void CIVSchuduleDlg::OnUpdateMemu(

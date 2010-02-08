@@ -77,7 +77,13 @@ BOOL CIVFunctionSelDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-int CIVFunctionSelDlg::GetUserSelect()
+IVRuleType CIVFunctionSelDlg::GetUserSelect()
 {
-    return m_nSel;
+    if ( m_nSel == -1 ||
+         m_nSel > IV_Stage_Change )
+    {
+        return IV_UnKnown;
+    }
+
+    return (IVRuleType)m_nSel;
 }

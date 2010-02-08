@@ -98,7 +98,13 @@ void CIVRuleDlg::OnRuleShowobjtrace()
 
 void CIVRuleDlg::OnRuleNewrule()
 {
-    // TODO: Add your command handler code here
+    CIVFunctionSelDlg Dlg;
+    if ( IDCANCEL== Dlg.DoModal() )
+    {
+        return;
+    }
+
+
 }
 
 void CIVRuleDlg::OnUpdateMemu(

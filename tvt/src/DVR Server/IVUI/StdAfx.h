@@ -54,6 +54,9 @@
 
 
 #include "..\..\Base\Base\Include\Common.h"
+#include ".\Include\IVUIInterface.h"
+#include "..\devicecontrol\IIVDevice.h"
+
 #include "IVUIComDef.h"
 
 
@@ -61,6 +64,4 @@
 #include "IVAlarmOutDlg.h"
 #include "IVSchuduleDlg.h"
 #include "IVUICommon.h"
-
-#include ".\Include\IVUIInterface.h"
-#include "..\devicecontrol\IIVDevice.h"
+#include "IVFunctionSelDlg.h"
