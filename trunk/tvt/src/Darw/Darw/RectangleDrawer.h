@@ -12,20 +12,29 @@
 #pragma once
 #include "DarwCommon.h"
 
-
 class CRectangleDrawer :
 	public CDrawer
 {
+    DECLARE_DYNAMIC(CRectangleDrawer)
 public:
 	CRectangleDrawer(void);
 	~CRectangleDrawer(void);
+protected:
+     DECLARE_MESSAGE_MAP()
+
 public:
-	virtual void OnMouseDown(CDC* pdc, CPoint& point, CRect& LockRect);
-	virtual void OnMouseMove(CDC* pdc, CPoint& point);
-	virtual void OnMouseUp(CDC* pdc, CPoint& point);
-	virtual void OnPaint(CDC* pdc);
+    size_t GetUserInput(CPoint (&szPoint)[Max_Point]);
+
+public:
+    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+    afx_msg void OnPaint();
+
 protected:
 	inline void ReFreshPoint(int nIndex, CPoint& point);
+public:
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 

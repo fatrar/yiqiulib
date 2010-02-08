@@ -41,6 +41,7 @@
 #include <GdiplusTypes.h>
 
 
+#include "DarwCommon.h"
 
 
 
