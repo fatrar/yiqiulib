@@ -186,6 +186,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\LineDrawer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PolygonDrawer.cpp"
 				>
 			</File>
@@ -229,6 +233,10 @@
 			>
 			<File
 				RelativePath=".\DarwCommon.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LineDrawer.h"
 				>
 			</File>
 			<File

@@ -89,7 +89,7 @@ void CRectangleDrawer::OnMouseMove(UINT nFlags, CPoint point)
 
 void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    if ( m_bDrawing ) 
+    if ( m_bDrawing )
     {
         UnLockCursor();
         ReFreshPoint(2, point);
@@ -137,9 +137,11 @@ void CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint point)
         }
         else if ( (m_nDragDir = IsDargPoint2(point)) != NO_Darg )
         {
+            m_bDragging = false;
             LockCursor(Rect);
             return;
         }
+        m_bDragging = false;
     }
 
     LockCursor(Rect);

@@ -44,6 +44,8 @@ protected:
 
 protected:
     inline void ReFreshPoint(int nIndex, const CPoint& point);
+
+    bool m_bFirst;
 };
 
 

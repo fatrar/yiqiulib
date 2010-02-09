@@ -22,7 +22,9 @@
 IMPLEMENT_DYNAMIC(CPolygonDrawer, CWnd)
 
 CPolygonDrawer::CPolygonDrawer(void)
+    : m_bFirst(true)
 {
+    m_PointQueue.push_back(CPoint());
 }
 
 CPolygonDrawer::~CPolygonDrawer(void)
@@ -44,7 +46,7 @@ void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
         return;
     }
 
-    if ( m_bDragging )
+    if ( m_bDragging && m_nDragIndex != -1 )
     {
         TRACE("OnMouseMove %d\n", m_nDragIndex);
         ReFreshPoint(m_nDragIndex, point);
@@ -55,7 +57,7 @@ void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
     if ( m_bDrawing )
     {
         TRACE("OnMouseMove m_bDrawing\n");
-        ReFreshPoint(m_PointQueue.size(), point);  //[] ?
+        ReFreshPoint(m_PointQueue.size()-1, point);  //[] ?
         ParentInvalidate();
         return;
     }
@@ -81,14 +83,14 @@ void CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint point)
         //return;
     }
 
-    if ( m_bDragging )
-    {
-        UnLockCursor();
-        m_bDragging = false;
-        ReFreshPoint(m_nDragIndex, point);
-        m_nDragIndex = -1;
-        return;
-    }
+    //if ( m_bDragging )
+    //{
+    //    UnLockCursor();
+    //    m_bDragging = false;
+    //    ReFreshPoint(m_nDragIndex, point);
+    //    m_nDragIndex = -1;
+    //    return;
+    //}
 }
 
 void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
@@ -111,22 +113,43 @@ void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
             m_bDragging = true;
             return;
         }
+       
+        m_bDragging = false;
+    }
+    else
+    {
+        if ( m_bFirst )
+        {
+            LockCursor(Rect);
+            m_bFirst = false;
+        }
+
+        if ( m_PointQueue.size() >= 3 &&
+             Distance(point, m_PointQueue.front()) <= Point_Radii )
+        {
+            UnLockCursor();
+            m_PointQueue.pop_back();
+            //ReFreshPoint(m_PointQueue.size()-1, point);
+            m_bDrawing = false;
+            m_bIsOK = true;
+            ParentInvalidate();
+            AfxMessageBox(_T("Is OK!"));
+            return;
+        }
     }
 
-    LockCursor(Rect);
-    m_PointQueue.push_back(point);
+    ReFreshPoint(m_PointQueue.size()-1, point);
     m_PointQueue.push_back(point);
     ParentInvalidate();
 }
 
 void CPolygonDrawer::OnPaint()
 {
-    if (!m_bIsOK)
+  /*  if (!m_bIsOK)
     {
         return;
-    }
+    }*/
 
-     
     size_t nSize = m_PointQueue.size();
     if ( nSize == 0 )
     {
@@ -153,11 +176,18 @@ void CPolygonDrawer::OnPaint()
     }
  
     iter = m_PointQueue.begin();
-    dc.MoveTo(*iter);
+    CPoint& BeginPoint = *iter;
+    dc.MoveTo(BeginPoint);
     for  ( ++iter; iter != m_PointQueue.end(); ++iter )
     {
-        dc.MoveTo(*iter);
-    }    
+        dc.LineTo(*iter);
+    }
+
+    if ( m_bIsOK )
+    {
+        dc.LineTo(BeginPoint);
+    }
+    
 }
 
 void CPolygonDrawer::ReFreshPoint( 
