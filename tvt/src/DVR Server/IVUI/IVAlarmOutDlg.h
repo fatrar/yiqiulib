@@ -51,4 +51,5 @@ private:
   
 private:
     CStatic m_AlarmOutGroup;
+    afx_msg void OnDestroy();
 };

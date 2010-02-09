@@ -456,8 +456,6 @@ BEGIN
     IDS_Next                "Next"
     IDS_Close               "Close"
     IDS_Finish              "Finish"
-    IDS_Invade              "Invade..."
-    IDS_Leave_Disappear     "Leave Disappear.."
 END
 
 STRINGTABLE 
@@ -498,6 +496,12 @@ BEGIN
     IDS_LeftBehind_Time     "LeftBehind:"
     IDS_RuleName_Alarm      "Rule Name is void! Do you want use a default name?"
     IDS_Object_Alarm        "Object is not selected.Do you want use a defalt setting?"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_Invade              "Invade"
+    IDS_Leave_Disappear     "Leave Disappear"
 END
 
 STRINGTABLE 

@@ -29,6 +29,8 @@
 #include "..\IVViewer\Include\IVViewer.h"
 
 
+#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
+
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

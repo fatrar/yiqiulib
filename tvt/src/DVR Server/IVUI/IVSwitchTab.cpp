@@ -146,10 +146,13 @@ BOOL CIVSwitchTab::OnInitDialog()
 
 CIVSwitchTab* g_pIVSwitchTab = NULL;
 
+#undef new
+#define new new
+
 CDialog* CreateIVConfigDlg(CWnd* pWnd, const CRect& rect)
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
-    CIVSwitchTab* g_pIVSwitchTab = new CIVSwitchTab(pWnd);
+    CIVSwitchTab* g_pIVSwitchTab = new CIVSwitchTab();
     
     g_pIVSwitchTab->Init(pWnd, rect);
     return g_pIVSwitchTab;

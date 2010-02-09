@@ -50,4 +50,5 @@ protected:
 private:
     CTreeCtrl m_CameraTree;
     CStatic m_RuleGroup;
+    afx_msg void OnDestroy();
 };

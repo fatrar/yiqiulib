@@ -60,6 +60,8 @@
 #include "IVUIComDef.h"
 
 
+#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
+
 #include "IVRuleDlg.h"
 #include "IVAlarmOutDlg.h"
 #include "IVSchuduleDlg.h"

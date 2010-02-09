@@ -5,11 +5,11 @@
 //#include "Schedule.h"
 #include "ScheduleCtrl.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+//#ifdef _DEBUG
+//#define new DEBUG_NEW
+//#undef THIS_FILE
+//static char THIS_FILE[] = __FILE__;
+//#endif
 
 HCURSOR CScheduleCtrl::m_hAddCursor = NULL;
 HCURSOR CScheduleCtrl::m_hEraseCursor = NULL;

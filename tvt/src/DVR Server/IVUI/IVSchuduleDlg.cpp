@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CIVSchuduleDlg, CDialog)
     ON_NOTIFY(NM_RCLICK, IDC_SCHUDULE_CAMERA_TREE, &CIVSchuduleDlg::OnNMRclickSchuduleCameraTree)
     ON_BN_CLICKED(IDC_Add_CHECK, &CIVSchuduleDlg::OnBnClickedAddCheck)
     ON_BN_CLICKED(IDC_Erase_CHECK, &CIVSchuduleDlg::OnBnClickedEraseCheck)
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -159,4 +160,10 @@ void CIVSchuduleDlg::OnBnClickedEraseCheck()
     {
         m_ScheduleCtrl[i].SetOperateMode(false);
     }  
+}
+
+void CIVSchuduleDlg::OnDestroy()
+{
+    __super::OnDestroy();
+    UnitCameraTree(m_CameraTree);
 }
