@@ -6,11 +6,7 @@
 		CID = "1"/>
 	<OpenFiles
 		CID = "2"
-		LastActive = "1">
-		<File
-			RootPath = "$Container"
-			RelativePathname = "Rule Config.gui"
-			ViewSettings = ""/>
+		LastActive = "8">
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Schedule Config.gui"
@@ -25,15 +21,7 @@
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
-			RelativePathname = "Leave behind.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
 			RelativePathname = "Statistics.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
-			RelativePathname = "Stage Change.gui"
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
@@ -50,6 +38,18 @@
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Adv Filter.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "Stage Change.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "Leave behind.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "Rule Config.gui"
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
