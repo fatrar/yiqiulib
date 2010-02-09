@@ -61,11 +61,12 @@ BOOL CIVFunctionSelDlg::OnInitDialog()
     m_FunList.InsertColumn(1, strHead, LVCFMT_LEFT, 450);
 
     CString strFunctionName;
+    HMODULE hmodule = GetModuleHandle(L"IVUI.dll");
     for (int i = 0; i< IV_Name_Number; ++i)
     {
-        strFunctionName.LoadString(IV_Name_StringID_Start+i);
+        BOOL bRc = strFunctionName.LoadString(hmodule, IV_Name_StringID_Start+i);
         m_FunList.InsertItem(i, strFunctionName);
-        strFunctionName.LoadString(IV_Name_DIR_StringID_Start+i);
+        strFunctionName.LoadString(hmodule, IV_Name_DIR_StringID_Start+i);
         m_FunList.SetItemText(i, 1, strFunctionName);
     }
 
