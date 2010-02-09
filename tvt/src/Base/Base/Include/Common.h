@@ -1,11 +1,28 @@
-//==========================================================================
-/**
-* @file	  : Common.h
-* @author : heliang
-* created : 2008-1-2   16:08
-* purpose : 公共头文件
-*/
-//==========================================================================
+/*H***************************************************************************
+ File            : Common.h
+ Subsystem       : 
+ Function Name(s): CCommon
+ Author          : YiQiu
+ Date            : 2008-1-2   16:08 
+ Time            : 10:17
+ Description     : 公共头文件
+ 
+ 编码风格：
+ 1. 命名跟匈牙利命名一样，不同的是标准枚举定义为全大写加下划线，这种存在着中国人看大写不习惯的问题，
+ 所以我改良为每个词首字大写，下划线连接各词，在windows平台不存在与其他定义相冲突的问题
+ 2. 代码在不同情况采用不同的编写标准，在保证功能的前提下，
+ 在效率要求很高的情况下，以执行效率为先，编码优美简洁易懂为其次。
+ 在
+
+ Revision        : 
+
+
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+***************************************************************************H*/
 #ifndef OCI_COMMON_H
 #define OCI_COMMON_H
 
@@ -72,9 +89,9 @@
 //#	pragma comment(lib, "libBase_md.lib")
 //#endif
 //#elif defined(BASE_EXPORTS)
-//#	define RKT_EXPORT	CLASS_EXPORT
+//#	define OCI_EXPORT	CLASS_EXPORT
 //#else
-//#	define RKT_EXPORT	CLASS_IMPORT
+//#	define OCI_EXPORT	CLASS_IMPORT
 //#	pragma comment(lib, MAKE_DLL_LIB_NAME(Base))
 //#endif
 
@@ -173,4 +190,4 @@ namespace COMPILE_ASSERT
 //#endif
 
 
-#endif // RKT_COMMON_H
+#endif // OCI_COMMON_H
