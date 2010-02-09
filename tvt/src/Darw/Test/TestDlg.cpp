@@ -21,7 +21,9 @@ CTestDlg::CTestDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
     //m_pDrawer = new CRectangleDrawer();
-    m_pDrawer = new CPolygonDrawer();
+    //m_pDrawer = new CPolygonDrawer();
+    //m_pDrawer = new CLineDrawer();
+    m_pDrawer = new CArrowLineDrawer();
 }
 
 void CTestDlg::DoDataExchange(CDataExchange* pDX)

@@ -127,6 +127,7 @@ class IDrawer :
 {
 public:
     virtual size_t GetUserInput(CPoint (&szPoint)[Max_Point]) = 0;
+    virtual void SetColour(DWORD dwColor) = 0;
 };
 
 //template<size_t MaxPoint = 36>
@@ -138,13 +139,11 @@ public:
 		: m_bDrawing(false)
 		, m_nDragIndex(-1)
 		, m_bDragging(false)
-		, m_bIsOK(false) {}
+		, m_bIsOK(false)
+        , m_dwColor(0) {}
 
-	~CDrawer()
-	{
-		// [] STLDelete(m_PointQueue);
-	}
-
+public:
+    void SetColour(DWORD dwColor){ m_dwColor = dwColor; }
 
 protected:
 	bool IsDargPoint(CPoint& point)
@@ -157,10 +156,12 @@ protected:
 	bool m_bIsOK;               // Is Drew?
 	bool m_bDrawing;            // Is Drawing?
 
-	int m_nDragIndex;           // Drag Point Index
+	int m_nDragIndex;           // Drag Point Index,-1 is invalid
 	bool m_bDragging;           // Is Dragging?
 
 	deque<CPoint> m_PointQueue; // Point Queue
+
+    DWORD m_dwColor;            // line Color, default black
 };
 
 
