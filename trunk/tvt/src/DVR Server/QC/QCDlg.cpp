@@ -9,11 +9,11 @@
 #include "SignalDlg.h"
 #include "CfgDlg.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+//#ifdef _DEBUG
+//#define new DEBUG_NEW
+//#undef THIS_FILE
+//static char THIS_FILE[] = __FILE__;
+//#endif
 
 #define FIRSTINVIEW TRUE
 /////////////////////////////////////////////////////////////////////////////
@@ -325,6 +325,7 @@ HCURSOR CQCDlg::OnQueryDragIcon()
 void CQCDlg::OnFinish() 
 {
 #ifdef UI_DEBUG
+    ReleaseIVConfigDlg();
     CDialog::OnOK();
     return;
 #endif // UI_DEBUG
@@ -355,11 +356,7 @@ void CQCDlg::OnFinish()
         m_card_infor.resResult = TRUE;
     }
     
-  /*  delete []m_CodecMgrH_Net;
-    m_CodecMgrH_Net = NULL;
-    delete []m_CodecMgrH_Rec;
-    m_CodecMgrH_Rec = NULL;*/
-
+    ReleaseIVConfigDlg();
     CDialog::OnOK();
 }
 

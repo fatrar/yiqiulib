@@ -4,10 +4,11 @@
 #include "stdafx.h"
 #include "IVUI.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
+//#ifdef _DEBUG
+//#define new DEBUG_NEW
+//#endif
 
+HMODULE g_hmodule = NULL;
 //
 //TODO: If this DLL is dynamically linked against the MFC DLLs,
 //		any functions exported from this DLL which call into
@@ -44,6 +45,7 @@ END_MESSAGE_MAP()
 
 CIVUIApp::CIVUIApp()
 {
+    g_hmodule = GetModuleHandle(L"IVUI.dll");
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }

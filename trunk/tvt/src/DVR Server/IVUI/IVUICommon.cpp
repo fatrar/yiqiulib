@@ -18,7 +18,9 @@
 #include "StdAfx.h"
 #include "IVUICommon.h"
 
-
+//#ifdef _DEBUG
+//#define new DEBUG_NEW
+//#endif
 
 #define IV_Root_Name  _T("IV")
 #define Channel_Name  _T("Ch%d")

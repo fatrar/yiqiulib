@@ -35,6 +35,7 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CIVAlarmOutDlg, CDialog)
     ON_NOTIFY(NM_RCLICK, IDC_ALARMOUT_CAMERA_TREE, &CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree)
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -88,4 +89,9 @@ void CIVAlarmOutDlg::OnInitCameraTree(
     HTREEITEM Item )
 {
 
+}
+void CIVAlarmOutDlg::OnDestroy()
+{
+    __super::OnDestroy();
+    UnitCameraTree(m_CameraTree);
 }

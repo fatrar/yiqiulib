@@ -64,4 +64,5 @@ private:
     afx_msg void OnBnClickedEraseCheck();
 private:
     CStatic m_SchuduleGroup;
+    afx_msg void OnDestroy();
 };

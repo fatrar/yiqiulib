@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
     ON_COMMAND(ID_RULE_SHOWOBJECT, &CIVRuleDlg::OnRuleShowobject)
     ON_COMMAND(ID_RULE_SHOWTRACE, &CIVRuleDlg::OnRuleShowtrace)
     ON_COMMAND(ID_RULE_SHOWOBJTRACE, &CIVRuleDlg::OnRuleShowobjtrace)   
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -134,4 +135,11 @@ void CIVRuleDlg::OnInitCameraTree(
     HTREEITEM Item )
 {
 
+}
+
+void CIVRuleDlg::OnDestroy()
+{
+    __super::OnDestroy();
+
+    UnitCameraTree(m_CameraTree);
 }

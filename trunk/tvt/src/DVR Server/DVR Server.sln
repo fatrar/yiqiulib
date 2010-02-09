@@ -13,6 +13,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVCfgMgr", "IVCfgMgr\IVCfgM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVUI", "IVUI\IVUI.vcproj", "{0D2620C4-7950-4B2B-A03C-23A7468CAE8F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugUtil", "..\DebugUtil\DebugUtil\DebugUtil.vcproj", "{12617E60-A2A4-4169-BFFE-902793636268}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryTest", "MemoryTest\MemoryTest.vcproj", "{0B416CD7-C869-4396-9E25-DBB43C105157}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -43,6 +47,14 @@ Global
 		{0D2620C4-7950-4B2B-A03C-23A7468CAE8F}.Debug|Win32.Build.0 = Debug|Win32
 		{0D2620C4-7950-4B2B-A03C-23A7468CAE8F}.Release|Win32.ActiveCfg = Release|Win32
 		{0D2620C4-7950-4B2B-A03C-23A7468CAE8F}.Release|Win32.Build.0 = Release|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Debug|Win32.ActiveCfg = Debug|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Debug|Win32.Build.0 = Debug|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Release|Win32.ActiveCfg = Release|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Release|Win32.Build.0 = Release|Win32
+		{0B416CD7-C869-4396-9E25-DBB43C105157}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0B416CD7-C869-4396-9E25-DBB43C105157}.Debug|Win32.Build.0 = Debug|Win32
+		{0B416CD7-C869-4396-9E25-DBB43C105157}.Release|Win32.ActiveCfg = Release|Win32
+		{0B416CD7-C869-4396-9E25-DBB43C105157}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
