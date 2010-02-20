@@ -20,8 +20,8 @@ CTestDlg::CTestDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CTestDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-    //m_pDrawer = new CRectangleDrawer();
-    m_pDrawer = new CPolygonDrawer();
+    m_pDrawer = new CRectangleDrawer();
+    //m_pDrawer = new CPolygonDrawer();
     //m_pDrawer = new CLineDrawer();
     //m_pDrawer = new CArrowLineDrawer();
 }
@@ -39,21 +39,9 @@ END_MESSAGE_MAP()
 
 
 // CTestDlg message handlers
-
-DWORD WINAPI Test(void* p)
-{
-    Sleep(10000);
-    HANDLE h =  GetCurrentThread();
-    return 0;
-}
-
-HANDLE g_h = NULL;
-
 BOOL CTestDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
-    g_h = CreateThread(NULL, 0, Test, 0, 0, NULL);
 
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog

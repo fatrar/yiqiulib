@@ -129,6 +129,7 @@ void CLineDrawer::OnPaint()
     dc.MoveTo(BeginPoint);  
     dc.LineTo(EndPoint);
 
+    CGdiObject *pOldObject= dc.SelectStockObject(NULL_BRUSH);
     dc.Ellipse(
         BeginPoint.x-Point_Radii,
         BeginPoint.y-Point_Radii,
@@ -139,6 +140,8 @@ void CLineDrawer::OnPaint()
         EndPoint.y-Point_Radii,
         EndPoint.x+Point_Radii,
         EndPoint.y+Point_Radii );
+    DrawCenterPoint(&dc);
+     dc.SelectObject(pOldObject);
 }
 
 // 不知道叫点积还是差积了，数学表达式如下：
