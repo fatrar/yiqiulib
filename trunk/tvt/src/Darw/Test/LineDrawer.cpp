@@ -141,11 +141,6 @@ void CLineDrawer::OnPaint()
         EndPoint.y+Point_Radii );
 }
 
-size_t CLineDrawer::GetUserInput( CPoint (&szPoint)[Max_Point] )
-{
-    return 0;
-}
-
 // 不知道叫点积还是差积了，数学表达式如下：
 // | a.x , b.x |
 // | a.y , b.y | 

@@ -118,3 +118,4 @@ BOOL CChildView::OnCreateAggregates()
     pDrawer->ShowWindow(SW_SHOW);
     return TRUE;
 }
+

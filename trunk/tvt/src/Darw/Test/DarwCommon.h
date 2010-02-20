@@ -128,8 +128,26 @@ class IDrawer :
 public:
     virtual size_t GetUserInput(CPoint (&szPoint)[Max_Point]) = 0;
     virtual void SetColour(DWORD dwColor) = 0;
+    virtual void Clear() = 0;
+    virtual void SetDefault(CPoint* pPoint, size_t nCount) = 0;
+    
+    enum DrawCommond
+    {
+
+    };
+
+    virtual void SendCommond(DrawCommond c, void* p1, void* p2) = 0;
 };
 
+enum 
+{
+    Nothing,
+    Drawing,
+    Drag_Base_Point,
+    Drag_Two_Point_Middle,
+    Drag_All_Point_Middle,
+
+};
 //template<size_t MaxPoint = 36>
 class CDrawer :
 	public IDrawer
@@ -143,7 +161,39 @@ public:
         , m_dwColor(0) {}
 
 public:
-    void SetColour(DWORD dwColor){ m_dwColor = dwColor; }
+    virtual size_t GetUserInput(CPoint (&szPoint)[Max_Point])
+    {
+        if ( !m_bIsOK || Max_Point < m_PointQueue.size() )
+        {
+            return 0;
+        }
+
+        size_t i = 0;
+        for ( deque<CPoint>::iterator iter = m_PointQueue.begin();
+              iter != m_PointQueue.end();
+              ++iter, ++i )
+        {
+            szPoint[i] = *iter;
+        }
+        return i;
+    }
+
+    virtual void SetColour(DWORD dwColor){ m_dwColor = dwColor; }
+    virtual void Clear(){ m_PointQueue.clear(); m_bIsOK=false; };
+    virtual void SetDefault(CPoint* pPoint, size_t nCount)
+    {
+        ASSERT(pPoint);
+        
+        m_PointQueue.clear();
+        m_bIsOK=true;
+
+        for (size_t i = 0; i<nCount; ++i)
+        {
+            m_PointQueue.push_back(pPoint[i]);
+        }
+    }
+
+    virtual void SendCommond(DrawCommond c, void* p1, void* p2){};
 
 protected:
 	bool IsDargPoint(CPoint& point)
