@@ -33,9 +33,6 @@ public:
 protected:
     DECLARE_MESSAGE_MAP()
 
-public:
-    size_t GetUserInput(CPoint (&szPoint)[Max_Point]);
-
 protected:
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);

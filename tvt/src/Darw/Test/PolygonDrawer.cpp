@@ -196,8 +196,4 @@ void CPolygonDrawer::ReFreshPoint(
     m_PointQueue[nIndex] = point;
 }
 
-size_t CPolygonDrawer::GetUserInput( CPoint (&szPoint)[Max_Point] )
-{
-    return 0;
-}
 // End of file
