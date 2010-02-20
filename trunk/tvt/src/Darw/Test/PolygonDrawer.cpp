@@ -49,7 +49,7 @@ void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
     if ( m_bDragging && m_nDragIndex != -1 )
     {
         TRACE("OnMouseMove %d\n", m_nDragIndex);
-        ReFreshPoint(m_nDragIndex, point);
+        m_PointQueue[m_nDragIndex] = point;
         ParentInvalidate();
         return;
     }
@@ -57,7 +57,7 @@ void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
     if ( m_bDrawing )
     {
         TRACE("OnMouseMove m_bDrawing\n");
-        ReFreshPoint(m_PointQueue.size()-1, point);  //[] ?
+        m_PointQueue.back() = point;
         ParentInvalidate();
         return;
     }
@@ -138,7 +138,7 @@ void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
         }
     }
 
-    ReFreshPoint(m_PointQueue.size()-1, point);
+    m_PointQueue.back() = point;
     m_PointQueue.push_back(point);
     ParentInvalidate();
 }
@@ -188,12 +188,6 @@ void CPolygonDrawer::OnPaint()
         dc.LineTo(BeginPoint);
     }
     
-}
-
-void CPolygonDrawer::ReFreshPoint( 
-    int nIndex, const CPoint& point )
-{
-    m_PointQueue[nIndex] = point;
 }
 
 // End of file

@@ -40,8 +40,6 @@ protected:
     afx_msg void OnPaint();
 
 protected:
-    inline void ReFreshPoint(int nIndex, const CPoint& point);
-
     bool m_bFirst;
 };
 
