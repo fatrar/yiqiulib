@@ -162,16 +162,17 @@ void CPolygonDrawer::OnPaint()
     for  ( ; iter != m_PointQueue.end(); ++iter )
     {
         CPoint& point = *iter;
-        dc.Ellipse(
-            point.x-Point_Radii,
-            point.y-Point_Radii,
-            point.x+Point_Radii,
-            point.y+Point_Radii );
+        DrawCircle(&dc, point, Point_Radii);
+//dc.Ellipse(
+//            point.x-Point_Radii,
+//            point.y-Point_Radii,
+//            point.x+Point_Radii,
+//            point.y+Point_Radii );
     }
-    dc.SelectObject(pOldObject);
-
+   
     if ( nSize == 1 )
     {
+        dc.SelectObject(pOldObject);
         return;
     }
  
@@ -186,8 +187,10 @@ void CPolygonDrawer::OnPaint()
     if ( m_bIsOK )
     {
         dc.LineTo(BeginPoint);
+        DrawCenterPoint(&dc);
     }
-    
+
+    dc.SelectObject(pOldObject);   
 }
 
 // End of file

@@ -187,6 +187,7 @@ void CRectangleDrawer::OnPaint()
             point.y+Point_Radii );
     }
 
+    DrawCenterPoint(&dc);
     dc.SelectObject(pOldObject);
 }
 

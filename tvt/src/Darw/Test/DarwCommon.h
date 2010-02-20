@@ -112,6 +112,11 @@ static int IsDargPoint(const CPoint& point, const deque<CPoint>& TestQueue)
     return nIndex;
 }
 
+inline void DrawCircle(CDC* pdc, const CPoint& point, size_t nr)
+{
+    pdc->Ellipse(point.x-nr,point.y-nr,point.x+nr, point.y+nr);
+}
+
 //inline CRect& CalculateRect(int x, int y, CRect& rect)
 //{
 //	int x1 = x - Point_Button_Widht/2; 
@@ -201,6 +206,44 @@ protected:
         m_nDragIndex = ::IsDargPoint(point, m_PointQueue);
         return  m_nDragIndex != -1 ;
 	}
+
+    CPoint CenterPoint()
+    {
+        CPoint p(0, 0);
+        for ( deque<CPoint>::iterator iter = m_PointQueue.begin();
+              iter != m_PointQueue.end();
+              ++iter )
+        {
+            p += *iter;
+        }
+        
+        size_t nSize = m_PointQueue.size();
+        p.x /= nSize;
+        p.y /= nSize;
+        return p;
+    }
+
+    bool IsDargCenterPoint(CPoint& point)
+    {
+        if ( !m_bIsOK )
+        {
+            return false;
+        }
+
+        CPoint& p = CenterPoint();
+        return Distance(point, p) <= Point_Radii;
+    }
+
+    void DrawCenterPoint(CDC* pdc)
+    {
+        if ( !m_bIsOK )
+        {
+            return;
+        }
+
+        CPoint& p = CenterPoint();
+        DrawCircle(pdc, p, Point_Radii);
+    }
 
 protected:
 	bool m_bIsOK;               // Is Drew?
