@@ -83,8 +83,11 @@ void CRectangleDrawer::OnMouseMove(UINT nFlags, CPoint point)
         return;
     }
 
-    ParentInvalidate();
-    //GetParent()->Invalidate();
+    if ( m_bDragCenter )
+    {
+        CenterPointMoveTo(point);
+        ParentInvalidate();
+    }
 }
 
 void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
@@ -92,7 +95,7 @@ void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
     if ( m_bDrawing )
     {
         UnLockCursor();
-        ReFreshPoint(2, point);
+        //ReFreshPoint(2, point);
         m_bDrawing = false;
         //return;
     }
@@ -101,7 +104,7 @@ void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
     {
         UnLockCursor();
         m_bDragging = false;
-        ReFreshPoint(m_nDragIndex, point);
+        //ReFreshPoint(m_nDragIndex, point);
         m_nDragIndex = -1;
         return;
     }
@@ -109,9 +112,16 @@ void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
     if ( m_nDragDir != NO_Darg )
     {
         UnLockCursor();
-        ReFreshPoint2(m_nDragDir, point);
+        //ReFreshPoint2(m_nDragDir, point);
         m_nDragDir = NO_Darg;
         return;
+    }
+
+    if ( m_bDragCenter )
+    {
+        UnLockCursor();
+        //CenterPointMoveTo(point);
+        m_bDragCenter = false;
     }
 }
 
@@ -141,7 +151,16 @@ void CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint point)
             LockCursor(Rect);
             return;
         }
+        else if ( IsDargCenterPoint(point) )
+        {
+            m_bDragging = false;
+            LockCursor(Rect);
+            m_bDragCenter = true;
+            return;
+        }
+
         m_bDragging = false;
+        return;
     }
 
     LockCursor(Rect);

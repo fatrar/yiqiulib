@@ -45,16 +45,24 @@ protected:
 class CArrowLineDrawer:
     public CLineDrawer
 {
+public:
+    CArrowLineDrawer();
     DECLARE_DYNAMIC(CArrowLineDrawer)
 protected:
     DECLARE_MESSAGE_MAP()
     afx_msg void OnPaint();
 
+    virtual void SendCommond(DrawCommond c, void* p1, void* p2);
 protected:
     enum 
     {
         ArrowLineLen = 50,
+        ArrowHeadLen = 10,
     };
+
+    DWORD m_dwDrawCommond;
+public:
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 
