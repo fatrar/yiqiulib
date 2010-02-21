@@ -48,7 +48,6 @@ void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
 
     if ( m_bDragging && m_nDragIndex != -1 )
     {
-        TRACE("OnMouseMove %d\n", m_nDragIndex);
         m_PointQueue[m_nDragIndex] = point;
         ParentInvalidate();
         return;
@@ -56,51 +55,44 @@ void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
 
     if ( m_bDrawing )
     {
-        TRACE("OnMouseMove m_bDrawing\n");
         m_PointQueue.back() = point;
         ParentInvalidate();
         return;
     }
 
-    ParentInvalidate();
+    if ( m_bDragCenter )
+    {
+        CenterPointMoveTo(point);
+        ParentInvalidate();
+    }
 }
 
 void CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint point)
 {
     if ( m_bDrawing ) 
     {
-        //if ( Distance(point, m_PointQueue.back()) <= Point_Radii )
-        //{
-        //     UnLockCursor();
-        //     m_bDrawing = false;
-        //}
-        //else
-        //{
-        //    m_PointQueue.push_back(point);
-        //    //ReFreshPoint(2, point);
-        //}
-   
-        //return;
+        return;
     }
 
-    //if ( m_bDragging )
-    //{
-    //    UnLockCursor();
-    //    m_bDragging = false;
-    //    ReFreshPoint(m_nDragIndex, point);
-    //    m_nDragIndex = -1;
-    //    return;
-    //}
+    if ( m_bDragging )
+    {
+        UnLockCursor();
+        m_bDragging = false;
+        m_nDragIndex = -1;
+        return;
+    }
+
+    if ( m_bDragCenter )
+    {
+        UnLockCursor();
+        CenterPointMoveTo(point);
+        m_bDragCenter = false;
+    }
 }
 
+// 注意这里要做最大多边形的判断，不能让用户无限的点下去
 void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    if ( m_bDrawing )
-    {
-        // Log
-        //TRACE( CString(L"m_bIsStartDraw is True! function name is ") + __FUNCDNAME__ );
-    }
-
     CRect Rect;
     GetClientRect(&Rect);
     ClientToScreen(&Rect);
@@ -113,8 +105,16 @@ void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
             m_bDragging = true;
             return;
         }
-       
+        else if ( IsDargCenterPoint(point) )
+        {
+            m_bDragging = false;
+            LockCursor(Rect);
+            m_bDragCenter = true;
+            return;
+        }
+ 
         m_bDragging = false;
+        return;
     }
     else
     {
@@ -145,10 +145,10 @@ void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CPolygonDrawer::OnPaint()
 {
-  /*  if (!m_bIsOK)
-    {
-        return;
-    }*/
+    //if (!m_bIsOK && !m_bDrawing && )
+    //{
+    //    return;
+    //}
 
     size_t nSize = m_PointQueue.size();
     if ( nSize == 0 )

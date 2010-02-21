@@ -33,7 +33,7 @@ using namespace std;
 
 
 
-inline BOOL LockCursor(CRect& LockRect){ return ClipCursor(&LockRect); }
+inline BOOL LockCursor(const CRect& LockRect){ return ClipCursor(&LockRect); }
 
 #ifdef Support_Dyn_Resolution
 #   define OCI_Static
@@ -70,7 +70,6 @@ enum
 
 #define Pow2(x) ((x)*(x)) 
 
-#define TracePoint(point)  TRACE("Input Point is x=%d, y=%d\n", point.x, point.y);
 
 //template<typename T>
 inline double Distance(const CPoint& p1, const CPoint& p2)
@@ -88,15 +87,11 @@ static int IsDargPoint(const CPoint& point, const deque<CPoint>& TestQueue)
 
 #define SimpleDistance(x)  Distance((point), (x))
 
-    TracePoint(point);
     int nIndex = 0;
     double nMin = SimpleDistance( TestQueue[nIndex] );
-    TracePoint(TestQueue[0]);
     for (size_t i=1; i<nSize; ++i)
     {
-        TracePoint( TestQueue[i] );
         double nTmp = SimpleDistance( TestQueue[i] );
-        TRACE("for nTmp = %f\n", nTmp);
         if ( nTmp < nMin )
         {
             nMin = nTmp;
@@ -138,10 +133,12 @@ public:
     
     enum DrawCommond
     {
-
+        Line_Show_Left  = 0x1,
+        Line_Show_Right = 0x2,
+        Line_Show_All   = Line_Show_Left | Line_Show_Right,
     };
 
-    virtual void SendCommond(DrawCommond c, void* p1, void* p2) = 0;
+    virtual void SendCommond(DrawCommond c, void* p1, void* p2) {};
 };
 
 enum 
@@ -163,7 +160,8 @@ public:
 		, m_nDragIndex(-1)
 		, m_bDragging(false)
 		, m_bIsOK(false)
-        , m_dwColor(0) {}
+        , m_dwColor(0)
+        , m_bDragCenter(false) {}
 
 public:
     virtual size_t GetUserInput(CPoint (&szPoint)[Max_Point])
@@ -198,8 +196,6 @@ public:
         }
     }
 
-    virtual void SendCommond(DrawCommond c, void* p1, void* p2){};
-
 protected:
 	bool IsDargPoint(CPoint& point)
 	{
@@ -230,7 +226,7 @@ protected:
             return false;
         }
 
-        CPoint& p = CenterPoint();
+        CPoint p = CenterPoint();
         return Distance(point, p) <= Point_Radii;
     }
 
@@ -245,12 +241,25 @@ protected:
         DrawCircle(pdc, p, Point_Radii);
     }
 
+    void CenterPointMoveTo(const CPoint& CenterpointNow)
+    {
+        CPoint CenterpointOld = CenterPoint();
+        CPoint Offset = CenterpointNow - CenterpointOld;
+        for ( deque<CPoint>::iterator iter = m_PointQueue.begin();
+              iter != m_PointQueue.end();
+              ++iter )
+        {
+            *iter += Offset;
+        }
+    }
+
 protected:
 	bool m_bIsOK;               // Is Drew?
 	bool m_bDrawing;            // Is Drawing?
 
 	int m_nDragIndex;           // Drag Point Index,-1 is invalid
 	bool m_bDragging;           // Is Dragging?
+    bool m_bDragCenter;   
 
 	deque<CPoint> m_PointQueue; // Point Queue
 

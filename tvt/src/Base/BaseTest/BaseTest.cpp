@@ -79,6 +79,19 @@ void Kiil(int test)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    char szPath[] = "C:\\1\\2\\3.txt";
+    char szdrive[10] = {0};
+    char szdir[10] = {0};
+    char szfname[10] = {0};
+    char szext[10] = {0};
+    errno_t err =  _splitpath_s(
+        szPath,
+        szdrive,
+        szdir,
+        szfname,
+        szext);
+
+
     //for (int i = 1; i<20; ++i)
     //    TargetList.push_back(i);
 
