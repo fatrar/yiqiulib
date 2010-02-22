@@ -52,4 +52,16 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+#include "..\..\Base\Include\Common.h"
 
+#define BEGIN_WINDOWS_NAMESPACE \
+    BEGIN_BASE_ENGINE \
+    namespace System { \
+    namespace Windows { 
+
+
+#define END_WINDOWS_NAMESPACE  END_BASE_ENGINE }; };
+
+#include "Drawer.h"
+#include "WindowsUtil.h"
+using namespace OCI::System::Windows;
