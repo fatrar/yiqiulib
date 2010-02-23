@@ -25,6 +25,7 @@
     #define IIVDEVICE_API extern "C" __declspec(dllimport)
 #endif
 
+//#include "DeviceControl.h"
 #include "IIVDataSender.h"
 
 struct IIVDeviceBase
@@ -196,6 +197,32 @@ struct ISnapShotSender
         size_t nLen) = 0;
 };
 
+// 这个结构体在DeviceControl有定义，但是为了不跟他粘在一起，
+// 单独定义，并用宏防止重定义。包含DeviceControl必须应引用很多其他头文件，
+// 关键里面还使用的MFC的类，导致包含DeviceControl必须是MFC的工程
+#ifndef _Define_FrameBufStruct_2010
+#define _Define_FrameBufStruct_2010
+typedef struct _FrameBufStruct
+{
+    long		ChannelIndex;//总的通道号
+    DWORD		BufferPara;//删除Buffer参数,如果是视频包括卡Index和BufIndex，如果是声音高16表示是否为PC自带声音
+    BYTE     	*pBuf;//此帧数据的Buffer地址
+    long		BufLen;//此帧数据的Buffer长度
+    ULONGLONG	localTime;// 采集时的绝对时间单位为100nm
+    ULONGLONG	FrameTime;//采集的相对时间
+    DWORD      	nStreamID;//流类型
+    long      	nVLostFlag;//信号状态
+    long		bIsKeyFrame;//当数据为压缩数据时，是否为关键帧
+    int		width;	//<41XD1-17>
+    int		height;	//<41XD1-17>
+} FRAMEBUFSTRUCT;
+#endif
+
+struct IVideoSend
+{
+    virtual BOOL OnVideoSend(FRAMEBUFSTRUCT *bufStruct) = 0;
+};
+
 // 板卡这边只关心正在运行的规则
 struct IIVDeviceBase2 :
     public IIVDeviceBase
@@ -223,14 +250,51 @@ struct IIVDeviceBase2 :
         int nChannelID,
         const IV_RuleID& RuleID,
         const AlarmOutSettings& Alarm )=0;
+
+    virtual void RegisterLiveDataCallBack(
+        int nChannelID,
+        IVideoSend* pVideoSend) =0;
+
+    virtual void UnRegisterLiveDataCallBack(
+        int nChannelID, 
+        IVideoSend* pVideoSend)=0;
+
+    virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p)=0;
 };
 
 
 namespace DeviceFactory
 {
+#ifdef IIVDEVICE_EXPORTS
     IIVDEVICE_API IIVDeviceBase* GetIVDeviceBase(void);
+    IIVDEVICE_API IIVDeviceBase2* GetIVDeviceBase2(void);
     IIVDEVICE_API IIVDeviceSetter* GeIVDeviceSetter(void);
     IIVDEVICE_API IIVStatistic* GetIVStatistic(void);
+#else
+    // 下面设计只是为调用者调用方便且尽量不依赖我这边的改动
+    // 从而做到，我这边接口的变动，只需要调用者重新编译即可，而不需要改动代码
+    enum
+    {
+        GetIVDeviceBase_Index = 0,
+        GetIVDeviceBase2_Index = 1,
+        GeIVDeviceSetter_Index = 2,
+        GetIVStatistic_Index = 3,
+    };
+
+    static const char* g_szIVDeviceFuncName[] = 
+    {
+        "GetIVDeviceBase",
+        "GetIVDeviceBase2",
+        "GeIVDeviceSetter",
+        "GetIVStatistic",
+    };
+
+    typedef IIVDeviceSetter* (*GetIVDeviceBaseFn)();
+    typedef IIVDeviceBase2* (*GetIVDeviceBase2Fn)();
+    typedef IIVDeviceSetter* (*GeIVDeviceSetterFn)();
+    typedef IIVStatistic* (*GetIVStatisticFn)();
+#endif
+    
 };
 
 

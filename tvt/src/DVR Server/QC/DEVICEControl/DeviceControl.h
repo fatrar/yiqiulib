@@ -244,6 +244,9 @@ typedef struct _AUDIO_PROPER
 	DWORD agc;
 }AUDIO_PROPER;
 //
+
+#ifndef _Define_FrameBufStruct_2010
+#define _Define_FrameBufStruct_2010
 typedef struct _FrameBufStruct
 {
 	long		ChannelIndex;//总的通道号
@@ -259,6 +262,7 @@ typedef struct _FrameBufStruct
 	int		height;	//<41XD1-17>
 }
 FRAMEBUFSTRUCT;
+#endif
 
 typedef BOOL (CAPTURECALLBACK)(FRAMEBUFSTRUCT *bufStruct);//视频和声音捕捉CallBack函数原形
 //设备管理基类

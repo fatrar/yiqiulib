@@ -72,27 +72,27 @@ BEGIN
     GROUPBOX        "Rule",IDC_Rule_Group,7,4,138,289
 END
 
-IDD_IVALARMOUT DIALOGEX 0, 0, 410, 341
+IDD_IVALARMOUT DIALOGEX 0, 0, 454, 341
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_BORDER
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_ALARMOUT_CAMERA_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_TRACKSELECT | WS_BORDER | WS_TABSTOP,19,17,110,267
-    GROUPBOX        "Static",IDC_STATIC,125,4,270,63
-    GROUPBOX        "Static",IDC_STATIC,124,80,273,195
-    CONTROL         "Radio1",IDC_NOUSE_HOLD,"Button",BS_AUTORADIOBUTTON,143,22,220,10
-    CONTROL         "Radio1",IDC_USE_HOLD,"Button",BS_AUTORADIOBUTTON,141,43,75,10
-    LTEXT           "/s",IDC_STATIC,367,46,8,8
-    COMBOBOX        IDC_ALARM_HOLD_TIME,327,44,33,104,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Check1",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,111,39,10
-    CONTROL         "Check2",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,112,39,10
-    CONTROL         "Check3",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,141,39,10
-    CONTROL         "Check4",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,291,141,39,10
-    CONTROL         "Check5",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,173,39,10
-    CONTROL         "Check6",IDC_CHECK6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,291,171,39,10
-    CONTROL         "Check7",IDC_CHECK7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,204,39,10
-    CONTROL         "Check8",IDC_CHECK8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,202,39,10
-    CONTROL         "Check9",IDC_CHECK9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,235,39,10
-    CONTROL         "Check10",IDC_CHECK10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,232,43,10
+    GROUPBOX        "Alarm Hold",IDC_AlarmHold_Group,154,7,270,63
+    GROUPBOX        "Choose you want Alarm out",IDC_Choose_Alarm_Group,154,87,273,195
+    CONTROL         "Not Hold",IDC_NOUSE_HOLD,"Button",BS_AUTORADIOBUTTON | WS_GROUP,172,25,220,10
+    CONTROL         "When Alarm occured,need hold,time is(second)",IDC_USE_HOLD,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,170,46,183,10
+    COMBOBOX        IDC_ALARM_HOLD_TIME,350,44,33,118,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Check1",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,196,118,39,10
+    CONTROL         "Check2",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,323,119,39,10
+    CONTROL         "Check3",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,195,148,39,10
+    CONTROL         "Check4",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,321,148,39,10
+    CONTROL         "Check5",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,196,180,39,10
+    CONTROL         "Check6",IDC_CHECK6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,321,178,39,10
+    CONTROL         "Check7",IDC_CHECK7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,196,211,39,10
+    CONTROL         "Check8",IDC_CHECK8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,323,209,39,10
+    CONTROL         "Check9",IDC_CHECK9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,196,242,39,10
+    CONTROL         "Check10",IDC_CHECK10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,323,239,43,10
     GROUPBOX        "Alarm Out",IDC_AlarmOut_Group,7,4,138,289
 END
 
@@ -239,7 +239,7 @@ BEGIN
 
     IDD_IVALARMOUT, DIALOG
     BEGIN
-        RIGHTMARGIN, 405
+        RIGHTMARGIN, 449
         BOTTOMMARGIN, 335
     END
 
@@ -535,6 +535,29 @@ BEGIN
     IDS_Schu_Week_Thu       "Thu."
     IDS_Schu_Week_Fri       "Fri."
     IDS_Schu_Week_Sat       "Sat."
+    IDS_Alarm_Out_Group     "Alarm Out"
+    IDS_Alarm_Hold_Group    "Alarm Hold"
+    IDS_Alarm_Not_Hold      "Not Hold"
+    IDS_Alarm_Hold_Des      "When Alarm occured,need hold,time is(second)"
+    IDS_Alarm_Choose_Group  "Choose you want Alarm out"
+    IDS_AlarmOut_Record     "Alarm Record"
+    IDS_AlarmOut_FullScreen "Full Screen"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_AlarmOut_Relay      "Relay"
+    IDS_AlarmOut_Sensor     "Sensor"
+    IDS_AlarmOut_AutoMail   "Auto-Mail"
+    IDS_AlarmOut_EMAP       "E-Map"
+    IDS_AlarmOut_Buzzer     "Buzzer"
+    IDS_AlarmOut_SnapScreen "Snap-Screen"
+    IDS_AlarmOut_PlaySound  "Play Sound"
+    IDS_AlarmOut_TelphoneCall "Telphone Call"
+    IDS_STRING3081          "1"
+    IDS_STRING3082          "1"
+    IDS_STRING3083          "1"
+    IDS_STRING3084          "1"
 END
 
 #endif    // English (U.K.) resources

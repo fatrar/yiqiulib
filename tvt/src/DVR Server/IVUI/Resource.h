@@ -96,6 +96,8 @@
 #define IDC_Colour_BT                   1057
 #define IDC_Rectangle_Check             1058
 #define IDC_Polygon_Check               1059
+#define IDC_AlarmHold_Group             1060
+#define IDC_Choose_Alarm_Group          1061
 #define IDS_Invade                      3006
 #define IDS_Leave_Disappear             3007
 #define IDS_LeftBehind                  3008
@@ -155,6 +157,26 @@
 #define IDS_Schu_Week_Thu               3062
 #define IDS_Schu_Week_Fri               3063
 #define IDS_Schu_Week_Sat               3064
+#define IDS_Alarm_Out_Group             3065
+#define IDS_Alarm_Hold_Group            3066
+#define IDS_Alarm_Not_Hold              3067
+#define IDS_Alarm_Hold_Des              3068
+#define IDS_Alarm_Choose_Group          3069
+#define IDS_AlarmOut_Record             3070
+#define IDS_AlarmOut_FullScreen         3071
+#define IDS_AlarmOut_Relay              3072
+#define IDS_AlarmOut_Sensor             3073
+#define IDS_AlarmOut_AutoMail           3074
+#define IDS_AlarmOut_EMAP               3075
+#define IDS_AlarmOut_Buzzer             3076
+#define IDS_AlarmOut_SnapScreen         3077
+#define IDS_AlarmOut_PlaySound          3078
+#define IDS_STRING3080                  3079
+#define IDS_AlarmOut_TelphoneCall       3079
+#define IDS_STRING3081                  3080
+#define IDS_STRING3082                  3081
+#define IDS_STRING3083                  3082
+#define IDS_STRING3084                  3083
 #define ID__NEW                         32771
 #define ID_RULE_ENABLEALLRULE           32772
 #define ID_RULE_DISABLEALLRULE          32773
@@ -183,7 +205,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1026
 #define _APS_NEXT_COMMAND_VALUE         32792
-#define _APS_NEXT_CONTROL_VALUE         1060
+#define _APS_NEXT_CONTROL_VALUE         1062
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif

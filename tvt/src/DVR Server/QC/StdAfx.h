@@ -26,8 +26,10 @@
 
 
 #include "..\devicecontrol\IIVDevice.h"
-#include "..\IVViewer\Include\IVViewer.h"
+using namespace DeviceFactory;
 
+#include "..\IVViewer\Include\IVViewer.h"
+#include "..\ivui\Include\IVUIInterface.h"
 
 #include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 

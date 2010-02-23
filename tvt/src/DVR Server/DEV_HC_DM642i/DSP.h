@@ -33,7 +33,7 @@ struct IVPACK
 
 
 class CDSP :
-    public IIVDeviceBase,
+    public IIVDeviceBase2,
     public IIVStatistic,
     public IIVDeviceSetter
 {
@@ -226,6 +226,16 @@ public:
         const IV_RuleID& RuleID,
         const AlarmOutSettings& Alarm );
 
+    virtual void RegisterLiveDataCallBack(
+        int nChannelID,
+        IVideoSend* pVideoSend);
+
+    virtual void UnRegisterLiveDataCallBack(
+        int nChannelID, 
+        IVideoSend* pVideoSend);
+
+    virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p);
+
     // IIVStatistic
 public:
     virtual BOOL IsHaveStatisticRule(int nChannelID);
@@ -268,6 +278,10 @@ private:
     ISnapShotSender* m_pSnapShotSender;
     int m_szCurrentIVChannel[MAX_DEVICE_NUM];
     BOOL m_szHaveStatistic[MAX_DEVICE_NUM];
+
+    // 视频额外的预览
+    IVideoSend* m_szVideoSend[MAX_CHANNEL_NUM];
+    CCriticalSection m_VideoSendCS;	
     
     struct CurrentRuleSetting
     {

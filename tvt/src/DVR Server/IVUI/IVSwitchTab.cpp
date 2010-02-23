@@ -55,6 +55,7 @@ void CIVSwitchTab::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CIVSwitchTab, CDialog)
     ON_COMMAND_RANGE(IDC_RULE, IDC_RULE+TAB_BT_NUM, &CIVSwitchTab::ClickTabBt)
     //ON_BN_CLICKED(IDC_RULE, &CIVSwitchTab::OnBnClickedRule)
+    ON_WM_CLOSE()
 END_MESSAGE_MAP()
 // CIVSwitchTab message handlers
 
@@ -143,8 +144,14 @@ BOOL CIVSwitchTab::OnInitDialog()
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
+void CIVSwitchTab::OnBnClickedRule()
+{
+    // TODO: Add your control notification handler code here
+}
+
 
 CIVSwitchTab* g_pIVSwitchTab = NULL;
+IIVDeviceBase2* g_IIVDeviceBase2 =NULL;
 
 #undef new
 #define new new
@@ -152,7 +159,11 @@ CIVSwitchTab* g_pIVSwitchTab = NULL;
 CDialog* CreateIVConfigDlg(CWnd* pWnd, const CRect& rect)
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
-    CIVSwitchTab* g_pIVSwitchTab = new CIVSwitchTab();
+    
+    if ( g_pIVSwitchTab == NULL )
+    {
+        g_pIVSwitchTab = new CIVSwitchTab();
+    }
     
     g_pIVSwitchTab->Init(pWnd, rect);
     return g_pIVSwitchTab;
@@ -161,12 +172,18 @@ CDialog* CreateIVConfigDlg(CWnd* pWnd, const CRect& rect)
 void ReleaseIVConfigDlg()
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
-    delete g_pIVSwitchTab;
-    g_pIVSwitchTab = NULL;
+    
+    safeDelete(g_pIVSwitchTab);   
 }
 
-
-void CIVSwitchTab::OnBnClickedRule()
+void SetIVOpeator( IIVDeviceBase2* p )
 {
-    // TODO: Add your control notification handler code here
+    g_IIVDeviceBase2 = p;
+}
+
+void CIVSwitchTab::OnClose()
+{
+    // TODO: Add your message handler code here and/or call default
+    
+    CDialog::OnClose();
 }

@@ -19,6 +19,7 @@
 #define _IVUIINTERFACE_H_2010_2
 
 #include "..\..\..\Base\Base\Include\Common.h"
+#include "..\..\devicecontrol\IIVDevice.h"
 
 #ifdef IVUI_EXPORTS
     #define IVUI_CLASS CLASS_EXPORT
@@ -41,7 +42,7 @@ class CDialog;
 
 IVUI_API CDialog* CreateIVConfigDlg(CWnd* pWnd, const CRect& rect);
 IVUI_API void ReleaseIVConfigDlg();
-
+IVUI_API void SetIVOpeator(IIVDeviceBase2* p);
 
 
 
@@ -50,6 +51,5 @@ IVUI_API void ReleaseIVConfigDlg();
 
 
  // End of file
-
 
 

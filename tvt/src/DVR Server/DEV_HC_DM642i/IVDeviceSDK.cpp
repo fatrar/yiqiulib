@@ -481,6 +481,30 @@ BOOL CDSP::ModifyAlarmOut(
     return TRUE;
 }
 
+void CDSP::RegisterLiveDataCallBack(
+    int nChannelID,
+    IVideoSend* pVideoSend )
+{
+    AutoLockAndUnlock(m_VideoSendCS);
+    m_szVideoSend[nChannelID] = pVideoSend;
+}
+
+void CDSP::UnRegisterLiveDataCallBack(
+    int nChannelID,
+    IVideoSend* pVideoSend )
+{
+    AutoLockAndUnlock(m_VideoSendCS);
+    ASSERT(pVideoSend == m_szVideoSend[nChannelID]);
+    m_szVideoSend[nChannelID] = NULL;
+}
+
+void CDSP::ReleaseLiveBuf( FRAMEBUFSTRUCT* p )
+{
+    DWORD& DelBufPara = p->BufferPara;
+    int nDevice = DelBufPara >> 8 & 0xFF;
+    int nIndex = DelBufPara & 0xFF;
+    ReleasePrvBuf(nDevice, nIndex);
+}
 //
 // ******************* IIVStatistic *********************
 //

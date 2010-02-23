@@ -33,54 +33,25 @@ CQCDlg::CQCDlg(CWnd* pParent /*=NULL*/)
 {
     main=this;
     //{{AFX_DATA_INIT(CQCDlg)
-    m_ch1 = FALSE;
-    m_ch2 = FALSE;
-    m_ch3 = FALSE;
-    m_ch4 = FALSE;
-
-    m_nCurrentChnanel = 0;
-    m_VideoSize = 0; //by chenlong
 
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_bRun = TRUE; 
 }
 
 void CQCDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CQCDlg)
-
-    DDX_Control(pDX, IDC_CH4, m_cCh4);
-    DDX_Control(pDX, IDC_CH3, m_cCh3);
-    DDX_Control(pDX, IDC_CH2, m_cCh2);
-
-    DDX_Control(pDX, IDC_CH1, m_cCh1);
-    DDX_Check(pDX, IDC_CH1, m_ch1);
-    DDX_Check(pDX, IDC_CH2, m_ch2);
-    DDX_Check(pDX, IDC_CH3, m_ch3);
-    DDX_Check(pDX, IDC_CH4, m_ch4);
-
-    DDX_Text(pDX, IDC_CURRENTCHANNEL, m_nCurrentChnanel);
 	//}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CQCDlg, CDialog)
     //{{AFX_MSG_MAP(CQCDlg)
-    ON_WM_SYSCOMMAND()
     ON_WM_PAINT()
     ON_WM_QUERYDRAGICON()
     ON_BN_CLICKED(IDC_FINISH, OnFinish)
-    ON_BN_CLICKED(IDC_CH1, OnCh1)
-    ON_BN_CLICKED(IDC_CH2, OnCh2)
-    ON_BN_CLICKED(IDC_CH3, OnCh3)
-    ON_BN_CLICKED(IDC_CH4, OnCh4)
-    ON_WM_TIMER()
     ON_WM_DESTROY()
-    ON_BN_CLICKED(IDC_VIEWMODE1, OnViewmode1)
-    ON_BN_CLICKED(IDC_VIEWMODE16, OnViewmode16)
-    ON_BN_CLICKED(IDC_BTN_NEXTVIEW, OnBtnNextview)
 	//}}AFX_MSG_MAP
     ON_BN_CLICKED(IDC_Show_IV_Config, &CQCDlg::OnBnClickedShowIvConfig)
     ON_WM_RBUTTONDOWN()
@@ -98,22 +69,22 @@ BOOL CQCDlg::OnInitDialog()
     ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
     ASSERT(IDM_ABOUTBOX < 0xF000);
     
-    CMenu* pSysMenu = GetSystemMenu(FALSE);
-    if (pSysMenu != NULL)
-    {
-        CString strAboutMenu;
-        strAboutMenu.LoadString(IDS_ABOUTBOX);
-        if (!strAboutMenu.IsEmpty())
-        {
-            pSysMenu->AppendMenu(MF_SEPARATOR);
-            pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
-        }
-    }
+    //CMenu* pSysMenu = GetSystemMenu(FALSE);
+    //if (pSysMenu != NULL)
+    //{
+    //    CString strAboutMenu;
+    //    strAboutMenu.LoadString(IDS_ABOUTBOX);
+    //    if (!strAboutMenu.IsEmpty())
+    //    {
+    //        pSysMenu->AppendMenu(MF_SEPARATOR);
+    //        pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+    //    }
+    //}
     
     // Set the icon for this dialog.  The framework does this automatically
     //  when the application's main window is not a dialog
     SetIcon(m_hIcon, TRUE);			// Set big icon
-    SetIcon(m_hIcon, FALSE);		// Set small icon
+    //SetIcon(m_hIcon, FALSE);		// Set small icon
     
     int xScreen=0,yScreen=0; //djx 07/07/13
     xScreen = GetSystemMetrics(SM_CXSCREEN);
@@ -121,35 +92,15 @@ BOOL CQCDlg::OnInitDialog()
     xScreen>1024?xScreen=-1:xScreen=0;
     yScreen>768?yScreen=-1:yScreen=0;
     MoveWindow(xScreen, yScreen, 1024, 768);
-    
-    //画面切换按钮
-    GetDlgItem(IDC_BMP_VIEWMODE1)->ShowWindow(FALSE);
-    GetDlgItem(IDC_BMP_VIEWMODE4)->ShowWindow(FALSE);
-    GetDlgItem(IDC_BMP_VIEWMODE16)->ShowWindow(FALSE);
-    GetDlgItem(IDC_VIEWMODE1)->ShowWindow(FALSE);
-    GetDlgItem(IDC_VIEWMODE4)->ShowWindow(FALSE);
-    GetDlgItem(IDC_VIEWMODE16)->ShowWindow(FALSE);
-    GetDlgItem(IDC_BTN_NEXTVIEW)->ShowWindow(FALSE);
-    GetDlgItem(IDC_STATIC_CURRENTCHANNEL)->ShowWindow(FALSE);
-    GetDlgItem(IDC_CURRENTCHANNEL)->ShowWindow(FALSE);
   
 #ifdef UI_DEBUG
     return TRUE;
 #endif // UI_DEBUG
     
-
     InitialVar();
 
     g_card_id = m_card_infor.card_type_id = DVR_CARD_TD4104i;
-               
-   /* CRect IvRect;
-    GetClientRect(&IvRect);
-    m_pIVDlg = CreateIVConfigDlg(this, IvRect);
-    m_pIVDlg->ShowWindow(SW_SHOW);
-    return TRUE;*/
-
-    //long lMode = m_DB.GetMode();
-    
+                 
     CSignalDlg sDlg;
     
     //sDlg.m_bSignal = lMode;		
@@ -165,31 +116,17 @@ BOOL CQCDlg::OnInitDialog()
     }
     else
     {
-        m_dwVideoFormat = DVRVIDEO_STANDARD_NTSC;
-        if (m_card_infor.card_type_id != DVR_CARD_TD4108) //djx 2008/7/22 4108
-        {
-            RecBmpHeader.biWidth = 352;
-        }
-        else
-        {
-            RecBmpHeader.biWidth = 320;
-        }
+        m_dwVideoFormat = DVRVIDEO_STANDARD_NTSC;   
+        RecBmpHeader.biWidth = 352;
         RecBmpHeader.biHeight = 240;
     }
-    
-   // m_DB.SaveMode(sDlg.m_bSignal);
-    
-    LoadVideoRadio(0, 4, TRUE);//by chenlong
-    
+       
     /*加载匹配的dll*/
     m_DSPDLL = NULL;
     m_MyDSP = NULL;   
-     
-    
-    if (!LoadMatchLibrary(m_card_infor.card_type_id))
-    {
-        return FALSE;
-    }
+      
+    CString strDllPath = m_ExePath + "DEV_HC_DM642i.dll";
+    m_DSPDLL = ::LoadLibrary((char*)(LPCTSTR)strDllPath);
     
     /*加载完Dll后的操作*/
     m_MyDSP = (CDeviceManager *)::GetProcAddress(m_DSPDLL, "g_Dev_Object");
@@ -202,9 +139,16 @@ BOOL CQCDlg::OnInitDialog()
         return FALSE;
     }
     
-    typedef IIVDeviceSetter* (*fn)();
-    fn f = (fn)::GetProcAddress(m_DSPDLL, "GeIVDeviceSetter");
+    //typedef IIVDeviceSetter* (*fn)();
+    GeIVDeviceSetterFn f = 
+        (GeIVDeviceSetterFn)::GetProcAddress(
+        m_DSPDLL, g_szIVDeviceFuncName[GeIVDeviceSetter_Index] );
     f()->SetIVDataCallBack( IVLiveFactory::GetDataSender() );
+
+    GetIVDeviceBase2Fn f2 = 
+        (GetIVDeviceBase2Fn)::GetProcAddress(
+        m_DSPDLL, g_szIVDeviceFuncName[GetIVDeviceBase2_Index]);;
+    SetIVOpeator(f2());
 
     m_card_infor.resPassWord = m_MyDSP->Password();
     
@@ -230,48 +174,8 @@ BOOL CQCDlg::OnInitDialog()
         m_MyDSP->SetChannelStatus(CHSTATUS_SET_AUDIO_ENABLE, i, 0);
     }
 
-    VideoChannelControl(m_card_infor.video_channel_number);
     UpdateData(FALSE);
-    m_bCanDoSectionTest = TRUE;
-
     return TRUE;  // return TRUE  unless you set the focus to a control
-}
-
-/*加载匹配的DLL by chenlong*/
-BOOL CQCDlg::LoadMatchLibrary(int nId)
-{                 
-    CString strDllPath = m_ExePath + "DEV_HC_DM642i.dll";
-    m_DSPDLL = ::LoadLibrary((char*)(LPCTSTR)strDllPath);
-    if (m_DSPDLL == NULL)
-    {
-        DWORD dw = GetLastError();
-        CString str;
-        str.Format("Can not find the %s", str);
-        MessageBox(str);
-        return FALSE;
-    }
-    return TRUE;
-}
-
-/*加载视频控件by chenlong*/
-void CQCDlg::LoadVideoRadio(int nBegin, int nEnd, BOOL bShow)
-{
-    for (int n = nBegin; n < nEnd; n++)
-    {
-        GetDlgItem(IDC_CH1 + n)->ShowWindow(bShow);
-    }
-}
-
-void CQCDlg::OnSysCommand(UINT nID, LPARAM lParam)
-{
-    if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-    {
-       
-    }
-    else
-    {
-        CDialog::OnSysCommand(nID, lParam);
-    }
 }
 
 // If you add a minimize button to your dialog, you will need the code below
@@ -330,12 +234,6 @@ void CQCDlg::OnFinish()
     return;
 #endif // UI_DEBUG
 
-    int	i = 0;
-    
-
-    m_bRun = FALSE;
-    
- 
     /*增加了3304S,3308S by chenlong*/
     if (m_card_infor.card_type_id == DVR_CARD_TD4104 ||
 		m_card_infor.card_type_id == DVR_CARD_TD4104i ||
@@ -360,70 +258,11 @@ void CQCDlg::OnFinish()
     CDialog::OnOK();
 }
 
-void CQCDlg::VideoChannelControl(int ch_num)
-{  
-    int cnt = 4;     
-    if ((cnt--) > ch_num)
-    {
-        m_cCh4.ShowWindow(FALSE);
-    }
-    else
-    {
-        return ;
-    }
-    
-    if ((cnt--) > ch_num)
-    {
-        m_cCh3.ShowWindow(FALSE);
-    }
-    else
-    {
-        return ;
-    }
-    
-    if ((cnt--) > ch_num)
-    {
-        m_cCh2.ShowWindow(FALSE);
-    }
-    else
-    {
-        return ;
-    }
-    
-    if ((cnt--) >= ch_num)
-    {
-        m_cCh1.ShowWindow(FALSE);
-    }
-    else
-    {
-        return ;
-    }
-}
-
-
-void CQCDlg::OnCh1() 
-{
-}
-
-void CQCDlg::OnCh2() 
-{
-}
-
-void CQCDlg::OnCh3() 
-{
-}
-
-void CQCDlg::OnCh4() 
-{
-}
-
 void CQCDlg::InitialVar()
 {   
     m_ddraw = new CDirectDraw(m_hWnd);
     m_ddraw->IniDirectDraw();
-    m_bCanDoSectionTest=FALSE;
     m_dwVideoFormat=DVRVIDEO_STANDARD_PAL;
-    m_video_size_type=DVRVIDEO_SIZE_320x240;
     char szBuf[1024] = {0};
     DWORD len = 1024;
     if(GetModuleFileName(NULL,szBuf,len)!=0)
@@ -480,24 +319,6 @@ BOOL CQCDlg::PreTranslateMessage(MSG* pMsg)
     return CDialog::PreTranslateMessage(pMsg);
 }
 
-BOOL CQCDlg::OnCommand(WPARAM wParam, LPARAM lParam) 
-{
-    // TODO: Add your specialized code here and/or call the base class
-    return CDialog::OnCommand(wParam, lParam);
-}
-
-
-void CQCDlg::OnTimer(UINT nIDEvent) 
-{
-    CDialog::OnTimer(nIDEvent);
-}
-
-/*获得通道数 by chenlong*/
-int CQCDlg::GetChannelNum(int nId)
-{
-    return 4;
-}
-
 void CQCDlg::OnDestroy() 
 {
     CDialog::OnDestroy();
@@ -513,45 +334,6 @@ void CQCDlg::OnDestroy()
     }
     
     delete m_ddraw;  
-}
-
-void CQCDlg::OnViewmode1() 
-{
-    // TODO: Add your control notification handler code here
-    GetDlgItem(IDC_STATIC_CURRENTCHANNEL)->ShowWindow(TRUE);
-    GetDlgItem(IDC_CURRENTCHANNEL)->ShowWindow(TRUE);
-    GetDlgItem(IDC_BTN_NEXTVIEW)->ShowWindow(TRUE);
-    UpdateData(TRUE);
-    
-    m_ddraw->ShowOverlay(TRUE);
-    m_ddraw->DrawOverlayBack();
-}
-
-void CQCDlg::OnViewmode16() 
-{
-    // TODO: Add your control notification handler code here
-    GetDlgItem(IDC_STATIC_CURRENTCHANNEL)->ShowWindow(FALSE);
-    GetDlgItem(IDC_CURRENTCHANNEL)->ShowWindow(FALSE);
-    GetDlgItem(IDC_BTN_NEXTVIEW)->ShowWindow(FALSE);
-    
-    UpdateData(TRUE);
-    
-    m_ddraw->ShowOverlay(TRUE);
-    m_ddraw->DrawOverlayBack();
-}
-
-void CQCDlg::OnBtnNextview() 
-{
-    // TODO: Add your control notification handler code here
-    m_nCurrentChnanel++;
-    if (m_nCurrentChnanel > 16)
-    {
-        m_nCurrentChnanel = 1;
-    }
-    
-    UpdateData(FALSE);
-    
-    OnViewmode1();
 }
 
 VOID CQCDlg::YUV420_YUV422Pack(void *pDst, void *pSrc, unsigned int nWidth, unsigned int nHeight, unsigned int nPitch, INT src420Subtype)
@@ -691,61 +473,6 @@ YU_NEXT_LINE:
         }
     }
 }
-
-void CQCDlg::VideoFormatChange(DWORD videoformat)
-{
-    if (m_dwVideoFormat == videoformat)
-    {
-        return;
-    }
-    m_dwVideoFormat = videoformat;
-    
-    int width = 352;
-    int height = 0;
-    
-    if (m_dwVideoFormat == DVRVIDEO_STANDARD_PAL)
-    {
-        height = 288;
-    }
-    else
-    {
-        height = 240;
-    }
-    
-    BITMAPINFOHEADER RecBmpHeader;
-    RecBmpHeader.biWidth = width;
-    RecBmpHeader.biHeight = height;
-
-    DWORD pSwitch[16] = {0};
-    
-    m_MyDSP->VideoCaptureStop();
-    m_MyDSP->DeviceFree();
-    ::FreeLibrary(m_DSPDLL);
-    
-    m_DSPDLL = NULL;
-    m_MyDSP = NULL;
-    
-    if (!LoadMatchLibrary(m_card_infor.card_type_id))
-    {
-        return;
-    }
-    
-    m_MyDSP = (CDeviceManager *)::GetProcAddress(m_DSPDLL, "g_Dev_Object");
-    ASSERT(m_MyDSP != NULL);
-    
-    int nChannelNum = GetChannelNum(m_card_infor.card_type_id);
-    
-    m_ddraw->FreeDSPBack();
-    
-    DWORD dwType;
-    m_MyDSP->DeviceInitial(m_dwVideoFormat, VideoCALLBACKFUNC, AudioCALLBACKFUNC, m_hWnd, &dwType);	
-    m_card_infor.resPassWord = m_MyDSP->Password();
-    
-       
-    m_MyDSP->SetSwitch(pSwitch, nChannelNum);
-    m_MyDSP->VideoCaptureStart(0,RecBmpHeader);
-}
-
 
 void CQCDlg::OnBnClickedShowIvConfig()
 {
