@@ -62,6 +62,7 @@
 
 #define END_WINDOWS_NAMESPACE  END_BASE_ENGINE }; };
 
+#include "IDrawer.h"
 #include "Drawer.h"
 #include "WindowsUtil.h"
 using namespace OCI::System::Windows;

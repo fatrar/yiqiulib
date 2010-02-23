@@ -22,30 +22,20 @@
 
 
 
-
-
-namespace DrawerFactory
+IDrawer* DrawerFactory::CreateDrawer( IDrawerGraphType t )
 {
-    IDrawer* CreateDrawer( IDrawerGraphType t )
+    switch (t)
     {
-        switch (t)
-        {
-        case IDrawer_Rectangle:
-            return new CRectangleDrawer();
-        case IDrawer_Polygon:
-            return new CPolygonDrawer();
-        case IDrawer_Line:
-            return new CLineDrawer();
-        case IDrawer_ArrowLine:
-            return new CArrowLineDrawer();
-        default:
-            return NULL;
-        }
+    case IDrawer_Rectangle: return new CRectangleDrawer();
+    case IDrawer_Polygon:   return new CPolygonDrawer();
+    case IDrawer_Line:      return new CLineDrawer();
+    case IDrawer_ArrowLine: return new CArrowLineDrawer();
+    default:
+        return NULL;
     }
+}
 
-    void DestoryDrawer( IDrawer* p ){ safeDelete(p); }
-
-};
+void DrawerFactory::DestoryDrawer( IDrawer* p ){ safeDelete(p); }
 
 
 
