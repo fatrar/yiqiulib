@@ -252,21 +252,25 @@ typedef struct _AUDIO_PROPER
 	DWORD agc;
 }AUDIO_PROPER;
 //
+
+#ifndef _Define_FrameBufStruct_2010
+#define _Define_FrameBufStruct_2010
 typedef struct _FrameBufStruct
 {
-	long		ChannelIndex;//总的通道号
-	DWORD		BufferPara;//删除Buffer参数,如果是视频包括卡Index和BufIndex，如果是声音高16表示是否为PC自带声音
-	BYTE     	*pBuf;//此帧数据的Buffer地址
-	long		BufLen;//此帧数据的Buffer长度
-	ULONGLONG	localTime;// 采集时的绝对时间单位为100nm
-	ULONGLONG	FrameTime;//采集的相对时间
-	DWORD      	nStreamID;//流类型
-	long      	nVLostFlag;//信号状态
-	long		bIsKeyFrame;//当数据为压缩数据时，是否为关键帧
-	int		width;	//<41XD1-17>
-	int		height;	//<41XD1-17>
+    long		ChannelIndex;//总的通道号
+    DWORD		BufferPara;//删除Buffer参数,如果是视频包括卡Index和BufIndex，如果是声音高16表示是否为PC自带声音
+    BYTE     	*pBuf;//此帧数据的Buffer地址
+    long		BufLen;//此帧数据的Buffer长度
+    ULONGLONG	localTime;// 采集时的绝对时间单位为100nm
+    ULONGLONG	FrameTime;//采集的相对时间
+    DWORD      	nStreamID;//流类型
+    long      	nVLostFlag;//信号状态
+    long		bIsKeyFrame;//当数据为压缩数据时，是否为关键帧
+    int		width;	//<41XD1-17>
+    int		height;	//<41XD1-17>
 }
 FRAMEBUFSTRUCT;
+#endif
 
 typedef BOOL (CAPTURECALLBACK)(FRAMEBUFSTRUCT *bufStruct);//视频和声音捕捉CallBack函数原形
 //设备管理基类

@@ -24,6 +24,8 @@ public:
 public:
     BOOL Init(CWnd* pWnd, const CRect& Rect);
 
+    void Enable(BOOL bEnable = TRUE);
+
 protected:
     virtual void OnUpdateMemu(
         CMenu* pMenu,
@@ -39,7 +41,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
     afx_msg void OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
-	DECLARE_MESSAGE_MAP()
+    afx_msg void OnBnClickedAddCheck();
+    afx_msg void OnBnClickedEraseCheck();
+    afx_msg void OnDestroy();
+    DECLARE_MESSAGE_MAP()
 
     enum
     {
@@ -56,13 +61,10 @@ protected:
         BT_Height = 20,
     };
 private:
+    CStatic m_SchuduleGroup; 
     CTreeCtrl m_CameraTree;
+
     CScheduleCtrl m_ScheduleCtrl[Week_Day];
     CButton m_AddCheck;
     CButton m_EraseCheck;
-    afx_msg void OnBnClickedAddCheck();
-    afx_msg void OnBnClickedEraseCheck();
-private:
-    CStatic m_SchuduleGroup;
-    afx_msg void OnDestroy();
 };

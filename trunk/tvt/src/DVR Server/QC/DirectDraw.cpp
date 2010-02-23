@@ -394,7 +394,6 @@ BOOL CDirectDraw::IniDirectDraw()
 
 BOOL CDirectDraw::DrawBuffer(int index, LPBYTE pBuffer, WORD len)
 {
-	HRESULT ddrval;
 	DDSURFACEDESC2 ddsd;
 	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
@@ -405,8 +404,7 @@ BOOL CDirectDraw::DrawBuffer(int index, LPBYTE pBuffer, WORD len)
 	}
 
 	first = FALSE;
-	ddrval = m_lpddsBack->Lock(NULL, &ddsd, DDLOCK_SURFACEMEMORYPTR , NULL);
-
+	HRESULT ddrval = m_lpddsBack->Lock(NULL, &ddsd, DDLOCK_SURFACEMEMORYPTR , NULL);
 	if(ddrval != DD_OK) 
 	{
 		m_pddsPrimary->Restore();

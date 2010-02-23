@@ -45,7 +45,7 @@ END_MESSAGE_MAP()
 
 CIVUIApp::CIVUIApp()
 {
-    g_hmodule = GetModuleHandle(L"IVUI.dll");
+    g_hmodule = GetModuleHandle(_T("IVUI.dll"));
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }

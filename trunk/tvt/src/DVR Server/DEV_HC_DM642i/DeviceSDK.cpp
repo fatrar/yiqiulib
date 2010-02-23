@@ -1008,6 +1008,11 @@ namespace DeviceFactory
         return g_Dev_Object.m_pDSP;
     }
 
+    IIVDeviceBase2* GetIVDeviceBase2( void )
+    {
+        return g_Dev_Object.m_pDSP;
+    }
+
     IIVDeviceSetter* GeIVDeviceSetter( void )
     {
         return g_Dev_Object.m_pDSP;

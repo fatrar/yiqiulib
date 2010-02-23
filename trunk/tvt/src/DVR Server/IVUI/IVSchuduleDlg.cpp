@@ -164,6 +164,16 @@ void CIVSchuduleDlg::OnBnClickedEraseCheck()
 
 void CIVSchuduleDlg::OnDestroy()
 {
-    __super::OnDestroy();
     UnitCameraTree(m_CameraTree);
+    __super::OnDestroy();
+}
+
+void CIVSchuduleDlg::Enable( BOOL bEnable /*= TRUE*/ )
+{
+    m_AddCheck.EnableWindow(bEnable);
+    m_EraseCheck.EnableWindow(bEnable);
+    for (int i=0;i<Week_Day;++i)
+    {
+        m_ScheduleCtrl[i].EnableWindow(bEnable);
+    }
 }

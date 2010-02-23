@@ -172,6 +172,8 @@ CDSP::CDSP()
     m_szCurrentIVChannel[0] = 1;
 
     ZeroMemory(m_szHaveStatistic, sizeof(m_szHaveStatistic));
+
+    ZeroMemory(m_szVideoSend, sizeof(m_szVideoSend));
 }
 
 CDSP::~CDSP()
@@ -647,7 +649,7 @@ void CDSP::GetPrvData(int nDevice)
 
         pStatus = (PTVT_CAP_STATUS)pData;
         
-        pStatus->dwReserve4 = 4;	//一次处理整块卡4通道数据
+        pStatus->dwReserve4 = CHANNEL_PER_DEVICE;	//一次处理整块卡4通道数据
         for (int nChannel = 0; nChannel < CHANNEL_PER_DEVICE; nChannel++)
         {
             GetOneChannelPreData(nChannel, nDevice, pData, pStatus);
@@ -697,9 +699,21 @@ void CDSP::GetOneChannelPreData(
     m_pPrvBuf[nDevice][nIndex].BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
 
     PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
-    BOOL bRc = m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
+    
+    bool bflag = true;
+    m_VideoSendCS.Lock();
+    if ( m_szVideoSend[nChannel] )
+    {
+        m_szVideoSend[nChannel]->OnVideoSend(&m_pPrvBuf[nDevice][nIndex]);
+        bflag = false;
+    }
+    m_VideoSendCS.Unlock();
 
-
+    if ( bflag )
+    {
+        BOOL bRc = m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
+    }
+    
 #ifdef PRECOPY 
     ReleaseDriverBuffer(pStatus);
 #endif
@@ -1781,6 +1795,7 @@ DWORD CDSP::NetFrameRateInc(int inc)
 
 	return RefreshNetFrameRate();
 }
+
 
 
 // end of file  old -> 2114

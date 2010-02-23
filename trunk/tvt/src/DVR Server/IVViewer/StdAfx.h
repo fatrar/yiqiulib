@@ -54,6 +54,7 @@ using namespace OCI;
 #include "..\DEVICEControl\WPG_EventOccurrence.h"
 #include "..\DEVICEControl\IIVDataSender.h"
 
+#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 #include "IVViewerUtil.h"
 
 #include "Include\IVViewer.h"

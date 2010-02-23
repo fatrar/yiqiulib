@@ -52,7 +52,6 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-
 #include "..\..\Base\Base\Include\Common.h"
 #include ".\Include\IVUIInterface.h"
 #include "..\devicecontrol\IIVDevice.h"
@@ -71,3 +70,7 @@
 #include "LineAdvDlg.h"
 #include "ZoneAdvDlg.h"
 #include "FilterDlg.h"
+#include "SingleVideoPlayer.h"
+
+
+extern IIVDeviceBase2* g_IIVDeviceBase2;
