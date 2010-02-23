@@ -238,6 +238,8 @@ void CArrowLineDrawer::OnPaint()
 
     DrawCircle(&dc, BeginPoint, Point_Radii);
     DrawCircle(&dc, EndPoint, Point_Radii);
+    dc.TextOut(BeginPoint.x, BeginPoint.y+Point_Radii, _T("A"), 1);
+    dc.TextOut(EndPoint.x, EndPoint.y+Point_Radii, _T("B"), 1);
 
     // 利用垂直和两点的距离算出两个点的坐标
     CPoint MedPoint((BeginPoint.x + EndPoint.x)/2, (BeginPoint.y + EndPoint.y)/2);
@@ -263,10 +265,17 @@ void CArrowLineDrawer::OnPaint()
         o = atan(tanValue);
     }
    
+    // 修正两种特殊情况，因为我把它的角度转换为[0, pi]区间的，
+    // atan取值范围为(-pi/2, pi/2)
     if ( o < 0 )
     {
         o += M_PI;
     }
+    else if ( o == 0 && nXoffset > 0 )
+    {
+        o = M_PI;
+    }
+
     bool bUp = (A[0].y > A[1].y);
     //bool bUp = (A[0].x > A[1].x) ^ (A[0].y < A[1].y);
     //bool bUp = GetPointRLineState(BeginPoint, EndPoint, A[1]) > 0; 

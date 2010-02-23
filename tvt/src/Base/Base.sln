@@ -11,6 +11,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BaseTest", "BaseTest\BaseTe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml_dynamic", "tinyxml\tinyxml_dynamic.vcproj", "{F6F48206-B09B-403A-A0CD-8CCF18E5749B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Windows", "Windows\Windows.vcproj", "{B10AE6F7-26E1-4C24-A89C-F6761F728F99}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsTest", "WindowsTest\WindowsTest.vcproj", "{87156CEF-D2C2-4A07-B8C0-C95A1242E075}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -37,6 +41,14 @@ Global
 		{F6F48206-B09B-403A-A0CD-8CCF18E5749B}.Debug|Win32.Build.0 = Debug|Win32
 		{F6F48206-B09B-403A-A0CD-8CCF18E5749B}.Release|Win32.ActiveCfg = Release|Win32
 		{F6F48206-B09B-403A-A0CD-8CCF18E5749B}.Release|Win32.Build.0 = Release|Win32
+		{B10AE6F7-26E1-4C24-A89C-F6761F728F99}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B10AE6F7-26E1-4C24-A89C-F6761F728F99}.Debug|Win32.Build.0 = Debug|Win32
+		{B10AE6F7-26E1-4C24-A89C-F6761F728F99}.Release|Win32.ActiveCfg = Release|Win32
+		{B10AE6F7-26E1-4C24-A89C-F6761F728F99}.Release|Win32.Build.0 = Release|Win32
+		{87156CEF-D2C2-4A07-B8C0-C95A1242E075}.Debug|Win32.ActiveCfg = Debug|Win32
+		{87156CEF-D2C2-4A07-B8C0-C95A1242E075}.Debug|Win32.Build.0 = Debug|Win32
+		{87156CEF-D2C2-4A07-B8C0-C95A1242E075}.Release|Win32.ActiveCfg = Release|Win32
+		{87156CEF-D2C2-4A07-B8C0-C95A1242E075}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
