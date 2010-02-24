@@ -52,14 +52,20 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+#include <map>
+#include <string>
+using namespace std;
 #include "..\..\Base\Base\Include\Common.h"
 #include ".\Include\IVUIInterface.h"
 #include "..\devicecontrol\IIVDevice.h"
-
+#include "..\DEV_HC_DM642i\Include\IVUtil.h"
+#include "..\IVCfgMgr\Include\IIVCfgMgr.h"
 #include "IVUIComDef.h"
 
+#include "..\..\Base\Windows\Include\IDrawer.h"
+using namespace OCI::System;
 
-#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
+//#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
 #include "IVRuleDlg.h"
 #include "IVAlarmOutDlg.h"
@@ -73,4 +79,6 @@
 #include "SingleVideoPlayer.h"
 
 
+
 extern IIVDeviceBase2* g_IIVDeviceBase2;
+

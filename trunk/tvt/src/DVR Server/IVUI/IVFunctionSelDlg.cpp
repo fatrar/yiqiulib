@@ -40,7 +40,19 @@ END_MESSAGE_MAP()
 
 void CIVFunctionSelDlg::OnBnClickedOk()
 {
-    m_nSel = m_FunList.GetSelectedColumn();
+    POSITION pos = m_FunList.GetFirstSelectedItemPosition(); 
+    if ( pos == NULL )
+    {
+        AfxMessageBox(_T("Please Select a Column"));
+        return;
+    }
+
+    m_nSel = m_FunList.GetNextSelectedItem(pos);
+    if ( m_nSel == -1 )
+    {
+        AfxMessageBox(_T("Please Select a Column"));
+        return;
+    }
     OnOK();
 }
 
@@ -69,7 +81,9 @@ BOOL CIVFunctionSelDlg::OnInitDialog()
         m_FunList.SetItemText(i, 1, strFunctionName);
     }
 
-    m_FunList.SetSelectedColumn(0);
+    m_FunList.SetExtendedStyle(m_FunList.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+    //m_FunList.SetItemState(0,LVIS_SELECTED,LVIS_SELECTED);
+    m_FunList.SetItemState(0, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
 
     UpdateData(FALSE);
     return TRUE;  // return TRUE unless you set the focus to a control

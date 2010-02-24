@@ -427,6 +427,10 @@
 				RelativePath="..\DEVICECONTROL\IIVDevice.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Include\IVUtil.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\res\081023N"

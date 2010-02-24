@@ -259,10 +259,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\RuleAddMainDlg.h"
-					>
-				</File>
-				<File
 					RelativePath=".\StageChangeDlg.h"
 					>
 				</File>
@@ -300,10 +296,6 @@
 				</File>
 				<File
 					RelativePath=".\LineAdvDlg.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\RuleAddMainDlg.cpp"
 					>
 				</File>
 				<File
@@ -382,13 +374,6 @@
 			<File
 				RelativePath=".\SingleVideoPlayer.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp"
@@ -409,6 +394,26 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="RuleMainDlg"
+			>
+			<File
+				RelativePath=".\RuleAddMainDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RuleAddMainDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RuleMainBaseDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RuleMainBaseDlg.h"
+				>
 			</File>
 		</Filter>
 		<File

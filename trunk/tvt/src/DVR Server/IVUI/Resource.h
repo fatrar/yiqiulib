@@ -60,6 +60,7 @@
 #define IDC_CURSOR_CLEAR                1024
 #define IDC_CHECK_VEHICLE               1025
 #define IDD_Add_Rule_Main               1025
+#define IDD_Add_Edit_Rule_Main          1025
 #define IDC_CHECK_OTHER                 1026
 #define IDC_CHECK_ALL                   1027
 #define IDC_TIME                        1028
@@ -171,7 +172,6 @@
 #define IDS_AlarmOut_Buzzer             3076
 #define IDS_AlarmOut_SnapScreen         3077
 #define IDS_AlarmOut_PlaySound          3078
-#define IDS_STRING3080                  3079
 #define IDS_AlarmOut_TelphoneCall       3079
 #define IDS_STRING3081                  3080
 #define IDS_STRING3082                  3081

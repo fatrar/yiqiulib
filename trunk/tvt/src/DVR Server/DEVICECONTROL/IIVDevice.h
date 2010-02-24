@@ -59,6 +59,9 @@ enum
 {
     Max_Schedule_day = 24,
     Default_Hold_Time = 5,
+
+    Default_Loiters_duration = 10,
+    Default_LeftBehind_duration = 10,
 };
 
 // 时间是按顺序排，从小到大
@@ -140,9 +143,9 @@ union IV_RuleID
 {
     struct RULE_ID
     {
-        static DWORD s_dwID;
         void Init(IVRuleType type)
         {
+            static DWORD s_dwID = 0;
             ID = s_dwID++;
             nType = type;
             SYSTEMTIME syt;
@@ -174,7 +177,7 @@ union IV_RuleID
     }
 };
 
-DWORD IV_RuleID::RULE_ID::s_dwID = 0;
+//DWORD IV_RuleID::RULE_ID::s_dwID = 0;
 
 // 第三个为通道，第四个为时间戳，第五个为回调传过来的用户参数
 typedef BOOL (*AlarmCallBackFn)(const AlarmOutTable&,IVRuleType,int,const FILETIME*,void* pParm);

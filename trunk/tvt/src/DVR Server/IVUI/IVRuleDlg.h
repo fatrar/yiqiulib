@@ -51,6 +51,7 @@ protected:
         int nChannelID,
         HTREEITEM Item );
 
+    // IVideoSend
 protected:
     virtual BOOL OnVideoSend(FRAMEBUFSTRUCT *bufStruct);
 
@@ -60,13 +61,22 @@ protected:
         X_Offset = 30,
         Y_Offset = 30,
         PlayerWnd_ID = 0x8100,
+
+        Invaild_ChannelID = -1,
+        Max_Channel = 4,
     };
+
+    typedef map<string, WPG_Rule*> ChannelRule;
+
+    void LoadCfgDataToBuf();
 
 private:
     CTreeCtrl m_CameraTree;
     CStatic m_RuleGroup;
 
     CWnd m_PlayerWnd;
-    CYUVSingleVideoPlayer m_Player;   
-    
+    CYUVSingleVideoPlayer m_Player;
+    int m_nCurrentChan;
+
+    ChannelRule m_AllRule[Max_Channel];
 };

@@ -169,6 +169,11 @@ bool IIVCfgMgr::IVVistor::operator == (const IIVCfgMgr::IVVistor& v) const
     return this->m_pEle == v.m_pEle;
 }
 
+bool IIVCfgMgr::IVVistor::operator != (const IIVCfgMgr::IVVistor& v) const
+{
+    return this->m_pEle != v.m_pEle;
+}
+
 IIVCfgMgr::IVVistor IIVCfgMgr::IVVistor::Next()
 {
     assert(m_pEle);
