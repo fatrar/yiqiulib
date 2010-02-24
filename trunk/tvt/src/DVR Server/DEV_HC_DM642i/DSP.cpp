@@ -211,10 +211,10 @@ BOOL CDSP::DeviceInit()
         ZeroMemory( &stIn,  sizeof(APP_DRIVER_BUFFER_INFO) );
         ZeroMemory( &stOut, sizeof(APP_DRIVER_BUFFER_INFO) );
         m_nDeviceNum++;
-		stIn.m_hEvent[0] = m_hPrvEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
-		stIn.m_hEvent[1] = m_hCompressEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
+		stIn.m_hEvent[0] = m_hPrvEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
+		stIn.m_hEvent[1] = m_hCompressEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
         stIn.m_hEvent[2] = NULL; // CreateEvent(NULL, TRUE, FALSE, NULL); // stIn.m_hEvent[2] 该参数未启用，为它传递一个值，只为避开驱动层的参数检查
-		stIn.m_hEvent[3] = m_hAudEvent[i] = CreateEvent(NULL, TRUE, FALSE, NULL);
+		stIn.m_hEvent[3] = m_hAudEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
 		stIn.m_hEvent[4] = NULL; //CreateEvent(NULL, TRUE, FALSE, NULL);
 		BOOL bRtn = ControlDriver(
             i,
