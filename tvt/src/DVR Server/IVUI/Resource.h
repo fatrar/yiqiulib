@@ -59,7 +59,6 @@
 #define IDC_CHECK_PERSON                1024
 #define IDC_CURSOR_CLEAR                1024
 #define IDC_CHECK_VEHICLE               1025
-#define IDD_Add_Rule_Main               1025
 #define IDD_Add_Edit_Rule_Main          1025
 #define IDC_CHECK_OTHER                 1026
 #define IDC_CHECK_ALL                   1027
@@ -98,6 +97,7 @@
 #define IDC_Rectangle_Check             1058
 #define IDC_Polygon_Check               1059
 #define IDC_AlarmHold_Group             1060
+#define IDC_Clear_Check2                1060
 #define IDC_Choose_Alarm_Group          1061
 #define IDS_Invade                      3006
 #define IDS_Leave_Disappear             3007

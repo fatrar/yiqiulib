@@ -146,7 +146,7 @@ BOOL CIVDataBuf::Init(int nDeviceCount,int nEveryDeviceChannelNum)
     m_Event = new HANDLE[nEventCount];
     for ( int i=0; i<nEventCount; ++i )
     {
-        m_Event[i] = CreateEvent(NULL,TRUE,FALSE,NULL);
+        m_Event[i] = CreateEvent(NULL,FALSE,FALSE,NULL);
     }
 
     m_Thread = (HANDLE)_beginthreadex(
@@ -255,7 +255,7 @@ size_t WINAPI CIVDataBuf::SaveFileThread( void* pParm )
 size_t CIVDataBuf::SaveFileLoopFun(HANDLE h)
 {
     BOOL bExit = FALSE;
-    while (bExit)
+    while (!bExit)
     {
         DWORD dwRc = WaitForMultipleObjects(
             1+m_nDeviceCount*3,
@@ -284,6 +284,7 @@ size_t CIVDataBuf::SaveFileLoopFun(HANDLE h)
             switch (dwEventID)
             {
             case _SaveFileEvent:
+                //ResetEvent()
                 DoSaveFileEvent(dwChannelID);
                 break;
             case _OpenFileEvent:
@@ -371,6 +372,7 @@ void CIVDataBuf::DoSaveFileEvent(DWORD dwChannel)
         if ( pGroupTarget->m_TargetQueue->nRef == 0 )
         {
             pGroupTarget->m_TargetQueue->nUse = Buf_No_Use;
+            delete pGroupTarget;
             TarList.erase(listIter);
             listIter = TarList.begin();
 
