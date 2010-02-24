@@ -48,6 +48,7 @@ struct IIVCfgMgr
         friend IIVCfgMgr;
         explicit IVVistor(TiXmlElement* pEle = NULL);
         bool operator == (const IVVistor& v) const;
+        bool operator != (const IVVistor& v) const;
     public:
         IVVistor Next();
 

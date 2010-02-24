@@ -12,8 +12,8 @@ IMPLEMENT_DYNAMIC(CIVRuleDlg, CDialog)
 
 CIVRuleDlg::CIVRuleDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVRuleDlg::IDD, pParent)
+    , m_nCurrentChan(0)
 {
-
 }
 
 CIVRuleDlg::~CIVRuleDlg()
@@ -83,17 +83,18 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
         nVideoWidth = int(nMaxHeight*g_WndRatio);
     }
 
-    rect.left += 5;
-    rect.top +=5 ;
     m_PlayerWnd.Create(
         NULL, NULL, WS_CHILD|WS_VISIBLE,
         CRect(x,y,x+nVideoWidth,y+nVideoHeight),
-        this,
-        PlayerWnd_ID );
+        this, PlayerWnd_ID );
     m_Player.InitDirectDraw(
         m_PlayerWnd.m_hWnd, 352, 288);
 
-    g_IIVDeviceBase2->RegisterLiveDataCallBack(0, this);
+    if ( g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
+    
     return TRUE;
 }
 
@@ -141,9 +142,32 @@ void CIVRuleDlg::OnRuleNewrule()
         return;
     }
     
-    CRuleAddMainDlg RuleAddMainDlg;
-    RuleAddMainDlg.SetIVRuleType(FunctionSelDlg.GetUserSelect());
-    RuleAddMainDlg.DoModal();
+    if ( g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
+    
+    WPG_Rule* pRule = new WPG_Rule;
+    IVRuleType RuleType = FunctionSelDlg.GetUserSelect();
+    IVUtil::InitWPGRuleByType(pRule, RuleType);
+    CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType);
+    pDlg->SetComomParm(m_nCurrentChan, pRule);
+    //CRuleAddMainDlg RuleAddMainDlg(RuleType, m_nCurrentChan, pRule);
+    //RuleAddMainDlg.SetIVRuleType(FunctionSelDlg.GetUserSelect());
+    if ( IDOK == pDlg->DoModal() )
+    {
+        AfxMessageBox(_T("aaaa"));
+    }
+    else
+    {
+        delete pRule;
+    }
+
+    delete pDlg;
+    if ( g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
 }
 
 void CIVRuleDlg::OnUpdateMemu(
@@ -175,7 +199,12 @@ void CIVRuleDlg::OnInitCameraTree(
 
 void CIVRuleDlg::OnDestroy()
 {
-    g_IIVDeviceBase2->UnRegisterLiveDataCallBack(0, this);
+    if ( m_nCurrentChan != Invaild_ChannelID &&
+         g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
+    
     m_Player.UnitDirectDraw();
     UnitCameraTree(m_CameraTree);
     __super::OnDestroy(); 
@@ -192,7 +221,6 @@ void CIVRuleDlg::OnPaint()
 void CIVRuleDlg::OnClose()
 {
     // TODO: Add your message handler code here and/or call default
-   
     __super::OnClose();
 }
 
@@ -208,4 +236,33 @@ BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
     g_IIVDeviceBase2->ReleaseLiveBuf(bufStruct);
     return TRUE;
 }
-    
+
+void CIVRuleDlg::LoadCfgDataToBuf()
+{
+    IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
+    for (int i=0; i<Max_Channel; ++i)
+    {
+        ChannelRule& RuleMap = m_AllRule[i];
+        for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(i);
+              Iter != pIVCfgMgr->End();
+              Iter = Iter.Next() )
+        {
+            const char* pID = Iter.GetIdentityID();
+            if ( pID == NULL )
+            {
+                // log ..
+                TRACE("Iter.GetIdentityID() == NULL\n");
+                continue;
+            }
+            
+            WPG_Rule* pRule = new WPG_Rule;
+            if ( Iter.GetRule(*pRule) )
+            {
+                delete pRule;
+                continue;
+            }
+
+            RuleMap[string(pID)] = pRule;
+        }
+    }
+}
