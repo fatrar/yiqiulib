@@ -31,7 +31,8 @@ protected:
         CMenu* pMenu,
         WhichMemu Which,
         int nChannelID,
-        void* pData);
+        void* pData,
+        HTREEITEM Item );
 
     virtual void OnInitCameraTree(
         int nChannelID,
@@ -67,4 +68,7 @@ private:
     CScheduleCtrl m_ScheduleCtrl[Week_Day];
     CButton m_AddCheck;
     CButton m_EraseCheck;
+
+    int m_nCurrentChan;
+    HTREEITEM m_ClickItem;
 };

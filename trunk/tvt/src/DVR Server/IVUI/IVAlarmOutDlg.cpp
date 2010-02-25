@@ -12,6 +12,8 @@ IMPLEMENT_DYNAMIC(CIVAlarmOutDlg, CDialog)
 
 CIVAlarmOutDlg::CIVAlarmOutDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVAlarmOutDlg::IDD, pParent)
+    , m_nCurrentChan(0)
+    , m_ClickItem(NULL)
 {
 
 }
@@ -156,15 +158,19 @@ void CIVAlarmOutDlg::OnUpdateMemu(
     CMenu* pMenu,
     WhichMemu Which,
     int nChannelID,
-    void* pData )
+    void* pData,
+    HTREEITEM Item )
 {
+    m_ClickItem = Item;
     switch (Which)
     {
     case Root:
         break;
     case Camera:
+        m_nCurrentChan = nChannelID;
         break;
     case Rule:
+        m_nCurrentChan = nChannelID;
         break;
     default:
         break;
