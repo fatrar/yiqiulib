@@ -20,15 +20,9 @@ CZoneAdvDlg::CZoneAdvDlg(CWnd* pParent /*=NULL*/)
     , m_strLoiters(_T(""))
     , m_strLeftBehind(_T(""))
     , m_nLoitersEdit(Loiters_Default_Time)
-    , m_nLeftBehindEdit(LeftBehind_Default_Time)
-    , m_IsInit(FALSE)
-{
+    , m_nLeftBehindEdit(LeftBehind_Default_Time){}
 
-}
-
-CZoneAdvDlg::~CZoneAdvDlg()
-{
-}
+CZoneAdvDlg::~CZoneAdvDlg(){}
 
 void CZoneAdvDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -104,13 +98,100 @@ BOOL CZoneAdvDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CZoneAdvDlg::OnBnClickedOk()
+void CZoneAdvDlg::GetObjSet()
 {
-    if ( !CheckUserSet() )
+    unsigned int& nValue = m_pRule->ruleDescription.targetClassification;
+    if ( m_AllCheck.GetCheck() == BST_CHECKED )
     {
+        nValue = TARGET_CLASSIFICATION_ANYTHING;
         return;
     }
 
+    nValue = 0;
+    if ( m_PersonCheck.GetCheck() == BST_CHECKED )
+    {
+        nValue |= TARGET_CLASSIFICATION_HUMAN;
+    }
+    if ( m_VehicleCheck.GetCheck() == BST_CHECKED )
+    {
+        nValue |= TARGET_CLASSIFICATION_VEHICLE;
+    }
+    if ( m_OtherCheck.GetCheck() == BST_CHECKED )
+    {
+        nValue |= TARGET_CLASSIFICATION_UNKNOWN;
+    }
+    if ( nValue == 0 )
+    {
+        CString strTmp;
+        strTmp.LoadString(IDS_Object_Alarm);
+        if ( AfxMessageBox(strTmp) == IDCANCEL )
+        {
+            throw 0;
+        }
+    }
+    nValue = TARGET_CLASSIFICATION_ANYTHING;
+}
+
+void CZoneAdvDlg::GetViewSet()
+{
+    WPG_AOIEventDescription& aoiDes = m_pRule->ruleDescription.description.aoiEventDescription;
+    if ( m_VerticalBt.GetCheck() == BST_CHECKED) 
+    {
+        aoiDes.planeType = IMAGE_PLANE;
+    }
+    else
+    {
+        aoiDes.planeType = GROUND_PLANE;
+    } 
+}
+
+void CZoneAdvDlg::OnBnClickedOk()
+{
+    UpdateData(TRUE);
+    CString strTmp;
+    if ( m_strRuleNameEdit.GetLength() == 0 )
+    {
+        strTmp.LoadString(IDS_RuleName_Alarm);
+        if ( AfxMessageBox(strTmp) == IDCANCEL )
+        {
+            return;
+        }  
+    }
+
+    _bstr_t bstrTmp = (LPCTSTR)m_strRuleNameEdit;
+    strcpy(m_pRule->ruleName, bstrTmp);
+    
+    WPG_AOIEventDescription& aoiDes = m_pRule->ruleDescription.description.aoiEventDescription;
+    try
+    {
+        switch (m_type)
+        {
+        case IV_Invade:
+        case IV_Leave_Disappear:
+            GetObjSet();
+            GetViewSet();
+            break;
+        case IV_LeftBehind:
+            GetObjSet();
+            GetViewSet();
+            aoiDes.actionType.leftBehind.duration = m_nLeftBehindEdit;
+            break;
+        case IV_Loiters:
+            GetObjSet();
+            GetViewSet();
+            aoiDes.actionType.loiters.duration = m_nLoitersEdit;
+            break;
+        case IV_Stage_Change:
+            HideAllTimeWindow();
+            break;
+        default:
+            return;
+        }
+    }
+    catch(...)
+    {
+        return;
+    }
     OnOK();
 }
 
@@ -120,24 +201,56 @@ void CZoneAdvDlg::OnBnClickedCancel()
     OnCancel();
 }
 
-void CZoneAdvDlg::Init(IVRuleType type, const CString& strRuleName )
+void CZoneAdvDlg::HideAllTimeWindow()
 {
+    GetDlgItem(IDC_TIME)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_LOITERS)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_IDC_LOITERS_EDIT)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_LEFTBEHIND_EDIT)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_LEFTBEHIND)->ShowWindow(SW_HIDE);
+}
+
+void CZoneAdvDlg::HideObjAndView()
+{
+    // hide View
+    GetDlgItem(IDC_VIEW)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_V_VIEW)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_P_VIEW)->ShowWindow(SW_HIDE);
+
+    // Hide Object
+    GetDlgItem(IDC_OBJECT)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_CHECK_PERSON)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_CHECK_VEHICLE)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_CHECK_OTHER)->ShowWindow(SW_HIDE);
+    GetDlgItem(IDC_CHECK_ALL)->ShowWindow(SW_HIDE);
+}
+
+void CZoneAdvDlg::Init(IVRuleType type, WPG_Rule* pRule)
+{
+    m_pRule = pRule;
     switch (type)
     {
     case IV_Invade:
-    	break;
     case IV_Leave_Disappear:
+        HideAllTimeWindow();
     	break;
     case IV_LeftBehind:
-    	break;
+        GetDlgItem(IDC_LOITERS)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_IDC_LOITERS_EDIT)->ShowWindow(SW_HIDE);
+        break;
     case IV_Loiters:
+        GetDlgItem(IDC_LEFTBEHIND_EDIT)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_LEFTBEHIND)->ShowWindow(SW_HIDE);
+        break;
+    case IV_Stage_Change:
+        HideAllTimeWindow();
         break;
     default:
     	return;
     }
 
-    m_IsInit = TRUE;
-    m_strDefaultRuleName = m_strRuleNameEdit = strRuleName;
+    m_strDefaultRuleName = m_strRuleNameEdit = pRule->ruleName;
+    m_type = type;
 }
 
 // click All check button
@@ -155,38 +268,6 @@ void CZoneAdvDlg::SetAllCheck()
     m_VehicleCheck.SetCheck(BST_CHECKED);
     m_OtherCheck.SetCheck(BST_CHECKED);
     m_AllCheck.SetCheck(BST_CHECKED);
-}
-
-bool CZoneAdvDlg::CheckUserSet()
-{
-    UpdateData(TRUE);
-    
-    CString strTmp;
-    if ( m_strRuleNameEdit.GetLength() == 0 )
-    {
-        strTmp.LoadString(IDS_RuleName_Alarm);
-        if ( AfxMessageBox(strTmp) == IDCANCEL )
-        {
-            return false;
-        }
-
-        m_strRuleNameEdit = m_strDefaultRuleName;
-    }
-
-    if ( m_PersonCheck.GetCheck() == BST_UNCHECKED && 
-         m_VehicleCheck.GetCheck() == BST_UNCHECKED && 
-         m_OtherCheck.GetCheck() == BST_UNCHECKED )
-    {
-        strTmp.LoadString(IDS_Object_Alarm);
-        if ( AfxMessageBox(strTmp) == IDCANCEL )
-        {
-            return false;
-        }
-
-        SetAllCheck();
-    }
-
-    return true;
 }
 
 void CZoneAdvDlg::OnBnClickedCheckPerson()

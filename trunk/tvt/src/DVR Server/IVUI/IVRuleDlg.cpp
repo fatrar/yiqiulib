@@ -142,6 +142,11 @@ void CIVRuleDlg::OnRuleNewrule()
         return;
     }
     
+    if ( m_nCurrentChan == Invaild_ChannelID )
+    {
+        return;
+    }
+    
     if ( g_IIVDeviceBase2 )
     {
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
@@ -151,12 +156,16 @@ void CIVRuleDlg::OnRuleNewrule()
     IVRuleType RuleType = FunctionSelDlg.GetUserSelect();
     IVUtil::InitWPGRuleByType(pRule, RuleType);
     CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType);
-    pDlg->SetComomParm(m_nCurrentChan, pRule);
+    pDlg->SetComomParm(m_nCurrentChan, pRule, RuleType);
     //CRuleAddMainDlg RuleAddMainDlg(RuleType, m_nCurrentChan, pRule);
     //RuleAddMainDlg.SetIVRuleType(FunctionSelDlg.GetUserSelect());
     if ( IDOK == pDlg->DoModal() )
     {
-        AfxMessageBox(_T("aaaa"));
+        //AfxMessageBox(_T("aaaa"));
+        g_IIVDeviceBase2->Add(m_nCurrentChan, *pRule);
+        IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
+        IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Add(m_nCurrentChan, *pRule);
+        m_AllRule[m_nCurrentChan][Iter.GetIdentityID()] = pRule;
     }
     else
     {
@@ -181,13 +190,28 @@ void CIVRuleDlg::OnUpdateMemu(
     case Root:
     	break;
     case Camera:
-
+        UpdateLiveChannel(nChannelID);
     	break;
     case Rule:
+        UpdateLiveChannel(nChannelID);
     	break;
     default:
     	break;
     }
+}
+
+void CIVRuleDlg::UpdateLiveChannel(int nChannelID)
+{
+    if ( m_nCurrentChan == Invaild_ChannelID ||
+         g_IIVDeviceBase2 == NULL )
+    {
+        m_nCurrentChan = nChannelID;
+        return;
+    }
+
+    g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+    m_nCurrentChan = nChannelID;
+    g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
 }
 
 void CIVRuleDlg::OnInitCameraTree( 

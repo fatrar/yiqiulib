@@ -125,6 +125,7 @@ void CBaseIVViewer::SetDataShowState( int nChannelID, int nState )
 
 }
 
+// 好像这部分有内存泄漏，要具体查下。
 void CBaseIVViewer::RefrehPoint( 
     ChannelPoint& PointBuf, 
     const TargetQueue* DataQueue,
@@ -133,7 +134,7 @@ void CBaseIVViewer::RefrehPoint(
     ChannelPoint PointTmpBuf;
     for (int i=0; i<DataQueue->nCount; ++i)
     {
-        // 如果有就利用远原来的那个指针，插入数据
+        // 如果有就利用原来的那个指针，插入数据
         // 并将数据放入临时的ChannelPoint中
         const WPG_Target& tar = DataQueue->Tar[i];
         PointList* pPointList = PointBuf[tar.equalId];

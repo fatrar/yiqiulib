@@ -65,7 +65,48 @@ END_MESSAGE_MAP()
 
 void CLineAdvDlg::OnBnClickedOk()
 {
-    // TODO: Add your control notification handler code here
+    CString strTmp;
+    if ( m_strRuleNameEdit.GetLength() == 0 )
+    {
+        strTmp.LoadString(IDS_RuleName_Alarm);
+        if ( AfxMessageBox(strTmp) == IDCANCEL )
+        {
+            return;
+        }  
+    }
+ 
+    _bstr_t bstrTmp = (LPCTSTR)m_strRuleNameEdit;
+    strcpy(m_pRule->ruleName, bstrTmp);
+    unsigned int& nValue = m_pRule->ruleDescription.targetClassification;
+    if ( m_AllCheck.GetCheck() == BST_CHECKED )
+    {
+        nValue = TARGET_CLASSIFICATION_ANYTHING;
+        return;
+    }
+
+    nValue = 0;
+    if ( m_PersonCheck.GetCheck() == BST_CHECKED )
+    {
+        nValue |= TARGET_CLASSIFICATION_HUMAN;
+    }
+    if ( m_VehicleCheck.GetCheck() == BST_CHECKED )
+    {
+        nValue |= TARGET_CLASSIFICATION_VEHICLE;
+    }
+    if ( m_OtherCheck.GetCheck() == BST_CHECKED )
+    {
+        nValue |= TARGET_CLASSIFICATION_UNKNOWN;
+    }
+    if ( nValue == 0 )
+    {
+        CString strTmp;
+        strTmp.LoadString(IDS_Object_Alarm);
+        if ( AfxMessageBox(strTmp) == IDCANCEL )
+        {
+            return;
+        }
+        nValue = TARGET_CLASSIFICATION_ANYTHING;
+    }
     OnOK();
 }
 
@@ -140,8 +181,39 @@ void CLineAdvDlg::SetAllCheck()
     m_AllCheck.SetCheck(BST_CHECKED);
 }
 
+void CLineAdvDlg::Init( WPG_Rule* pRule )
+{
+    m_pRule = pRule;
+    m_strRuleNameEdit = pRule->ruleName;
+    unsigned int nTest = pRule->ruleDescription.targetClassification;
+    if ( nTest == 7 )
+    {
+        SetAllCheck();
+        return;
+    }
 
-
-
+    if ( nTest & TARGET_CLASSIFICATION_HUMAN )
+    {
+        m_PersonCheck.SetCheck(BST_CHECKED);
+    }
+    if ( nTest & TARGET_CLASSIFICATION_VEHICLE )
+    {
+        m_VehicleCheck.SetCheck(BST_CHECKED);
+    }
+    if ( nTest & TARGET_CLASSIFICATION_UNKNOWN )
+    {
+        m_OtherCheck.SetCheck(BST_CHECKED);
+    }
+    UpdateData(FALSE);
+}
+//
+//typedef enum WPG_TARGET_CLASSIFICATION
+//{ 
+//    TARGET_CLASSIFICATION_HUMAN     =  1, 
+//    TARGET_CLASSIFICATION_VEHICLE   =  2,
+//    TARGET_CLASSIFICATION_UNKNOWN   =  4,
+//    TARGET_CLASSIFICATION_ANYTHING  =  7
+//} WPG_TARGET_CLASSIFICATION;
+//
 
 // End of file

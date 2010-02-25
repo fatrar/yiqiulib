@@ -12,7 +12,7 @@
 #include <tchar.h>
 
 
-#define  MEMORY_CHECK
+//#define  MEMORY_CHECK
 #include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
 

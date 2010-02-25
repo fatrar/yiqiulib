@@ -35,7 +35,7 @@ public:
 	enum { IDD = IDD_ZONEADV };
 
 public:
-    void Init(IVRuleType type, const CString& strRuleName);
+    void Init(IVRuleType type, WPG_Rule* pRule);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -71,13 +71,16 @@ private:
     CString m_strLeftBehind;
     int m_nLoitersEdit;      // Max 10 min
     int m_nLeftBehindEdit;   // Max 10 min  
-
-    BOOL m_IsInit;
    
+    WPG_Rule* m_pRule;
+    IVRuleType m_type;
 private:
     void SetAllCheck();  
-    bool CheckUserSet();
- 
+    void HideAllTimeWindow();
+    void HideObjAndView();
+
+    void GetObjSet();
+    void GetViewSet();
 };
 
 
