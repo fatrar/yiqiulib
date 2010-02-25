@@ -63,44 +63,54 @@ class CInvadeAddDlg:
 {
 protected:
     virtual BOOL OnInitDialog();
+    virtual BOOL GatherUseSet();
 };
 
-class CLeaveDisappearAddDlg:
-    public CRuleAddMainDlg
-{
-    virtual BOOL OnInitDialog();
-};
+typedef CInvadeAddDlg CLeaveDisappearAddDlg;
+//class CLeaveDisappearAddDlg:
+//    public CRuleAddMainDlg
+//{
+//protected:
+//    virtual BOOL OnInitDialog();
+//    virtual BOOL GatherUseSet();
+//};
 
 class CLeftBehindAddDlg:
     public CRuleAddMainDlg
 {
 protected:
     virtual BOOL OnInitDialog();
+    virtual BOOL GatherUseSet();
 };
-
-class CLoitersAddDlg:
-    public CRuleAddMainDlg
-{
-protected:
-    virtual BOOL OnInitDialog();
-};
+ 
+typedef CLeftBehindAddDlg CLoitersAddDlg;
+//class CLoitersAddDlg:
+//    public CRuleAddMainDlg
+//{
+//protected:
+//    virtual BOOL OnInitDialog();
+//    virtual BOOL GatherUseSet();
+//};
 
 class CStatisticAddDlg:
     public CRuleAddMainDlg
 {
     virtual BOOL OnInitDialog();
+   // virtual BOOL GatherUseSet();
 };
 
 class CVehicleRetrogradeAddDlg:
     public CRuleAddMainDlg
 {
     virtual BOOL OnInitDialog();
+   // virtual BOOL GatherUseSet();
 };
 
 class CIllegalParkingAddDlg:
     public CRuleAddMainDlg
 {
     virtual BOOL OnInitDialog();
+    //virtual BOOL GatherUseSet();
 };
 
 class CStageChangeAddDlg:

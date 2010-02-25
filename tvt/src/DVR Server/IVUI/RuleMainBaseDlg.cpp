@@ -26,7 +26,8 @@
 
 CRuleMainBaseDlg::CRuleMainBaseDlg(CWnd* pParent)
 	: CDialog(CRuleMainBaseDlg::IDD, pParent)
-    , m_Drawer(NULL) {}
+    , m_Drawer(NULL)
+    , m_bUse(FALSE) {}
 
 void CRuleMainBaseDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -93,12 +94,13 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
     return TRUE;
 }
 
-void CRuleMainBaseDlg::SetComomParm(int nChannelID, WPG_Rule* pRule)
+void CRuleMainBaseDlg::SetComomParm(
+    int nChannelID, WPG_Rule* pRule, IVRuleType type)
 {
     m_nCurrentChan = nChannelID;
     m_pRule = pRule;
+    m_type = type;
 }
-
 
 void CRuleMainBaseDlg::OnBnClickedOk()
 {
@@ -123,11 +125,13 @@ void CRuleMainBaseDlg::OnBnClickedAdvBt()
     if ( m_nToolsChoose == Choose_Line )
     {
         CLineAdvDlg Dlg;
+        Dlg.Init(m_pRule);
         Dlg.DoModal();
     }
     else
     {
         CZoneAdvDlg Dlg;
+        Dlg.Init(m_type,m_pRule);
         Dlg.DoModal();
     }
 }
@@ -140,7 +144,21 @@ void CRuleMainBaseDlg::OnBnClickedFilterBt()
 
 void CRuleMainBaseDlg::OnBnClickedSimulationBt()
 {
-    // TODO: Add your control notification handler code here
+    // È¡Êý¾Ý
+    if ( m_bUse )
+    {
+        m_bUse = FALSE;
+        m_SimulationBT.SetWindowText(_T("Stop"));
+        g_IIVDeviceBase2->Use(m_nCurrentChan, true);
+        g_IIVDeviceBase2->Add(m_nCurrentChan, *m_pRule);
+    }
+    else
+    {
+        m_bUse = TRUE;
+        m_SimulationBT.SetWindowText(_T("Simulation"));
+        g_IIVDeviceBase2->Use(m_nCurrentChan, false);
+        g_IIVDeviceBase2->Remove(m_nCurrentChan, *(IV_RuleID*)m_pRule->ruleId);
+    }
 }
 
 void CRuleMainBaseDlg::DrawToolChange( Windows::IDrawerGraphType type )
@@ -172,7 +190,7 @@ void CRuleMainBaseDlg::OnBnClickedLineCheck()
 
 void CRuleMainBaseDlg::OnBnClickedZoneCheck()
 {
-    m_nToolsChoose = Choose_Zone;
+    m_nToolsChoose = Choose_Rectangle;
     m_LineBT.SetCheck(BST_UNCHECKED);
     m_ZoneBT.SetCheck(BST_CHECKED);
     m_SelectBT.SetCheck(BST_UNCHECKED);
@@ -189,9 +207,9 @@ void CRuleMainBaseDlg::OnBnClickedZoneCheck()
 
 void CRuleMainBaseDlg::OnBnClickedSelectCheck()
 {
-    m_LineBT.SetCheck(BST_UNCHECKED);
-    m_ZoneBT.SetCheck(BST_UNCHECKED);
-    m_SelectBT.SetCheck(BST_CHECKED);
+    //m_LineBT.SetCheck(BST_UNCHECKED);
+    //m_ZoneBT.SetCheck(BST_UNCHECKED);
+    //m_SelectBT.SetCheck(BST_CHECKED);
 }
 
 void CRuleMainBaseDlg::OnBnClickedRightCheck()
@@ -229,6 +247,7 @@ void CRuleMainBaseDlg::OnBnClickedColourBt()
 
 void CRuleMainBaseDlg::OnBnClickedPolygonCheck()
 {
+    m_nToolsChoose = Choose_Polygon;
     m_RectangleBT.SetCheck(BST_UNCHECKED);
     m_PolygonBT.SetCheck(BST_CHECKED);
     DrawToolChange(Windows::IDrawer_Polygon);
@@ -236,6 +255,7 @@ void CRuleMainBaseDlg::OnBnClickedPolygonCheck()
 
 void CRuleMainBaseDlg::OnBnClickedRectangleCheck()
 {
+    m_nToolsChoose = Choose_Rectangle;
     m_RectangleBT.SetCheck(BST_CHECKED);
     m_PolygonBT.SetCheck(BST_UNCHECKED);
     DrawToolChange(Windows::IDrawer_Rectangle);

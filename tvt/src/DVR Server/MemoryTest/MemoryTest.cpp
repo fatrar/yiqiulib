@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-    memory_check.Init();
-    //DebugOut("aaa");
+    
+    DebugOut("aaa");
     char* p = new char;
     char* ptest = new char[1000];
 	return 0;

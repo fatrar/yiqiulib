@@ -70,6 +70,8 @@ protected:
 
     void LoadCfgDataToBuf();
 
+    void UpdateLiveChannel(int nChannelID);
+
 private:
     CTreeCtrl m_CameraTree;
     CStatic m_RuleGroup;

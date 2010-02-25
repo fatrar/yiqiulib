@@ -108,8 +108,6 @@ void PopUpCameraMemu(
 
 
 
-
-
 #endif  // _IVUICOMMON_H_2010_
 
 

@@ -159,12 +159,45 @@ BOOL CInvadeAddDlg::OnInitDialog()
     return TRUE;
 }
 
-BOOL CLeaveDisappearAddDlg::OnInitDialog()
+BOOL CInvadeAddDlg::GatherUseSet()
 {
-    CRuleAddMainDlg::OnInitDialog();
-    UseToolCtrlMode(Use_All_Mode);
-    return TRUE;
+    WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
+    if ( m_nToolsChoose == Choose_Line )
+    {
+        if ( !GetUseInputLineInfor(m_Drawer, des.tripwireEventDescription))
+        {
+            AfxMessageBox(_T("Please Input line!"));
+            return FALSE;
+        }
+    }
+    else if (m_nToolsChoose == Choose_Rectangle)
+    {
+        if ( !GetUseInputRectangleInfor(m_Drawer, des.aoiEventDescription.polygon))
+        {
+            AfxMessageBox(_T("Please Input line!"));
+            return FALSE;
+        }
+    }
+    else if (m_nToolsChoose == Choose_Polygon)
+    {
+        if ( GetUseInputPolygonInfor(m_Drawer, des.aoiEventDescription.polygon))
+        {
+            AfxMessageBox(_T("Please Input line!"));
+            return FALSE;
+        }
+    }
+    else 
+    {
+        ASSERT(FALSE);
+    }
 }
+
+//BOOL CLeaveDisappearAddDlg::OnInitDialog()
+//{
+//    CRuleAddMainDlg::OnInitDialog();
+//    UseToolCtrlMode(Use_All_Mode);
+//    return TRUE;
+//}
 
 BOOL CLeftBehindAddDlg::OnInitDialog()
 {
@@ -173,13 +206,38 @@ BOOL CLeftBehindAddDlg::OnInitDialog()
     return TRUE;
 }
 
-
-BOOL CLoitersAddDlg::OnInitDialog()
+BOOL CLeftBehindAddDlg::GatherUseSet()
 {
-    CRuleAddMainDlg::OnInitDialog();
-    UseToolCtrlMode(Zone_Mode);
-    return TRUE;
+    WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
+    if (m_nToolsChoose == Choose_Rectangle)
+    {
+        if ( !GetUseInputRectangleInfor(m_Drawer, des.aoiEventDescription.polygon))
+        {
+            AfxMessageBox(_T("Please Input line!"));
+            return FALSE;
+        }
+    }
+    else if (m_nToolsChoose == Choose_Polygon)
+    {
+        if ( GetUseInputPolygonInfor(m_Drawer, des.aoiEventDescription.polygon))
+        {
+            AfxMessageBox(_T("Please Input line!"));
+            return FALSE;
+        }
+    }
+    else 
+    {
+        ASSERT(FALSE);
+        return FALSE;
+    }
 }
+
+//BOOL CLoitersAddDlg::OnInitDialog()
+//{
+//    CRuleAddMainDlg::OnInitDialog();
+//    UseToolCtrlMode(Zone_Mode);
+//    return TRUE;
+//}
 
 BOOL CStatisticAddDlg::OnInitDialog()
 {

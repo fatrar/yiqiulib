@@ -4,16 +4,16 @@
 #include "stdafx.h"
 #include "QC.h"
 #include "QCDlg.h"
-#include "ioctlV.h"
-#include "overlay.h"
+//#include "ioctlV.h"
+//#include "overlay.h"
 #include "SignalDlg.h"
 #include "CfgDlg.h"
 
-//#ifdef _DEBUG
-//#define new DEBUG_NEW
-//#undef THIS_FILE
-//static char THIS_FILE[] = __FILE__;
-//#endif
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 #define FIRSTINVIEW TRUE
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,7 @@ CQCDlg *main;
 CQCDlg::CQCDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CQCDlg::IDD, pParent)
 {
+    DebugOut("CQCDlg:CQCDlg()\n");
     main=this;
     //{{AFX_DATA_INIT(CQCDlg)
 

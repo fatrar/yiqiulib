@@ -52,6 +52,8 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+#include <comutil.h>
+#include <comdef.h>
 #include <map>
 #include <string>
 using namespace std;
@@ -67,6 +69,7 @@ using namespace OCI::System;
 
 //#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
+#include "OtherUtil.h"
 #include "IVRuleDlg.h"
 #include "IVAlarmOutDlg.h"
 #include "IVSchuduleDlg.h"

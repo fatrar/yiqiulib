@@ -31,7 +31,10 @@ public:
 // Dialog Data
 	enum { IDD = IDD_LINEADV };
 
+    void Init(WPG_Rule* pRule);
+
 protected:
+    virtual BOOL OnInitDialog();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     afx_msg void OnBnClickedOk();
     afx_msg void OnBnClickedCancel();
@@ -51,10 +54,10 @@ private:
     CButton m_VehicleCheck;
     CButton m_OtherCheck;
     CButton m_AllCheck;
-    virtual BOOL OnInitDialog();
-
 private:
     void CLineAdvDlg::SetAllCheck();
+
+    WPG_Rule* m_pRule;
 };
 
 

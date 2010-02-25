@@ -38,10 +38,10 @@ public:
     virtual ~CRuleMainBaseDlg(){};
 
     // Dialog Data
-    enum { IDD = IDD_Add_Rule_Main };
+    enum { IDD = IDD_Add_Edit_Rule_Main };
 
 public:
-    void SetComomParm(int nChannelID, WPG_Rule* pRule);
+    void SetComomParm(int nChannelID, WPG_Rule* pRule, IVRuleType type);
 
     // IVideoSend
 protected:
@@ -53,6 +53,9 @@ protected:
         const tagRECT* rect,    // Õë¶ÔÆÁÄ»×ø±ê
         const FILETIME* pTime,
         HWND hwnd );
+
+protected:
+    virtual BOOL GatherUseSet(){return TRUE;};
 
 protected:
     enum ToolMode
@@ -98,7 +101,8 @@ protected:
     enum 
     {
         Choose_Line,
-        Choose_Zone,
+        Choose_Rectangle,
+        Choose_Polygon,
 
         PlayerWnd_ID = 0x8100,
         DrawWnd_ID = 0x8101,
@@ -116,6 +120,7 @@ protected:
     CButton m_AdvBT;
     CButton m_FilterBT;
     CButton m_SimulationBT;
+    BOOL m_bUse;
 
     CButton m_RectangleBT;
     CButton m_PolygonBT;
@@ -129,6 +134,7 @@ protected:
     Windows::IDrawer* m_Drawer;
 
     WPG_Rule* m_pRule;
+    IVRuleType m_type;
 };
 
 

@@ -100,6 +100,11 @@ protected:
         {
             //iterIndex = TargetList.end();
         }
+        ~ChannelTarget()
+        {
+            STLDeleteSequence(TargetList);
+            STLDeleteSequence(TargetSaveList);
+        }
 
         GroupTarget* Find(const FILETIME& time);
 

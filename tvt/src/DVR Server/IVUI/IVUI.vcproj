@@ -330,6 +330,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\OtherUtil.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
 				>
 			</File>
@@ -365,6 +369,10 @@
 			</File>
 			<File
 				RelativePath=".\IVUICommon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\OtherUtil.cpp"
 				>
 			</File>
 			<File
