@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CIVRuleDlg, CDialog)
 CIVRuleDlg::CIVRuleDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVRuleDlg::IDD, pParent)
     , m_nCurrentChan(0)
+    , m_ClickItem(NULL)
 {
 }
 
@@ -142,7 +143,8 @@ void CIVRuleDlg::OnRuleNewrule()
         return;
     }
     
-    if ( m_nCurrentChan == Invaild_ChannelID )
+    if ( m_nCurrentChan == Invaild_ChannelID || 
+         m_ClickItem == NULL )
     {
         return;
     }
@@ -162,10 +164,28 @@ void CIVRuleDlg::OnRuleNewrule()
     if ( IDOK == pDlg->DoModal() )
     {
         //AfxMessageBox(_T("aaaa"));
+        //
+        // 1. Operator Device
+        //
         g_IIVDeviceBase2->Add(m_nCurrentChan, *pRule);
+        //  [] heiang 
+
+        //
+        // 2. Save To Cfg XML and Save Memory 
+        //
         IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
         IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Add(m_nCurrentChan, *pRule);
-        m_AllRule[m_nCurrentChan][Iter.GetIdentityID()] = pRule;
+        const char* pIdentityID = Iter.GetIdentityID();
+        m_AllRule[m_nCurrentChan][pIdentityID] = pRule;
+        
+        //
+        // 3. Tree Add Child
+        //
+        HTREEITEM NowItem = m_CameraTree.InsertItem(pRule->ruleName, m_ClickItem); 
+        char* pUseData = new char[strlen(pIdentityID)+1];
+        strcpy_s(pUseData, pIdentityID);
+        ItemAttribute* pInfo = new ItemAttribute(IUpdateMemu::Rule, m_nCurrentChan, pUseData);
+        m_CameraTree.SetItemData(NowItem, (DWORD_PTR)pInfo);
     }
     else
     {
@@ -183,8 +203,10 @@ void CIVRuleDlg::OnUpdateMemu(
     CMenu* pMenu,
     WhichMemu Which,
     int nChannelID,
-    void* pData )
+    void* pData,
+    HTREEITEM Item )
 {
+    m_ClickItem = Item;
     switch (Which)
     {
     case Root:

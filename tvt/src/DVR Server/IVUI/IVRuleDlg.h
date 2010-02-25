@@ -45,7 +45,8 @@ protected:
         CMenu* pMenu,
         WhichMemu Which,
         int nChannelID,
-        void* pData);
+        void* pData,
+        HTREEITEM Item );
 
     virtual void OnInitCameraTree(
         int nChannelID,
@@ -79,6 +80,6 @@ private:
     CWnd m_PlayerWnd;
     CYUVSingleVideoPlayer m_Player;
     int m_nCurrentChan;
-
+    HTREEITEM m_ClickItem;
     ChannelRule m_AllRule[Max_Channel];
 };

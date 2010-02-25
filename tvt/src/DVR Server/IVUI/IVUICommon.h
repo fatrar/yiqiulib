@@ -33,7 +33,8 @@ struct IUpdateMemu
         CMenu* pMenu,
         WhichMemu Which,
         int nChannelID,
-        void* pData ) = 0;
+        void* pData,
+        HTREEITEM Item ) = 0;
 };
 
 struct IInitCameraTree

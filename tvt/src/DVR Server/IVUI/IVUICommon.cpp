@@ -117,7 +117,8 @@ void PopUpCameraMemu(
             pPopup,
             pInfo->Info.Which,
             pInfo->Info.nChannelID,
-            pInfo->pUseData );
+            pInfo->pUseData,
+            selDevhItem );
     }
 
     pPopup->TrackPopupMenu(

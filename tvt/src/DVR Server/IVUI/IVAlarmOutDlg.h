@@ -30,7 +30,8 @@ protected:
         CMenu* pMenu,
         WhichMemu Which,
         int nChannelID,
-        void* pData);
+        void* pData,
+        HTREEITEM Item );
 
     virtual void OnInitCameraTree(
         int nChannelID,
@@ -75,5 +76,7 @@ private:
     // Choose Alarm
     CStatic m_ChooseAlarmGroup;
     CButton m_AlarmCheck[Alarm_Check_Num];
-    
+
+    int m_nCurrentChan;
+    HTREEITEM m_ClickItem;
 };
