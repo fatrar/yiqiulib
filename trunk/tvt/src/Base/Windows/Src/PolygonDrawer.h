@@ -30,7 +30,7 @@ public:
     CPolygonDrawer(void);
     virtual ~CPolygonDrawer(void);
 
-    void SendCommond(DrawCommond c, void* p1, void* p2);
+    void SendCommond(DrawCommond c, void* p1=NULL, void* p2=NULL);
 
 protected:
     DECLARE_MESSAGE_MAP()

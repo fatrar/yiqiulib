@@ -50,7 +50,7 @@ protected:
     DECLARE_MESSAGE_MAP()
     afx_msg void OnPaint();
 
-    virtual void SendCommond(DrawCommond c, void* p1, void* p2);
+    virtual void SendCommond(DrawCommond c, void* p1=NULL, void* p2=NULL);
 protected:
     enum 
     {

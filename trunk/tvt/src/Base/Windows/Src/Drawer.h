@@ -34,7 +34,8 @@ using namespace OCI::System::Windows;
 enum
 {
     Point_Radii = 9,
-    Point_Color = 0x00ff00,
+    Point_Default_Color = 0x00ff00,
+    Line_Default_Width = 3,
 
     /*MSG_0 = 0x8100,
     MSG_1,*/
@@ -93,8 +94,10 @@ public:
         , m_nDragIndex(-1)
         , m_bDragging(false)
         , m_bIsOK(false)
-        , m_dwColor(0)
-        , m_bDragCenter(false) {}
+        //, m_dwColor(Point_Default_Color)
+        , m_bDragCenter(false)
+        , m_Pen(PS_SOLID, Line_Default_Width, Point_Default_Color)
+        , m_Brush(Point_Default_Color) {}
 
 public:
     virtual size_t GetUserInput(CPoint* pPointBuf, size_t nCount)
@@ -123,7 +126,14 @@ public:
         return 0;
     }
 
-    virtual void SetColour(DWORD dwColor){ m_dwColor = dwColor; }
+    virtual void SetColour(DWORD dwColor)
+    {
+        m_Pen.DeleteObject();
+        m_Pen.CreatePen(PS_SOLID, Line_Default_Width, dwColor);
+        m_Brush.DeleteObject();
+        m_Brush.CreateSolidBrush(dwColor);
+        Invalidate();
+    }
     virtual void Clear(){ m_PointQueue.clear(); m_bIsOK=false; };
     virtual void SetDefault(const CPoint* pPoint, size_t nCount)
     {
@@ -204,9 +214,12 @@ protected:
     bool m_bDragCenter;   
 
     deque<CPoint> m_PointQueue; // Point Queue
+    size_t m_nMaxPoint;
 
     DWORD m_dwColor;            // line Color, default black
-    size_t m_nMaxPoint;
+
+    CPen m_Pen;
+    CBrush m_Brush;   
 };
 
 

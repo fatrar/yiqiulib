@@ -173,7 +173,9 @@ void CPolygonDrawer::OnPaint()
     }
 
     CPaintDC dc(this);
-    CGdiObject *pOldObject= dc.SelectStockObject(NULL_BRUSH);
+    CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
+    CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
+
     deque<CPoint>::iterator iter = m_PointQueue.begin();
     for  ( ; iter != m_PointQueue.end(); ++iter )
     {
@@ -183,7 +185,8 @@ void CPolygonDrawer::OnPaint()
    
     if ( nSize == 1 )
     {
-        dc.SelectObject(pOldObject);
+        dc.SelectObject(pOldPen);
+        dc.SelectObject(pOldBrush); 
         return;
     }
  
@@ -201,7 +204,8 @@ void CPolygonDrawer::OnPaint()
         DrawCenterPoint(&dc);
     }
 
-    dc.SelectObject(pOldObject);   
+    dc.SelectObject(pOldPen);
+    dc.SelectObject(pOldBrush);  
 }
 
 // End of file

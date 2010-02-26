@@ -220,6 +220,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Src\TextStatic.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Windows.cpp"
 				>
 			</File>
@@ -281,6 +285,10 @@
 			>
 			<File
 				RelativePath=".\Include\IDrawer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\TextStatic.h"
 				>
 			</File>
 			<File
