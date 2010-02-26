@@ -16,7 +16,6 @@ class CTiCoffFile;
 extern inline	void ReleaseDriverBuffer(PTVT_CAP_STATUS pST);
 #define NET_FRAME_RATE_TOTAL 32
 
-#define Device_Free_Flag     (-1)
 #define MAX_IV_Parm_Buf_Size (sizeof(DWORD) + sizeof(PARAMPACK) + sizeof(WPG_Rule))
 
 struct IVParmData
@@ -200,6 +199,14 @@ public:
     virtual BOOL Use(int nChannelID, bool bState);
     virtual BOOL IsHaveFreeDevice(void);
 
+    // IIVSimulation
+public:
+    virtual void Start(
+        int nChannelID, 
+        IIVSimulationAlarmCallBack* p,
+        const WPG_Rule& Rule);
+    virtual void Stop(int nChannelID);
+
     // IIVDeviceBase2
 public:
     virtual BOOL Add(
@@ -281,8 +288,20 @@ private:
 
     // 视频额外的预览
     IVideoSend* m_szVideoSend[MAX_CHANNEL_NUM];
-    CCriticalSection m_VideoSendCS;	
-    
+    CCriticalSection m_VideoSendCS;
+
+    enum 
+    {
+        Invaild_ChannelID= -1,
+        Device_Free_Flag = -1,
+    };
+
+    // 智能模拟
+    IIVSimulationAlarmCallBack* m_pIVAlarmCallBack;
+    int m_SimulationChanID;
+    IV_RuleID m_RuleID;
+#define m_SimulationCS m_VideoSendCS
+
     struct CurrentRuleSetting
     {
         CurrentRuleSetting(

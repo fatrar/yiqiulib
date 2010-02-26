@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(CIVAlarmOutDlg, CDialog)
     ON_WM_DESTROY()
     ON_BN_CLICKED(IDC_NOUSE_HOLD, &CIVAlarmOutDlg::OnBnClickedNouseHold)
     ON_BN_CLICKED(IDC_USE_HOLD, &CIVAlarmOutDlg::OnBnClickedUseHold)
+    ON_NOTIFY(NM_CLICK, IDC_ALARMOUT_CAMERA_TREE, &CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree)
 END_MESSAGE_MAP()
 
 
@@ -215,4 +216,9 @@ void CIVAlarmOutDlg::Enable( BOOL bEnable /*= TRUE*/ )
     {
         m_AlarmCheck[i].EnableWindow(bEnable);
     }
+}
+void CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    // TODO: Add your control notification handler code here
+    *pResult = 0;
 }

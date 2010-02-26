@@ -71,4 +71,5 @@ private:
 
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
+    afx_msg void OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
 };

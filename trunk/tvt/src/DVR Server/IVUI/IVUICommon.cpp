@@ -72,6 +72,14 @@ HTREEITEM InitCameraTree(
     return Root;
 }
 
+HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree)
+{
+    CPoint pt; 
+    ::GetCursorPos(&pt); 
+    CameraTree.ScreenToClient(&pt); 
+    return CameraTree.HitTest(pt); 
+}
+
 void PopUpCameraMemu(
     CTreeCtrl& CameraTree,
     int nIndex,
