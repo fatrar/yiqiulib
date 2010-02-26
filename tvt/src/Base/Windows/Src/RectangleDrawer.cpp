@@ -187,11 +187,15 @@ void CRectangleDrawer::OnPaint()
     }
 
     CPaintDC dc(this);
+
     CPoint& p0 = m_PointQueue[0];
     CPoint& p2 = m_PointQueue[2];
 
-    CGdiObject *pOldObject= dc.SelectStockObject(NULL_BRUSH);
+    CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
+    CGdiObject *pOldBrush = dc.SelectStockObject(NULL_BRUSH);
     dc.Rectangle(p0.x, p0.y, p2.x, p2.y);
+
+    pOldBrush = dc.SelectObject(&m_Brush);
     for (int i=0; i<=3; ++i)
     {
         CPoint& point = m_PointQueue[i];
@@ -206,9 +210,10 @@ void CRectangleDrawer::OnPaint()
         CPoint& point = PointQueue[i];
         DrawCircle(&dc, point, Point_Radii);
     }
-
     DrawCenterPoint(&dc);
-    dc.SelectObject(pOldObject);
+
+    dc.SelectObject(pOldPen);
+    dc.SelectObject(pOldBrush);
 }
 
 

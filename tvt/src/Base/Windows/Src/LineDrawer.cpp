@@ -145,24 +145,21 @@ void CLineDrawer::OnPaint()
     }
 
     CPaintDC dc(this);
+
+    CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
+    CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
+
     CPoint& BeginPoint = m_PointQueue[0];
     CPoint& EndPoint = m_PointQueue[1];
     dc.MoveTo(BeginPoint);  
     dc.LineTo(EndPoint);
-
-    CGdiObject *pOldObject= dc.SelectStockObject(NULL_BRUSH);
-    dc.Ellipse(
-        BeginPoint.x-Point_Radii,
-        BeginPoint.y-Point_Radii,
-        BeginPoint.x+Point_Radii,
-        BeginPoint.y+Point_Radii );
-    dc.Ellipse(
-        EndPoint.x-Point_Radii,
-        EndPoint.y-Point_Radii,
-        EndPoint.x+Point_Radii,
-        EndPoint.y+Point_Radii );
+    
+    DrawCircle(&dc, BeginPoint, Point_Radii);
+    DrawCircle(&dc, EndPoint, Point_Radii);
     DrawCenterPoint(&dc);
-     dc.SelectObject(pOldObject);
+
+    dc.SelectObject(pOldPen);
+    dc.SelectObject(pOldBrush);
 }
 
 
@@ -231,15 +228,20 @@ void CArrowLineDrawer::OnPaint()
 
     //ShowWindow(SW_HIDE);
     CPaintDC dc(this);
+
+    CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
+    CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
+
     CPoint& BeginPoint = m_PointQueue[0];
     CPoint& EndPoint = m_PointQueue[1];
     dc.MoveTo(BeginPoint);  
     dc.LineTo(EndPoint);
-
-    DrawCircle(&dc, BeginPoint, Point_Radii);
-    DrawCircle(&dc, EndPoint, Point_Radii);
     dc.TextOut(BeginPoint.x, BeginPoint.y+Point_Radii, _T("A"), 1);
     dc.TextOut(EndPoint.x, EndPoint.y+Point_Radii, _T("B"), 1);
+
+    DrawCircle(&dc, BeginPoint, Point_Radii);
+    DrawCircle(&dc, EndPoint, Point_Radii);  
+    DrawCenterPoint(&dc); 
 
     // 利用垂直和两点的距离算出两个点的坐标
     CPoint MedPoint((BeginPoint.x + EndPoint.x)/2, (BeginPoint.y + EndPoint.y)/2);
@@ -275,7 +277,8 @@ void CArrowLineDrawer::OnPaint()
     {
         o = M_PI;
     }
-
+ 
+    
     bool bUp = (A[0].y > A[1].y);
     //bool bUp = (A[0].x > A[1].x) ^ (A[0].y < A[1].y);
     //bool bUp = GetPointRLineState(BeginPoint, EndPoint, A[1]) > 0; 
@@ -292,6 +295,9 @@ void CArrowLineDrawer::OnPaint()
         dc.LineTo(A[1]);
         DrawArrow(&dc, A[1], ArrowHeadLen, o, !bUp);
     }  
+
+    dc.SelectObject(pOldPen);
+    dc.SelectObject(pOldBrush);
     //ShowWindow(SW_SHOW);
     //TRACE("Paint \n");
 }
@@ -299,14 +305,21 @@ void CArrowLineDrawer::OnPaint()
 void CArrowLineDrawer::SendCommond(
     DrawCommond c, void* p1, void* p2)
 { 
-    m_dwDrawCommond=c;
-    ShowWindow(SW_HIDE);
-    ShowWindow(SW_SHOW);
-    /*UpdateWindow();
-    CRect rect;
-    GetClientRect(&rect);
-    InvalidateRect(&rect);*/
-    Invalidate();
+    switch ( c )
+    {
+    case Line_Show_Left:
+    case Line_Show_Right:
+    case Line_Show_All:
+        m_dwDrawCommond=c;
+        ShowWindow(SW_HIDE);
+        ShowWindow(SW_SHOW);
+    	break;
+    case Get_Line_Dir:
+        *(long*)p1 = m_dwDrawCommond;
+    	break;
+    default:
+    	break;
+    }
 }
 
 BOOL CArrowLineDrawer::OnEraseBkgnd(CDC* pDC)

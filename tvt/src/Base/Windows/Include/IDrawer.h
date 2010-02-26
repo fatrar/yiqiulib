@@ -69,12 +69,13 @@ public:
         Line_Show_Left  = 0x1,
         Line_Show_Right = 0x2,
         Line_Show_All   = Line_Show_Left | Line_Show_Right,
+        Get_Line_Dir,
 
         // Only Polygon 
         Set_Max_Point   = 0x10,  
     };
 
-    virtual void SendCommond(DrawCommond c, void* p1, void* p2) {};
+    virtual void SendCommond(DrawCommond c, void* p1=NULL, void* p2=NULL) {};
 };
 
 
