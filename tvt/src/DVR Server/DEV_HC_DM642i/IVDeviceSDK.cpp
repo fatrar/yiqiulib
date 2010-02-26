@@ -123,11 +123,12 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     //LONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
     FILETIME* pTime = (FILETIME*)&nTime;
     
+    int& nChannelID = m_szCurrentIVChannel[nDevice];
     // 1. Do Obj&Trace
     if ( m_pIVDataSender )
     {
         m_pIVDataSender->OnIVDataSend(
-            m_szCurrentIVChannel[nDevice],
+            nChannelID,
             *pTime,
             (WPG_Target*)(pIVData+sizeof(TVT_AI_VBI)),
             dwNumberOfTargets );
@@ -137,6 +138,23 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     WPG_EventOccurrence* pFirstEvent = 
         (WPG_EventOccurrence*)(pIVData+sizeof(TVT_AI_VBI)+dwNumberOfTargets*sizeof(WPG_Target));
     BYTE* pFirstPic = (BYTE*)pFirstEvent + dwNumberOfEvents*sizeof(WPG_EventOccurrence);
+    // 如果是模拟通道
+    if (m_pIVAlarmCallBack && nChannelID==m_SimulationChanID)
+    {
+        for ( int i=0 ;i<dwNumberOfEvents;
+              ++i, ++pFirstEvent )
+        {
+            const AlarmOutTable* pTable = NULL;
+            IV_RuleID* RuleID = (IV_RuleID*)pFirstEvent->ruleId;
+            m_pIVAlarmCallBack->OnAlarmCallBack(
+                (IVRuleType)RuleID->RuleID.nType,
+                nChannelID, pTime );
+        }
+
+        return;
+    }
+   
+    // 如果没有不是模拟通道，就按正常逻辑
     for ( int i=0 ;i<dwNumberOfEvents;
           ++i, ++pFirstEvent )
     {
@@ -146,8 +164,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
         {
             continue;
         }
-       
-        int& nChannelID = m_szCurrentIVChannel[nDevice];
+
         DoIVAlarm(
             nChannelID,
             pFirstEvent,
@@ -260,7 +277,7 @@ void CDSP::DoSnapShot(
     }
 }
 
-//
+// {
 // ******************** IIVDeviceBase *********************
 //
 
@@ -310,7 +327,90 @@ BOOL CDSP::IsHaveFreeDevice( void )
     return FALSE;
 }
 
-//
+// IIVDeviceBase
+// }
+
+// {
+// ********************* IIVSimulation *******************
+// 
+
+void CDSP::Start(
+    int nChannelID,
+    IIVSimulationAlarmCallBack* p,
+    const WPG_Rule& Rule )
+{
+    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
+    if ( nDeviceID > m_nDeviceNum )
+    {
+        return;
+    }
+
+    AutoLockAndUnlock(m_SimulationCS);
+    m_pIVAlarmCallBack = p;
+    m_SimulationChanID = nChannelID;
+    int nUseChannel = m_szCurrentIVChannel[nDeviceID];
+    if ( nUseChannel == Device_Free_Flag ) // 还没使用智能
+    {
+        SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 1);
+        m_RuleID = Rule.ruleId;
+        Add(nChannelID, Rule);
+    }
+    else if ( nUseChannel == nChannelID ) // 刚好正在使用智能
+    {
+        m_RuleID = Rule.ruleId;
+        Add(nChannelID, Rule);
+    }
+    else //被其他的占用
+    {
+        SetParam(PT_PCI_SET_AI_ENABLE, nUseChannel, 0);
+        SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 1);
+        m_RuleID = Rule.ruleId;
+        Add(nChannelID, Rule);
+    }
+}
+
+void CDSP::Stop( int nChannelID )
+{
+    ASSERT(nChannelID==m_SimulationChanID);
+    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
+    if ( nDeviceID > m_nDeviceNum )
+    {
+        return;
+    }
+
+    AutoLockAndUnlock(m_SimulationCS);
+    m_pIVAlarmCallBack = NULL;
+    m_SimulationChanID = Invaild_ChannelID;
+    int nUseChannel = m_szCurrentIVChannel[nDeviceID];
+    if ( nUseChannel == Device_Free_Flag ) // 还没使用智能
+    {
+        SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 0);
+    }
+    else if ( nUseChannel == nChannelID ) // 刚好正在使用智能
+    {
+        Remove(nChannelID, m_RuleID);
+    }
+    else //被其他的占用
+    {
+        SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 0);
+        SetParam(PT_PCI_SET_AI_ENABLE, nUseChannel, 0);
+        RuleSettingMap& RuleSetting = m_RuleCfgMap[nDeviceID];
+        RuleSettingMap::iterator iter;
+        for ( iter = RuleSetting.begin();
+              iter!= RuleSetting.end();
+              ++iter )
+        {
+            CurrentRuleSetting* pTmp = iter->second;
+            Add(nUseChannel, pTmp->Rule, pTmp->Sch, pTmp->Alarm);
+        }
+    }
+}
+
+// IIVSimulation
+// }
+
+
+// {
 // ********************* IIVDeviceBase2 *******************
 //
 

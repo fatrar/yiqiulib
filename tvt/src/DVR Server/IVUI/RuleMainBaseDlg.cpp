@@ -44,6 +44,7 @@ void CRuleMainBaseDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Simulation_BT, m_SimulationBT);
     DDX_Control(pDX, IDC_Rectangle_Check, m_RectangleBT);
     DDX_Control(pDX, IDC_Polygon_Check, m_PolygonBT);
+    DDX_Control(pDX, IDC_Alarm_Occur_STATIC, m_AlarmOccurStatic);
 }
 
 
@@ -145,19 +146,17 @@ void CRuleMainBaseDlg::OnBnClickedFilterBt()
 void CRuleMainBaseDlg::OnBnClickedSimulationBt()
 {
     // È¡Êý¾Ý
+    GatherUseSet();
+    m_bUse = !m_bUse;
     if ( m_bUse )
     {
-        m_bUse = FALSE;
         m_SimulationBT.SetWindowText(_T("Stop"));
-        g_IIVDeviceBase2->Use(m_nCurrentChan, true);
-        g_IIVDeviceBase2->Add(m_nCurrentChan, *m_pRule);
+        g_IIVDeviceBase2->Start(m_nCurrentChan, this, *m_pRule);
     }
     else
     {
-        m_bUse = TRUE;
         m_SimulationBT.SetWindowText(_T("Simulation"));
-        g_IIVDeviceBase2->Use(m_nCurrentChan, false);
-        g_IIVDeviceBase2->Remove(m_nCurrentChan, *(IV_RuleID*)m_pRule->ruleId);
+        g_IIVDeviceBase2->Stop(m_nCurrentChan);
     }
 }
 
@@ -320,6 +319,12 @@ BOOL CRuleMainBaseDlg::OnVideoPlay(
 {
     m_Drawer->Invalidate();
     return TRUE;
+}
+
+void CRuleMainBaseDlg::OnAlarmCallBack(
+    IVRuleType type, int nChannelID, const FILETIME* pTime )
+{
+    m_AlarmOccurStatic.OnAlarmOccur();
 }
 
 // End of file

@@ -97,8 +97,8 @@
 #define IDC_Rectangle_Check             1058
 #define IDC_Polygon_Check               1059
 #define IDC_AlarmHold_Group             1060
-#define IDC_Clear_Check2                1060
 #define IDC_Choose_Alarm_Group          1061
+#define IDC_Alarm_Occur_STATIC          1062
 #define IDS_Invade                      3006
 #define IDS_Leave_Disappear             3007
 #define IDS_LeftBehind                  3008
@@ -205,7 +205,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1026
 #define _APS_NEXT_COMMAND_VALUE         32792
-#define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif

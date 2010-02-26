@@ -189,7 +189,9 @@ BOOL CInvadeAddDlg::GatherUseSet()
     else 
     {
         ASSERT(FALSE);
+        return FALSE;
     }
+    return TRUE;
 }
 
 //BOOL CLeaveDisappearAddDlg::OnInitDialog()
@@ -230,6 +232,7 @@ BOOL CLeftBehindAddDlg::GatherUseSet()
         ASSERT(FALSE);
         return FALSE;
     }
+    return TRUE;
 }
 
 //BOOL CLoitersAddDlg::OnInitDialog()

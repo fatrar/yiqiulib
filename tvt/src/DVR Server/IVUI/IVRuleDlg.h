@@ -82,4 +82,5 @@ private:
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
     ChannelRule m_AllRule[Max_Channel];
+    afx_msg void OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
 };

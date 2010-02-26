@@ -65,6 +65,7 @@ using namespace std;
 #include "IVUIComDef.h"
 
 #include "..\..\Base\Windows\Include\IDrawer.h"
+#include "..\..\Base\Windows\Include\TextStatic.h"
 using namespace OCI::System;
 
 //#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"

@@ -24,7 +24,8 @@
 class CRuleMainBaseDlg : 
     public CDialog,
     public IVideoSend,
-    public IVideoPlayCallBack
+    public IVideoPlayCallBack,
+    public IIVSimulationAlarmCallBack
 {
     //DECLARE_DYNAMIC(CRuleMainBaseDlg)
 public:
@@ -47,6 +48,14 @@ public:
 protected:
     virtual BOOL OnVideoSend(FRAMEBUFSTRUCT *bufStruct);
 
+    // IIVSimulationAlarmCallBack
+protected:
+    virtual void OnAlarmCallBack(
+        IVRuleType type,
+        int nChannelID,
+        const FILETIME* pTime);
+
+    // IVideoPlayCallBack
 protected:
     virtual BOOL OnVideoPlay(
         HDC dc,
@@ -135,6 +144,8 @@ protected:
 
     WPG_Rule* m_pRule;
     IVRuleType m_type;
+private:
+    Windows::CAlarmTextStatic m_AlarmOccurStatic;
 };
 
 

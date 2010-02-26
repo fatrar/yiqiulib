@@ -101,6 +101,8 @@ HTREEITEM InitCameraTree(
 
 void UnitCameraTree(CTreeCtrl& CameraTree);
 
+HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree);
+
 void PopUpCameraMemu(
     CTreeCtrl& CameraTree,
     int nIndex,

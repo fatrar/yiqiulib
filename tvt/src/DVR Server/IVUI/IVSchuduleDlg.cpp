@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CIVSchuduleDlg, CDialog)
     ON_BN_CLICKED(IDC_Add_CHECK, &CIVSchuduleDlg::OnBnClickedAddCheck)
     ON_BN_CLICKED(IDC_Erase_CHECK, &CIVSchuduleDlg::OnBnClickedEraseCheck)
     ON_WM_DESTROY()
+    ON_NOTIFY(NM_CLICK, IDC_SCHUDULE_CAMERA_TREE, &CIVSchuduleDlg::OnNMClickSchuduleCameraTree)
 END_MESSAGE_MAP()
 
 
@@ -182,4 +183,9 @@ void CIVSchuduleDlg::Enable( BOOL bEnable /*= TRUE*/ )
     {
         m_ScheduleCtrl[i].EnableWindow(bEnable);
     }
+}
+void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    // TODO: Add your control notification handler code here
+    *pResult = 0;
 }

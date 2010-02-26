@@ -175,12 +175,34 @@ union IV_RuleID
     {
         return memcmp(szRuleId, a.szRuleId, sizeof(szRuleId))>0;
     }
+
+    void operator=(const unsigned char (&p)[16])
+    {
+        memcpy(szRuleId, p, 16);
+    }
 };
 
 //DWORD IV_RuleID::RULE_ID::s_dwID = 0;
 
 // 第三个为通道，第四个为时间戳，第五个为回调传过来的用户参数
 typedef BOOL (*AlarmCallBackFn)(const AlarmOutTable&,IVRuleType,int,const FILETIME*,void* pParm);
+
+struct IIVAlarmCallBack
+{
+    virtual void OnAlarmCallBack(
+        const AlarmOutTable& table,
+        IVRuleType type,
+        int nChannelID,
+        const FILETIME* pTime)=0;
+};
+
+struct IIVSimulationAlarmCallBack
+{
+    virtual void OnAlarmCallBack(
+        IVRuleType type,
+        int nChannelID,
+        const FILETIME* pTime)=0;
+};
 
 struct IIVDeviceSetter
 {
@@ -226,9 +248,19 @@ struct IVideoSend
     virtual BOOL OnVideoSend(FRAMEBUFSTRUCT *bufStruct) = 0;
 };
 
+struct IIVSimulation
+{
+    virtual void Start(
+        int nChannelID, 
+        IIVSimulationAlarmCallBack* p,
+        const WPG_Rule& Rule) = 0;
+    virtual void Stop(int nChannelID)=0;
+};
+
 // 板卡这边只关心正在运行的规则
 struct IIVDeviceBase2 :
-    public IIVDeviceBase
+    public IIVDeviceBase,
+    public IIVSimulation
 {
     virtual BOOL Add(
         int nChannelID,

@@ -79,4 +79,5 @@ private:
 
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
+    afx_msg void OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
 };

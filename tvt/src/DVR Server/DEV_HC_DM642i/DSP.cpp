@@ -111,6 +111,8 @@ CDSP::CDSP()
     , m_pVideoCallBack(NULL)
     , m_pAudioCallBack(NULL)
     , m_nDeviceNum(0)
+    , m_pIVAlarmCallBack(NULL)
+    , m_SimulationChanID(Invaild_ChannelID)
     , m_dwVideoFormat(DVRVIDEO_STANDARD_PAL)
 {
     int i;

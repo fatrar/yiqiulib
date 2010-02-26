@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
     ON_WM_DESTROY()
     ON_WM_PAINT()
     ON_WM_CLOSE()
+    ON_NOTIFY(NM_CLICK, IDC_RULE_CAMERA_TREE, &CIVRuleDlg::OnNMClickRuleCameraTree)
 END_MESSAGE_MAP()
 
 
@@ -104,6 +105,36 @@ void CIVRuleDlg::OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
     *pResult = 0;
     PopUpCameraMemu(m_CameraTree, 0, this, this);
 }
+
+void CIVRuleDlg::OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    HTREEITEM hItem = GetTreeClickItem(m_CameraTree);
+    if ( NULL == hItem )
+    {
+        return;
+    }
+    
+    m_ClickItem = hItem;
+    ItemAttribute* pInfo = (ItemAttribute*)m_CameraTree.GetItemData(hItem);
+    switch ( pInfo->Info.Which )
+    {
+    case IUpdateMemu::Camera:
+    case IUpdateMemu::Rule:
+        UpdateLiveChannel(pInfo->Info.nChannelID);
+        break;
+    case IUpdateMemu::Root:
+        if ( g_IIVDeviceBase2 )
+        {
+            g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+        }
+        m_nCurrentChan = Invaild_ChannelID;
+    default:
+        ASSERT(FALSE);
+        return;
+    }
+}
+
 
 void CIVRuleDlg::OnRuleEnableallrule()
 {
@@ -181,9 +212,10 @@ void CIVRuleDlg::OnRuleNewrule()
         //
         // 3. Tree Add Child
         //
-        HTREEITEM NowItem = m_CameraTree.InsertItem(pRule->ruleName, m_ClickItem); 
-        char* pUseData = new char[strlen(pIdentityID)+1];
-        strcpy_s(pUseData, pIdentityID);
+        HTREEITEM NowItem = m_CameraTree.InsertItem(CString(pRule->ruleName), m_ClickItem); 
+        size_t nLen = strlen(pIdentityID)+1;
+        char* pUseData = new char[nLen];
+        strcpy_s(pUseData, nLen, pIdentityID);
         ItemAttribute* pInfo = new ItemAttribute(IUpdateMemu::Rule, m_nCurrentChan, pUseData);
         m_CameraTree.SetItemData(NowItem, (DWORD_PTR)pInfo);
     }
@@ -312,3 +344,4 @@ void CIVRuleDlg::LoadCfgDataToBuf()
         }
     }
 }
+
