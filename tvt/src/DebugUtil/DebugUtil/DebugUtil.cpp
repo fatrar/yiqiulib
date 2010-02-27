@@ -17,87 +17,91 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
 #include "DebugUtil.h"
 
 
-
-/*==========================================
-Debug utility.
-==========================================*/
-
-void DebugOut(const DEBUG_CHAR* format, ...)
-{
 #ifdef _DEBUG
-    const unsigned int bufsize = 10 * 1024 + 1;
-    DEBUG_CHAR *buf = new DEBUG_CHAR[bufsize];
+
+
+#pragma warning(disable: 4996)
+
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#endif
+
+#include <stdio.h>   
+#include <windows.h>
+#include <tchar.h>
+
+
+#define  Max_Buf_Size  1024
+static const char s_strLine[] = "=======================================================\n";
+
+
+
+void DebugOut(const char* format, ...)
+{
+    char szbuf[Max_Buf_Size] = {0};
     va_list args;
     va_start(args, format);
-    __vsprintf(buf, format, args);
+    vsprintf_s(szbuf, format, args);
     va_end(args);
-#ifdef _MSC_VER
-    OutputDebugString(buf);
-#endif // _MSC_VER
 
-#ifdef __APPLE__
-    __printf ( "%s", buf ) ;
-#endif // __APPLE__
-    __fprintf ( stdout, DEBUG_T("%s"), buf ) ;
-    delete[] buf;
-#endif // _USERDEBUG
+    OutputDebugString(szbuf);
+    fprintf(stdout, "%s", szbuf) ;
 }
 
-void DebugOutIndex ( const DEBUG_CHAR *format, ... )
+void DebugOutIndex ( const char *format, ... )
 {
-#ifdef _DEBUG
-    __fprintf ( stdout, DEBUG_T("=======================================================\n") ) ;
-    const unsigned int bufsize = 10 * 1024 + 1;
-    DEBUG_CHAR *buf = new DEBUG_CHAR[bufsize];
+    fprintf(stdout,  s_strLine) ;
+    char szbuf[Max_Buf_Size] = {0};
     va_list args;
     va_start(args, format);
-    __vsprintf(buf, format, args);
+    vsprintf_s(szbuf, format, args);
     va_end(args);
-#ifdef _MSC_VER
-    OutputDebugString(DEBUG_T("=======================================================\n"));
-    OutputDebugString(buf);
-    OutputDebugString(DEBUG_T("=======================================================\n"));
-#endif // _MSC_VER
 
-#ifdef __APPLE__
-    __printf ( "%s", buf ) ;
-#endif // __APPLE__
-    __fprintf ( stdout, DEBUG_T("%s"), buf ) ;
-    delete[] buf;
-    __fprintf ( stdout, DEBUG_T("=======================================================\n") ) ;
-#endif // _USERDEBUG
+    OutputDebugString(s_strLine);
+    OutputDebugString(szbuf);
+    OutputDebugString(s_strLine);
+
+    fprintf(stdout, "%s", szbuf ) ;
+    fprintf(stdout, s_strLine) ;
 }
 
 
-void KAssert(const DEBUG_CHAR *format, ...)
+void KAssert(const char *format, ...)
 {
-#ifdef _DEBUG
-    const unsigned int bufsize = 10 * 1024 + 1;
-    DEBUG_CHAR *buf = new DEBUG_CHAR[bufsize];
+    char szbuf[Max_Buf_Size] = {0};
     va_list args;
     va_start(args, format);
-    __vsprintf(buf, format, args);
+    vsprintf_s(szbuf, format, args);
     va_end(args);
 
-#ifdef _MSC_VER
-    OutputDebugString(buf);
-#endif // _MSC_VER
+    OutputDebugString(szbuf);
 
-#ifdef __APPLE__
-    __printf ( "%s", buf ) ;
-#endif // __APPLE__
-
-    __fprintf ( stderr, DEBUG_T("%s"), buf ) ;
-    delete[] buf;
+    fprintf (stderr, "%s", szbuf) ;
     exit ( EXIT_FAILURE ) ;
-#endif // _USERDEBUG
 }
+
+#endif // _DEBUG
 
 
 #if defined(MEMORY_CHECK) && defined(_DEBUG)
+
+char g_szProjectName[MAX_PATH] = {0};
+
 ds::ds()
 {
-    int tmpDbgFlag;
+    HMODULE hModule = NULL;
+    BOOL bRc = GetModuleHandleEx(
+        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+        ( LPCSTR)this, &hModule );
+    if ( bRc )
+    {
+        GetModuleFileName(hModule, g_szProjectName, MAX_PATH);
+        FreeLibrary(hModule);
+    }
+    else
+    {
+        OutputDebugString("\n*******************GetModuleHandleEx Failed!\n\n");
+    }
 
     _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE );
     _CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDERR );
@@ -106,24 +110,27 @@ ds::ds()
     * heap's linked list - This will allow us to catch any
     * inadvertent use of freed memory
     */
-    tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
     tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
     _CrtSetDbgFlag(tmpDbgFlag);
 }
 
 ds::~ds ()
 {
-    DebugOut ( DEBUG_T(" *============================================* \n") ) ;
-    DebugOut ( DEBUG_T(" *    End of Application.                     * \n") ) ;
-    DebugOut ( DEBUG_T(" *    Begin memory leak check.                * \n") ) ;
-    DebugOut ( DEBUG_T(" *============================================* \n") ) ;
+    OutputDebugString(s_strLine);
+    OutputDebugString(" *    End of Application.                            * \n");
+    DebugOut(" *    Project %s Begin memory leak check.     * \n", g_szProjectName);
+    OutputDebugString(s_strLine);
 }
 
-void ds::Init()
+void ds::Init(const char* pProject)
 {
+    strcpy_s(g_szProjectName, pProject);
 }
 
+//volatile ds memory_check;
 ds memory_check;
+
 #endif
 
 

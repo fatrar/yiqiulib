@@ -24,52 +24,33 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
         #pragma comment(lib, "DebugUtil.lib")
         #pragma message("Automatically linking with DebugUtil.lib")
     #elif defined(_DEBUG) && defined(MEMORY_CHECK)
-        #pragma comment(lib, "DebugUtil_Debug.lib")
-        #pragma message("Automatically linking with DebugUtil_Debug.lib") 
+        #ifndef DEBUGUTIL_LINK
+            #define DEBUGUTIL_LINK
+            #pragma comment(lib, "DebugUtil_Debug.lib")
+            #pragma message("Automatically linking with DebugUtil_Debug.lib") 
+        #endif
+        
     /*#elif defined(_DEBUG) && !defined(MEMORY_CHECK)
         #pragma comment(lib, "OtherUtil_debug.lib")
         #pragma message("Automatically linking with OtherUtil_debug.lib") */
     #endif
 #endif
 
-#include <stdio.h>
 
-#ifdef WIN32
-    #include <windows.h>
-    #include <tchar.h>
-#endif // WIN32
-
-#ifndef EXIT_FAILURE
-    #define EXIT_FAILURE 1
-#endif
-    #ifndef EXIT_SUCCESS
-    #define EXIT_SUCCESS 0
-#endif
-
-#ifdef _UNICODE
-    typedef wchar_t DEBUG_CHAR ;
-    #define __vsprintf wvsprintf
-    #define __printf wprintf 
-    #define __fprintf fwprintf
-    #define DEBUG_T(x) _T(x)
+#ifdef _DEBUG
+    void __cdecl DebugOut(const char* format, ...);
+    void __cdecl DebugOutIndex (const char *format, ... );
+    void __cdecl KAssert(const char *format, ...);
 #else
-    typedef char DEBUG_CHAR ;
-    #define __vsprintf  vsprintf
-    #define __printf printf 
-    #define __fprintf fprintf
-    #define DEBUG_T(x) x
-#endif // UNICODE
+    void __cdecl DebugOut(const char* format, ...){}
+    void __cdecl DebugOutIndex(const char *format, ... ){}
+    void __cdecl KAssert(const char *format, ...){}
+#endif // _DEBUG
 
-
-/*==========================================
-Debug utility.
-==========================================*/
-void __cdecl DebugOut(const DEBUG_CHAR* format, ...);
-void __cdecl DebugOutIndex ( const DEBUG_CHAR *format, ... );
-void __cdecl KAssert(const DEBUG_CHAR *format, ...);
-
+// ctrgbg.h  1143
 // for memory leak
 #if defined(MEMORY_CHECK) && defined(_DEBUG)
+    #pragma message("Run DebugUtil_Debug...")
     #define _CRTDBG_MAP_ALLOC
     #include <stdlib.h>
     #include <crtdbg.h>
@@ -77,11 +58,22 @@ void __cdecl KAssert(const DEBUG_CHAR *format, ...);
     {
         ds();
         ~ds();
-        void Init();
+        void Init(const char* pProject = __FILE__ );
     };
 
+    //#undef _CRTDBG_MAP_ALLOC
     #define new new(_NORMAL_BLOCK, __FILE__,__LINE__)
+    //extern volatile ds memory_check;
+    //static ds memory_check;
     extern ds memory_check;
+#else
+    struct ds
+    {
+        ds(){};
+        ~ds(){};
+        void Init(const char* pProject = __FILE__ ){};
+    };
+    static ds memory_check;
 #endif
 
 
