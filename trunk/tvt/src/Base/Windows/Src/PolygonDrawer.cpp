@@ -165,14 +165,14 @@ void CPolygonDrawer::OnPaint()
     //{
     //    return;
     //}
-
+    CPaintDC dc(this);
     size_t nSize = m_PointQueue.size();
     if ( nSize == 0 )
     {
         return;
     }
 
-    CPaintDC dc(this);
+    
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
 

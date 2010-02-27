@@ -181,12 +181,11 @@ void CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CRectangleDrawer::OnPaint()
 {
+    CPaintDC dc(this);
     if (!m_bIsOK)
     {
         return;
     }
-
-    CPaintDC dc(this);
 
     CPoint& p0 = m_PointQueue[0];
     CPoint& p2 = m_PointQueue[2];

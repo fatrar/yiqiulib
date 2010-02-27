@@ -2,7 +2,9 @@
 //
 
 #pragma once
-
+#include "afxwin.h"
+#include "..\Windows\Include\TextStatic.h"
+using namespace OCI::System::Windows;
 
 // CWindowsTestDlg dialog
 class CWindowsTestDlg : public CDialog
@@ -27,5 +29,8 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
+public:
+    afx_msg void OnBnClickedColour();
+    CAlarmTextStatic m_testStatic;
 };

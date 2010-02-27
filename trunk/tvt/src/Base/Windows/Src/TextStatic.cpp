@@ -31,6 +31,7 @@ namespace Windows
 
 /////////////////////////////////////////////////////////////////////////////
 // CTextStatic
+IMPLEMENT_DYNAMIC(CTextStatic, CStatic)
 
 CTextStatic::CTextStatic()
 {
@@ -114,10 +115,17 @@ void CTextStatic::SetFont(int High,int Wide)
 //
 // ******** CAlarmTextStatic **********
 //
+IMPLEMENT_DYNAMIC(CAlarmTextStatic, CTextStatic)
+
 CAlarmTextStatic::CAlarmTextStatic(DWORD dwRefreshRate,DWORD dwLastTime)
     : m_dwLastTime(dwLastTime)
     , m_dwRefreshRate(dwRefreshRate)
-    , m_IsTimerOpen(FALSE) {}
+    , m_IsTimerOpen(FALSE) 
+{
+    m_color    = RGB(255,0,0);
+    m_colorTmp = RGB(255,0,0);
+    SetFont();
+}
 
 void CAlarmTextStatic::OnAlarmOccur()
 {
@@ -125,7 +133,7 @@ void CAlarmTextStatic::OnAlarmOccur()
     if ( !m_IsTimerOpen )
     {
         ShowWindow(SW_SHOW);
-        SetTimer(0, m_dwRefreshRate, NULL);
+        CAlarmTextStatic::SetTimer(0, m_dwRefreshRate, NULL);
     }
 }
 
@@ -135,13 +143,14 @@ UINT_PTR CAlarmTextStatic::SetTimer(
     void (CALLBACK* lpfnTimer)(HWND, UINT, UINT_PTR, DWORD) )
 {
     m_IsTimerOpen = TRUE;
-    return CWnd::SetTimer(nIDEvent,nElapse,lpfnTimer);
+    UINT_PTR nRc = ::SetTimer(m_hWnd, nIDEvent, nElapse, lpfnTimer);
+    return nRc;
 }
 
 BOOL CAlarmTextStatic::KillTimer( UINT_PTR nIDEvent )
 {
     m_IsTimerOpen = FALSE;
-    return CWnd::KillTimer(nIDEvent);
+    return ::KillTimer(m_hWnd, nIDEvent);
 }
 
 void CAlarmTextStatic::OnTimer( UINT nIDEvent )
@@ -161,6 +170,10 @@ void CAlarmTextStatic::OnPaint()
     if ( m_IsTimerOpen )
     {
         CTextStatic::OnPaint();
+    }
+    else
+    {
+        CPaintDC dc(this);
     }
 }
 

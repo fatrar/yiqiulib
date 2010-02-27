@@ -49,6 +49,7 @@ void CLineDrawer::OnMouseMove(UINT nFlags, CPoint point)
     if ( m_bDragging && m_nDragIndex != -1 )
     {
         m_PointQueue[m_nDragIndex] = point;
+        //Invalidate();
         ParentInvalidate();
         return;
     }
@@ -56,6 +57,7 @@ void CLineDrawer::OnMouseMove(UINT nFlags, CPoint point)
     if ( m_bDrawing )
     {
         m_PointQueue[1] = point;
+        //Invalidate();
         ParentInvalidate();
         return;
     }
@@ -63,6 +65,7 @@ void CLineDrawer::OnMouseMove(UINT nFlags, CPoint point)
     if ( m_bDragCenter )
     {
         CenterPointMoveTo(point);
+        //Invalidate();
         ParentInvalidate();
     }
 }
@@ -133,6 +136,7 @@ void CLineDrawer::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CLineDrawer::OnPaint()
 {
+    CPaintDC dc(this);
     if (!m_bIsOK)
     {
         return;
@@ -143,8 +147,6 @@ void CLineDrawer::OnPaint()
     {
         return;
     }
-
-    CPaintDC dc(this);
 
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
@@ -215,6 +217,8 @@ CArrowLineDrawer::CArrowLineDrawer() : m_dwDrawCommond(Line_Show_All) {}
 
 void CArrowLineDrawer::OnPaint()
 {
+    CPaintDC dc(this);
+    TRACE("CArrowLineDrawer::OnPaint()\n");
     if (!m_bIsOK)
     {
         return;
@@ -227,7 +231,7 @@ void CArrowLineDrawer::OnPaint()
     }
 
     //ShowWindow(SW_HIDE);
-    CPaintDC dc(this);
+    
 
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
