@@ -26,7 +26,14 @@
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
+#include <tchar.h>
+#include <assert.h>
 
+#include <ddraw.h>
+#pragma comment(lib, "ddraw.lib")
+#pragma comment(lib, "dxguid.lib")
 
+#include "HardWareSupport.h"
+#include "PicTransformUtil.h"
 
 // TODO: reference additional headers your program requires here
