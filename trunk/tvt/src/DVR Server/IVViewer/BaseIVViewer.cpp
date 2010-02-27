@@ -46,6 +46,19 @@ inline void TranslateToRect(
     bottom = nHeight*(WPG_Rect.y+WPG_Rect.height) + ClientRect.top;
 }
 
+bool IsVaildWPGTarget(const WPG_Target& Data)
+{
+    const WPG_RectangleF& Rect = Data.boundingBox;
+    if ( Rect.height > 1 ||
+         Rect.width > 1 ||
+         Rect.x > 1 ||
+         Rect.y > 1 )
+    {
+        return false;
+    }
+    return true;
+}
+
 BOOL CBaseIVViewer::Paint(
     int nChannelID,
     const HDC dc, 
@@ -89,6 +102,14 @@ BOOL CBaseIVViewer::Paint(
     for (int i =0; i<nTarCount;++i)
     {
         WPG_Target& Tar = pTarBuf[i];
+        
+        // 过滤超过视频窗口的目标，
+        // 不能在SDK和Buf数据接收事过滤，不然会造成目标丢失
+        if ( !IsVaildWPGTarget(Tar) )
+        {
+            continue;
+        }
+
         TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
         ::Rectangle(dc, left, top, right, bottom);
     }
