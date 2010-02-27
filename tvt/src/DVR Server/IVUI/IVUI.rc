@@ -217,10 +217,10 @@ BEGIN
     CONTROL         "Both",IDC_Both_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,137,39,19
     PUSHBUTTON      "Adv. ..",IDC_Adv_BT,21,201,50,14
     PUSHBUTTON      "Filter ..",IDC_Filter_BT,21,219,50,14
-    PUSHBUTTON      "Simulation",IDC_Simulation_BT,8,246,74,14
+    PUSHBUTTON      "Simulation",IDC_Simulation_BT,8,245,74,14
     CONTROL         "Rectangle",IDC_Rectangle_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,99,39,19
     PUSHBUTTON      "Colour",IDC_Colour_BT,23,165,43,18
-    LTEXT           "Alarm occur",IDC_Alarm_Occur_STATIC,148,249,202,12
+    LTEXT           "Alarm Occur",IDC_Alarm_Occur_STATIC,19,268,150,12
 END
 
 
@@ -293,7 +293,10 @@ BEGIN
     IDD_Add_Edit_Rule_Main, DIALOG
     BEGIN
         RIGHTMARGIN, 428
+        VERTGUIDE, 121
         BOTTOMMARGIN, 293
+        HORZGUIDE, 245
+        HORZGUIDE, 259
     END
 END
 #endif    // APSTUDIO_INVOKED

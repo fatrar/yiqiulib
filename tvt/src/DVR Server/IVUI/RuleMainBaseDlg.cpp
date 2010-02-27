@@ -22,12 +22,20 @@
 
 // CRuleAddMainDlg dialog
 
-//IMPLEMENT_DYNAMIC(CRuleAddMainDlg, CDialog)
+IMPLEMENT_DYNAMIC(CRuleMainBaseDlg, CDialog)
 
 CRuleMainBaseDlg::CRuleMainBaseDlg(CWnd* pParent)
 	: CDialog(CRuleMainBaseDlg::IDD, pParent)
     , m_Drawer(NULL)
     , m_bUse(FALSE) {}
+
+CRuleMainBaseDlg::~CRuleMainBaseDlg()
+{
+    if ( m_Drawer )
+    {
+        Windows::DrawerFactory::DestoryDrawer(m_Drawer);
+    }
+}
 
 void CRuleMainBaseDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -78,11 +86,15 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
     
     int x = 140, y = 15;
     m_Rect.SetRect(x,y,x+352*1.4,y+288*1.4);
+    /*m_AlarmOccurStatic.Create(
+        _T("Alarm Occur!"),
+        WS_CHILD|WS_VISIBLE, 
+        CRect(120, 446, 200, 466), this);*/
     /*m_PlayerWnd.Create(
         NULL, NULL, WS_CHILD|WS_VISIBLE,
         m_Rect,
         this,
-        PlayerWnd_ID );*/
+        PlayerWnd_ID );*/  
     m_Player.InitDirectDraw(
         this->m_hWnd, 352, 288, &m_Rect);
     m_Player.SetVideoPlayCallback(this);
@@ -168,6 +180,7 @@ void CRuleMainBaseDlg::DrawToolChange( Windows::IDrawerGraphType type )
     }
     m_Drawer = Windows::DrawerFactory::CreateDrawer(type);
     m_Drawer->Create(NULL,NULL,WS_VISIBLE|WS_CHILD, m_Rect, this, DrawWnd_ID);
+    m_Drawer->ShowWindow(SW_SHOW);
 }
 
 void CRuleMainBaseDlg::OnBnClickedLineCheck()
@@ -206,6 +219,7 @@ void CRuleMainBaseDlg::OnBnClickedZoneCheck()
 
 void CRuleMainBaseDlg::OnBnClickedSelectCheck()
 {
+    m_AlarmOccurStatic.OnAlarmOccur();
     //m_LineBT.SetCheck(BST_UNCHECKED);
     //m_ZoneBT.SetCheck(BST_UNCHECKED);
     //m_SelectBT.SetCheck(BST_CHECKED);
@@ -317,6 +331,11 @@ BOOL CRuleMainBaseDlg::OnVideoPlay(
     const tagRECT* rect,
     const FILETIME* pTime, HWND hwnd )
 {
+    //m_Drawer->ShowWindow(SW_HIDE);
+    //m_Drawer->ShowWindow(SW_SHOW);
+    IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
+    pViewer->Paint(m_nCurrentChan, dc, *rect, *pTime);
+
     m_Drawer->Invalidate();
     return TRUE;
 }
@@ -325,7 +344,9 @@ void CRuleMainBaseDlg::OnAlarmCallBack(
     IVRuleType type, int nChannelID, const FILETIME* pTime )
 {
     m_AlarmOccurStatic.OnAlarmOccur();
+
 }
+
 
 // End of file
 
