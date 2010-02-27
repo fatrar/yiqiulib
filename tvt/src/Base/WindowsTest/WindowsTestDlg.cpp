@@ -13,27 +13,27 @@
 // CWindowsTestDlg dialog
 
 
-
-
 CWindowsTestDlg::CWindowsTestDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CWindowsTestDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-    //m_pDrawer = new CRectangleDrawer();
     //m_pDrawer = new CPolygonDrawer();
     //m_pDrawer = new CLineDrawer();
+    //m_pDrawer = DrawerFactory::CreateDrawer(IDrawer_Rectangle);
     m_pDrawer = DrawerFactory::CreateDrawer(IDrawer_ArrowLine);
 }
 
 void CWindowsTestDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_Test_STATIC, m_testStatic);
 }
 
 BEGIN_MESSAGE_MAP(CWindowsTestDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
+    ON_BN_CLICKED(IDC_Colour, &CWindowsTestDlg::OnBnClickedColour)
 END_MESSAGE_MAP()
 
 
@@ -51,8 +51,11 @@ BOOL CWindowsTestDlg::OnInitDialog()
 	// TODO: Add extra initialization here
     CRect rect;
     GetClientRect(&rect);
+    rect.bottom -= 50;
     m_pDrawer->Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rect, this, 10246);
-    m_pDrawer->ShowWindow(SW_SHOW);
+    //m_pDrawer->ShowWindow(SW_SHOW);
+
+    m_testStatic.OnAlarmOccur();
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -92,3 +95,13 @@ HCURSOR CWindowsTestDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+void CWindowsTestDlg::OnBnClickedColour()
+{
+    m_testStatic.OnAlarmOccur();
+    CColorDialog Dlg;
+    if ( IDOK == Dlg.DoModal() )
+    {
+        m_pDrawer->SetColour(Dlg.GetColor());
+    }  
+}

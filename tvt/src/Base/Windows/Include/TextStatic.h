@@ -35,9 +35,9 @@ namespace Windows
 
 class TEXTSTATIC_CLASS CTextStatic : public CStatic
 {
+    DECLARE_DYNAMIC(CTextStatic)
 // Construction
 public:
-	
 	CTextStatic();
 	virtual ~CTextStatic();
     
@@ -65,6 +65,7 @@ protected:
 class TEXTSTATIC_CLASS CAlarmTextStatic : 
     public CTextStatic
 {
+    DECLARE_DYNAMIC(CAlarmTextStatic)
 public:
     CAlarmTextStatic(DWORD dwRefreshRate=700, DWORD dwLastTime=3000);
 public:
