@@ -60,7 +60,7 @@ BOOL CDSP::SetIVSpecialParam(
 
     {
         AutoLockAndUnlock(m_pIVPack[nDevice].CS);
-        m_pPack[nDevice].param.push_back(pack);
+        m_pIVPack[nDevice].param.push_back(IVData);
     }
    
     return TRUE;
@@ -78,13 +78,13 @@ BOOL CDSP::SetIVParamToDSP( int nDevice )
     TVT_AP_SET stApSet; //heliang fix
 
     //判断dsp程序有没有提取上次设定的参数。
-    stApSet.dwAddress = AI_STREAM_LEN;
+    stApSet.dwAddress = AI_STREAM_FLAG;
     ControlDriver(nDevice,
         IOCTL_GET_DSP_PARAM,
         &stApSet, sizeof(stApSet),
         &stApSet, sizeof(stApSet),
         &dwRtn);
-    if(stApSet.dwValue != 0)	//如果没有则取消当次设定。
+    if(stApSet.dwValue != 0xa5a5a5a5)	//如果没有则取消当次设定。
     {
         return TRUE;
     }
@@ -98,8 +98,8 @@ BOOL CDSP::SetIVParamToDSP( int nDevice )
         PPARAMPACK pPack = (PPARAMPACK)(pBuf + sizeof(DWORD));    
         IVParmData& IVData = m_pIVPack[nDevice].param.front();
         *pPack = IVData.Commadparm;
-        memcpy(pPack+sizeof(IVParmData), &IVData.Rule, sizeof(WPG_Rule));
-        m_pPack[nDevice].param.pop_front();
+        memcpy(pPack+1, &IVData.Rule, sizeof(WPG_Rule));
+        m_pIVPack[nDevice].param.pop_front();
     }
 
     return ControlDriver(nDevice,
