@@ -272,18 +272,18 @@ BOOL CStageChangeAddDlg::OnInitDialog()
 
 
 
-CRuleMainBaseDlg* CreateRuleCfgDlgByRule(IVRuleType type)
+CRuleMainBaseDlg* CreateRuleCfgDlgByRule(IVRuleType type,  CWnd* pParentWnd)
 {
     switch (type)
     {
-    case IV_Invade: return new CInvadeAddDlg();
-    case IV_Leave_Disappear: return new CLeaveDisappearAddDlg();
-    case IV_LeftBehind: return new CLeftBehindAddDlg();
-    case IV_Loiters: return new CLoitersAddDlg();
-    case IV_Statistic: return new CStatisticAddDlg();
-    case IV_Vehicle_Retrograde: return new CVehicleRetrogradeAddDlg();
-    case IV_Illegal_Parking: return new CIllegalParkingAddDlg();
-    case IV_Stage_Change: return new CStageChangeAddDlg();
+    case IV_Invade: return new CInvadeAddDlg(pParentWnd);
+    case IV_Leave_Disappear: return new CLeaveDisappearAddDlg(pParentWnd);
+    case IV_LeftBehind: return new CLeftBehindAddDlg(pParentWnd);
+    case IV_Loiters: return new CLoitersAddDlg(pParentWnd);
+    case IV_Statistic: return new CStatisticAddDlg(pParentWnd);
+    case IV_Vehicle_Retrograde: return new CVehicleRetrogradeAddDlg(pParentWnd);
+    case IV_Illegal_Parking: return new CIllegalParkingAddDlg(pParentWnd);
+    case IV_Stage_Change: return new CStageChangeAddDlg(pParentWnd);
     default:
         assert(false);
         return NULL;

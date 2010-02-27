@@ -188,10 +188,9 @@ void CIVRuleDlg::OnRuleNewrule()
     WPG_Rule* pRule = new WPG_Rule;
     IVRuleType RuleType = FunctionSelDlg.GetUserSelect();
     IVUtil::InitWPGRuleByType(pRule, RuleType);
-    CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType);
+
+    CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType, this);
     pDlg->SetComomParm(m_nCurrentChan, pRule, RuleType);
-    //CRuleAddMainDlg RuleAddMainDlg(RuleType, m_nCurrentChan, pRule);
-    //RuleAddMainDlg.SetIVRuleType(FunctionSelDlg.GetUserSelect());
     if ( IDOK == pDlg->DoModal() )
     {
         //AfxMessageBox(_T("aaaa"));

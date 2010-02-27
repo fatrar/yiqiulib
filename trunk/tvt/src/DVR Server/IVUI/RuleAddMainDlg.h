@@ -28,6 +28,7 @@ class CRuleAddMainDlg :
 {
 	//DECLARE_DYNAMIC(CRuleAddMainDlg)
 public:
+    CRuleAddMainDlg(CWnd* pParent = NULL):CRuleMainBaseDlg(pParent){}
     virtual ~CRuleAddMainDlg() {};
 //
 //public:
@@ -61,6 +62,8 @@ public:
 class CInvadeAddDlg:
     public CRuleAddMainDlg
 {
+public:
+    CInvadeAddDlg(CWnd* pParent = NULL):CRuleAddMainDlg(pParent){}
 protected:
     virtual BOOL OnInitDialog();
     virtual BOOL GatherUseSet();
@@ -78,6 +81,8 @@ typedef CInvadeAddDlg CLeaveDisappearAddDlg;
 class CLeftBehindAddDlg:
     public CRuleAddMainDlg
 {
+public:
+    CLeftBehindAddDlg(CWnd* pParent = NULL):CRuleAddMainDlg(pParent){}
 protected:
     virtual BOOL OnInitDialog();
     virtual BOOL GatherUseSet();
@@ -95,6 +100,9 @@ typedef CLeftBehindAddDlg CLoitersAddDlg;
 class CStatisticAddDlg:
     public CRuleAddMainDlg
 {
+public:
+    CStatisticAddDlg(CWnd* pParent = NULL):CRuleAddMainDlg(pParent){}
+protected:
     virtual BOOL OnInitDialog();
    // virtual BOOL GatherUseSet();
 };
@@ -102,6 +110,9 @@ class CStatisticAddDlg:
 class CVehicleRetrogradeAddDlg:
     public CRuleAddMainDlg
 {
+public:
+    CVehicleRetrogradeAddDlg(CWnd* pParent = NULL):CRuleAddMainDlg(pParent){}
+protected:
     virtual BOOL OnInitDialog();
    // virtual BOOL GatherUseSet();
 };
@@ -109,6 +120,9 @@ class CVehicleRetrogradeAddDlg:
 class CIllegalParkingAddDlg:
     public CRuleAddMainDlg
 {
+public:
+    CIllegalParkingAddDlg(CWnd* pParent = NULL):CRuleAddMainDlg(pParent){}
+protected:  
     virtual BOOL OnInitDialog();
     //virtual BOOL GatherUseSet();
 };
@@ -116,11 +130,14 @@ class CIllegalParkingAddDlg:
 class CStageChangeAddDlg:
     public CRuleAddMainDlg
 {
+public:
+    CStageChangeAddDlg(CWnd* pParent = NULL):CRuleAddMainDlg(pParent){}
+protected:   
     virtual BOOL OnInitDialog();
 };
 
 
-CRuleMainBaseDlg* CreateRuleCfgDlgByRule(IVRuleType type);
+CRuleMainBaseDlg* CreateRuleCfgDlgByRule(IVRuleType type,  CWnd* pParentWnd);
 
 
 #endif  // _RULEADDMAINDLG_H_2010_

@@ -27,7 +27,7 @@ class CRuleMainBaseDlg :
     public IVideoPlayCallBack,
     public IIVSimulationAlarmCallBack
 {
-    //DECLARE_DYNAMIC(CRuleMainBaseDlg)
+    DECLARE_DYNAMIC(CRuleMainBaseDlg)
 public:
     //enum OperatorMode
     //{
@@ -36,7 +36,7 @@ public:
     //};
 
     CRuleMainBaseDlg(CWnd* pParent = NULL);   // standard constructor
-    virtual ~CRuleMainBaseDlg(){};
+    virtual ~CRuleMainBaseDlg();
 
     // Dialog Data
     enum { IDD = IDD_Add_Edit_Rule_Main };
@@ -146,6 +146,7 @@ protected:
     IVRuleType m_type;
 private:
     Windows::CAlarmTextStatic m_AlarmOccurStatic;
+    //CStatic m_AlarmOccurStatic;
 };
 
 

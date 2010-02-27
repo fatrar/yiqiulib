@@ -68,7 +68,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\lib\;C:\DXSDK\Lib;"
+				AdditionalLibraryDirectories="..\..\lib\;"
 				ModuleDefinitionFile=".\IVUI.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -342,10 +342,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SingleVideoPlayer.h"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
@@ -377,10 +373,6 @@
 			</File>
 			<File
 				RelativePath=".\ScheduleCtrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SingleVideoPlayer.cpp"
 				>
 			</File>
 			<File

@@ -64,10 +64,14 @@ using namespace std;
 #include "..\IVCfgMgr\Include\IIVCfgMgr.h"
 #include "IVUIComDef.h"
 
+#include "..\IVViewer\Include\IVViewer.h"
+
 #include "..\..\Base\Windows\Include\IDrawer.h"
 #include "..\..\Base\Windows\Include\TextStatic.h"
 using namespace OCI::System;
 
+#include "..\..\Base\Player\Include\SingleVideoPlayer.h"
+using namespace OCI;
 //#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
 #include "OtherUtil.h"
