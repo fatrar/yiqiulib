@@ -217,6 +217,7 @@ CArrowLineDrawer::CArrowLineDrawer() : m_dwDrawCommond(Line_Show_All) {}
 
 void CArrowLineDrawer::OnPaint()
 {
+    CPaintDC dc(this);
     if (!m_bIsOK)
     {
         return;
@@ -229,7 +230,12 @@ void CArrowLineDrawer::OnPaint()
     }
 
     //ShowWindow(SW_HIDE);
-    CPaintDC dc(this);
+    
+
+    CRect Rect;
+    GetClientRect(&Rect);
+    dc.FillSolidRect(&Rect, RGB(255, 255, 255));
+
     CPoint& BeginPoint = m_PointQueue[0];
     CPoint& EndPoint = m_PointQueue[1];
     dc.MoveTo(BeginPoint);  

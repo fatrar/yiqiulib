@@ -56,6 +56,7 @@ BOOL CTestDlg::OnInitDialog()
 	// TODO: Add extra initialization here
     CRect rect;
     GetClientRect(&rect);
+    rect.bottom /= 2;
     m_pDrawer->Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rect, this, 10246);
     m_pDrawer->ShowWindow(SW_SHOW);
 
