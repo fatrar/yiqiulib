@@ -48,13 +48,15 @@ static BOOL UnLockCursor()
 	return ClipCursor(&CRect(0,0,x,y));
 }
 
-#define ParentInvalidate() \
-    CRect FreshRect;                \
-    GetClientRect(&FreshRect);      \
-    ClientToScreen(&FreshRect);     \
-    CWnd* pParentWnd = GetParent(); \
-    pParentWnd->ScreenToClient(&FreshRect); \
-    pParentWnd->InvalidateRect(&FreshRect);
+//#define ParentInvalidate() \
+//    CRect FreshRect;                \
+//    GetClientRect(&FreshRect);      \
+//    ClientToScreen(&FreshRect);     \
+//    CWnd* pParentWnd = GetParent(); \
+//    pParentWnd->ScreenToClient(&FreshRect); \
+//    pParentWnd->InvalidateRect(&FreshRect);
+
+#define ParentInvalidate() Invalidate()
 
 enum
 {
