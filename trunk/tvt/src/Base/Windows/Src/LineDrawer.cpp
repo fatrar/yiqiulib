@@ -235,7 +235,7 @@ void CArrowLineDrawer::OnPaint()
 
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
-
+    
     CPoint& BeginPoint = m_PointQueue[0];
     CPoint& EndPoint = m_PointQueue[1];
     dc.MoveTo(BeginPoint);  

@@ -52,7 +52,7 @@ static BOOL UnLockCursor()
     pParentWnd->ScreenToClient(&FreshRect); \
     pParentWnd->InvalidateRect(&FreshRect);
 
-
+//#define ParentInvalidate()  Invalidate()
 
 };  // Windows
 
