@@ -21,7 +21,6 @@
 #include "Drawer.h"
 
 
-
 class CRectangleDrawer :
 	public CDrawer
 {
@@ -60,7 +59,23 @@ protected:
     DargDir m_nDragDir;
 };
 
-
+//class CDoubleRectangleDrawer :
+//    public CRectangleDrawer
+//{
+//    DECLARE_DYNAMIC(CDoubleRectangleDrawer)
+//public:
+//    CDoubleRectangleDrawer(void);
+//    virtual ~CDoubleRectangleDrawer(void);
+//protected:
+//    DECLARE_MESSAGE_MAP()
+//
+//protected:
+//    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+//    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+//    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+//    afx_msg void OnPaint();
+//    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+//};
 
 
 

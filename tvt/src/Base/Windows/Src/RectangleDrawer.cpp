@@ -41,10 +41,6 @@ CRectangleDrawer::CRectangleDrawer(void)
 {
     m_nMaxPoint = 4;
     m_PointQueue.resize(4);
-	//m_PointQueue.push_back(CPoint());
-	//m_PointQueue.push_back(CPoint());
-	//m_PointQueue.push_back(CPoint());
-	//m_PointQueue.push_back(CPoint());
 }
 
 CRectangleDrawer::~CRectangleDrawer(void)
@@ -307,3 +303,13 @@ void CRectangleDrawer::ReFreshPoint2( DargDir nIndex, const CPoint& point )
 
 
 
+
+//CDoubleRectangleDrawer::CDoubleRectangleDrawer( void )
+//{
+//
+//}
+//
+//CDoubleRectangleDrawer::~CDoubleRectangleDrawer( void )
+//{
+//
+//}
