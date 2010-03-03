@@ -301,14 +301,17 @@ void CIVRuleDlg::OnClose()
     __super::OnClose();
 }
 
-#define YUV422 1
+//#define YUV422 1
 BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
 {
     CRect Rect;
     FILETIME* time = (FILETIME*)&bufStruct->localTime;
     GetClientRect(&Rect);
     ClientToScreen(&Rect);
-    m_Player.Show(&Rect, bufStruct->pBuf, YUV422, 0, time);
+    m_Player.Show(
+        &Rect, bufStruct->pBuf,
+        bufStruct->width, bufStruct->height,
+        CSingleVideoPlayer::YUV422, 0, time);
 
     g_IIVDeviceBase2->ReleaseLiveBuf(bufStruct);
     return TRUE;

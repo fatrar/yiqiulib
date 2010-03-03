@@ -68,7 +68,6 @@ using namespace std;
 
 #include "..\..\Base\Windows\Include\IDrawer.h"
 #include "..\..\Base\Windows\Include\TextStatic.h"
-using namespace OCI::System;
 
 #include "..\..\Base\Player\Include\SingleVideoPlayer.h"
 using namespace OCI;
@@ -84,7 +83,6 @@ using namespace OCI;
 #include "LineAdvDlg.h"
 #include "ZoneAdvDlg.h"
 #include "FilterDlg.h"
-#include "SingleVideoPlayer.h"
 
 
 

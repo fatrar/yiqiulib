@@ -98,7 +98,6 @@
 #define IDC_Polygon_Check               1059
 #define IDC_AlarmHold_Group             1060
 #define IDC_Choose_Alarm_Group          1061
-#define IDC_Alarm_Occour_STATIC         1063
 #define IDC_Alarm_Occur_STATIC          1063
 #define IDS_Invade                      3006
 #define IDS_Leave_Disappear             3007
@@ -140,12 +139,13 @@
 #define IDS_Event_Montion               3043
 #define IDS_Event_Other                 3044
 #define IDS_Event_Anything              3045
-#define IDS_Filter_MaxObj               3046
-#define IDS_Filter_MinObj               3047
+#define IDS_Filter_MaxObj               3047
+#define IDS_Filter_MinObj               3046
 #define IDS_Filter_Size_Change          3048
 #define IDS_Filter_Shape_Direction      3049
-#define IDS_Filter_MaxObj_Info          3050
-#define IDS_Filter_MinObj_Info          3051
+#define IDS_Filter_MaxObj_Info          3051
+#define IDS_Filter_MinObj_Info          3050
+#define IDS_Filter_MaxxObj_Info         3051
 #define IDS_Filter_Size_Change_Info     3052
 #define IDS_Filter_Shape_Direction_Info 3053
 #define IDS_Filter_Head_Type            3054
@@ -174,7 +174,7 @@
 #define IDS_AlarmOut_SnapScreen         3077
 #define IDS_AlarmOut_PlaySound          3078
 #define IDS_AlarmOut_TelphoneCall       3079
-#define IDS_STRING3081                  3080
+#define IDS_Filter_Multiplier           3080
 #define IDS_STRING3082                  3081
 #define IDS_STRING3083                  3082
 #define IDS_STRING3084                  3083

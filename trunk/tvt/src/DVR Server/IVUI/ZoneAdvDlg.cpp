@@ -92,6 +92,27 @@ BOOL CZoneAdvDlg::OnInitDialog()
     m_strLoiters.LoadString(IDS_Loiters_Time);
     m_strLeftBehind.LoadString(IDS_LeftBehind_Time);
 
+    switch (m_type)
+    {
+    case IV_Invade:
+    case IV_Leave_Disappear:
+        HideAllTimeWindow();
+        break;
+    case IV_LeftBehind:
+        GetDlgItem(IDC_LOITERS)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_IDC_LOITERS_EDIT)->ShowWindow(SW_HIDE);
+        break;
+    case IV_Loiters:
+        GetDlgItem(IDC_LEFTBEHIND_EDIT)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_LEFTBEHIND)->ShowWindow(SW_HIDE);
+        break;
+    case IV_Stage_Change:
+        HideAllTimeWindow();
+        break;
+    default:
+        TRACE("CZoneAdvDlg::OnInitDialog() Type Error!\n");
+    }
+
     // [] 看需要刷新不？
     UpdateData(FALSE);
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -228,26 +249,7 @@ void CZoneAdvDlg::HideObjAndView()
 void CZoneAdvDlg::Init(IVRuleType type, WPG_Rule* pRule)
 {
     m_pRule = pRule;
-    switch (type)
-    {
-    case IV_Invade:
-    case IV_Leave_Disappear:
-        HideAllTimeWindow();
-    	break;
-    case IV_LeftBehind:
-        GetDlgItem(IDC_LOITERS)->ShowWindow(SW_HIDE);
-        GetDlgItem(IDC_IDC_LOITERS_EDIT)->ShowWindow(SW_HIDE);
-        break;
-    case IV_Loiters:
-        GetDlgItem(IDC_LEFTBEHIND_EDIT)->ShowWindow(SW_HIDE);
-        GetDlgItem(IDC_LEFTBEHIND)->ShowWindow(SW_HIDE);
-        break;
-    case IV_Stage_Change:
-        HideAllTimeWindow();
-        break;
-    default:
-    	return;
-    }
+
 
     m_strDefaultRuleName = m_strRuleNameEdit = pRule->ruleName;
     m_type = type;
