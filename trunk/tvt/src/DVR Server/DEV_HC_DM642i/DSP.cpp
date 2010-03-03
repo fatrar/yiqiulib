@@ -693,6 +693,8 @@ void CDSP::GetOneChannelPreData(
     m_pDrvHeadOfPrvBuf[nDevice][nIndex] = pStatus;
 #endif // PRECOPY
     //m_pPrvBuf[nDevice][nIndex].localTime = pVBI->;
+    m_pPrvBuf[nDevice][nIndex].width = pVBI->dwWidth;
+    m_pPrvBuf[nDevice][nIndex].height = pVBI->dwHeight;
     m_pPrvBuf[nDevice][nIndex].localTime = ChangeTime(pVBI->prevVideoTime);
     m_pPrvBuf[nDevice][nIndex].FrameTime = m_pPrvBuf[nDevice][nIndex].localTime;
     m_pPrvBuf[nDevice][nIndex].ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
