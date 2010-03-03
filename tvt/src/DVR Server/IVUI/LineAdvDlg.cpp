@@ -63,6 +63,53 @@ END_MESSAGE_MAP()
 
 // CLineAdvDlg message handlers
 
+BOOL CLineAdvDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // Rule
+    m_strRuleName.LoadString(IDS_RuleName);
+
+    // Object
+    CString strTmp;
+    m_strObject.LoadString(IDS_Object);
+    strTmp.LoadString(IDS_Object_Person);
+    m_PersonCheck.SetWindowText(strTmp);
+    strTmp.LoadString(IDS_Object_Vehicle);
+    m_VehicleCheck.SetWindowText(strTmp);
+    strTmp.LoadString(IDS_Object_Other);
+    m_OtherCheck.SetWindowText(strTmp); 
+    strTmp.LoadString(IDS_Object_All);
+    m_AllCheck.SetWindowText(strTmp);
+
+    do 
+    {
+        unsigned int nTest = m_pRule->ruleDescription.targetClassification;
+        if ( nTest == 7 )
+        {
+            SetAllCheck();
+            break;
+        }
+
+        if ( nTest & TARGET_CLASSIFICATION_HUMAN )
+        {
+            m_PersonCheck.SetCheck(BST_CHECKED);
+        }
+        if ( nTest & TARGET_CLASSIFICATION_VEHICLE )
+        {
+            m_VehicleCheck.SetCheck(BST_CHECKED);
+        }
+        if ( nTest & TARGET_CLASSIFICATION_UNKNOWN )
+        {
+            m_OtherCheck.SetCheck(BST_CHECKED);
+        }
+    } 
+    while (0);
+    UpdateData(FALSE);
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // EXCEPTION: OCX Property Pages should return FALSE
+}
+
 void CLineAdvDlg::OnBnClickedOk()
 {
     CString strTmp;
@@ -81,6 +128,7 @@ void CLineAdvDlg::OnBnClickedOk()
     if ( m_AllCheck.GetCheck() == BST_CHECKED )
     {
         nValue = TARGET_CLASSIFICATION_ANYTHING;
+        OnOK();
         return;
     }
 
@@ -148,31 +196,6 @@ void CLineAdvDlg::OnBnClickedCheckAll()
     }
 }
 
-BOOL CLineAdvDlg::OnInitDialog()
-{
-    CDialog::OnInitDialog();
-
-    // Rule
-    m_strRuleName.LoadString(IDS_RuleName);
-
-    // Object
-    CString strTmp;
-    m_strObject.LoadString(IDS_Object);
-    strTmp.LoadString(IDS_Object_Person);
-    m_PersonCheck.SetWindowText(strTmp);
-    strTmp.LoadString(IDS_Object_Vehicle);
-    m_VehicleCheck.SetWindowText(strTmp);
-    strTmp.LoadString(IDS_Object_Other);
-    m_OtherCheck.SetWindowText(strTmp); 
-    strTmp.LoadString(IDS_Object_All);
-    m_AllCheck.SetWindowText(strTmp);
-
-
-    UpdateData(FALSE);
-    return TRUE;  // return TRUE unless you set the focus to a control
-    // EXCEPTION: OCX Property Pages should return FALSE
-}
-
 void CLineAdvDlg::SetAllCheck()
 {
     m_PersonCheck.SetCheck(BST_CHECKED);
@@ -185,26 +208,6 @@ void CLineAdvDlg::Init( WPG_Rule* pRule )
 {
     m_pRule = pRule;
     m_strRuleNameEdit = pRule->ruleName;
-    unsigned int nTest = pRule->ruleDescription.targetClassification;
-    if ( nTest == 7 )
-    {
-        SetAllCheck();
-        return;
-    }
-
-    if ( nTest & TARGET_CLASSIFICATION_HUMAN )
-    {
-        m_PersonCheck.SetCheck(BST_CHECKED);
-    }
-    if ( nTest & TARGET_CLASSIFICATION_VEHICLE )
-    {
-        m_VehicleCheck.SetCheck(BST_CHECKED);
-    }
-    if ( nTest & TARGET_CLASSIFICATION_UNKNOWN )
-    {
-        m_OtherCheck.SetCheck(BST_CHECKED);
-    }
-    UpdateData(FALSE);
 }
 //
 //typedef enum WPG_TARGET_CLASSIFICATION

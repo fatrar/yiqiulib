@@ -23,15 +23,20 @@
 
 
 
-BOOL GetUseInputLineInfor(
+extern BOOL GetUseInputLineInfor(
     Windows::IDrawer* pDrawer, 
+    const CRect& rect,
     WPG_TripwireEventDescription& lineDes);
 
-BOOL GetUseInputRectangleInfor(
-    Windows::IDrawer* pDrawer, WPG_PolygonF& polygon);
+extern BOOL GetUseInputRectangleInfor(
+    Windows::IDrawer* pDrawer,
+    const CRect& rect,
+    WPG_PolygonF& polygon);
 
-BOOL GetUseInputPolygonInfor(
-    Windows::IDrawer* pDrawer, WPG_PolygonF& polygon);
+extern BOOL GetUseInputPolygonInfor(
+    Windows::IDrawer* pDrawer,
+    const CRect& rect,
+    WPG_PolygonF& polygon);
 
 
 

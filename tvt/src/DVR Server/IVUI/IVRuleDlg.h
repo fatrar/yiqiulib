@@ -2,7 +2,6 @@
 #include "afxcmn.h"
 #include "IVUICommon.h"
 #include "afxwin.h"
-#include "SingleVideoPlayer.h"
 #include "..\devicecontrol\IIVDevice.h"
 // CIVRuleDlg dialog
 
@@ -78,7 +77,7 @@ private:
     CStatic m_RuleGroup;
 
     CWnd m_PlayerWnd;
-    CYUVSingleVideoPlayer m_Player;
+    CYUVSingleVideoPlayerEx m_Player;
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
     ChannelRule m_AllRule[Max_Channel];

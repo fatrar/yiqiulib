@@ -25,6 +25,7 @@
 
 BOOL GetUseInputLineInfor( 
     Windows::IDrawer* pDrawer,
+    const CRect& rect,
     WPG_TripwireEventDescription& lineDes )
 {
     if ( pDrawer->PointCount() != 2 )
@@ -35,8 +36,6 @@ BOOL GetUseInputLineInfor(
     CPoint szBufPoint[2];
     pDrawer->GetUserInput(szBufPoint, 2);
 
-    CRect rect;
-    pDrawer->GetClientRect(&rect);
     int nW = rect.Width(), nH = rect.Height();
     TraslateToRate(lineDes.startPoint, szBufPoint[0], nW, nH);
     TraslateToRate(lineDes.endPoint, szBufPoint[1], nW, nH);
@@ -60,6 +59,7 @@ BOOL GetUseInputLineInfor(
 
 BOOL GetUseInputRectangleInfor(
     Windows::IDrawer* pDrawer, 
+    const CRect& rect,
     WPG_PolygonF& polygon )
 {
     if ( pDrawer->PointCount() != 4 )
@@ -70,8 +70,6 @@ BOOL GetUseInputRectangleInfor(
     CPoint szBufPoint[4];
     pDrawer->GetUserInput(szBufPoint, 4);
 
-    CRect rect;
-    pDrawer->GetClientRect(&rect);
     int nW = rect.Width(), nH = rect.Height();
     for ( int i = 0; i<4; ++i)
     {
@@ -83,6 +81,7 @@ BOOL GetUseInputRectangleInfor(
 
 BOOL GetUseInputPolygonInfor(
     Windows::IDrawer* pDrawer,
+    const CRect& rect,
     WPG_PolygonF& polygon )
 {
     size_t nPointCount = pDrawer->PointCount();
@@ -95,8 +94,6 @@ BOOL GetUseInputPolygonInfor(
     CPoint szBufPoint[WPG_MAX_NUM_OF_POINTS];
     pDrawer->GetUserInput(szBufPoint, WPG_MAX_NUM_OF_POINTS);
 
-    CRect rect;
-    pDrawer->GetClientRect(&rect);
     int nW = rect.Width(), nH = rect.Height();
     for ( size_t i = 0; i<nPointCount; ++i)
     {

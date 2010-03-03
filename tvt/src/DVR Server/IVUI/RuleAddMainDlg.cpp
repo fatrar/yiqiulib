@@ -161,10 +161,12 @@ BOOL CInvadeAddDlg::OnInitDialog()
 
 BOOL CInvadeAddDlg::GatherUseSet()
 {
+    CRect rect;
+    m_pDrawContainer->GetClientRect(&rect);
     WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
     if ( m_nToolsChoose == Choose_Line )
     {
-        if ( !GetUseInputLineInfor(m_Drawer, des.tripwireEventDescription))
+        if ( !GetUseInputLineInfor(m_LineDrawer, rect, des.tripwireEventDescription))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
@@ -172,7 +174,7 @@ BOOL CInvadeAddDlg::GatherUseSet()
     }
     else if (m_nToolsChoose == Choose_Rectangle)
     {
-        if ( !GetUseInputRectangleInfor(m_Drawer, des.aoiEventDescription.polygon))
+        if ( !GetUseInputRectangleInfor(m_RectangleDrawer, rect, des.aoiEventDescription.polygon))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
@@ -180,7 +182,7 @@ BOOL CInvadeAddDlg::GatherUseSet()
     }
     else if (m_nToolsChoose == Choose_Polygon)
     {
-        if ( GetUseInputPolygonInfor(m_Drawer, des.aoiEventDescription.polygon))
+        if ( GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
@@ -210,10 +212,12 @@ BOOL CLeftBehindAddDlg::OnInitDialog()
 
 BOOL CLeftBehindAddDlg::GatherUseSet()
 {
+    CRect rect;
+    m_pDrawContainer->GetClientRect(&rect);
     WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
     if (m_nToolsChoose == Choose_Rectangle)
     {
-        if ( !GetUseInputRectangleInfor(m_Drawer, des.aoiEventDescription.polygon))
+        if ( !GetUseInputRectangleInfor(m_RectangleDrawer, rect, des.aoiEventDescription.polygon))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
@@ -221,7 +225,7 @@ BOOL CLeftBehindAddDlg::GatherUseSet()
     }
     else if (m_nToolsChoose == Choose_Polygon)
     {
-        if ( GetUseInputPolygonInfor(m_Drawer, des.aoiEventDescription.polygon))
+        if ( GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;

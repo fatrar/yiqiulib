@@ -61,7 +61,8 @@ protected:
         HDC dc,
         const tagRECT* rect,    // Õë¶ÔÆÁÄ»×ø±ê
         const FILETIME* pTime,
-        HWND hwnd );
+        HWND hwnd,
+        int nFlag );
 
 protected:
     virtual BOOL GatherUseSet(){return TRUE;};
@@ -77,7 +78,7 @@ protected:
 
     void UseToolCtrlMode(ToolMode Mode);
 
-    void DrawToolChange(Windows::IDrawerGraphType type);
+    void DrawToolChange(Windows::IDrawer* pDrawer);
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -140,7 +141,11 @@ protected:
     CYUVSingleVideoPlayer m_Player;
     int m_nCurrentChan;  
     CRect m_Rect;
-    Windows::IDrawer* m_Drawer;
+
+    Windows::IDrawer* m_LineDrawer;
+    Windows::IDrawer* m_RectangleDrawer;
+    Windows::IDrawer* m_PolygonDrawer;
+    Windows::IDrawContainer* m_pDrawContainer;
 
     WPG_Rule* m_pRule;
     IVRuleType m_type;
