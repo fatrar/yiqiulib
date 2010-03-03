@@ -22,17 +22,17 @@ static char THIS_FILE[] = __FILE__;
 int g_card_id;
 CQCDlg *main;
 
-//#define UI_DEBUG
+#define UI_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
 // CQCDlg dialog
-
 
 CQCDlg::CQCDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CQCDlg::IDD, pParent)
 {
     DebugOut("CQCDlg:CQCDlg()\n");
     main=this;
+
     //{{AFX_DATA_INIT(CQCDlg)
 
 	//}}AFX_DATA_INIT
