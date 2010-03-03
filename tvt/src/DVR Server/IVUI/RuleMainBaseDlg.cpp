@@ -160,9 +160,17 @@ void CRuleMainBaseDlg::OnBnClickedAdvBt()
 
 void CRuleMainBaseDlg::OnBnClickedFilterBt()
 {
+    if ( g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
     CFilterDlg Dlg;
     Dlg.SetComomParm(m_nCurrentChan, m_pRule);
     Dlg.DoModal();
+    if ( g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
 }
 
 void CRuleMainBaseDlg::OnBnClickedSimulationBt()
