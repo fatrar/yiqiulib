@@ -171,7 +171,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
             pTime,
             pTable );
 
-        if ( pTable && pTable->SnapShot )
+        if ( pTable && pTable->Table.SnapShot )
         {
             DoSnapShot(
                 nChannelID,

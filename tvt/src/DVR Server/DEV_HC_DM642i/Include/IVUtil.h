@@ -109,10 +109,10 @@ static void InitWPGRuleByType(WPG_Rule* pRule, IVRuleType t)
     }
 }
 
-static void SetDefaultRuleDes(WPG_EventDescriptionUnion& des)
-{
-    
-}
+//static void SetDefaultRuleDes(WPG_EventDescriptionUnion& des)
+//{
+//    
+//}
 
 static void InvadeOrLeaveChangeToLine(WPG_EventDescriptionUnion& des)
 {
