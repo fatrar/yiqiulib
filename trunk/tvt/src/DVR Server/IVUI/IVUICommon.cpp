@@ -22,6 +22,35 @@
 //#define new DEBUG_NEW
 //#endif
 
+struct ItemAttribute 
+{
+    struct ItemInfo
+    {
+        ItemInfo(
+            WhichMemu _Which,
+            int _nChannelID) 
+            : Which(_Which)
+            , nChannelID(_nChannelID){}
+        WhichMemu Which:8;
+        BYTE nReserve1:8;
+        WORD nChannelID:16;
+    };
+
+    ItemAttribute(
+        WhichMemu Which,
+        int nChannelID,
+        void* pUseData = NULL)
+        : Info(Which, nChannelID)
+        , pUseData(pUseData){}
+    ~ItemAttribute()
+    {
+        safeDelete(pUseData);
+    }
+
+    ItemInfo Info;
+    void* pUseData;
+};
+
 #define IV_Root_Name  _T("IV")
 #define Channel_Name  _T("Ch%d")
 #define Max_Channel               4
@@ -50,7 +79,7 @@ HTREEITEM InitCameraTree(
     // Init Item
     HTREEITEM Root = CameraTree.InsertItem(IV_Root_Name);
     //CameraTree.InsertItem(IV_Root_Name);
-    ItemAttribute* pInfo = new ItemAttribute(IUpdateMemu::Root, -1, NULL);
+    ItemAttribute* pInfo = new ItemAttribute(IV_Tree_Root, -1, NULL);
     CameraTree.SetItemData(Root, (DWORD_PTR)pInfo);
 
     CString strCameraName;
@@ -59,7 +88,7 @@ HTREEITEM InitCameraTree(
         strCameraName.Format(Channel_Name, i);
         HTREEITEM CurrentItem = CameraTree.InsertItem(strCameraName, Root);
         
-        pInfo = new ItemAttribute(IUpdateMemu::Camera, i, NULL);
+        pInfo = new ItemAttribute(IV_Tree_Camera, i, NULL);
         CameraTree.SetItemData(CurrentItem, (DWORD_PTR)pInfo);
 
         if ( pCameraTreeInitor )
@@ -72,13 +101,13 @@ HTREEITEM InitCameraTree(
     return Root;
 }
 
-HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree)
-{
-    CPoint pt; 
-    ::GetCursorPos(&pt); 
-    CameraTree.ScreenToClient(&pt); 
-    return CameraTree.HitTest(pt); 
-}
+//HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree)
+//{
+//    CPoint pt; 
+//    ::GetCursorPos(&pt); 
+//    CameraTree.ScreenToClient(&pt); 
+//    return CameraTree.HitTest(pt); 
+//}
 
 void PopUpCameraMemu(
     CTreeCtrl& CameraTree,
@@ -101,13 +130,13 @@ void PopUpCameraMemu(
     CMenu menu; 
     switch ( pInfo->Info.Which )
     {
-    case IUpdateMemu::Camera:
+    case IV_Tree_Camera:
         menu.LoadMenu(IDR_Camera_Menu);
         break;
-    case IUpdateMemu::Rule:
+    case IV_Tree_Rule:
         menu.LoadMenu(IDR_Rule_Menu);
         break;
-    case IUpdateMemu::Root:
+    case IV_Tree_Root:
     default:
         return;
     }
@@ -162,7 +191,34 @@ void UnitCameraTree( CTreeCtrl& CameraTree )
     TreeVisitDel(CameraTree, Root);
 }
 
+void OnClickCameraTree( 
+    CTreeCtrl& CameraTree,
+    IClickCameraTree* pClickCameraTree )
+{
+    CPoint pt;
+    ::GetCursorPos(&pt);
+    CameraTree.ScreenToClient(&pt);
+    HTREEITEM selDevhItem = CameraTree.HitTest(pt);
+    if( selDevhItem == NULL )
+    {
+        return;
+    }
+    ItemAttribute* pInfo = (ItemAttribute*)CameraTree.GetItemData(selDevhItem);
+    if ( pClickCameraTree )
+    {
+        pClickCameraTree->OnClickCameraTree(
+            pInfo->Info.Which,
+            pInfo->Info.nChannelID,
+            pInfo->pUseData,
+            selDevhItem );
+    }
+}
 
+void* MakeUserData( 
+    int nChannelID, void* pUseData, WhichMemu Which )
+{
+    return new ItemAttribute(Which, nChannelID, pUseData);
+}
 
 
 

@@ -19,8 +19,8 @@ CZoneAdvDlg::CZoneAdvDlg(CWnd* pParent /*=NULL*/)
     , m_StrTime(_T(""))
     , m_strLoiters(_T(""))
     , m_strLeftBehind(_T(""))
-    , m_nLoitersEdit(Loiters_Default_Time)
-    , m_nLeftBehindEdit(LeftBehind_Default_Time){}
+    , m_nLoitersEdit(Default_Loiters_duration)
+    , m_nLeftBehindEdit(Default_LeftBehind_duration){}
 
 CZoneAdvDlg::~CZoneAdvDlg(){}
 

@@ -90,7 +90,7 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
     // TODO:  Add extra initialization here
     
     int x = 140, y = 15;
-    m_Rect.SetRect(x,y,x+352*1.4,y+288*1.4);
+    m_Rect.SetRect(x,y,int(x+352*1.4),int(y+288*1.4));
     /*m_AlarmOccurStatic.Create(
         _T("Alarm Occur!"),
         WS_CHILD|WS_VISIBLE, 

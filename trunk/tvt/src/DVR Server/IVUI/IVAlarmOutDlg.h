@@ -9,7 +9,8 @@
 class CIVAlarmOutDlg :
     public CDialog,
     public IUpdateMemu,
-    public IInitCameraTree
+    public IInitCameraTree,
+    public IClickCameraTree
 {
 	DECLARE_DYNAMIC(CIVAlarmOutDlg)
 
@@ -25,6 +26,7 @@ public:
 
     void Enable(BOOL bEnable = TRUE);
 
+    // IUpdateMemu
 protected:
     virtual void OnUpdateMemu(
         CMenu* pMenu,
@@ -33,22 +35,41 @@ protected:
         void* pData,
         HTREEITEM Item );
 
+    // IInitCameraTree
+protected:
     virtual void OnInitCameraTree(
         int nChannelID,
         HTREEITEM Item );
+
+    // IClickCameraTree
+protected:
+    virtual void OnClickCameraTree(
+        WhichMemu Which,
+        int nChannelID,
+        void* pData,
+        HTREEITEM Item );
+
+protected:
+    void UpdateChannel(int nChannelID);
+
+    void CollectUserSet();
+
+    BOOL IsModify();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
     afx_msg void OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnBnClickedNouseHold();
     afx_msg void OnBnClickedUseHold();
+    afx_msg void OnBnClickedApplyBt();
     afx_msg void OnDestroy();
     DECLARE_MESSAGE_MAP()
 
     enum
     {
-        Alarm_Check_Num = 10,
+        Alarm_Check_Num = AlarmOutTable_Count,
         Alarm_Out_String_Start = IDS_AlarmOut_Record,
 
         Alarm_Out_X_Offset = 10,
@@ -61,7 +82,9 @@ protected:
 
         Alarm_Hold_Height  = Alarm_Out_Y_Offset*3+2*BT_Height,
 
+    
     };
+
 private:   
     // Tree
     CStatic m_AlarmOutGroup;
@@ -79,5 +102,9 @@ private:
 
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
-    afx_msg void OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+    
+    CButton m_ApplyBT;
+
+    AlarmOutSettings m_CurentAlarmSet;
+    AlarmOutSettings m_TmpAlarmSet;
 };

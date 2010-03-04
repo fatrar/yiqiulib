@@ -26,6 +26,7 @@
 #define IDS_FINISH                      1005
 #define IDS_Finish                      1005
 #define IDC_RULE_CAMERA_TREE            1006
+#define IDS_Apply                       1006
 #define IDC_NOUSE_HOLD                  1007
 #define IDC_USE_HOLD                    1008
 #define IDD_ZONEADV                     1008
@@ -99,6 +100,7 @@
 #define IDC_AlarmHold_Group             1060
 #define IDC_Choose_Alarm_Group          1061
 #define IDC_Alarm_Occur_STATIC          1063
+#define IDC_Apply_BT                    1064
 #define IDS_Invade                      3006
 #define IDS_Leave_Disappear             3007
 #define IDS_LeftBehind                  3008
@@ -139,12 +141,12 @@
 #define IDS_Event_Montion               3043
 #define IDS_Event_Other                 3044
 #define IDS_Event_Anything              3045
-#define IDS_Filter_MaxObj               3047
 #define IDS_Filter_MinObj               3046
+#define IDS_Filter_MaxObj               3047
 #define IDS_Filter_Size_Change          3048
 #define IDS_Filter_Shape_Direction      3049
-#define IDS_Filter_MaxObj_Info          3051
 #define IDS_Filter_MinObj_Info          3050
+#define IDS_Filter_MaxObj_Info          3051
 #define IDS_Filter_MaxxObj_Info         3051
 #define IDS_Filter_Size_Change_Info     3052
 #define IDS_Filter_Shape_Direction_Info 3053
@@ -176,7 +178,10 @@
 #define IDS_AlarmOut_TelphoneCall       3079
 #define IDS_Filter_Multiplier           3080
 #define IDS_STRING3082                  3081
+#define IDS_Schedule_Add                3081
 #define IDS_STRING3083                  3082
+#define IDS_Schedule_Earse              3082
+#define IDS_Schedule_Erase              3082
 #define IDS_STRING3084                  3083
 #define ID__NEW                         32771
 #define ID_RULE_ENABLEALLRULE           32772
@@ -206,7 +211,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1026
 #define _APS_NEXT_COMMAND_VALUE         32792
-#define _APS_NEXT_CONTROL_VALUE         1064
+#define _APS_NEXT_CONTROL_VALUE         1065
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif
 #endif

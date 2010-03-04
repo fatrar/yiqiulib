@@ -15,7 +15,7 @@ CIVSchuduleDlg::CIVSchuduleDlg(CWnd* pParent /*=NULL*/)
     , m_nCurrentChan(0)
     , m_ClickItem(NULL)
 {
-
+     CScheduleCtrl::InitCursor();
 }
 
 CIVSchuduleDlg::~CIVSchuduleDlg()
@@ -29,6 +29,7 @@ void CIVSchuduleDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Add_CHECK, m_AddCheck);
     DDX_Control(pDX, IDC_Erase_CHECK, m_EraseCheck);
     DDX_Control(pDX, IDC_Schudule_Group, m_SchuduleGroup);
+    DDX_Control(pDX, IDC_Apply_BT, m_ApplyBT);
 }
 
 
@@ -38,6 +39,7 @@ BEGIN_MESSAGE_MAP(CIVSchuduleDlg, CDialog)
     ON_BN_CLICKED(IDC_Erase_CHECK, &CIVSchuduleDlg::OnBnClickedEraseCheck)
     ON_WM_DESTROY()
     ON_NOTIFY(NM_CLICK, IDC_SCHUDULE_CAMERA_TREE, &CIVSchuduleDlg::OnNMClickSchuduleCameraTree)
+    ON_BN_CLICKED(IDC_Apply_BT, &CIVSchuduleDlg::OnBnClickedApplyBt)
 END_MESSAGE_MAP()
 
 
@@ -48,34 +50,43 @@ BOOL CIVSchuduleDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  Add extra initialization here
+    Enable(FALSE);
 
+    CString strTmp;
+    strTmp.LoadString(g_hmodule, IDS_Schedule_Add);
+    m_AddCheck.SetWindowText(strTmp);
+    strTmp.LoadString(g_hmodule, IDS_Schedule_Erase);
+    m_EraseCheck.SetWindowText(strTmp);
+        
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
 {
+    int nHeight = Rect.Height();
+    int nWidth = Rect.Width();
     //
     // 1. Init Himself and CameraTree
     //
     Create(CIVSchuduleDlg::IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this, m_SchuduleGroup, 0, Rect.Height());
+    InitCameraTree(m_CameraTree, this, m_SchuduleGroup, 0, nHeight);
     
     //
     // 2. Init ScheduleCtrl
     //
-    int nSchCtrlWidth = Rect.Width()-Week_Ctrl_X_Offset-CameraCtrl_Width;
+    int nSchCtrlWidth = nWidth-Week_Ctrl_X_Offset-CameraCtrl_Width;
 
-    int nMed = Rect.Width() - nSchCtrlWidth/2;
+    int nMed = nWidth - nSchCtrlWidth/2;
     m_AddCheck.MoveWindow(nMed-BT_X_Offset-BT_Width, BT_Start_Y, BT_Width, BT_Height);
     m_EraseCheck.MoveWindow(nMed+BT_X_Offset,BT_Start_Y,BT_Width, BT_Height);
     m_AddCheck.SetCheck(BST_CHECKED);
 
-    int nAllSchHeight = Rect.Height()-(BT_Start_Y*3+ BT_Height);
+    int nAllSchHeight = nHeight-(BT_Start_Y*3+ BT_Height);
     int nSchCtrlHeight = (nAllSchHeight-(Week_Day-1)*Week_Ctrl_Between_Off)/Week_Day;
     
-    int nSchCtrlRight = Rect.Width()-Week_Ctrl_X_Offset;
+    int nSchCtrlRight = nWidth-Week_Ctrl_X_Offset;
     int nYMove = Week_Ctrl_Between_Off+nSchCtrlHeight;
     CString strName;
     CRect TmpRect(
@@ -96,7 +107,11 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
         TmpRect.bottom += nYMove;
     }  
 
-    CScheduleCtrl::InitCursor();
+    m_ApplyBT.MoveWindow(
+        nWidth-ApplyBT_X_ROffset,
+        nHeight-ApplyBT_Y_ROffset,
+        ApplyBT_Width,
+        ApplyBT_Height);
    
     return TRUE;
 }
@@ -105,6 +120,41 @@ void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResul
 {
     *pResult = 0;
     PopUpCameraMemu(m_CameraTree, 2, this, this);
+}
+
+void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    HTREEITEM hItem = GetTreeClickItem(m_CameraTree);
+    if ( NULL == hItem )
+    {
+        return;
+    }
+
+    m_ClickItem = hItem;
+    ItemAttribute* pInfo = (ItemAttribute*)m_CameraTree.GetItemData(hItem);
+    switch ( pInfo->Info.Which )
+    {
+    case IUpdateMemu::Root:
+    case IUpdateMemu::Camera:
+        Enable(FALSE);
+        break;
+    case IUpdateMemu::Rule:
+        Enable(TRUE);
+        UpdateChannel(pInfo->Info.nChannelID);
+        break;
+    default:
+        ASSERT(FALSE);
+        Enable(FALSE);
+        return;
+    }
+}
+
+void CIVSchuduleDlg::OnInitCameraTree(
+    int nChannelID,
+    HTREEITEM Item )
+{
+
 }
 
 void CIVSchuduleDlg::OnUpdateMemu(
@@ -117,12 +167,12 @@ void CIVSchuduleDlg::OnUpdateMemu(
     m_ClickItem = Item;
     switch (Which)
     {
-    case Root:
+    case IV_Tree_Root:
         break;
-    case Camera:
+    case IV_Tree_Camera:
         m_nCurrentChan = nChannelID;
         break;
-    case Rule:
+    case IV_Tree_Rule:
         m_nCurrentChan = nChannelID;
         break;
     default:
@@ -130,8 +180,10 @@ void CIVSchuduleDlg::OnUpdateMemu(
     }
 }
 
-void CIVSchuduleDlg::OnInitCameraTree(
-    int nChannelID,
+void CIVSchuduleDlg::OnClickCameraTree( 
+    WhichMemu Which,
+    int nChannelID, 
+    void* pData, 
     HTREEITEM Item )
 {
 
@@ -183,9 +235,20 @@ void CIVSchuduleDlg::Enable( BOOL bEnable /*= TRUE*/ )
     {
         m_ScheduleCtrl[i].EnableWindow(bEnable);
     }
+    m_ApplyBT.EnableWindow(bEnable);
 }
-void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+
+void CIVSchuduleDlg::UpdateChannel( int nChannelID )
 {
-    // TODO: Add your control notification handler code here
-    *pResult = 0;
+    
+}
+
+void CIVSchuduleDlg::OnBnClickedApplyBt()
+{
+   
+}
+
+void CIVSchuduleDlg::CollectUserSet()
+{
+
 }

@@ -94,6 +94,7 @@ BEGIN
     CONTROL         "Check9",IDC_CHECK9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,196,242,39,10
     CONTROL         "Check10",IDC_CHECK10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,323,239,43,10
     GROUPBOX        "Alarm Out",IDC_AlarmOut_Group,7,4,138,289
+    PUSHBUTTON      "Apply",IDC_Apply_BT,360,293,57,14
 END
 
 IDD_IVSCHUDULE DIALOGEX 0, 0, 392, 323
@@ -104,6 +105,7 @@ BEGIN
     CONTROL         "Add",IDC_Add_CHECK,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,187,11,39,18
     CONTROL         "Erase",IDC_Erase_CHECK,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,267,10,39,18
     GROUPBOX        "Rule",IDC_Schudule_Group,7,4,138,289
+    PUSHBUTTON      "Apply",IDC_Apply_BT,326,291,57,14
 END
 
 IDD_IVTAB DIALOGEX 0, 0, 464, 338
@@ -450,6 +452,7 @@ BEGIN
     IDS_Next                "Next"
     IDS_Close               "Close"
     IDS_Finish              "Finish"
+    IDS_Apply               "Apply"
 END
 
 STRINGTABLE 
@@ -507,10 +510,10 @@ BEGIN
     IDS_Event_Other         "Other"
     IDS_Event_Anything      "Anything"
     IDS_Filter_MinObj       "Min Object Filter"
-    IDS_Filter_MaxObj       "Max Object Filter"   
+    IDS_Filter_MaxObj       "Max Object Filter"
     IDS_Filter_Size_Change  "Size Change Filter"
     IDS_Filter_Shape_Direction "Shape and Direction Filter"
-    IDS_Filter_MinObj_Info "Min Object Filter"
+    IDS_Filter_MinObj_Info  "Min Object Filter"
     IDS_Filter_MaxObj_Info  "Max Object Filter"
     IDS_Filter_Size_Change_Info "Size Change Filter"
     IDS_Filter_Shape_Direction_Info "Shape and Direction Filter"
@@ -549,8 +552,8 @@ BEGIN
     IDS_AlarmOut_PlaySound  "Play Sound"
     IDS_AlarmOut_TelphoneCall "Telphone Call"
     IDS_Filter_Multiplier   "Multiplier:"
-    IDS_STRING3082          "1"
-    IDS_STRING3083          "1"
+    IDS_Schedule_Add        "Add"
+    IDS_Schedule_Erase      "Erase"
     IDS_STRING3084          "1"
 END
 

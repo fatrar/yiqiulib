@@ -19,16 +19,15 @@
 #define _IVUICOMMON_H_2010_2
 
 
+enum WhichMemu
+{
+    IV_Tree_Root,     // 这个先预留，暂时不需要点击根节点的消息
+    IV_Tree_Camera,
+    IV_Tree_Rule,
+};
 
 struct IUpdateMemu 
 {
-    enum WhichMemu
-    {
-        Root,     // 这个先预留，暂时不需要点击根节点的消息
-        Camera,
-        Rule,
-    };
-
     virtual void OnUpdateMemu(
         CMenu* pMenu,
         WhichMemu Which,
@@ -44,33 +43,13 @@ struct IInitCameraTree
         HTREEITEM Item ) = 0;
 };
 
-struct ItemAttribute 
+struct IClickCameraTree
 {
-    struct ItemInfo
-    {
-        ItemInfo(
-            IUpdateMemu::WhichMemu _Which,
-            int _nChannelID) 
-            : Which(_Which)
-            , nChannelID(_nChannelID){}
-        IUpdateMemu::WhichMemu Which:8;
-        BYTE nReserve1:8;
-        WORD nChannelID:16;
-    };
-
-    ItemAttribute(
-        IUpdateMemu::WhichMemu Which,
+    virtual void OnClickCameraTree(
+        WhichMemu Which,
         int nChannelID,
-        void* pUseData = NULL)
-        : Info(Which, nChannelID)
-        , pUseData(pUseData){}
-    ~ItemAttribute()
-    {
-        safeDelete(pUseData);
-    }
-
-    ItemInfo Info;
-    void* pUseData;
+        void* pData,
+        HTREEITEM Item ) = 0;
 };
 
 enum CameraTreeAttibute
@@ -101,7 +80,11 @@ HTREEITEM InitCameraTree(
 
 void UnitCameraTree(CTreeCtrl& CameraTree);
 
-HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree);
+//HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree);
+
+void OnClickCameraTree(
+    CTreeCtrl& CameraTree,
+    IClickCameraTree* pClickCameraTree);
 
 void PopUpCameraMemu(
     CTreeCtrl& CameraTree,
@@ -109,7 +92,10 @@ void PopUpCameraMemu(
     CWnd* pWnd,
     IUpdateMemu* pUpdateMemu);
 
-
+void* MakeUserData(
+    int nChannelID,
+    void* pUseData,
+    WhichMemu Which = IV_Tree_Rule );
 
 #endif  // _IVUICOMMON_H_2010_
 

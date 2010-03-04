@@ -9,6 +9,7 @@ class CIVRuleDlg :
     public CDialog,
     public IUpdateMemu,
     public IInitCameraTree,
+    public IClickCameraTree,
     public IVideoSend
 {
 	DECLARE_DYNAMIC(CIVRuleDlg)
@@ -30,6 +31,7 @@ protected:
     afx_msg void OnPaint();
     afx_msg void OnClose();
     afx_msg void OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnRuleEnableallrule();
     afx_msg void OnRuleDisableallrule();
     afx_msg void OnRuleUse();
@@ -39,6 +41,7 @@ protected:
     afx_msg void OnRuleNewrule();
 	DECLARE_MESSAGE_MAP()
 
+    // IUpdateMemu
 protected:
     virtual void OnUpdateMemu(
         CMenu* pMenu,
@@ -47,8 +50,18 @@ protected:
         void* pData,
         HTREEITEM Item );
 
+    // IUpdateMemu
+protected:
     virtual void OnInitCameraTree(
         int nChannelID,
+        HTREEITEM Item );
+
+    // IClickCameraTree
+protected:
+    virtual void OnClickCameraTree(
+        WhichMemu Which,
+        int nChannelID,
+        void* pData,
         HTREEITEM Item );
 
     // IVideoSend
@@ -63,7 +76,6 @@ protected:
         PlayerWnd_ID = 0x8100,
 
         Invaild_ChannelID = -1,
-        Max_Channel = 4,
     };
 
     typedef map<string, WPG_Rule*> ChannelRule;
@@ -81,5 +93,4 @@ private:
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
     ChannelRule m_AllRule[Max_Channel];
-    afx_msg void OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
 };

@@ -4,7 +4,23 @@
 #include "stdafx.h"
 #include "IVUI.h"
 #include "IVAlarmOutDlg.h"
+ 
+static const TCHAR* s_szComboString[] = 
+{
+    _T("1"),   // 0
+    _T("3"),   // 1
+    _T("5"),   // 2
+    _T("10"),  // 3
+    _T("15"),  // 4
+    _T("20"),  // 5
+    _T("30"),  // 6
+};
 
+static const int s_szComboInt[] = 
+{
+// 0   1   2  3   4   5   6
+   1,  3,  5, 10, 15, 20, 30
+};
 
 // CIVAlarmOutDlg dialog
 
@@ -14,12 +30,11 @@ CIVAlarmOutDlg::CIVAlarmOutDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVAlarmOutDlg::IDD, pParent)
     , m_nCurrentChan(0)
     , m_ClickItem(NULL)
-{
-
-}
+{}
 
 CIVAlarmOutDlg::~CIVAlarmOutDlg()
 {
+
 }
 
 void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
@@ -36,6 +51,7 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_USE_HOLD, m_AlarmHoldBt);
     DDX_Control(pDX, IDC_AlarmHold_Group, m_AlarmHoldGroup);
     DDX_Control(pDX, IDC_Choose_Alarm_Group, m_ChooseAlarmGroup);
+    DDX_Control(pDX, IDC_Apply_BT, m_ApplyBT);
 }
 
 
@@ -45,6 +61,7 @@ BEGIN_MESSAGE_MAP(CIVAlarmOutDlg, CDialog)
     ON_BN_CLICKED(IDC_NOUSE_HOLD, &CIVAlarmOutDlg::OnBnClickedNouseHold)
     ON_BN_CLICKED(IDC_USE_HOLD, &CIVAlarmOutDlg::OnBnClickedUseHold)
     ON_NOTIFY(NM_CLICK, IDC_ALARMOUT_CAMERA_TREE, &CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree)
+    ON_BN_CLICKED(IDC_Apply_BT, &CIVAlarmOutDlg::OnBnClickedApplyBt)
 END_MESSAGE_MAP()
 
 
@@ -56,51 +73,54 @@ BOOL CIVAlarmOutDlg::OnInitDialog()
 
     // TODO:  Add extra initialization here
     CString strTmp;
-    strTmp.LoadString(IDS_Alarm_Out_Group);
+    strTmp.LoadString(g_hmodule, IDS_Alarm_Out_Group);
     m_AlarmOutGroup.SetWindowText(strTmp);
 
-    strTmp.LoadString(IDS_Alarm_Hold_Group);
+    strTmp.LoadString(g_hmodule, IDS_Alarm_Hold_Group);
     m_AlarmHoldGroup.SetWindowText(strTmp);
-    strTmp.LoadString(IDS_Alarm_Not_Hold);
+    strTmp.LoadString(g_hmodule, IDS_Alarm_Not_Hold);
     m_AlarmNoHoldBt.SetWindowText(strTmp);
-    strTmp.LoadString(IDS_Alarm_Hold_Des);
+    strTmp.LoadString(g_hmodule, IDS_Alarm_Hold_Des);
     m_AlarmHoldBt.SetWindowText(strTmp);
+
+    // AlarmOut Hold Time Combobox
     m_AlarmOutHoldTimeComb.ResetContent();
-    m_AlarmOutHoldTimeComb.InsertString(0, _T("1"));
-    m_AlarmOutHoldTimeComb.InsertString(1, _T("3"));
-    m_AlarmOutHoldTimeComb.InsertString(2, _T("5"));
-    m_AlarmOutHoldTimeComb.InsertString(3, _T("10"));
-    m_AlarmOutHoldTimeComb.InsertString(4, _T("15"));
-    m_AlarmOutHoldTimeComb.InsertString(5, _T("20"));
-    m_AlarmOutHoldTimeComb.InsertString(6, _T("30"));
+    for (int i=0; i<sizeof(s_szComboString)/sizeof(TCHAR*); ++i)
+    {
+        m_AlarmOutHoldTimeComb.InsertString(i, s_szComboString[i]);
+    }
     m_AlarmOutHoldTimeComb.SetCurSel(0);
 
     strTmp.LoadString(IDS_Alarm_Choose_Group);
     m_ChooseAlarmGroup.SetWindowText(strTmp);
     for (int i=0; i<Alarm_Check_Num; ++i)
     {
-        strTmp.LoadString(Alarm_Out_String_Start+i);
+        strTmp.LoadString(g_hmodule, Alarm_Out_String_Start+i);
         m_AlarmCheck[i].SetWindowText(strTmp);
         m_AlarmCheck[i].SetCheck(BST_CHECKED);
     }
     
+    strTmp.LoadString(g_hmodule, IDS_Apply);
+    m_ApplyBT.SetWindowText(strTmp);
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
 {
+    int nHeight = Rect.Height();
+    int nWidth = Rect.Width();
     //
     // 1. Init Himself and CameraTree
     //
     Create(IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this, m_AlarmOutGroup, 0, Rect.Height());
+    InitCameraTree(m_CameraTree, this, m_AlarmOutGroup, 0, nHeight);
     
     //
     // 2. Init Other Child Ctrl
-    //
-    int nAlarmOutGroupWidth = Rect.Width()-CameraCtrl_Width-2*Alarm_Out_X_Offset;
+    //    
+    int nAlarmOutGroupWidth = nWidth-CameraCtrl_Width-2*Alarm_Out_X_Offset;
     int nAlarmOutGroupX = CameraCtrl_Width+Alarm_Out_X_Offset;
     int nAlarmOutGroupY = Alarm_Out_Y_Offset;
     int nAllButtonX = nAlarmOutGroupX + Alarm_Out_X_Offset;
@@ -116,13 +136,14 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
         nAlarmOutGroupWidth-2*Alarm_Out_X_Offset-Combo_Width,
         BT_Height);
     m_AlarmOutHoldTimeComb.MoveWindow(
-        Rect.Width()-2*Alarm_Out_X_Offset-Combo_Width, 
+        nWidth-2*Alarm_Out_X_Offset-Combo_Width, 
         nAlarmOutGroupY+2*Alarm_Out_Y_Offset+BT_Height,
         Combo_Width,
         10*BT_Height);
 
+    // Init Alarm Group
     int nChooseAlarmGroupY = Alarm_Out_Y_Offset*2 + Alarm_Hold_Height;
-    int nChooseAlarmGroupHeight = Rect.Height() - nChooseAlarmGroupY - Alarm_Out_Y_Offset;
+    int nChooseAlarmGroupHeight = nHeight - nChooseAlarmGroupY - Alarm_Out_Y_Offset;
     m_ChooseAlarmGroup.MoveWindow(
         nAlarmOutGroupX,
         nChooseAlarmGroupY,
@@ -146,6 +167,12 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
             nOutWidth,
             BT_Height );
     }
+
+    m_ApplyBT.MoveWindow(
+        nWidth-ApplyBT_X_ROffset,
+        nHeight-ApplyBT_Y_ROffset,
+        ApplyBT_Width,
+        ApplyBT_Height);
     return TRUE;
 }
 
@@ -153,6 +180,19 @@ void CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResul
 {
     *pResult = 0;
     PopUpCameraMemu(m_CameraTree, 1, this, this);
+}
+
+void CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+}
+
+
+void CIVAlarmOutDlg::OnInitCameraTree(
+    int nChannelID,
+    HTREEITEM Item )
+{
+
 }
 
 void CIVAlarmOutDlg::OnUpdateMemu( 
@@ -165,12 +205,12 @@ void CIVAlarmOutDlg::OnUpdateMemu(
     m_ClickItem = Item;
     switch (Which)
     {
-    case Root:
+    case IV_Tree_Root:
         break;
-    case Camera:
+    case IV_Tree_Camera:
         m_nCurrentChan = nChannelID;
         break;
-    case Rule:
+    case IV_Tree_Rule:
         m_nCurrentChan = nChannelID;
         break;
     default:
@@ -178,12 +218,11 @@ void CIVAlarmOutDlg::OnUpdateMemu(
     }
 }
 
-void CIVAlarmOutDlg::OnInitCameraTree(
-    int nChannelID,
-    HTREEITEM Item )
+void CIVAlarmOutDlg::OnClickCameraTree( WhichMemu Which, int nChannelID, void* pData, HTREEITEM Item )
 {
 
 }
+
 void CIVAlarmOutDlg::OnDestroy()
 {
     UnitCameraTree(m_CameraTree);
@@ -216,9 +255,73 @@ void CIVAlarmOutDlg::Enable( BOOL bEnable /*= TRUE*/ )
     {
         m_AlarmCheck[i].EnableWindow(bEnable);
     }
+    m_ApplyBT.EnableWindow(bEnable);
 }
-void CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+
+
+void CIVAlarmOutDlg::OnBnClickedApplyBt()
 {
-    // TODO: Add your control notification handler code here
-    *pResult = 0;
+    CollectUserSet();
+    if ( !IsModify() )
+    {
+        return;
+    }
+
+    IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
+    for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(i);
+          Iter != pIVCfgMgr->End();
+          Iter = Iter.Next() )
+    {
+        const char* pID = Iter.GetIdentityID();
+        if ( pID == NULL )
+        {
+            // log ..
+            TRACE("Iter.GetIdentityID() == NULL\n");
+            continue;
+        }
+
+        WPG_Rule* pRule = new WPG_Rule;
+        if ( Iter.GetRule(*pRule) )
+        {
+            delete pRule;
+            continue;
+        }
+
+        RuleMap[string(pID)] = pRule;
+    }
 }
+
+void CIVAlarmOutDlg::CollectUserSet()
+{
+    if ( BST_CHECKED == m_AlarmNoHoldBt.GetCheck())
+    {
+        m_TmpAlarmSet.nHoldTime = 0;
+    }
+    else
+    {
+       int nSel = m_AlarmOutHoldTimeComb.GetCurSel();
+       m_TmpAlarmSet.nHoldTime = s_szComboInt[nSel];
+    }
+
+    /**
+    *@note 算法描述：
+    * 首先通过右移可用Alarm的数目,再左移回来m，从而将需要设置的位清除为0
+    * 然后在for循环中对对应位赋值
+    */
+    WORD& nTable = m_TmpAlarmSet.table.nTable;
+    nTable >>= Alarm_Check_Num;
+    nTable <<= Alarm_Check_Num;
+    for (int i=0; i<Alarm_Check_Num; ++i)
+    {
+        nTable |= (m_AlarmCheck[i].GetCheck() << i);
+    }
+}
+
+BOOL CIVAlarmOutDlg::IsModify()
+{
+    return 0 == memcmp(
+        &m_TmpAlarmSet,
+        &m_CurentAlarmSet,
+        sizeof(AlarmOutSettings));
+}
+
