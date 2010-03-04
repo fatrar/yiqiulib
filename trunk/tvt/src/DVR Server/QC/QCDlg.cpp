@@ -22,7 +22,7 @@ static char THIS_FILE[] = __FILE__;
 int g_card_id;
 CQCDlg *main;
 
-#define UI_DEBUG
+//#define UI_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
 // CQCDlg dialog

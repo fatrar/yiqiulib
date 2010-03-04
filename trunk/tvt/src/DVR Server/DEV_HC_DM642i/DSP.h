@@ -305,9 +305,9 @@ private:
     struct CurrentRuleSetting
     {
         CurrentRuleSetting(
-            WPG_Rule _Rule,
-            ScheduleSettings _Sch,
-            AlarmOutSettings _Alarm)
+            const WPG_Rule& _Rule,
+            const ScheduleSettings& _Sch,
+            const AlarmOutSettings& _Alarm)
             : Rule(_Rule)
             , Sch(_Sch)
             , Alarm(_Alarm)

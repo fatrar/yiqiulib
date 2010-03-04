@@ -62,6 +62,14 @@ enum
 
     Default_Loiters_duration = 10,
     Default_LeftBehind_duration = 10,
+    Loiters_Max_Time = 600,     // 10min
+    LeftBehind_Max_Time = 600,  // 10min
+
+    Max_Rule_Name = 20,
+
+    AlarmOutTable_Count = 10,
+
+    Max_Channel = 4,
 };
 
 // 时间是按顺序排，从小到大
@@ -86,25 +94,28 @@ struct ScheduleSettings
 static const ScheduleSettings g_DefaultScheduleSettings;
 
 // Alarm 回调输出数据，下面bool代表对应项是否输出
-struct AlarmOutTable
+union AlarmOutTable
 {
-    AlarmOutTable(){memset(this, 0xffffffff, sizeof(AlarmOutTable));}
-    bool EMail:1;
-    bool EMap:1;
-    bool TelphoneCall:1;
-    bool SnapShot:1;
-    bool Sensor:1;
-    bool Relay:1;
-    bool Buzzer:1;
-    bool FullScreen:1;
-    bool PlaySound:1;
-    bool AlarmRecord:1;
-    bool resvr1:1;
-    bool resvr2:1;
-    bool resvr3:1;
-    bool resvr4:1;
-    bool resvr5:1;
-    bool resvr6:1;
+    AlarmOutTable():nTable(0xffff){}
+    struct {
+        bool AlarmRecord:1;
+        bool FullScreen:1;
+        bool Relay:1;
+        bool Sensor:1;
+        bool EMail:1;
+        bool EMap:1;
+        bool Buzzer:1; 
+        bool SnapShot:1;
+        bool PlaySound:1;
+        bool TelphoneCall:1;   
+        bool resvr1:1;
+        bool resvr2:1;
+        bool resvr3:1;
+        bool resvr4:1;
+        bool resvr5:1;
+        bool resvr6:1;
+    } Table;
+    unsigned short nTable;
 };
 
 struct AlarmOutSettings
