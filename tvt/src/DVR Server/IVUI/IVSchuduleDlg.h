@@ -10,7 +10,8 @@
 class CIVSchuduleDlg : 
     public CDialog,
     public IUpdateMemu,
-    public IInitCameraTree
+    public IInitCameraTree,
+    public IClickCameraTree
 {
 	DECLARE_DYNAMIC(CIVSchuduleDlg)
 
@@ -26,6 +27,7 @@ public:
 
     void Enable(BOOL bEnable = TRUE);
 
+    // IUpdateMemu
 protected:
     virtual void OnUpdateMemu(
         CMenu* pMenu,
@@ -34,16 +36,33 @@ protected:
         void* pData,
         HTREEITEM Item );
 
+    // IInitCameraTree
+protected:
     virtual void OnInitCameraTree(
         int nChannelID,
         HTREEITEM Item );
+
+    // IClickCameraTree
+protected:
+    virtual void OnClickCameraTree(
+        WhichMemu Which,
+        int nChannelID,
+        void* pData,
+        HTREEITEM Item );
+
+protected:
+    void UpdateChannel(int nChannelID);
+
+    void CollectUserSet();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
     afx_msg void OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnBnClickedAddCheck();
     afx_msg void OnBnClickedEraseCheck();
+    afx_msg void OnBnClickedApplyBt();
     afx_msg void OnDestroy();
     DECLARE_MESSAGE_MAP()
 
@@ -58,9 +77,11 @@ protected:
 
         BT_X_Offset = 40,
         BT_Start_Y = 20,
+
         BT_Width = 40,
         BT_Height = 20,
     };
+
 private:
     CStatic m_SchuduleGroup; 
     CTreeCtrl m_CameraTree;
@@ -71,5 +92,6 @@ private:
 
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
-    afx_msg void OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+   
+    CButton m_ApplyBT; 
 };

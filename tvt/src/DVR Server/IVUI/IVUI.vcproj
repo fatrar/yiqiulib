@@ -318,6 +318,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IVCfgDoc.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IVUI.h"
 				>
 			</File>
@@ -353,6 +357,10 @@
 			>
 			<File
 				RelativePath=".\CameraTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IVCfgDoc.cpp"
 				>
 			</File>
 			<File

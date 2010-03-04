@@ -109,32 +109,8 @@ void CIVRuleDlg::OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 void CIVRuleDlg::OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    HTREEITEM hItem = GetTreeClickItem(m_CameraTree);
-    if ( NULL == hItem )
-    {
-        return;
-    }
-    
-    m_ClickItem = hItem;
-    ItemAttribute* pInfo = (ItemAttribute*)m_CameraTree.GetItemData(hItem);
-    switch ( pInfo->Info.Which )
-    {
-    case IUpdateMemu::Camera:
-    case IUpdateMemu::Rule:
-        UpdateLiveChannel(pInfo->Info.nChannelID);
-        break;
-    case IUpdateMemu::Root:
-        if ( g_IIVDeviceBase2 )
-        {
-            g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
-        }
-        m_nCurrentChan = Invaild_ChannelID;
-    default:
-        ASSERT(FALSE);
-        return;
-    }
+    OnClickCameraTree(m_CameraTree, this);
 }
-
 
 void CIVRuleDlg::OnRuleEnableallrule()
 {
@@ -230,6 +206,13 @@ void CIVRuleDlg::OnRuleNewrule()
     }
 }
 
+void CIVRuleDlg::OnInitCameraTree( 
+    int nChannelID,
+    HTREEITEM Item )
+{
+
+}
+
 void CIVRuleDlg::OnUpdateMemu(
     CMenu* pMenu,
     WhichMemu Which,
@@ -240,16 +223,42 @@ void CIVRuleDlg::OnUpdateMemu(
     m_ClickItem = Item;
     switch (Which)
     {
-    case Root:
+    case IV_Tree_Root:
     	break;
-    case Camera:
+    case IV_Tree_Camera:
         UpdateLiveChannel(nChannelID);
     	break;
-    case Rule:
+    case IV_Tree_Rule:
         UpdateLiveChannel(nChannelID);
     	break;
     default:
     	break;
+    }
+}
+
+void CIVRuleDlg::OnClickCameraTree(
+    WhichMemu Which, 
+    int nChannelID,
+    void* pData,
+    HTREEITEM Item )
+{
+    m_ClickItem = Item;
+    switch ( Which )
+    {
+    case IV_Tree_Camera:
+    case IV_Tree_Rule:
+        UpdateLiveChannel(nChannelID);
+        break;
+    case IV_Tree_Root:
+        if ( g_IIVDeviceBase2 )
+        {
+            g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+        }
+        m_nCurrentChan = Invaild_ChannelID;
+        break;
+    default:
+        ASSERT(FALSE);
+        return;
     }
 }
 
@@ -265,13 +274,6 @@ void CIVRuleDlg::UpdateLiveChannel(int nChannelID)
     g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     m_nCurrentChan = nChannelID;
     g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
-}
-
-void CIVRuleDlg::OnInitCameraTree( 
-    int nChannelID,
-    HTREEITEM Item )
-{
-
 }
 
 void CIVRuleDlg::OnDestroy()
