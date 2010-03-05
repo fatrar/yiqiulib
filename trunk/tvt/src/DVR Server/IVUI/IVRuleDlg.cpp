@@ -191,8 +191,8 @@ void CIVRuleDlg::OnRuleNewrule()
         size_t nLen = strlen(pIdentityID)+1;
         char* pUseData = new char[nLen];
         strcpy_s(pUseData, nLen, pIdentityID);
-        ItemAttribute* pInfo = new ItemAttribute(IUpdateMemu::Rule, m_nCurrentChan, pUseData);
-        m_CameraTree.SetItemData(NowItem, (DWORD_PTR)pInfo);
+        //ItemAttribute* pInfo = new ItemAttribute(IUpdateMemu::Rule, m_nCurrentChan, pUseData);
+        //m_CameraTree.SetItemData(NowItem, (DWORD_PTR)pInfo);
     }
     else
     {
@@ -217,7 +217,7 @@ void CIVRuleDlg::OnUpdateMemu(
     CMenu* pMenu,
     WhichMemu Which,
     int nChannelID,
-    void* pData,
+    const void* pData,
     HTREEITEM Item )
 {
     m_ClickItem = Item;
@@ -239,7 +239,7 @@ void CIVRuleDlg::OnUpdateMemu(
 void CIVRuleDlg::OnClickCameraTree(
     WhichMemu Which, 
     int nChannelID,
-    void* pData,
+    const void* pData,
     HTREEITEM Item )
 {
     m_ClickItem = Item;

@@ -10,7 +10,8 @@ class CIVRuleDlg :
     public IUpdateMemu,
     public IInitCameraTree,
     public IClickCameraTree,
-    public IVideoSend
+    public IVideoSend,
+    public CIVAlarmOutCfgDoc
 {
 	DECLARE_DYNAMIC(CIVRuleDlg)
 
@@ -47,7 +48,7 @@ protected:
         CMenu* pMenu,
         WhichMemu Which,
         int nChannelID,
-        void* pData,
+        const void* pData,
         HTREEITEM Item );
 
     // IUpdateMemu
@@ -61,7 +62,7 @@ protected:
     virtual void OnClickCameraTree(
         WhichMemu Which,
         int nChannelID,
-        void* pData,
+        const void* pData,
         HTREEITEM Item );
 
     // IVideoSend

@@ -10,7 +10,9 @@ class CIVAlarmOutDlg :
     public CDialog,
     public IUpdateMemu,
     public IInitCameraTree,
-    public IClickCameraTree
+    public IClickCameraTree,
+    public CIVAlarmOutCfgDoc,
+    public IRuleTrigger
 {
 	DECLARE_DYNAMIC(CIVAlarmOutDlg)
 
@@ -32,7 +34,7 @@ protected:
         CMenu* pMenu,
         WhichMemu Which,
         int nChannelID,
-        void* pData,
+        const void* pData,
         HTREEITEM Item );
 
     // IInitCameraTree
@@ -46,8 +48,22 @@ protected:
     virtual void OnClickCameraTree(
         WhichMemu Which,
         int nChannelID,
-        void* pData,
+        const void* pData,
         HTREEITEM Item );
+
+    // IRuleTrigger
+protected:
+    virtual void OnRuleRemove(
+        int nChannelID,
+        const char* pIdentityID);
+
+    virtual void OnRuleAdd(
+        int nChannelID,
+        const char* pIdentityID);
+
+    virtual void OnUseIV(
+        int nChannelID,
+        BOOL bEnbale);
 
 protected:
     void UpdateChannel(int nChannelID);
@@ -105,6 +121,6 @@ private:
     
     CButton m_ApplyBT;
 
-    AlarmOutSettings m_CurentAlarmSet;
+    AlarmOutSettings* m_pCurentAlarmSet;
     AlarmOutSettings m_TmpAlarmSet;
 };

@@ -29,6 +29,7 @@ IMPLEMENT_DYNAMIC(CIVAlarmOutDlg, CDialog)
 CIVAlarmOutDlg::CIVAlarmOutDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVAlarmOutDlg::IDD, pParent)
     , m_nCurrentChan(0)
+    , m_pCurentAlarmSet(NULL)
     , m_ClickItem(NULL)
 {}
 
@@ -102,6 +103,8 @@ BOOL CIVAlarmOutDlg::OnInitDialog()
     
     strTmp.LoadString(g_hmodule, IDS_Apply);
     m_ApplyBT.SetWindowText(strTmp);
+
+    Enable(FALSE);
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -199,7 +202,7 @@ void CIVAlarmOutDlg::OnUpdateMemu(
     CMenu* pMenu,
     WhichMemu Which,
     int nChannelID,
-    void* pData,
+    const void* pData,
     HTREEITEM Item )
 {
     m_ClickItem = Item;
@@ -218,7 +221,11 @@ void CIVAlarmOutDlg::OnUpdateMemu(
     }
 }
 
-void CIVAlarmOutDlg::OnClickCameraTree( WhichMemu Which, int nChannelID, void* pData, HTREEITEM Item )
+void CIVAlarmOutDlg::OnClickCameraTree(
+    WhichMemu Which,
+    int nChannelID,
+    const void* pData, 
+    HTREEITEM Item )
 {
 
 }
@@ -267,28 +274,7 @@ void CIVAlarmOutDlg::OnBnClickedApplyBt()
         return;
     }
 
-    IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
-    for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(i);
-          Iter != pIVCfgMgr->End();
-          Iter = Iter.Next() )
-    {
-        const char* pID = Iter.GetIdentityID();
-        if ( pID == NULL )
-        {
-            // log ..
-            TRACE("Iter.GetIdentityID() == NULL\n");
-            continue;
-        }
 
-        WPG_Rule* pRule = new WPG_Rule;
-        if ( Iter.GetRule(*pRule) )
-        {
-            delete pRule;
-            continue;
-        }
-
-        RuleMap[string(pID)] = pRule;
-    }
 }
 
 void CIVAlarmOutDlg::CollectUserSet()
@@ -319,9 +305,29 @@ void CIVAlarmOutDlg::CollectUserSet()
 
 BOOL CIVAlarmOutDlg::IsModify()
 {
+    if ( m_pCurentAlarmSet == NULL )
+    {
+        ASSERT(FALSE);
+        return FALSE;
+    }
+
     return 0 == memcmp(
         &m_TmpAlarmSet,
-        &m_CurentAlarmSet,
+        m_pCurentAlarmSet,
         sizeof(AlarmOutSettings));
 }
 
+void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
+{
+
+}
+
+void CIVAlarmOutDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
+{
+
+}
+
+void CIVAlarmOutDlg::OnUseIV( int nChannelID, BOOL bEnbale )
+{
+
+}

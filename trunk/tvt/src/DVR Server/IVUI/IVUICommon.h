@@ -32,7 +32,7 @@ struct IUpdateMemu
         CMenu* pMenu,
         WhichMemu Which,
         int nChannelID,
-        void* pData,
+        const void* pData,
         HTREEITEM Item ) = 0;
 };
 
@@ -48,7 +48,7 @@ struct IClickCameraTree
     virtual void OnClickCameraTree(
         WhichMemu Which,
         int nChannelID,
-        void* pData,
+        const void* pData,
         HTREEITEM Item ) = 0;
 };
 
@@ -92,10 +92,14 @@ void PopUpCameraMemu(
     CWnd* pWnd,
     IUpdateMemu* pUpdateMemu);
 
-void* MakeUserData(
+void* MakeTreeItemData(
     int nChannelID,
-    void* pUseData,
+    const void* pUseData,
     WhichMemu Which = IV_Tree_Rule );
+
+void UnMakeTreeItemData(void* p);
+
+const void* GetUserDataToItemData(void* p);
 
 #endif  // _IVUICOMMON_H_2010_
 

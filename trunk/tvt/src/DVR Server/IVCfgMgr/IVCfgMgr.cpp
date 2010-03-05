@@ -98,7 +98,9 @@ bool CIVCfgMgr::Apply()
     return m_Doc.SaveFile();
 }
 
-bool CIVCfgMgr::Remove( const IVVistor& Vistor )
+bool CIVCfgMgr::Remove( 
+    int nChannelID,
+    const IVVistor& Vistor )
 {
     assert(m_pRootEle);
     TiXmlElement* pEle = Ele(Vistor);
@@ -107,7 +109,10 @@ bool CIVCfgMgr::Remove( const IVVistor& Vistor )
         return false;
     }
 
-    return m_pRootEle->RemoveChild(pEle);
+    GetChannelName(nChannelID, szBuf);
+    TiXmlElement* pChannelEle = TinyXmlUtil::CreateChildEle(
+        &m_Doc, szBuf );
+    return pChannelEle->RemoveChild(pEle);
 }
 
 bool CIVCfgMgr::SetAutoRunChannel(
