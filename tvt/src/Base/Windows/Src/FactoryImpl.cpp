@@ -22,20 +22,20 @@
 
 
 
-IDrawer* DrawerFactory::CreateDrawer( IDrawerGraphType t )
-{
-    switch (t)
-    {
-    case IDrawer_Rectangle: return new CRectangleDrawer();
-    case IDrawer_Polygon:   return new CPolygonDrawer();
-    case IDrawer_Line:      return new CLineDrawer();
-    case IDrawer_ArrowLine: return new CArrowLineDrawer();
-    default:
-        return NULL;
-    }
-}
-
-void DrawerFactory::DestoryDrawer( IDrawer* p ){ safeDelete(p); }
+//IDrawer* DrawerFactory::CreateDrawer( IDrawerGraphType t )
+//{
+//    switch (t)
+//    {
+//    case IDrawer_Rectangle: return new CRectangleDrawer();
+//    case IDrawer_Polygon:   return new CPolygonDrawer();
+//    case IDrawer_Line:      return new CLineDrawer();
+//    case IDrawer_ArrowLine: return new CArrowLineDrawer();
+//    default:
+//        return NULL;
+//    }
+//}
+//
+//void DrawerFactory::DestoryDrawer( IDrawer* p ){ safeDelete(p); }
 
 
 

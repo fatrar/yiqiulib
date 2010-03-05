@@ -23,9 +23,6 @@
 
 BEGIN_BASE_ENGINE
 
-namespace System
-{
-
 namespace Windows
 {
 
@@ -179,6 +176,5 @@ void CAlarmTextStatic::OnPaint()
 
 };  // Windows
 
-}; // System
 
 END_BASE_ENGINE

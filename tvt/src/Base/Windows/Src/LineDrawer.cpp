@@ -19,10 +19,11 @@
 #include "LineDrawer.h"
 
 
-IMPLEMENT_DYNAMIC(CLineDrawer, CWnd)
+//IMPLEMENT_DYNAMIC(CLineDrawer, CWnd)
 
-CLineDrawer::CLineDrawer(void)
+CLineDrawer::CLineDrawer(CWnd* pWnd)
 {
+    m_pWnd = pWnd;
     m_nMaxPoint = 2;
     m_PointQueue.resize(2);
 }
@@ -31,52 +32,55 @@ CLineDrawer::~CLineDrawer(void)
 {
 }
 
-BEGIN_MESSAGE_MAP(CLineDrawer, CWnd)
-    ON_WM_MOUSEMOVE()
-    ON_WM_LBUTTONUP()
-    ON_WM_LBUTTONDOWN()
-    ON_WM_PAINT()
-END_MESSAGE_MAP()
+//BEGIN_MESSAGE_MAP(CLineDrawer, CWnd)
+//    ON_WM_MOUSEMOVE()
+//    ON_WM_LBUTTONUP()
+//    ON_WM_LBUTTONDOWN()
+//    ON_WM_PAINT()
+//END_MESSAGE_MAP()
 
 
-void CLineDrawer::OnMouseMove(UINT nFlags, CPoint point)
+BOOL CLineDrawer::OnMouseMove(UINT nFlags, CPoint& point)
 {
     if ( !(nFlags&MK_LBUTTON) )
     {
-        return;
+        return FALSE;
     }
 
     if ( m_bDragging && m_nDragIndex != -1 )
     {
         m_PointQueue[m_nDragIndex] = point;
         //Invalidate();
-        ParentInvalidate();
-        return;
+        ParentInvalidateEx();
+        return TRUE;
     }
 
     if ( m_bDrawing )
     {
         m_PointQueue[1] = point;
         //Invalidate();
-        ParentInvalidate();
-        return;
+        ParentInvalidateEx();
+        return TRUE;
     }
 
     if ( m_bDragCenter )
     {
         CenterPointMoveTo(point);
         //Invalidate();
-        ParentInvalidate();
+        ParentInvalidateEx();
+        return TRUE;
     }
+
+    return FALSE;
 }
 
-void CLineDrawer::OnLButtonUp(UINT nFlags, CPoint point)
+BOOL CLineDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
 {
     if ( m_bDrawing ) 
     {
         m_bDrawing = false;
         UnLockCursor();
-        return;
+        return TRUE;
     }
 
     if ( m_bDragging )
@@ -84,59 +88,61 @@ void CLineDrawer::OnLButtonUp(UINT nFlags, CPoint point)
         UnLockCursor();
         m_bDragging = false;
         m_nDragIndex = -1;
-        return;
+        return TRUE;
     }
 
     if ( m_bDragCenter )
     {
         UnLockCursor();
         m_bDragCenter = false;
-        return;
+        return TRUE;
     }
+
+    return FALSE;
 }
 
-void CLineDrawer::OnLButtonDown(UINT nFlags, CPoint point)
+BOOL CLineDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
 {
     if ( m_bDrawing )
     {
         // Log
         TRACE( _T("OnLButtonDown") );
         m_bDrawing = false;
-        return;
+        return FALSE;
     }
 
     if ( m_bIsOK )
     {
         CRect Rect;
-        GetClientRect(&Rect);
-        ClientToScreen(&Rect);
+        m_pWnd->GetClientRect(&Rect);
+        m_pWnd->ClientToScreen(&Rect);
         if ( IsDargPoint(point) )
         { 
             LockCursor(Rect);
             m_bDragging = true;
-            return;
+            return TRUE;
         }
         else if ( IsDargCenterPoint(point) )
         {
             m_bDragging = false;
             LockCursor(Rect);
             m_bDragCenter = true;
-            return;
+            return TRUE;
         }
        
         m_bDragging = false;
-        return;
+        return FALSE;
     }
 
     m_PointQueue[0] = m_PointQueue[1] = point;
     m_bIsOK = true;
     m_bDrawing = true;
-    ParentInvalidate();
+    ParentInvalidateEx();
+    return TRUE;
 }
 
-void CLineDrawer::OnPaint()
+void CLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
 {
-    CPaintDC dc(this);
     if (!m_bIsOK)
     {
         return;
@@ -156,9 +162,12 @@ void CLineDrawer::OnPaint()
     dc.MoveTo(BeginPoint);  
     dc.LineTo(EndPoint);
     
-    DrawCircle(&dc, BeginPoint, Point_Radii);
-    DrawCircle(&dc, EndPoint, Point_Radii);
-    DrawCenterPoint(&dc);
+    if ( bSelect )
+    {
+        DrawSquare(&dc, BeginPoint, Point_Radii);
+        DrawSquare(&dc, EndPoint, Point_Radii);
+        DrawCenterPoint(&dc);
+    }
 
     dc.SelectObject(pOldPen);
     dc.SelectObject(pOldBrush);
@@ -178,15 +187,15 @@ void CLineDrawer::OnPaint()
 //
 // ************* CArrowLineDrawer *****************
 //
-IMPLEMENT_DYNAMIC(CArrowLineDrawer, CWnd)
-
-BEGIN_MESSAGE_MAP(CArrowLineDrawer, CWnd)
-    ON_WM_MOUSEMOVE()
-    ON_WM_LBUTTONUP()
-    ON_WM_LBUTTONDOWN()
-    ON_WM_PAINT()
-    ON_WM_ERASEBKGND()
-END_MESSAGE_MAP()
+//IMPLEMENT_DYNAMIC(CArrowLineDrawer, CWnd)
+//
+//BEGIN_MESSAGE_MAP(CArrowLineDrawer, CWnd)
+//    ON_WM_MOUSEMOVE()
+//    ON_WM_LBUTTONUP()
+//    ON_WM_LBUTTONDOWN()
+//    ON_WM_PAINT()
+//    ON_WM_ERASEBKGND()
+//END_MESSAGE_MAP()
 
 void DrawArrow(CDC* pdc, const CPoint& p, size_t d, double o, bool bUp = true)
 {
@@ -213,12 +222,12 @@ void DrawArrow(CDC* pdc, const CPoint& p, size_t d, double o, bool bUp = true)
     pdc->LineTo(p2);
 }
 
-CArrowLineDrawer::CArrowLineDrawer() : m_dwDrawCommond(Line_Show_All) {}
+CArrowLineDrawer::CArrowLineDrawer(CWnd* pWnd) 
+    : m_dwDrawCommond(Line_Show_All)
+    , CLineDrawer(pWnd) {}
 
-void CArrowLineDrawer::OnPaint()
+void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
 {
-    CPaintDC dc(this);
-    TRACE("CArrowLineDrawer::OnPaint()\n");
     if (!m_bIsOK)
     {
         return;
@@ -230,9 +239,6 @@ void CArrowLineDrawer::OnPaint()
         return;
     }
 
-    //ShowWindow(SW_HIDE);
-    
-
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
     
@@ -243,9 +249,12 @@ void CArrowLineDrawer::OnPaint()
     dc.TextOut(BeginPoint.x, BeginPoint.y+Point_Radii, _T("A"), 1);
     dc.TextOut(EndPoint.x, EndPoint.y+Point_Radii, _T("B"), 1);
 
-    DrawCircle(&dc, BeginPoint, Point_Radii);
-    DrawCircle(&dc, EndPoint, Point_Radii);  
-    DrawCenterPoint(&dc); 
+    if ( bSelect )
+    {
+        DrawSquare(&dc, BeginPoint, Point_Radii);
+        DrawSquare(&dc, EndPoint, Point_Radii);  
+        DrawCenterPoint(&dc); 
+    }
 
     // 利用垂直和两点的距离算出两个点的坐标
     CPoint MedPoint((BeginPoint.x + EndPoint.x)/2, (BeginPoint.y + EndPoint.y)/2);
@@ -302,8 +311,6 @@ void CArrowLineDrawer::OnPaint()
 
     dc.SelectObject(pOldPen);
     dc.SelectObject(pOldBrush);
-    //ShowWindow(SW_SHOW);
-    //TRACE("Paint \n");
 }
 
 void CArrowLineDrawer::SendCommond(
@@ -315,8 +322,8 @@ void CArrowLineDrawer::SendCommond(
     case Line_Show_Right:
     case Line_Show_All:
         m_dwDrawCommond=c;
-        ShowWindow(SW_HIDE);
-        ShowWindow(SW_SHOW);
+        m_pWnd->ShowWindow(SW_HIDE);
+        m_pWnd->ShowWindow(SW_SHOW);
     	break;
     case Get_Line_Dir:
         *(long*)p1 = m_dwDrawCommond;
@@ -324,16 +331,6 @@ void CArrowLineDrawer::SendCommond(
     default:
     	break;
     }
-}
-
-BOOL CArrowLineDrawer::OnEraseBkgnd(CDC* pDC)
-{
-    // TODO: Add your message handler code here and/or call default
-    /*TRACE("ArrowLineDrawer::OnEraseBkgnd\n");
-    CRect rect;
-    BOOL bRc = GetUpdateRect(&rect, TRUE);*/
-    //return TRUE;   
-    return CWnd::OnEraseBkgnd(pDC);
 }
 
 

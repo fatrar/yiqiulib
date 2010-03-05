@@ -24,7 +24,7 @@
 #include <deque>
 using namespace std;
 #include "IDrawer.h"
-using namespace OCI::System::Windows;
+using namespace OCI::Windows;
 
 
 
@@ -33,7 +33,7 @@ using namespace OCI::System::Windows;
 
 enum
 {
-    Point_Radii = 9,
+    Point_Radii = 5,
     Point_Default_Color = 0x00ff00,
     Line_Default_Width = 3,
 
@@ -81,129 +81,61 @@ static int IsDargPoint(const CPoint& point, const deque<CPoint>& TestQueue)
 
 inline void DrawCircle(CDC* pdc, const CPoint& point, size_t nr)
 {
-    pdc->Ellipse(point.x-nr,point.y-nr,point.x+nr, point.y+nr);
+    pdc->Ellipse(
+        int(point.x-nr),
+        int(point.y-nr),
+        int(point.x+nr),
+        int(point.y+nr) );
+}
+
+inline void DrawSquare(CDC* pdc, const CPoint& point, size_t nr)
+{
+    pdc->Rectangle(
+        int(point.x-nr),
+        int(point.y-nr),
+        int(point.x+nr),
+        int(point.y+nr) );
 }
 
 
-class CDrawer :
+
+class IDrawerEx :
     public IDrawer
 {
 public:
-    CDrawer()
-        : m_bDrawing(false)
-        , m_nDragIndex(-1)
-        , m_bDragging(false)
-        , m_bIsOK(false)
-        //, m_dwColor(Point_Default_Color)
-        , m_bDragCenter(false)
-        , m_Pen(PS_SOLID, Line_Default_Width, Point_Default_Color)
-        , m_Brush(Point_Default_Color) {}
+    ~IDrawerEx(){}
+    virtual BOOL OnMouseMove(UINT nFlags, CPoint& point) = 0;
+    virtual BOOL OnLButtonUp(UINT nFlags, CPoint& point) = 0;
+    virtual BOOL OnLButtonDown(UINT nFlags, CPoint& point) = 0;
+    virtual void OnPaint(CDC& dc, BOOL bSelect=FALSE) = 0;
+protected:
+    CWnd* m_pWnd;
+};
+
+class CDrawer :
+    public IDrawerEx
+{
+public:
+    CDrawer();
 
 public:
-    virtual size_t GetUserInput(CPoint* pPointBuf, size_t nCount)
-    {
-        if ( !m_bIsOK || nCount < m_PointQueue.size() )
-        {
-            return 0;
-        }
+    virtual size_t GetUserInput(CPoint* pPointBuf, size_t nCount);
+    virtual size_t PointCount();
 
-        size_t i = 0;
-        for ( deque<CPoint>::iterator iter = m_PointQueue.begin();
-            iter != m_PointQueue.end();
-            ++iter, ++i )
-        {
-            pPointBuf[i] = *iter;
-        }
-        return i;
-    }
+    virtual void SetLineColour(DWORD dwColor);
+    virtual void SetLineWidth(int nWidth);
 
-    virtual size_t PointCount() 
-    {
-        if ( m_bIsOK )
-        {
-            return m_PointQueue.size();
-        }
-        return 0;
-    }
+    virtual void Clear();
+    virtual void SetDefault(const CPoint* pPoint, size_t nCount);
 
-    virtual void SetColour(DWORD dwColor)
-    {
-        m_Pen.DeleteObject();
-        m_Pen.CreatePen(PS_SOLID, Line_Default_Width, dwColor);
-        m_Brush.DeleteObject();
-        m_Brush.CreateSolidBrush(dwColor);
-        Invalidate();
-    }
-    virtual void Clear(){ m_PointQueue.clear(); m_bIsOK=false; };
-    virtual void SetDefault(const CPoint* pPoint, size_t nCount)
-    {
-        ASSERT(pPoint);
-
-        m_PointQueue.clear();
-        m_bIsOK=true;
-
-        for (size_t i = 0; i<nCount; ++i)
-        {
-            m_PointQueue.push_back(pPoint[i]);
-        }
-    }
-
+    virtual void Enable(BOOL bEnbale){m_bEnbale=bEnbale;}
+    virtual BOOL IsEnable(){return m_bEnbale;}
 protected:
-    bool IsDargPoint(CPoint& point)
-    {
-        m_nDragIndex = ::IsDargPoint(point, m_PointQueue);
-        return  m_nDragIndex != -1 ;
-    }
-
-    CPoint CenterPoint()
-    {
-        CPoint p(0, 0);
-        for ( deque<CPoint>::iterator iter = m_PointQueue.begin();
-            iter != m_PointQueue.end();
-            ++iter )
-        {
-            p += *iter;
-        }
-
-        size_t nSize = m_PointQueue.size();
-        p.x /= nSize;
-        p.y /= nSize;
-        return p;
-    }
-
-    bool IsDargCenterPoint(CPoint& point)
-    {
-        if ( !m_bIsOK )
-        {
-            return false;
-        }
-
-        CPoint p = CenterPoint();
-        return Distance(point, p) <= Point_Radii;
-    }
-
-    void DrawCenterPoint(CDC* pdc)
-    {
-        if ( !m_bIsOK )
-        {
-            return;
-        }
-
-        CPoint& p = CenterPoint();
-        DrawCircle(pdc, p, Point_Radii);
-    }
-
-    void CenterPointMoveTo(const CPoint& CenterpointNow)
-    {
-        CPoint CenterpointOld = CenterPoint();
-        CPoint Offset = CenterpointNow - CenterpointOld;
-        for ( deque<CPoint>::iterator iter = m_PointQueue.begin();
-            iter != m_PointQueue.end();
-            ++iter )
-        {
-            *iter += Offset;
-        }
-    }
+    bool IsDargPoint(CPoint& point);
+    CPoint CenterPoint();
+    bool IsDargCenterPoint(CPoint& point);
+    void DrawCenterPoint(CDC* pdc);
+    void CenterPointMoveTo(const CPoint& CenterpointNow);
 
 protected:
     bool m_bIsOK;               // Is Drew?
@@ -216,13 +148,20 @@ protected:
     deque<CPoint> m_PointQueue; // Point Queue
     size_t m_nMaxPoint;
 
-    DWORD m_dwColor;            // line Color, default black
+    DWORD m_dwLineColor;        // line Color, default black
+    int m_nLineWidth;
 
     CPen m_Pen;
-    CBrush m_Brush;   
+    CBrush m_Brush;
+
+    BOOL m_bEnbale;
 };
 
-
+//namespace DrawerFactory
+//{
+//    IDrawerEx* CreateDrawer(IDrawerGraphType t);
+//    void DestoryDrawer(IDrawerEx* p);
+//}
 
 
 #endif  // _DRAWER_H_2010_

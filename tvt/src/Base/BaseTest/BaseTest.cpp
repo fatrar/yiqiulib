@@ -3,9 +3,8 @@
 
 #include "stdafx.h"
 
-//#define USEBASEENINE_NAMESPACE
-#include "..\Base\Include\singleton.h"
-using namespace OCI;
+#pragma comment(linker, "\"/manifestdependency:type='Win32' name='Microsoft.VC80.CRT' version='8.0.50608.0' processorArchitecture='X86' publicKeyToken='1fc8b3b9a1e18e3b' language='*'\"")
+
 #include <iostream>
 #include <Windows.h>
 #include <map>
@@ -16,12 +15,8 @@ using namespace OCI;
 using namespace std;
 
 
-#include "F:\tvt\src\DVR Server\DEVICECONTROL\\WPG_EventOccurrence.h"
+//#include "F:\tvt\src\DVR Server\DEVICECONTROL\\WPG_EventOccurrence.h"
 
-class CVoidType
-{
-
-};
 
 struct X
 {
@@ -32,53 +27,103 @@ struct X
 };
 
 
-
-struct TargetQueue
+union AlarmOutTable
 {
-    WPG_Target Tar[50];
-    WORD nCount;
-    short nRef;
+    AlarmOutTable():nTable(0xffff){}
+    struct {
+        bool AlarmRecord:1;
+        bool FullScreen:1;
+        bool Relay:1;
+        bool Sensor:1;
+        bool EMail:1;
+        bool EMap:1;
+        bool Buzzer:1; 
+        bool SnapShot:1;
+        bool PlaySound:1;
+        bool TelphoneCall:1;   
+        bool resvr1:1;
+        bool resvr2:1;
+        bool resvr3:1;
+        bool resvr4:1;
+        bool resvr5:1;
+        bool resvr6:1;
+    } Table;
+    unsigned short nTable;
 };
 
-inline long operator - (const FILETIME&t1, const FILETIME&t2)
+
+namespace van 
 {
-    return (*((__int64*)&t1)-*((__int64*)&t2))/10000;
-}
-
-list<int> TargetList, TargetSaveList;
-void Kiil(int test)
-{
-    int pGroupTarget = NULL;
-    list<int>::iterator iter = TargetList.begin();
-    for ( iter = TargetList.begin(); ; ++iter)
-    {
-        if ( *iter == test )
+     namespace type_traits
+     {
+        namespace detail
         {
-            pGroupTarget = *iter;
-            TargetSaveList.splice(
-                TargetSaveList.end(), TargetList, TargetList.begin(), ++iter);
-            break;
+            typedef char Small;
+            struct Big {char dummy[2];};
+
+            template<typename Type,Type Ptr>
+            struct MemberHelperClass;
+
+            //template<typename T,typename Type>
+            //Small MemberHelper_f(MemberHelperClass<Type,&T::f> *);
+
+            template<typename T,typename Type>
+            Small MemberHelper_f(MemberHelperClass<T,&T::Type> *);
+
+            template<typename T,typename Type>
+            Big MemberHelper_f(...);
         }
-        else if ( *iter > test )
-        {
-            TargetSaveList.splice(
-                TargetSaveList.end(), TargetList, TargetList.begin(), ++iter);
-            break;
-        } 
 
-
-        if ( iter == TargetList.end() )
+        template<typename T,typename Type>
+        struct has_member_f
         {
-            TargetSaveList.splice(TargetSaveList.end(), TargetList);
-            break;
-        }
+            enum 
+            {
+                value=sizeof(detail::MemberHelper_f<T,Type>(0))==sizeof(detail::Small)
+            };
+        };
     }
-   
-    //TargetList.erase(TargetList.begin(), iter);
 }
 
+struct A
+{
+    static void f(){};
+};
+struct B
+{
+    static int a;
+};
+int B::a = 0;
+
+struct My
+{
+    int a;
+    bool b;
+};
+
+//typedef My::*a  AAA;
+
+//
+// 还是 用老方法 用位移搞定
+//  
+template<size_t Offset, typename T2>
+void TempTest(T2 a)
+{
+    My kk;
+    T2* pTmp = (T2*)((char*)&kk + Offset);
+    *pTmp = a;
+    //kk.*T = a;
+};
+ 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    cout<<boolalpha;
+    cout<<van::type_traits::has_member_f<B,int>::value<<endl;
+    cout<<van::type_traits::has_member_f<A,void (A::*)()>::value<<endl;
+    cout<<van::type_traits::has_member_f<B,void (*)()>::value<<endl;
+
+    TempTest<0, int>(1);
+
     char szPath[] = "C:\\1\\2\\3.txt";
     char szdrive[10] = {0};
     char szdir[10] = {0};
@@ -113,23 +158,6 @@ int _tmain(int argc, _TCHAR* argv[])
     //int nSize = sizeof(TargetQueue);
     //
     
-    int a = 10 ;
-    for ( int i = 0; i<10; ++i)
-        // dfd ffsdf ?sdfds???????????/
-        ++a;
-    cout << "aa" << endl;
-    
-    {
-        cout << "aa" << endl;
-    }
-
-
-    int szbuf[4] = {-1};
-    memset(szbuf, -1, sizeof(szbuf));
-    int i = sizeof(WPG_Rule);  // 3748
-    const int b = 0;
-    const int& aa = b;
-    list<int> lk;
   
 	return 0;
 }

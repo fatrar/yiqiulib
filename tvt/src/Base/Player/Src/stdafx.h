@@ -36,4 +36,6 @@
 #include "HardWareSupport.h"
 #include "PicTransformUtil.h"
 
+USING_BASE_ENGINE
+
 // TODO: reference additional headers your program requires here

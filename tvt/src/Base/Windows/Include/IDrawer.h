@@ -42,27 +42,37 @@
 
 BEGIN_BASE_ENGINE
 
-namespace System
-{
 namespace Windows
 {
 
-class IDrawer :
-    public CWnd
+enum IDrawerGraphType
 {
-public:
+    IDrawer_Rectangle,
+    IDrawer_Polygon,
+    IDrawer_Line,
+    IDrawer_ArrowLine,
+};
+
+
+struct IDrawer
+{
     enum
     {
         Polygon_Default_Max_Point = 36,
     };
-    
+
     virtual ~IDrawer(){};
     virtual size_t GetUserInput(CPoint* pPointBuf, size_t nCount) = 0;
     virtual size_t PointCount() = 0;
-    virtual void SetColour(DWORD dwColor) = 0;
+
     virtual void Clear() = 0;
     virtual void SetDefault(const CPoint* pPoint, size_t nCount) = 0;
 
+    virtual void SetLineColour(DWORD dwColor)=0;
+    virtual void SetLineWidth(int dwWidth)=0;
+
+    virtual void Enable(BOOL bEnbale) = 0;
+    virtual BOOL IsEnable()=0;
     enum DrawCommond
     {
         // Only ArrowLine
@@ -78,23 +88,33 @@ public:
     virtual void SendCommond(DrawCommond c, void* p1=NULL, void* p2=NULL) {};
 };
 
-
-enum IDrawerGraphType
+struct IDrawModeNotify
 {
-    IDrawer_Rectangle,
-    IDrawer_Polygon,
-    IDrawer_Line,
-    IDrawer_ArrowLine,
+    virtual void OnChange(IDrawer* p) = 0;
 };
 
-namespace DrawerFactory
+struct IDrawContainer : 
+    public CWnd
 {
-    IDRAWER_API IDrawer* CreateDrawer(IDrawerGraphType t);
-    IDRAWER_API void DestoryDrawer(IDrawer* p);
-}
+public:
+    //void SetSelectCursor(HWND Cursor);
+    //void SetEditCursor();
+    virtual void SetDrawModeNotify(IDrawModeNotify* pDrawMode) = 0;
+
+    virtual IDrawer* Add(IDrawerGraphType t) = 0;
+    virtual BOOL Remove(IDrawer* pDrawer)=0;
+    virtual IDrawer* GetSelect()=0;
+    virtual void SwtichTool(IDrawer* pDrawer)=0;
+
+    virtual void EnableToolExcept(IDrawer* pDrawer, BOOL bEnbale)=0;
+    virtual void EnableToolAndNotEnableOther(IDrawer* pDrawer, BOOL bEnbale)=0;
+};
+
+
+IDRAWER_API IDrawContainer* CreateDrawContainer();
+IDRAWER_API void DestoryDrawContainer(IDrawContainer* p);
 
 };  // Windows
-};  // System
 
 END_BASE_ENGINE
 

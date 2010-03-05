@@ -22,9 +22,6 @@
 
 BEGIN_BASE_ENGINE
 
-namespace System
-{
-
 namespace Windows
 {
 
@@ -52,11 +49,19 @@ static BOOL UnLockCursor()
     pParentWnd->ScreenToClient(&FreshRect); \
     pParentWnd->InvalidateRect(&FreshRect);
 
+#define ParentInvalidateEx() \
+    CRect FreshRect;                \
+    m_pWnd->GetClientRect(&FreshRect);      \
+    m_pWnd->ClientToScreen(&FreshRect);     \
+    CWnd* pParentWnd = m_pWnd->GetParent(); \
+    pParentWnd->ScreenToClient(&FreshRect); \
+    pParentWnd->InvalidateRect(&FreshRect);
+
+
 //#define ParentInvalidate()  Invalidate()
 
 };  // Windows
 
-}; // System
 
 END_BASE_ENGINE
 

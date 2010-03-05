@@ -54,15 +54,23 @@
 
 #include "..\..\Base\Include\Common.h"
 
+#include <assert.h>
+#include <set>
+using namespace std;
+
+
 #define BEGIN_WINDOWS_NAMESPACE \
     BEGIN_BASE_ENGINE \
-    namespace System { \
     namespace Windows { 
 
 
-#define END_WINDOWS_NAMESPACE  END_BASE_ENGINE }; };
+#define END_WINDOWS_NAMESPACE  END_BASE_ENGINE  };
 
 #include "IDrawer.h"
 #include "Drawer.h"
 #include "WindowsUtil.h"
-using namespace OCI::System::Windows;
+
+
+#include "LineDrawer.h"
+#include "PolygonDrawer.h"
+#include "RectangleDrawer.h"
