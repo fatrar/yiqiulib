@@ -19,11 +19,12 @@
 #include "PolygonDrawer.h"
 
 
-IMPLEMENT_DYNAMIC(CPolygonDrawer, CWnd)
+//IMPLEMENT_DYNAMIC(CPolygonDrawer, CWnd)
 
-CPolygonDrawer::CPolygonDrawer(void)
+CPolygonDrawer::CPolygonDrawer(CWnd* pWnd)
     : m_bFirst(true)
 {
+    m_pWnd = pWnd;
     m_nMaxPoint =  Polygon_Default_Max_Point;
     m_PointQueue.push_back(CPoint());
 }
@@ -32,12 +33,12 @@ CPolygonDrawer::~CPolygonDrawer(void)
 {
 }
 
-BEGIN_MESSAGE_MAP(CPolygonDrawer, CWnd)
-    ON_WM_MOUSEMOVE()
-    ON_WM_LBUTTONUP()
-    ON_WM_LBUTTONDOWN()
-    ON_WM_PAINT()
-END_MESSAGE_MAP()
+//BEGIN_MESSAGE_MAP(CPolygonDrawer, CWnd)
+//    ON_WM_MOUSEMOVE()
+//    ON_WM_LBUTTONUP()
+//    ON_WM_LBUTTONDOWN()
+//    ON_WM_PAINT()
+//END_MESSAGE_MAP()
 
 void CPolygonDrawer::SendCommond(DrawCommond c, void* p1, void* p2)
 {
@@ -53,39 +54,41 @@ void CPolygonDrawer::SendCommond(DrawCommond c, void* p1, void* p2)
     }
 }
 
-void CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint point)
+BOOL CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint& point)
 {
     if ( !(nFlags&MK_LBUTTON) )
     {
-        return;
+        return FALSE;
     }
 
     if ( m_bDragging && m_nDragIndex != -1 )
     {
         m_PointQueue[m_nDragIndex] = point;
-        ParentInvalidate();
-        return;
+        ParentInvalidateEx();
+        return TRUE;
     }
 
     if ( m_bDrawing )
     {
         m_PointQueue.back() = point;
-        ParentInvalidate();
-        return;
+        ParentInvalidateEx();
+        return TRUE;
     }
 
     if ( m_bDragCenter )
     {
         CenterPointMoveTo(point);
-        ParentInvalidate();
+        ParentInvalidateEx();
+        return TRUE;
     }
+    return FALSE;
 }
 
-void CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint point)
+BOOL CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
 {
     if ( m_bDrawing ) 
     {
-        return;
+        return FALSE;
     }
 
     if ( m_bDragging )
@@ -93,7 +96,7 @@ void CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint point)
         UnLockCursor();
         m_bDragging = false;
         m_nDragIndex = -1;
-        return;
+        return TRUE;
     }
 
     if ( m_bDragCenter )
@@ -101,15 +104,17 @@ void CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint point)
         UnLockCursor();
         CenterPointMoveTo(point);
         m_bDragCenter = false;
+        return TRUE;
     }
+    return FALSE;
 }
 
 // 注意这里要做最大多边形的判断，不能让用户无限的点下去
-void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
+BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
 {
     CRect Rect;
-    GetClientRect(&Rect);
-    ClientToScreen(&Rect);
+    m_pWnd->GetClientRect(&Rect);
+    m_pWnd->ClientToScreen(&Rect);
 
     if ( m_bIsOK )
     {
@@ -117,18 +122,18 @@ void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
         {
             LockCursor(Rect);
             m_bDragging = true;
-            return;
+            return TRUE;
         }
         else if ( IsDargCenterPoint(point) )
         {
             m_bDragging = false;
             LockCursor(Rect);
             m_bDragCenter = true;
-            return;
+            return TRUE;
         }
  
         m_bDragging = false;
-        return;
+        return FALSE;
     }
     else
     {
@@ -148,39 +153,41 @@ void CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint point)
             //ReFreshPoint(m_PointQueue.size()-1, point);
             m_bDrawing = false;
             m_bIsOK = true;
-            ParentInvalidate();
+            ParentInvalidateEx();
             AfxMessageBox(_T("Is OK!"));
-            return;
+            return TRUE;
         }
     }
 
     m_PointQueue.back() = point;
     m_PointQueue.push_back(point);
-    ParentInvalidate();
+    ParentInvalidateEx();
+    return TRUE;
 }
 
-void CPolygonDrawer::OnPaint()
+void CPolygonDrawer::OnPaint(CDC& dc, BOOL bSelect)
 {
     //if (!m_bIsOK && !m_bDrawing && )
     //{
     //    return;
     //}
-    CPaintDC dc(this);
     size_t nSize = m_PointQueue.size();
     if ( nSize == 0 )
     {
         return;
     }
-
-    
+   
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
 
     deque<CPoint>::iterator iter = m_PointQueue.begin();
-    for  ( ; iter != m_PointQueue.end(); ++iter )
-    {
-        CPoint& point = *iter;
-        DrawCircle(&dc, point, Point_Radii);
+    if ( bSelect )
+    {    
+        for  ( ; iter != m_PointQueue.end(); ++iter )
+        {
+            CPoint& point = *iter;
+            DrawSquare(&dc, point, Point_Radii);
+        }
     }
    
     if ( nSize == 1 )
@@ -201,7 +208,11 @@ void CPolygonDrawer::OnPaint()
     if ( m_bIsOK )
     {
         dc.LineTo(BeginPoint);
-        DrawCenterPoint(&dc);
+
+        if ( bSelect )
+        {
+            DrawCenterPoint(&dc);
+        }
     }
 
     dc.SelectObject(pOldPen);

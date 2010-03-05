@@ -18,6 +18,29 @@
 #ifndef _SINGLEVIDEOPLAYER_H_2010_2
 #define _SINGLEVIDEOPLAYER_H_2010_2
 
+#include "..\..\Base\Include\Common.h"
+
+
+#ifdef PLAYER_EXPORTS
+    #define SINGLEVIDEOPLAYER_API   API_EXPORT
+    #define SINGLEVIDEOPLAYER_CLASS CLASS_EXPORT
+#else    
+    #define SINGLEVIDEOPLAYER_API API_IMPORT
+    #define SINGLEVIDEOPLAYER_CLASS CLASS_IMPORT
+    #ifndef PLAYER_LINK
+        #define PLAYER_LINK
+        #pragma comment(lib, "Player.lib")
+        #pragma message("Automatically linking with Player.dll") 
+    #endif
+#endif
+
+
+struct IDirectDraw7;
+struct IDirectDrawSurface7;
+struct IDirectDrawClipper;
+
+
+BEGIN_BASE_ENGINE
 
 
 struct IVideoPlayCallBack
@@ -26,16 +49,13 @@ struct IVideoPlayCallBack
         HDC dc,
         const tagRECT* rect,    // 针对屏幕坐标
         const FILETIME* pTime,
-        HWND hwnd ) = 0;
+        HWND hwnd,
+        int nFlag ) = 0;   // 0为临时的， 1为永久的那个
 };
 
 
-struct IDirectDraw7;
-struct IDirectDrawSurface7;
-struct IDirectDrawClipper;
 
-
-class CSingleVideoPlayer
+class SINGLEVIDEOPLAYER_CLASS CSingleVideoPlayer
 {
 public:
     virtual BOOL InitDirectDraw(
@@ -51,6 +71,13 @@ public:
     void SetVideoPlayCallback(IVideoPlayCallBack* p){m_pIVideoPlayCallBack=p;}
 
     void ShowBack();
+public:
+    enum YUVFormat
+    {
+        YUV420	   = 0,
+        YUV422	   = 1,
+        YUV422PACK = 2,
+    };
 
 protected :
     CSingleVideoPlayer();
@@ -65,6 +92,8 @@ protected:
     BOOL InitYUVBack(DWORD dwWidth, DWORD dwHeight);
     BOOL InitRGBBack(DWORD dwWidth, DWORD dwHeight);
 
+    BOOL ReInitYUVBack(DWORD dwWidth, DWORD dwHeight);
+    BOOL ReInitRGBBack(DWORD dwWidth, DWORD dwHeight);
 protected:
     HWND m_hWnd;
     RECT m_ShowRect;
@@ -75,10 +104,12 @@ protected:
     IDirectDrawSurface7 *m_pddsPrimary;
     IDirectDrawClipper* m_lpClipper;     // Pointer to the clipper 
     IDirectDrawSurface7* m_pDDSBack;
+
+    DWORD m_dwWidth, m_dwHeight;
 };
 
 
-class CYUVSingleVideoPlayer :
+class SINGLEVIDEOPLAYER_CLASS CYUVSingleVideoPlayer :
     public CSingleVideoPlayer
 {
 public:
@@ -96,7 +127,30 @@ public:
         IVideoPlayCallBack* p = NULL );
 };
 
-class CRGBSingleVideoPlayer :
+class SINGLEVIDEOPLAYER_CLASS CYUVSingleVideoPlayerEx :
+    public CYUVSingleVideoPlayer
+{
+public:
+    void Show(
+        const tagRECT* rect, 
+        const BYTE *pBuf, 
+        DWORD dwWidth, DWORD dwHeight,
+        DWORD format,
+        int src420Subtype=0,
+        const FILETIME* pTime = NULL,
+        IVideoPlayCallBack* p = NULL );
+
+protected:
+    void Show(
+        const tagRECT* rect, 
+        const BYTE *pBuf, 
+        DWORD format,
+        int src420Subtype=0,
+        const FILETIME* pTime = NULL,
+        IVideoPlayCallBack* p = NULL ) {};
+};
+
+class SINGLEVIDEOPLAYER_CLASS CRGBSingleVideoPlayer :
     public CSingleVideoPlayer
 {
 public:
@@ -112,6 +166,27 @@ public:
         IVideoPlayCallBack* p = NULL);
 };
 
+class SINGLEVIDEOPLAYER_CLASS CRGBSingleVideoPlayerEx :
+    public CRGBSingleVideoPlayer
+{
+public:
+    void Show(
+        const tagRECT* rect,
+        const BYTE *pBuf,
+        DWORD dwWidth, DWORD dwHeight,
+        const FILETIME* pTime = NULL,
+        IVideoPlayCallBack* p = NULL);
+
+protected:
+    void Show(
+        const tagRECT* rect,
+        const BYTE *pBuf,
+        const FILETIME* pTime = NULL,
+        IVideoPlayCallBack* p = NULL){};
+};
+
+
+END_BASE_ENGINE
 
 #endif  // _SINGLEVIDEOPLAYER_H_2010_
 

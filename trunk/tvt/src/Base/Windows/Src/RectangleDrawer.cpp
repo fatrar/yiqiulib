@@ -33,12 +33,13 @@
     PointPush(PointQueue, TmpPoint, 3, 0);
 
 
-IMPLEMENT_DYNAMIC(CRectangleDrawer, CWnd)
+//IMPLEMENT_DYNAMIC(CRectangleDrawer, CWnd)
 
-CRectangleDrawer::CRectangleDrawer(void)
+CRectangleDrawer::CRectangleDrawer(CWnd* pWnd)
     : m_nDragDir(NO_Darg)
     //, m_PointQueue(4)
 {
+    m_pWnd = pWnd;
     m_nMaxPoint = 4;
     m_PointQueue.resize(4);
 }
@@ -48,54 +49,51 @@ CRectangleDrawer::~CRectangleDrawer(void)
 }
 
 
-BEGIN_MESSAGE_MAP(CRectangleDrawer, CWnd)
-    ON_WM_MOUSEMOVE()
-    ON_WM_LBUTTONUP()
-    ON_WM_LBUTTONDOWN()
-    ON_WM_PAINT()
-    ON_WM_ERASEBKGND()
-END_MESSAGE_MAP()
+//BEGIN_MESSAGE_MAP(CRectangleDrawer, CWnd)
+//    ON_WM_MOUSEMOVE()
+//    ON_WM_LBUTTONUP()
+//    ON_WM_LBUTTONDOWN()
+//    ON_WM_PAINT()
+//    ON_WM_ERASEBKGND()
+//END_MESSAGE_MAP()
 
-void CRectangleDrawer::OnMouseMove(UINT nFlags, CPoint point)
+BOOL CRectangleDrawer::OnMouseMove(UINT nFlags, CPoint& point)
 {
-    if ( !(nFlags&MK_LBUTTON) )
-    {
-        return;
-    }
-
     if ( m_bDragging )
     {
-        TRACE("OnMouseMove %d\n", m_nDragIndex);
+        //TRACE("OnMouseMove %d\n", m_nDragIndex);
         ReFreshPoint(m_nDragIndex, point);
-        ParentInvalidate();
+        ParentInvalidateEx();
         //GetParent()->Invalidate();
-        return;
+        return TRUE;
     }
 
     if ( m_bDrawing )
     {
-        TRACE("OnMouseMove m_bDrawing\n");
+        //TRACE("OnMouseMove m_bDrawing\n");
         ReFreshPoint(2, point);
-        ParentInvalidate();
+        ParentInvalidateEx();
         //GetParent()->Invalidate();
-        return;
+        return TRUE;
     }
 
     if ( m_nDragDir !=  NO_Darg )
     {
         ReFreshPoint2(m_nDragDir, point);
-        ParentInvalidate();
-        return;
+        ParentInvalidateEx();
+        return TRUE;
     }
 
     if ( m_bDragCenter )
     {
         CenterPointMoveTo(point);
-        ParentInvalidate();
+        ParentInvalidateEx();
+        return TRUE;
     }
+    return FALSE;
 }
 
-void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
+BOOL CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
 {
     if ( m_bDrawing )
     {
@@ -103,23 +101,23 @@ void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
         //ReFreshPoint(2, point);
         m_bDrawing = false;
         //return;
+        TRACE("CRectangleDrawer::OnLButtonUp\n");
+        return TRUE;
     }
 
     if ( m_bDragging )
     {
         UnLockCursor();
         m_bDragging = false;
-        //ReFreshPoint(m_nDragIndex, point);
         m_nDragIndex = -1;
-        return;
+        return TRUE;
     }
 
     if ( m_nDragDir != NO_Darg )
     {
         UnLockCursor();
-        //ReFreshPoint2(m_nDragDir, point);
         m_nDragDir = NO_Darg;
-        return;
+        return TRUE;
     }
 
     if ( m_bDragCenter )
@@ -127,20 +125,16 @@ void CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint point)
         UnLockCursor();
         //CenterPointMoveTo(point);
         m_bDragCenter = false;
+        return TRUE;
     }
+    return FALSE;
 }
 
-void CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint point)
+BOOL CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
 {
-    if ( m_bDrawing )
-    {
-        // Log
-        //TRACE( CString(L"m_bIsStartDraw is True! function name is ") + __FUNCDNAME__ );
-    }
-
     CRect Rect;
-    GetClientRect(&Rect);
-    ClientToScreen(&Rect);
+    m_pWnd->GetClientRect(&Rect);
+    m_pWnd->ClientToScreen(&Rect);
 
     if ( m_bIsOK )
     {
@@ -148,36 +142,37 @@ void CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint point)
         {
             LockCursor(Rect);
             m_bDragging = true;
-            return;
+            return TRUE;
         }
         else if ( (m_nDragDir = IsDargPoint2(point)) != NO_Darg )
         {
             m_bDragging = false;
             LockCursor(Rect);
-            return;
+            return TRUE;
         }
         else if ( IsDargCenterPoint(point) )
         {
             m_bDragging = false;
             LockCursor(Rect);
             m_bDragCenter = true;
-            return;
+            return TRUE;
         }
 
         m_bDragging = false;
-        return;
+        return FALSE;
     }
 
     LockCursor(Rect);
     m_bIsOK = m_bDrawing = true;
     m_PointQueue[0] = m_PointQueue[1] =
         m_PointQueue[2] = m_PointQueue[3] = point;
-    ParentInvalidate();
+    ParentInvalidateEx();
+    
+    return TRUE;
 }
 
-void CRectangleDrawer::OnPaint()
+void CRectangleDrawer::OnPaint(CDC& dc, BOOL bSelect)
 {
-    CPaintDC dc(this);
     if (!m_bIsOK)
     {
         return;
@@ -191,32 +186,28 @@ void CRectangleDrawer::OnPaint()
     dc.Rectangle(p0.x, p0.y, p2.x, p2.y);
 
     pOldBrush = dc.SelectObject(&m_Brush);
-    for (int i=0; i<=3; ++i)
-    {
-        CPoint& point = m_PointQueue[i];
-        DrawCircle(&dc, point, Point_Radii);
-    }
 
-    deque<CPoint> PointQueue;
-    CPoint TmpPoint;
-    GetMedPointQueue(PointQueue, TmpPoint);
-    for (int i=0; i<=3; ++i)
+    if ( bSelect )
     {
-        CPoint& point = PointQueue[i];
-        DrawCircle(&dc, point, Point_Radii);
+        for (int i=0; i<=3; ++i)
+        {
+            CPoint& point = m_PointQueue[i];
+            DrawSquare(&dc, point, Point_Radii);
+        }
+
+        deque<CPoint> PointQueue;
+        CPoint TmpPoint;
+        GetMedPointQueue(PointQueue, TmpPoint);
+        for (int i=0; i<=3; ++i)
+        {
+            CPoint& point = PointQueue[i];
+            DrawSquare(&dc, point, Point_Radii);
+        }
+        DrawCenterPoint(&dc);
     }
-    DrawCenterPoint(&dc);
 
     dc.SelectObject(pOldPen);
     dc.SelectObject(pOldBrush);
-}
-
-
-BOOL CRectangleDrawer::OnEraseBkgnd(CDC* pDC)
-{
-    // TODO: Add your message handler code here and/or call default
-
-    return CWnd::OnEraseBkgnd(pDC);
 }
 
 void CRectangleDrawer::ReFreshPoint(int nIndex, const CPoint& point)

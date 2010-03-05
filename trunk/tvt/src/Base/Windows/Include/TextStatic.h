@@ -25,9 +25,6 @@
 
 BEGIN_BASE_ENGINE
 
-namespace System
-{
-
 namespace Windows
 {
 /////////////////////////////////////////////////////////////////////////////
@@ -91,7 +88,6 @@ private:
 
 };  // Windows
 
-}; // System
 
 END_BASE_ENGINE
 

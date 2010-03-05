@@ -1,4 +1,4 @@
-/*H***************************************************************************
+/**H**************************************************************************
  File            : Common.h
  Subsystem       : 
  Function Name(s): CCommon
@@ -13,7 +13,7 @@
  2. 代码在不同情况采用不同的编写标准，在保证功能的前提下，
  在效率要求很高的情况下，以执行效率为先，编码优美简洁易懂为其次。
  在
-
+ 3.注释是为了方便doxygen好生成文档，采用其适应的风格
  Revision        : 
 
 
@@ -31,6 +31,8 @@
 
 #define BEGIN_BASE_ENGINE namespace OCI {
 #define END_BASE_ENGINE };
+
+#define USING_BASE_ENGINE using namespace OCI;
 
 /// 模块的配置后缀
 #if defined(_DEBUG)
@@ -144,9 +146,11 @@ typedef unsigned __int64		uint64;
 #	define safeDeleteArray(ptr)	if ((ptr)) {delete[] (ptr); (ptr) = 0;}
 #endif
 #ifndef safeRelease
-#	define safeRelease(ptr)		if ((ptr)) {(ptr)->release(); (ptr) = 0;}
+#	define safeRelease(ptr)		if ((ptr)) {(ptr)->Release(); (ptr) = 0;}
 #endif
-
+#ifndef saferelease
+#	define saferelease(ptr)		if ((ptr)) {(ptr)->release(); (ptr) = 0;}
+#endif
 /** 编译期Assert,参考boost库,如：
 STATIC_ASSERT(sizeof(long) > 8);
 */
@@ -156,6 +160,7 @@ namespace COMPILE_ASSERT
 	template <> struct COMPILE_ASSERT_FAILURE<true> { enum { value = 1 }; };
 	template<int x> struct compile_assert_test{};
 }
+
 #define STATIC_ASSERT(exp) \
 	typedef COMPILE_ASSERT::compile_assert_test< \
 	sizeof(COMPILE_ASSERT::COMPILE_ASSERT_FAILURE< (bool)(exp) >) \
@@ -181,7 +186,7 @@ namespace COMPILE_ASSERT
 ///// 调试器中断
 //void debuggerBreak(const char* exp, const char* file, uint line, bool* ignore = 0);
 //
-//#ifdef RKT_DEBUG
+//#ifdef _DEBUG
 //#	define debugBreak			{static bool __s_ignore__ = false; debuggerBreak(0, __FILE__, __LINE__, &__s_ignore__);}
 //#	define debugBreakEx(str)	{static bool __s_ignore__ = false; debuggerBreak(str, __FILE__, __LINE__, &__s_ignore__);}
 //#else

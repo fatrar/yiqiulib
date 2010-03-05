@@ -17,26 +17,21 @@
 ***************************************************************************H*/
 #ifndef _RECTANGLEDRAWER_H_2010_2
 #define _RECTANGLEDRAWER_H_2010_2
-
 #include "Drawer.h"
 
 
 class CRectangleDrawer :
 	public CDrawer
 {
-    DECLARE_DYNAMIC(CRectangleDrawer)
 public:
-	CRectangleDrawer(void);
+	CRectangleDrawer(CWnd* pWnd);
 	virtual ~CRectangleDrawer(void);
-protected:
-     DECLARE_MESSAGE_MAP()
 
 protected:
-    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-    afx_msg void OnPaint();
-    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+    virtual BOOL OnMouseMove(UINT nFlags, CPoint& point);
+    virtual BOOL OnLButtonUp(UINT nFlags, CPoint& point);
+    virtual BOOL OnLButtonDown(UINT nFlags, CPoint& point);
+    virtual void OnPaint(CDC& dc,BOOL bSelect=FALSE);
 
 protected:
 	inline void ReFreshPoint(int nIndex, const CPoint& point);
@@ -58,6 +53,44 @@ protected:
 
     DargDir m_nDragDir;
 };
+
+//class CRectangleDrawer :
+//    public CDrawer
+//{
+//    DECLARE_DYNAMIC(CRectangleDrawer)
+//public:
+//    CRectangleDrawer(void);
+//    virtual ~CRectangleDrawer(void);
+//protected:
+//    DECLARE_MESSAGE_MAP()
+//
+//protected:
+//    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+//    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+//    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+//    afx_msg void OnPaint();
+//    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+//
+//protected:
+//    inline void ReFreshPoint(int nIndex, const CPoint& point);
+//
+//    enum DargDir
+//    {
+//        NO_Darg = -1,
+//        Darg_Top,
+//        Darg_Right,
+//        Darg_Bottom,
+//        Darg_Left,
+//    };
+//
+//
+//    inline void ReFreshPoint2(DargDir nIndex, const CPoint& point);
+//
+//
+//    DargDir IsDargPoint2(const CPoint& point);
+//
+//    DargDir m_nDragDir;
+//};
 
 //class CDoubleRectangleDrawer :
 //    public CRectangleDrawer

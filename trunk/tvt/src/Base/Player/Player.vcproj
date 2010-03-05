@@ -226,10 +226,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Include\PicTransformUtil.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Src\stdafx.h"
 				>
 			</File>
@@ -245,6 +241,10 @@
 			>
 			<File
 				RelativePath=".\Include\HardWareSupport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\PicTransformUtil.h"
 				>
 			</File>
 			<File

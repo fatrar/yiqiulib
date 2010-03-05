@@ -20,7 +20,7 @@ CWindowsTestDlg::CWindowsTestDlg(CWnd* pParent /*=NULL*/)
     //m_pDrawer = new CPolygonDrawer();
     //m_pDrawer = new CLineDrawer();
     //m_pDrawer = DrawerFactory::CreateDrawer(IDrawer_Rectangle);
-    m_pDrawer = DrawerFactory::CreateDrawer(IDrawer_ArrowLine);
+    m_pDrawContainer = CreateDrawContainer();
 }
 
 void CWindowsTestDlg::DoDataExchange(CDataExchange* pDX)
@@ -49,10 +49,14 @@ BOOL CWindowsTestDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+
+
     CRect rect;
     GetClientRect(&rect);
     rect.bottom -= 50;
-    m_pDrawer->Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rect, this, 10246);
+    m_pDrawContainer->Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rect, this, 10246);
+    m_pDrawer = m_pDrawContainer->Add(IDrawer_Rectangle);
+    m_pDrawer2 = m_pDrawContainer->Add(IDrawer_Rectangle);
     //m_pDrawer->ShowWindow(SW_SHOW);
 
     m_testStatic.OnAlarmOccur();
@@ -102,6 +106,12 @@ void CWindowsTestDlg::OnBnClickedColour()
     CColorDialog Dlg;
     if ( IDOK == Dlg.DoModal() )
     {
-        m_pDrawer->SetColour(Dlg.GetColor());
+        IDrawer* pTmp = m_pDrawContainer->GetSelect();
+        if ( NULL == pTmp )
+        {
+            return;
+        }
+
+        pTmp->SetLineColour(Dlg.GetColor());
     }  
 }

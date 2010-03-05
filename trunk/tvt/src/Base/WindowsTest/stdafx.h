@@ -55,7 +55,7 @@
 
 
 #include "..\Windows\Include\IDrawer.h"
-using namespace OCI::System::Windows;
+using namespace OCI::Windows;
 
 
 #ifdef _UNICODE

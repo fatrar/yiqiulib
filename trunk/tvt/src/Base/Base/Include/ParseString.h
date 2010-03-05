@@ -27,7 +27,10 @@ BEGIN_BASE_ENGINE
 
 namespace StringHelp
 {
-
+/**
+* @note Parse String like  12;45;fgf;
+* @version 1.0
+*/
 template<const char cDelimiter = ';', bool bFilterNull = true>
 class CParseString
 {
@@ -123,7 +126,10 @@ protected:
     deque<string> m_DataQueue;
 };
 
-
+/**
+ @note Make String like 12;45;fgf;
+ @version 1.0
+*/
 template<const char cDelimiter = ';'>
 class CMakeString
 {

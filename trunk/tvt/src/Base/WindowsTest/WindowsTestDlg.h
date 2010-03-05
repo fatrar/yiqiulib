@@ -4,7 +4,7 @@
 #pragma once
 #include "afxwin.h"
 #include "..\Windows\Include\TextStatic.h"
-using namespace OCI::System::Windows;
+using namespace OCI::Windows;
 
 // CWindowsTestDlg dialog
 class CWindowsTestDlg : public CDialog
@@ -23,7 +23,7 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
-    IDrawer* m_pDrawer;
+    IDrawContainer* m_pDrawContainer;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -33,4 +33,6 @@ protected:
 public:
     afx_msg void OnBnClickedColour();
     CAlarmTextStatic m_testStatic;
+    IDrawer* m_pDrawer;
+    IDrawer* m_pDrawer2;
 };
