@@ -161,7 +161,7 @@ void CIVSchuduleDlg::OnUpdateMemu(
     CMenu* pMenu,
     WhichMemu Which,
     int nChannelID,
-    void* pData,
+    const void* pData,
     HTREEITEM Item )
 {   
     m_ClickItem = Item;
@@ -183,7 +183,7 @@ void CIVSchuduleDlg::OnUpdateMemu(
 void CIVSchuduleDlg::OnClickCameraTree( 
     WhichMemu Which,
     int nChannelID, 
-    void* pData, 
+    const void* pData, 
     HTREEITEM Item )
 {
 
@@ -249,6 +249,21 @@ void CIVSchuduleDlg::OnBnClickedApplyBt()
 }
 
 void CIVSchuduleDlg::CollectUserSet()
+{
+
+}
+
+void CIVSchuduleDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
+{
+
+}
+
+void CIVSchuduleDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
+{
+
+}
+
+void CIVSchuduleDlg::OnUseIV( int nChannelID, BOOL bEnbale )
 {
 
 }

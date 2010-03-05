@@ -39,21 +39,21 @@ struct ItemAttribute
     ItemAttribute(
         WhichMemu Which,
         int nChannelID,
-        void* pUseData = NULL)
+        const void* pUseData = NULL)
         : Info(Which, nChannelID)
         , pUseData(pUseData){}
     ~ItemAttribute()
     {
-        safeDelete(pUseData);
+        //safeDelete(pUseData);
     }
 
     ItemInfo Info;
-    void* pUseData;
+    const void* pUseData;
 };
 
 #define IV_Root_Name  _T("IV")
 #define Channel_Name  _T("Ch%d")
-#define Max_Channel               4
+//#define Max_Channel               4
 
 //HTREEITEM InsertItem(LPCTSTR lpszItem, int nImage, int nSelectedImage,
 //    HTREEITEM hParent = TVI_ROOT, HTREEITEM hInsertAfter = TVI_LAST
@@ -214,13 +214,21 @@ void OnClickCameraTree(
     }
 }
 
-void* MakeUserData( 
-    int nChannelID, void* pUseData, WhichMemu Which )
+void* MakeTreeItemData( 
+    int nChannelID, const void* pUseData, WhichMemu Which )
 {
     return new ItemAttribute(Which, nChannelID, pUseData);
 }
 
+void UnMakeTreeItemData( void* p )
+{
+    delete (ItemAttribute*)p;
+}
 
+const void* GetUserDataToItemData( void* p )
+{
+    return ((ItemAttribute*)p)->pUseData;
+}
 
 
 

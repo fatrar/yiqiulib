@@ -56,6 +56,8 @@
 #include <comutil.h>
 #include <comdef.h>
 #include <map>
+#include <deque>
+#include <set>
 #include <string>
 using namespace std;
 #include "..\..\Base\Base\Include\Common.h"
@@ -75,10 +77,13 @@ using namespace OCI;
 //#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
 #include "OtherUtil.h"
+
+#include "IVUICommon.h"
+#include "IVCfgDoc.h"
 #include "IVRuleDlg.h"
 #include "IVAlarmOutDlg.h"
 #include "IVSchuduleDlg.h"
-#include "IVUICommon.h"
+
 #include "IVFunctionSelDlg.h"
 #include "RuleAddMainDlg.h"
 #include "LineAdvDlg.h"

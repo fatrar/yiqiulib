@@ -23,33 +23,51 @@
 struct IRuleTrigger
 {
     virtual void OnRuleRemove(int nChannelID, const char* pIdentityID)=0;
-    virtual void onRuleAdd(int nChannelID, const char* pIdentityID)=0;
+    virtual void OnRuleAdd(int nChannelID, const char* pIdentityID)=0;
+    virtual void OnUseIV(int nChannelID, BOOL bEnbale) =0;
 };
 
+typedef void (IRuleTrigger::*OnRuleXXFn)(int,const char*);
+
+#define IVCfgDoc_Use_Map
+
 /**
-*@brief  
+*@brief 暂时不考虑，Camera Tree使用智能的通道 采用不同标记
+        根据现在的资料将某个Tree的节点改颜色比较复杂，要重写Treectrl
 */
 class CIVCfgDoc
 {
 public:
-    CIVCfgDoc(void);
-    ~CIVCfgDoc(void);
-
+    /**
+    *@brief Load XML Data To Memory
+    */
     static void Init();
 
+protected:
     /**
     *@brief Register Rule Add Or Remove Trigger
-    *@param	  
+    *@param	pRuleTrigger Trigger Callback Ptr
     */
     static void RegisterRuleTrigger(IRuleTrigger* pRuleTrigger);  
 
+    /**
+    *@brief Init Camera Tree
+    *@param	nChannelID  Channel ID
+    *@param CameraTree  Camera Tree
+    *@param Item        Channel TreeCtrl Item HANDLE
+    */
+    void OnInitCameraTree(
+        int nChannelID, 
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item);
 protected:
-    struct CurrentRuleSetting
+    struct RuleSettings
     {
-        CurrentRuleSetting(
+        RuleSettings(){}
+        RuleSettings(
             const WPG_Rule& _Rule,
-            const ScheduleSettings& _Sch,
-            const AlarmOutSettings& _Alarm)
+            const AlarmOutSettings& _Alarm = g_DefaultAlarmOutSettings,
+            const ScheduleSettings& _Sch = g_DefaultScheduleSettings )
             : Rule(_Rule)
             , Sch(_Sch)
             , Alarm(_Alarm) {}
@@ -59,16 +77,144 @@ protected:
         AlarmOutSettings Alarm;
     };
 
-    typedef map<IV_RuleID, CurrentRuleSetting*> RuleSettingMap;
+protected:
+    typedef map<const char*, RuleSettings*> RuleSettingMap;
+
+#ifdef IVCfgDoc_Use_Map
     typedef map<int, RuleSettingMap> AllRuleSettingMap;
-private:
     static AllRuleSettingMap m_Doc;
-    static deque<IRuleTrigger*> m_RuleTrigger;
+#else
+    static RuleSettingMap m_Doc[Max_Channel]; 
+#endif
+    
+    typedef deque<IRuleTrigger*> RuleTriggerList;
+    static RuleTriggerList m_RuleTrigger;
+    static set<int> m_UseChannel;
 };
 
 
+class CIVRuleCfgDoc :
+    protected CIVCfgDoc
+{
+protected:
+    /**
+    *@brief Init Camera Tree
+    *@param	nChannelID  Channel ID
+    *@param CameraTree  Camera Tree
+    *@param Item        Channel TreeCtrl Item HANDLE
+    */
+    //void OnInitCameraTree(
+    //    int nChannelID,
+    //    CTreeCtrl& CameraTree,
+    //    HTREEITEM Item);
 
 
+    WPG_Rule* GetRule(
+        int nChannelID,
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item );
+
+    /**
+    *@brief Add Rule To Doc(memory And XML), And Add Tree Item, 
+    *           if Set Trigger, Do Trigger Function
+    *@param	nChannelID  Channel ID
+    *@param Rule        WPG Rule 
+    *@param CameraTree  Camera Tree
+    *@param Item        Channel TreeCtrl Item HANDLE
+    */
+    void AddRule(
+        int nChannelID, 
+        const WPG_Rule& Rule,
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item);
+
+    /**
+    *@brief Remove Rule To Doc(memory And XML), And Add Tree Item, 
+    *          if Set Trigger, Do Trigger Function
+    *@param	nChannelID  Channel ID
+    *@param Rule        WPG Rule 
+    *@param CameraTree  Camera Tree
+    *@param Item        Rule TreeCtrl Item HANDLE
+    */
+    void RemoveRule(
+        int nChannelID,
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item);
+
+    /**
+    *@brief Update Rule To Doc(memory And XML), And Add Tree Item
+    *@param	nChannelID  Channel ID
+    *@param Rule        WPG Rule 
+    *@param CameraTree  Camera Tree
+    *@param Item        Rule TreeCtrl Item HANDLE
+    */
+    void UpdateRule(
+        int nChannelID,
+        const WPG_Rule& Rule, 
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item,
+        BOOL IsRef = TRUE);
+private:
+    
+    template<OnRuleXXFn T>
+    inline void DoTriggerTFun(int nChannelID, const char* pIdentityID);
+};
+
+class CIVAlarmOutCfgDoc :
+    protected CIVCfgDoc
+{
+protected:
+    /**
+    *@brief Init Camera Tree
+    *@param	nChannelID  Channel ID
+    *@param CameraTree  Camera Tree
+    *@param Item        Channel TreeCtrl Item HANDLE
+    */
+    //void OnInitCameraTree(
+    //    int nChannelID,
+    //    CTreeCtrl& CameraTree,
+    //    HTREEITEM Item);
+
+    AlarmOutSettings* GetAlarmOut(
+        int nChannelID,
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item );
+
+    /**
+    *@brief Update AlarmOut To Doc(memory And XML), And Add Tree Item
+    *@param	nChannelID  Channel ID
+    *@param Rule        WPG Rule 
+    *@param CameraTree  Camera Tree
+    *@param Item        Rule TreeCtrl Item HANDLE
+    */
+    void UpdateAlarmOut(
+        int nChannelID,
+        const AlarmOutSettings& Alarm, 
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item,
+        BOOL IsRef = TRUE);
+};
+
+class CIVScheduleCfgDoc :
+    protected CIVCfgDoc
+{
+protected:
+    /**
+    *@brief Init Camera Tree
+    *@param	nChannelID  Channel ID
+    *@param CameraTree  Camera Tree
+    *@param Item        Channel TreeCtrl Item HANDLE
+    */
+    //void OnInitCameraTree(
+    //    int nChannelID, 
+    //    CTreeCtrl& CameraTree,
+    //    HTREEITEM Item);
+
+    ScheduleSettings* GetSchedule(
+        int nChannelID,
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item );
+};
 
 
 

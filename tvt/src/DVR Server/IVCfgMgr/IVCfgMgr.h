@@ -40,7 +40,9 @@ public:
         const ScheduleSettings& Sch = g_DefaultScheduleSettings,
         const AlarmOutSettings& Alarm = g_DefaultAlarmOutSettings);
 
-    virtual bool Remove(const IVVistor& Vistor);
+    virtual bool Remove(
+        int nChannelID,
+        const IVVistor& Vistor);
 
     virtual bool Apply();
 

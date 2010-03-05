@@ -93,11 +93,14 @@ struct IIVCfgMgr
     @purpose        : 删除一条规则
     @notice         : 删除后可能会使以前遍历的IVVistor失效，
                       这个跟stl的deque类似，所以注意的地方跟它一样
+    @param nChannelID : 通道号
     @param IVVistor : 实际的操作过程，应该是首先通过Begin到End遍历，
                       得到实际要删除的节点，然后调这个函数删除
     @return	bool    : 是否成功
     */
-    virtual bool Remove(const IVVistor& Vistor)=0;
+    virtual bool Remove(
+        int nChannelID,
+        const IVVistor& Vistor)=0;
 
     /**
     @purpose : 保存配置数据到XML，注意所有的设置修改后，
