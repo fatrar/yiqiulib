@@ -19,6 +19,7 @@
 #include "IVCfgDoc.h"
 
 
+
 void CIVCfgDoc::Init()
 {
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
@@ -89,18 +90,61 @@ void CIVCfgDoc::OnInitCameraTree(
     }
 }
 
-#define GetIVRuleCfgXX(nChannelID, CameraTree,Item, xxx)\
-    void* pItemData = (void*)CameraTree.GetItemData(Item); \
-    const char* pID = (const char*)GetUserDataToItemData(pItemData);\
-    RuleSettingMap& Map = m_Doc[nChannelID];\
-    RuleSettingMap::iterator MapIter = Map.find(pID);\
-    if ( MapIter == Map.end() )\
-    {\
-        TRACE(_T("GetIVRuleCfgXX No Found Iter!\n"));\
-        return NULL;\
-    }\
-    return &MapIter->second->xxx
+/**
+*@note  CIVCfgDoc::GetIVRuleCfgXX 用宏实现的版本，
+*      由于宏方式不能调式，所以模板复杂实现
+*/
+//#define GetIVRuleCfgXX(nChannelID, CameraTree,Item, xxx)\
+//    void* pItemData = (void*)CameraTree.GetItemData(Item); \
+//    const char* pID = (const char*)GetUserDataFromItemData(pItemData);\
+//    RuleSettingMap& Map = m_Doc[nChannelID];\
+//    RuleSettingMap::iterator MapIter = Map.find(pID);\
+//    if ( MapIter == Map.end() )\
+//    {\
+//        TRACE(_T("GetIVRuleCfgXX No Found Iter!\n"));\
+//        return NULL;\
+//    }\
+//    return &MapIter->second->xxx
 
+//
+// 上面写了一个用define实现的同样功能的 由于宏方式不能调式，所以模板复杂实现
+//
+template<typename T>
+T* CIVCfgDoc::GetIVRuleCfgXX(
+    int nChannelID,
+    CTreeCtrl& CameraTree,
+    HTREEITEM Item )
+{
+    /**
+    *@note  1. Get ID by Tree Item And Update Item Name
+    */
+    void* pItemData = (void*)CameraTree.GetItemData(Item); 
+    const char* pID = (const char*)GetUserDataFromItemData(pItemData);
+
+    /**
+    *@note  2. Get XX To memory
+    */
+    RuleSettingMap& Map = m_Doc[nChannelID];
+    RuleSettingMap::iterator MapIter = Map.find(pID);
+    if ( MapIter == Map.end() )
+    {
+        TRACE(_T("GetIVRuleCfgXX No Found Iter!\n"));
+        return NULL;
+    }
+  
+    struct CXXX
+    {
+        CXXX(RuleSettings* p):m_p(p){}
+        T* OutPut(){T* p(NULL); return OutPut(p);};
+        WPG_Rule* OutPut(WPG_Rule* p){return &m_p->Rule;}
+        ScheduleSettings* OutPut(ScheduleSettings*p){return &m_p->Sch;}
+        AlarmOutSettings* OutPut(AlarmOutSettings*p){return &m_p->Alarm;}
+        RuleSettings* m_p;
+    };
+
+    CXXX XX(MapIter->second);
+    return XX.OutPut();
+}
 
 // {
 // ****************** CIVRuleCfgDoc **********************
@@ -118,26 +162,7 @@ WPG_Rule* CIVRuleCfgDoc::GetRule(
     CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
-    GetIVRuleCfgXX(nChannelID,CameraTree,Item, Rule);
-    ///**
-    //@note  1. Get ID by Tree Item And Update Item Name
-    //*/
-    //void* pItemData = (void*)CameraTree.GetItemData(Item);
-    //const char* pID = (const char*)GetUserDataToItemData(pItemData);
-
-    ///**
-    //@note  3. Get Rule To memory
-    //*/
-    //RuleSettingMap& Map = m_Doc[nChannelID];
-    //RuleSettingMap::iterator MapIter = Map.find(pID);
-    //if ( MapIter == Map.end() )
-    //{
-    //    // log
-    //    TRACE(_T("CIVRuleCfgDoc::RemoveRule No Found Iter!\n"));
-    //    return NULL;
-    //}
-    //
-    //return &MapIter->second->Rule;
+    return GetIVRuleCfgXX<WPG_Rule>(nChannelID,CameraTree,Item);
 }
 
 void CIVRuleCfgDoc::AddRule( 
@@ -190,7 +215,7 @@ void CIVRuleCfgDoc::RemoveRule(
     @note  1. Delete Tree Item
     */
     void* pItemData = (void*)CameraTree.GetItemData(Item);
-    const char* pID = (const char*)GetUserDataToItemData(pItemData);
+    const char* pID = (const char*)GetUserDataFromItemData(pItemData);
     UnMakeTreeItemData(pItemData);
     CameraTree.DeleteItem(Item);
 
@@ -240,19 +265,54 @@ void CIVRuleCfgDoc::RemoveRule(
     DoTriggerTFun<&IRuleTrigger::OnRuleRemove>(nChannelID, pID);
 }
 
-void CIVRuleCfgDoc::UpdateRule(
-    int nChannelID, 
+template<typename T>
+inline const char* GetRuleID(
+    const T& t,
+    CTreeCtrl& CameraTree,
+    HTREEITEM Item)
+{
+    void* pItemData = (void*)CameraTree.GetItemData(Item);
+    return (const char*)GetUserDataFromItemData(pItemData);
+}
+
+template<>
+inline const char* GetRuleID<WPG_Rule>(
     const WPG_Rule& Rule,
     CTreeCtrl& CameraTree,
+    HTREEITEM Item)
+{
+    CameraTree.SetItemText(Item, CString(Rule.ruleName));
+    void* pItemData = (void*)CameraTree.GetItemData(Item);
+    return (const char*)GetUserDataFromItemData(pItemData);
+}
+
+typedef bool (IIVCfgMgr::IVVistor::*ModifyRuleFn)(const WPG_Rule&);
+typedef bool (IIVCfgMgr::IVVistor::*ModifyScheduleFn)(const ScheduleSettings&);
+typedef bool (IIVCfgMgr::IVVistor::*ModifyAlarmOutFn)(const AlarmOutSettings&);
+
+template<typename T, typename Tfn, Tfn fn>
+void CIVCfgDoc::UpdateRuleCfgXX(
+    int nChannelID, 
+    const T& V,
+    CTreeCtrl& CameraTree,
     HTREEITEM Item,
-    BOOL IsRef )
+    BOOL IsRef /*= TRUE*/ )
 {
     /**
     @note  1. Get ID by Tree Item And Update Item Name
     */
-    void* pItemData = (void*)CameraTree.GetItemData(Item);
-    const char* pID = (const char*)GetUserDataToItemData(pItemData);
-    CameraTree.SetItemText(Item, CString(Rule.ruleName));
+    const char* pID = GetRuleID<T>(V,CameraTree,Item);
+
+    struct CXXX
+    {
+        CXXX(RuleSettings* p):m_p(p){}
+
+        // 再次判断用户是不是用我这边的引用,
+        void Set(const WPG_Rule& p){if(&p!=&m_p->Rule) m_p->Rule=p;}
+        void Set(const ScheduleSettings&p){if(&p!=&m_p->Sch) m_p->Sch=p;}
+        void Set(const AlarmOutSettings&p){if(&p!=&m_p->Alarm) m_p->Alarm=p;}
+        RuleSettings* m_p;
+    };
 
     /**
     @note  2. Update To memory
@@ -268,11 +328,7 @@ void CIVRuleCfgDoc::UpdateRule(
         }
         else
         {
-            // 再次判断用户是不是用我这边的引用,
-            if ( &Rule != &MapIter->second->Rule)
-            {
-                MapIter->second->Rule = Rule;
-            }
+            CXXX(MapIter->second).Set(V);
         }
     }
 
@@ -283,13 +339,14 @@ void CIVRuleCfgDoc::UpdateRule(
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
     pIVCfgMgr->Begin(nChannelID);
     for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(nChannelID);
-          Iter != pIVCfgMgr->End();
-          Iter = Iter.Next() )
+        Iter != pIVCfgMgr->End();
+        Iter = Iter.Next() )
     {
         const char* pTmpID = Iter.GetIdentityID();
         if ( pTmpID == pID )
         {
-            Iter.ModifyRule(Rule);
+            //fn f = &IIVCfgMgr;
+            (Iter.*fn)(V);
             bFound = TRUE;
             break;
         }
@@ -300,6 +357,20 @@ void CIVRuleCfgDoc::UpdateRule(
         // log
         TRACE(_T("CIVRuleCfgDoc::UpdateRule XML No Found Iter!\n"));
     }
+}
+
+
+void CIVRuleCfgDoc::UpdateRule(
+    int nChannelID, 
+    const WPG_Rule& Rule,
+    CTreeCtrl& CameraTree,
+    HTREEITEM Item,
+    BOOL IsRef )
+{
+    UpdateRuleCfgXX<
+        WPG_Rule, ModifyRuleFn,
+        &IIVCfgMgr::IVVistor::ModifyRule>(
+        nChannelID, Rule, CameraTree, Item, IsRef);
 }
 
 
@@ -341,7 +412,7 @@ AlarmOutSettings* CIVAlarmOutCfgDoc::GetAlarmOut(
     CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
-    GetIVRuleCfgXX(nChannelID,CameraTree,Item, Alarm);
+    return GetIVRuleCfgXX<AlarmOutSettings>(nChannelID,CameraTree,Item);
 }
 
 void CIVAlarmOutCfgDoc::UpdateAlarmOut( 
@@ -351,7 +422,10 @@ void CIVAlarmOutCfgDoc::UpdateAlarmOut(
     HTREEITEM Item,
     BOOL IsRef /*= TRUE*/ )
 {
-
+    UpdateRuleCfgXX<
+        AlarmOutSettings, ModifyAlarmOutFn,
+        &IIVCfgMgr::IVVistor::ModifyAlarmOut>(
+        nChannelID, Alarm, CameraTree, Item, IsRef);
 }
 
 // CIVAlarmOutCfgDoc
@@ -376,8 +450,22 @@ ScheduleSettings* CIVScheduleCfgDoc::GetSchedule(
     CTreeCtrl& CameraTree,
     HTREEITEM Item ) 
 {
-    GetIVRuleCfgXX(nChannelID,CameraTree,Item, Sch); 
+    return GetIVRuleCfgXX<ScheduleSettings>(nChannelID,CameraTree,Item); 
 }
+
+void CIVScheduleCfgDoc::UpdateSchedule(
+    int nChannelID, 
+    const ScheduleSettings& Sch,
+    CTreeCtrl& CameraTree,
+    HTREEITEM Item,
+    BOOL IsRef /*= TRUE*/ )
+{
+    UpdateRuleCfgXX<
+        ScheduleSettings, ModifyScheduleFn,
+        &IIVCfgMgr::IVVistor::ModifySchedule>(
+        nChannelID, Sch, CameraTree, Item, IsRef);
+}
+
 //
 // CIVScheduleCfgDoc
 // }

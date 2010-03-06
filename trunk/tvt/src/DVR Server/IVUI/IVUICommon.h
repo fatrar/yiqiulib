@@ -82,7 +82,7 @@ void UnitCameraTree(CTreeCtrl& CameraTree);
 
 //HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree);
 
-void OnClickCameraTree(
+void SendClickCameraTreeMes(
     CTreeCtrl& CameraTree,
     IClickCameraTree* pClickCameraTree);
 
@@ -99,7 +99,7 @@ void* MakeTreeItemData(
 
 void UnMakeTreeItemData(void* p);
 
-const void* GetUserDataToItemData(void* p);
+const void* GetUserDataFromItemData(void* p);
 
 #endif  // _IVUICOMMON_H_2010_
 

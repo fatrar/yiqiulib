@@ -60,6 +60,35 @@ protected:
         int nChannelID, 
         CTreeCtrl& CameraTree,
         HTREEITEM Item);
+
+    /** 我也写了一个用宏实现的方式，但因为宏不能调式，改用模板实现
+    *@brief Get Rule,Schedule,AlarmOut Data
+    *@param	nChannelID  Channel ID
+    *@param CameraTree  Camera Tree
+    *@param Item        Channel TreeCtrl Item HANDLE
+    */
+    template<typename T>
+    T* GetIVRuleCfgXX(
+        int nChannelID,
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item);
+
+    /** 
+    *@brief Update Rule,Schedule,AlarmOut Data
+    *@param	nChannelID  Channel ID
+    *@param	V  Rule or Schedule or AlarmOut
+    *@param CameraTree  Camera Tree
+    *@param Item        Channel TreeCtrl Item HANDLE
+    *@param IsRef       ...
+    */
+    template<typename T, typename Tfn, Tfn fn>
+    void UpdateRuleCfgXX(
+        int nChannelID, 
+        const T& V,
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item,
+        BOOL IsRef = TRUE);
+
 protected:
     struct RuleSettings
     {
@@ -76,6 +105,7 @@ protected:
         ScheduleSettings Sch;
         AlarmOutSettings Alarm;
     };
+
 
 protected:
     typedef map<const char*, RuleSettings*> RuleSettingMap;
@@ -147,6 +177,7 @@ protected:
     *@param Rule        WPG Rule 
     *@param CameraTree  Camera Tree
     *@param Item        Rule TreeCtrl Item HANDLE
+    *@param IsRef       Rule point is pass to GetRule
     */
     void UpdateRule(
         int nChannelID,
@@ -183,9 +214,10 @@ protected:
     /**
     *@brief Update AlarmOut To Doc(memory And XML), And Add Tree Item
     *@param	nChannelID  Channel ID
-    *@param Rule        WPG Rule 
+    *@param Alarm       AlarmOutSettings
     *@param CameraTree  Camera Tree
     *@param Item        Rule TreeCtrl Item HANDLE
+    *@param IsRef       Alarm point is pass to GetAlarmOut
     */
     void UpdateAlarmOut(
         int nChannelID,
@@ -214,6 +246,21 @@ protected:
         int nChannelID,
         CTreeCtrl& CameraTree,
         HTREEITEM Item );
+
+    /**
+    *@brief Update AlarmOut To Doc(memory And XML), And Add Tree Item
+    *@param	nChannelID  Channel ID
+    *@param Sch         ScheduleSettings 
+    *@param CameraTree  Camera Tree
+    *@param Item        Rule TreeCtrl Item HANDLE
+    *@param IsRef       Sch point is pass to GetSchedule
+    */
+    void UpdateSchedule(
+        int nChannelID,
+        const ScheduleSettings& Sch, 
+        CTreeCtrl& CameraTree,
+        HTREEITEM Item,
+        BOOL IsRef = TRUE);
 };
 
 

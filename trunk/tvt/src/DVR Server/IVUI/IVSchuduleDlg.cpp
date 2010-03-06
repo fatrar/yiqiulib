@@ -125,29 +125,7 @@ void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResul
 void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    HTREEITEM hItem = GetTreeClickItem(m_CameraTree);
-    if ( NULL == hItem )
-    {
-        return;
-    }
-
-    m_ClickItem = hItem;
-    ItemAttribute* pInfo = (ItemAttribute*)m_CameraTree.GetItemData(hItem);
-    switch ( pInfo->Info.Which )
-    {
-    case IUpdateMemu::Root:
-    case IUpdateMemu::Camera:
-        Enable(FALSE);
-        break;
-    case IUpdateMemu::Rule:
-        Enable(TRUE);
-        UpdateChannel(pInfo->Info.nChannelID);
-        break;
-    default:
-        ASSERT(FALSE);
-        Enable(FALSE);
-        return;
-    }
+    SendClickCameraTreeMes(m_CameraTree, this);
 }
 
 void CIVSchuduleDlg::OnInitCameraTree(
@@ -186,7 +164,22 @@ void CIVSchuduleDlg::OnClickCameraTree(
     const void* pData, 
     HTREEITEM Item )
 {
-
+    m_ClickItem = Item;
+    switch ( Which )
+    {
+    case IV_Tree_Root:
+    case IV_Tree_Camera:
+        Enable(FALSE);
+        break;
+    case IV_Tree_Rule:
+        Enable(TRUE);
+        UpdateChannel(nChannelID);
+        break;
+    default:
+        ASSERT(FALSE);
+        Enable(FALSE);
+        return;
+    }
 }
 
 void CIVSchuduleDlg::OnBnClickedAddCheck()
