@@ -191,7 +191,7 @@ void UnitCameraTree( CTreeCtrl& CameraTree )
     TreeVisitDel(CameraTree, Root);
 }
 
-void OnClickCameraTree( 
+void SendClickCameraTreeMes( 
     CTreeCtrl& CameraTree,
     IClickCameraTree* pClickCameraTree )
 {
@@ -225,7 +225,7 @@ void UnMakeTreeItemData( void* p )
     delete (ItemAttribute*)p;
 }
 
-const void* GetUserDataToItemData( void* p )
+const void* GetUserDataFromItemData( void* p )
 {
     return ((ItemAttribute*)p)->pUseData;
 }

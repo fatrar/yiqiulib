@@ -109,7 +109,7 @@ void CIVRuleDlg::OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 void CIVRuleDlg::OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    OnClickCameraTree(m_CameraTree, this);
+    SendClickCameraTreeMes(m_CameraTree, this);
 }
 
 void CIVRuleDlg::OnRuleEnableallrule()
