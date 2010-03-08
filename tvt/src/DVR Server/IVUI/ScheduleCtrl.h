@@ -83,6 +83,8 @@ public:
 	void SetTimeSec(Scheduleday *ptime);
 	int GetTimeSec(Scheduleday *ptimelist);
 
+    void Full();
+    void Empty();
 
 	//获得一天24小时每一刻钟的状态
 	void GetTimeStatus(ULONG &Status0, ULONG &Status1, ULONG &Status2);
@@ -96,8 +98,7 @@ public:
 
 	BOOL IsModified();
 	void ResetModifyFlag();
-	/*unsigned int m_addcurID;
-	unsigned int m_delcurID;*/
+
 /////////////////////
 	virtual ~CScheduleCtrl();
 

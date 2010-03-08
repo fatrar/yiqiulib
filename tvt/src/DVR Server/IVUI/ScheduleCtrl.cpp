@@ -979,17 +979,32 @@ CString CScheduleCtrl::GetTitle()
 	return m_sTitle;
 }
 
+
+void CScheduleCtrl::Full()
+{
+    m_cRectList.RemoveAll();
+
+    CRect rcConvert;
+    WEEKTIMESECTION TimeSect;
+    TimeSect.startTimeSec=0;
+    TimeSect.endTimeSec=1440*60;
+    TimeSectToRect(TimeSect, rcConvert);
+    m_cRectList.AddTail(rcConvert);
+}
+
+void CScheduleCtrl::Empty()
+{
+    m_cRectList.RemoveAll();
+    RedrawWindow();
+}
+
 ///(1010 add)///////
 void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist)
 {
 	ASSERT(ptimelist);
-//	ASSERT(!ptimelist->IsEmpty());
 
 	//从存放时间区域的列表中得到时间区域,将其转换为矩形并存于列表(m_cRectList)中
-	if (!(m_cRectList.IsEmpty()))
-	{
-		m_cRectList.RemoveAll();//清空列表
-	}
+	m_cRectList.RemoveAll();//清空列表
 
     int nCount = ptimelist->useNo;
     int (&starttime)[Max_Schedule_day] = ptimelist->starttime;
@@ -999,7 +1014,7 @@ void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist)
 		CRect rcConvert;
 		WEEKTIMESECTION TimeSect;
 		TimeSect.startTimeSec=starttime[i]*60;
-		if (ptimelist->endtime[i]== 1440-1)
+		if (endtime[i]== 1440-1)
 		{
 			TimeSect.endTimeSec=(endtime[i]+1)*60;
 		}
@@ -1057,13 +1072,6 @@ int CScheduleCtrl::GetTimeSec(Scheduleday *ptimelist)
 			break;
 		}
 	}	
-//
-//	if(ptimelist->IsEmpty())
-//	{
-//		timesec.starttime = CTimeSpan(0, 0, 0, 0);
-//		timesec.endtime = CTimeSpan(0, 0, 0, 0);
-//		ptimelist->AddTail(timesec);
-//	}
 
 	return nn;
 }
@@ -1112,6 +1120,7 @@ void CScheduleCtrl::SetTimeStatus(ULONG Status0, ULONG Status1, ULONG Status2)//
 	}	
 	RedrawWindow();
 }
+
 
 //将时间区域用矩形来表示
 void CScheduleCtrl::TimeSectToRect(WEEKTIMESECTION &TimeSect, CRect &rect)
@@ -1420,3 +1429,4 @@ void CScheduleCtrl::OnSize(UINT nType, int cx, int cy)
 
 	InvalidateRect(rcDeflate);
 }
+
