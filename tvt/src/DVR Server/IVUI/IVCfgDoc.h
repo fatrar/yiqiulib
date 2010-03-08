@@ -20,6 +20,10 @@
 #pragma once
 
 
+class CIVRuleCfgDoc;
+class CIVAlarmOutCfgDoc;
+class CIVScheduleCfgDoc;
+
 struct IRuleTrigger
 {
     virtual void OnRuleRemove(int nChannelID, const char* pIdentityID)=0;
@@ -53,31 +57,26 @@ protected:
     /**
     *@brief Init Camera Tree
     *@param	nChannelID  Channel ID
-    *@param CameraTree  Camera Tree
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     void OnInitCameraTree(
         int nChannelID, 
-        CTreeCtrl& CameraTree,
         HTREEITEM Item);
 
     /** 我也写了一个用宏实现的方式，但因为宏不能调式，改用模板实现
     *@brief Get Rule,Schedule,AlarmOut Data
     *@param	nChannelID  Channel ID
-    *@param CameraTree  Camera Tree
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     template<typename T>
     T* GetIVRuleCfgXX(
         int nChannelID,
-        CTreeCtrl& CameraTree,
         HTREEITEM Item);
 
     /** 
     *@brief Update Rule,Schedule,AlarmOut Data
     *@param	nChannelID  Channel ID
     *@param	V  Rule or Schedule or AlarmOut
-    *@param CameraTree  Camera Tree
     *@param Item        Channel TreeCtrl Item HANDLE
     *@param IsRef       ...
     */
@@ -85,9 +84,13 @@ protected:
     void UpdateRuleCfgXX(
         int nChannelID, 
         const T& V,
-        CTreeCtrl& CameraTree,
         HTREEITEM Item,
         BOOL IsRef = TRUE);
+
+    template<typename T>
+    inline const char* GetRuleID(
+        const T& t,
+        HTREEITEM Item);
 
 protected:
     struct RuleSettings
@@ -107,7 +110,7 @@ protected:
     };
 
 
-protected:
+private:
     typedef map<const char*, RuleSettings*> RuleSettingMap;
 
 #ifdef IVCfgDoc_Use_Map
@@ -121,13 +124,13 @@ protected:
     static RuleTriggerList m_RuleTrigger;
     static set<int> m_UseChannel;
 
-    /**
-    *@note 本来这里要定义一个CTreeCtrl m_CameraTree
-    * 这样Rule，Alarm，Schedule都不需要定义，且相关的函数接口也不需要传CTreeCtrl& CameraTree,
-    * 但是要大致保持MVC的模型，还是不将View部分的东西弄进来
-    */
+protected:
     CTreeCtrl m_CameraTree;
     CStatic m_TreeGroup;
+
+    friend CIVRuleCfgDoc;
+    friend CIVAlarmOutCfgDoc;
+    friend CIVScheduleCfgDoc;
 };
 
 
@@ -139,18 +142,15 @@ protected:
     /**
     *@brief Init Camera Tree
     *@param	nChannelID  Channel ID
-    *@param CameraTree  Camera Tree
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     //void OnInitCameraTree(
     //    int nChannelID,
-    //    CTreeCtrl& CameraTree,
     //    HTREEITEM Item);
 
 
     WPG_Rule* GetRule(
         int nChannelID,
-        CTreeCtrl& CameraTree,
         HTREEITEM Item );
 
     /**
@@ -158,13 +158,11 @@ protected:
     *           if Set Trigger, Do Trigger Function
     *@param	nChannelID  Channel ID
     *@param Rule        WPG Rule 
-    *@param CameraTree  Camera Tree
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     void AddRule(
         int nChannelID, 
         const WPG_Rule& Rule,
-        CTreeCtrl& CameraTree,
         HTREEITEM Item);
 
     /**
@@ -172,26 +170,22 @@ protected:
     *          if Set Trigger, Do Trigger Function
     *@param	nChannelID  Channel ID
     *@param Rule        WPG Rule 
-    *@param CameraTree  Camera Tree
     *@param Item        Rule TreeCtrl Item HANDLE
     */
     void RemoveRule(
         int nChannelID,
-        CTreeCtrl& CameraTree,
         HTREEITEM Item);
 
     /**
     *@brief Update Rule To Doc(memory And XML), And Add Tree Item
     *@param	nChannelID  Channel ID
     *@param Rule        WPG Rule 
-    *@param CameraTree  Camera Tree
     *@param Item        Rule TreeCtrl Item HANDLE
     *@param IsRef       Rule point is pass to GetRule
     */
     void UpdateRule(
         int nChannelID,
         const WPG_Rule& Rule, 
-        CTreeCtrl& CameraTree,
         HTREEITEM Item,
         BOOL IsRef = TRUE);
 private:
@@ -207,31 +201,26 @@ protected:
     /**
     *@brief Init Camera Tree
     *@param	nChannelID  Channel ID
-    *@param CameraTree  Camera Tree
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     //void OnInitCameraTree(
     //    int nChannelID,
-    //    CTreeCtrl& CameraTree,
     //    HTREEITEM Item);
 
     AlarmOutSettings* GetAlarmOut(
         int nChannelID,
-        CTreeCtrl& CameraTree,
         HTREEITEM Item );
 
     /**
     *@brief Update AlarmOut To Doc(memory And XML), And Add Tree Item
     *@param	nChannelID  Channel ID
     *@param Alarm       AlarmOutSettings
-    *@param CameraTree  Camera Tree
     *@param Item        Rule TreeCtrl Item HANDLE
     *@param IsRef       Alarm point is pass to GetAlarmOut
     */
     void UpdateAlarmOut(
         int nChannelID,
         const AlarmOutSettings& Alarm, 
-        CTreeCtrl& CameraTree,
         HTREEITEM Item,
         BOOL IsRef = TRUE);
 };
@@ -243,31 +232,26 @@ protected:
     /**
     *@brief Init Camera Tree
     *@param	nChannelID  Channel ID
-    *@param CameraTree  Camera Tree
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     //void OnInitCameraTree(
     //    int nChannelID, 
-    //    CTreeCtrl& CameraTree,
     //    HTREEITEM Item);
 
     ScheduleSettings* GetSchedule(
         int nChannelID,
-        CTreeCtrl& CameraTree,
         HTREEITEM Item );
 
     /**
     *@brief Update AlarmOut To Doc(memory And XML), And Add Tree Item
     *@param	nChannelID  Channel ID
     *@param Sch         ScheduleSettings 
-    *@param CameraTree  Camera Tree
     *@param Item        Rule TreeCtrl Item HANDLE
     *@param IsRef       Sch point is pass to GetSchedule
     */
     void UpdateSchedule(
         int nChannelID,
         const ScheduleSettings& Sch, 
-        CTreeCtrl& CameraTree,
         HTREEITEM Item,
         BOOL IsRef = TRUE);
 };

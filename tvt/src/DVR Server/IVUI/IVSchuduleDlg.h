@@ -12,7 +12,7 @@ class CIVSchuduleDlg :
     public IUpdateMemu,
     public IInitCameraTree,
     public IClickCameraTree,
-    public CIVAlarmOutCfgDoc,
+    public CIVScheduleCfgDoc,
     public IRuleTrigger
 {
 	DECLARE_DYNAMIC(CIVSchuduleDlg)
@@ -67,7 +67,7 @@ protected:
         BOOL bEnbale);
 
 protected:
-    void UpdateChannel(int nChannelID);
+    void UpdateSchudule();
 
     void CollectUserSet();
 
@@ -110,4 +110,13 @@ private:
     HTREEITEM m_ClickItem;
    
     CButton m_ApplyBT; 
+
+
+    ScheduleSettings* m_pScheduleSettings;
+    ScheduleSettings m_TmpSchedule;
+    afx_msg void OnSchuduleFull();
+    afx_msg void OnSchuduleEmpty();
+    afx_msg void OnSchuduleCopy();
+    afx_msg void OnSchudulePaste();
+    afx_msg void OnSchuduleUsetoall();
 };

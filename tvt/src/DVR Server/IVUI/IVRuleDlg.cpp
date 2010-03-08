@@ -1,6 +1,20 @@
-// IVRuleDlg.cpp : implementation file
-//
+/**CPP*************************************************************************
+ File            : IVRuleDlg.cpp
+ Subsystem       : 
+ Function Name(s): CIVRuleDlg
+ Author          : YiQiu
+ Date            : 2010-3-8  
+ Time            : 17:04
+ Description     : 
 
+ Revision        : 
+
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+**************************************************************************cpp**/
 #include "stdafx.h"
 #include "IVUI.h"
 #include "IVRuleDlg.h"
@@ -47,6 +61,19 @@ void CIVRuleDlg::OnPaint()
     m_Player.ShowBack();
 }
 
+
+void CIVRuleDlg::OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    PopUpCameraMemu(m_CameraTree, 0, this, this);
+}
+
+void CIVRuleDlg::OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    SendClickCameraTreeMes(m_CameraTree, this);
+}
+
 BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
     ON_NOTIFY(NM_RCLICK, IDC_RULE_CAMERA_TREE, &CIVRuleDlg::OnNMRclickRuleCameraTree)
     ON_COMMAND(ID_RULE_NEWRULE, &CIVRuleDlg::OnRuleNewrule)
@@ -59,6 +86,11 @@ BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
     ON_WM_DESTROY()
     ON_WM_PAINT()
     ON_NOTIFY(NM_CLICK, IDC_RULE_CAMERA_TREE, &CIVRuleDlg::OnNMClickRuleCameraTree)
+    ON_COMMAND(ID_RULE_DELETERULE, &CIVRuleDlg::OnRuleDeleterule)
+    ON_COMMAND(ID_RULE_EDITRULE, &CIVRuleDlg::OnRuleEditrule)
+    ON_COMMAND(ID_RULE_RENAMERULE, &CIVRuleDlg::OnRuleRenamerule)
+    ON_COMMAND(ID_RULE_ENABLERULE, &CIVRuleDlg::OnRuleEnablerule)
+    ON_COMMAND(ID_RULE_DISABLERULE, &CIVRuleDlg::OnRuleDisablerule)
 END_MESSAGE_MAP()
 
 
@@ -119,23 +151,12 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
     return TRUE;
 }
 
-void CIVRuleDlg::OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
-{
-    *pResult = 0;
-    PopUpCameraMemu(m_CameraTree, 0, this, this);
-}
-
-void CIVRuleDlg::OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
-{
-    *pResult = 0;
-    SendClickCameraTreeMes(m_CameraTree, this);
-}
 
 void CIVRuleDlg::OnInitCameraTree( 
     int nChannelID,
     HTREEITEM Item )
 {
-
+    CIVCfgDoc::OnInitCameraTree(nChannelID,Item);
 }
 
 void CIVRuleDlg::OnUpdateMemu(
@@ -248,10 +269,8 @@ void CIVRuleDlg::UpdateLiveChannel(int nChannelID)
 }
 
 
-
-
 //
-// ***************** IVRule Menu Command *****************
+// ***************** IVRule Camera Menu Command *****************
 // {
 
 void CIVRuleDlg::OnRuleEnableallrule()
@@ -322,7 +341,6 @@ void CIVRuleDlg::OnRuleNewrule()
         AddRule(
             m_nCurrentChan,
             *pRule,
-            m_CameraTree,
             m_ClickItem);    
     }
     else
@@ -338,7 +356,40 @@ void CIVRuleDlg::OnRuleNewrule()
 }
 
 // }
-// IVRule Menu Command
+// IVRule Camera Menu Command
 
+
+//
+// ***************** IVRule Rulle Menu Command *****************
+// {
+
+void CIVRuleDlg::OnRuleDeleterule()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVRuleDlg::OnRuleEditrule()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVRuleDlg::OnRuleRenamerule()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVRuleDlg::OnRuleEnablerule()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVRuleDlg::OnRuleDisablerule()
+{
+    // TODO: Add your command handler code here
+}
+
+// }
+// IVRule Rule Menu Command
 
 // End of file
+

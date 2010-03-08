@@ -980,7 +980,7 @@ CString CScheduleCtrl::GetTitle()
 }
 
 ///(1010 add)///////
-void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist,int no)
+void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist)
 {
 	ASSERT(ptimelist);
 //	ASSERT(!ptimelist->IsEmpty());
@@ -990,18 +990,22 @@ void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist,int no)
 	{
 		m_cRectList.RemoveAll();//清空列表
 	}
-	for (int i=0;i<no;i++)
+
+    int nCount = ptimelist->useNo;
+    int (&starttime)[Max_Schedule_day] = ptimelist->starttime;
+    int (&endtime)[Max_Schedule_day] = ptimelist->endtime;
+	for (int i=0; i<nCount; i++)
 	{
 		CRect rcConvert;
 		WEEKTIMESECTION TimeSect;
-		TimeSect.startTimeSec=ptimelist->starttime[i]*60;
+		TimeSect.startTimeSec=starttime[i]*60;
 		if (ptimelist->endtime[i]== 1440-1)
 		{
-			TimeSect.endTimeSec=(ptimelist->endtime[i]+1)*60;
+			TimeSect.endTimeSec=(endtime[i]+1)*60;
 		}
 		else
 		{
-			TimeSect.endTimeSec=ptimelist->endtime[i]*60;
+			TimeSect.endTimeSec=endtime[i]*60;
 		}
 		//将时间区域转换为矩形
 		TimeSectToRect(TimeSect, rcConvert);
@@ -1011,17 +1015,16 @@ void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist,int no)
 	RedrawWindow();
 }
 
-int CScheduleCtrl::GetTimeSec(Scheduleday *ptimelist,int &no)
+int CScheduleCtrl::GetTimeSec(Scheduleday *ptimelist)
 {
 	//获得列表(m_cRectList)中的矩形，从而确定96个状态位
 	int nLeftAllNoScale = m_rcLeftBottom.right + m_nLeftNoScale;
 
 	POSITION pos = m_cRectList.GetHeadPosition();	
-	int nn=0;
+	int& nn= ptimelist->useNo = 0;
 	while (pos != NULL)
 	{
 		CRect rcGet;	
-
 
 		rcGet = m_cRectList.GetNext(pos);
 		//获得时间区域的起始和结束时间（以时分刻度表示）
@@ -1054,7 +1057,6 @@ int CScheduleCtrl::GetTimeSec(Scheduleday *ptimelist,int &no)
 			break;
 		}
 	}	
-	no=nn;
 //
 //	if(ptimelist->IsEmpty())
 //	{
@@ -1397,8 +1399,8 @@ void CScheduleCtrl::OnSize(UINT nType, int cx, int cy)
 //	CList<TIME_SECTION, TIME_SECTION>  timeseclist;
 //	
 	Scheduleday timeseclist;	
-	int no=0;
-	GetTimeSec(&timeseclist,no);	
+
+	GetTimeSec(&timeseclist);	
 	m_cRectList.RemoveAll();
 
 	CWnd::OnSize(nType, cx, cy);
@@ -1414,7 +1416,7 @@ void CScheduleCtrl::OnSize(UINT nType, int cx, int cy)
 
 	InitRect(rcDeflate);/**/
 
-	SetTimeSec(&timeseclist,no);
+	SetTimeSec(&timeseclist);
 
 	InvalidateRect(rcDeflate);
 }

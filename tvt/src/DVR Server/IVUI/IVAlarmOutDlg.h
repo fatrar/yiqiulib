@@ -80,6 +80,11 @@ protected:
     afx_msg void OnBnClickedNouseHold();
     afx_msg void OnBnClickedUseHold();
     afx_msg void OnBnClickedApplyBt();
+    afx_msg void OnAlarmFull();
+    afx_msg void OnAlarmEmpty();
+    afx_msg void OnAlarmCopy();
+    afx_msg void OnAlarmPaste();
+    afx_msg void OnAlarmUsetoall();
     afx_msg void OnDestroy();
     DECLARE_MESSAGE_MAP()
 
@@ -123,4 +128,6 @@ private:
 
     AlarmOutSettings* m_pCurentAlarmSet;
     AlarmOutSettings m_TmpAlarmSet;
+
+
 };

@@ -32,6 +32,7 @@ protected:
     afx_msg void OnPaint();
     afx_msg void OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+    
     afx_msg void OnRuleEnableallrule();
     afx_msg void OnRuleDisableallrule();
     afx_msg void OnRuleUse();
@@ -39,6 +40,12 @@ protected:
     afx_msg void OnRuleShowtrace();
     afx_msg void OnRuleShowobjtrace();
     afx_msg void OnRuleNewrule();
+
+    afx_msg void OnRuleDeleterule();
+    afx_msg void OnRuleEditrule();
+    afx_msg void OnRuleRenamerule();
+    afx_msg void OnRuleEnablerule();
+    afx_msg void OnRuleDisablerule();
 	DECLARE_MESSAGE_MAP()
 
     // IUpdateMemu
@@ -93,4 +100,5 @@ private:
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
     ChannelRule m_AllRule[Max_Channel];
+  
 };

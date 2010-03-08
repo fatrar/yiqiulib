@@ -400,8 +400,8 @@ BEGIN
         MENUITEM "Show Trace",                  ID_RULE_SHOWTRACE
         MENUITEM "Show Obj&&Trace",             ID_RULE_SHOWOBJTRACE
     END
-    MENUITEM "Schudule",                    ID_SCHUDULE
     MENUITEM "AlarmOut",                    ID_ALARMOUT
+    MENUITEM "Schudule",                    ID_SCHUDULE
 END
 
 IDR_Rule_Menu MENU 
@@ -416,15 +416,15 @@ BEGIN
         MENUITEM "Enable Rule",                 ID_RULE_ENABLERULE
         MENUITEM "Disable Rule",                ID_RULE_DISABLERULE
     END
-    POPUP "Schudule"
+    POPUP "AlarmOut"
     BEGIN
-        MENUITEM "Full",                        ID_SCHUDULE_FULL
-        MENUITEM "Empty",                       ID_SCHUDULE_EMPTY
+        MENUITEM "Full",                        ID_Alarm_FULL
+        MENUITEM "Empty",                       ID_Alarm_EMPTY
         MENUITEM SEPARATOR
-        MENUITEM "Copy",                        ID_SCHUDULE_COPY
-        MENUITEM "Paste",                       ID_SCHUDULE_PASTE
+        MENUITEM "Copy",                        ID_Alarm_COPY
+        MENUITEM "Paste",                       ID_Alarm_PASTE
         MENUITEM SEPARATOR
-        MENUITEM "Use To All",                  ID_SCHUDULE_USETOALL
+        MENUITEM "Use To All",                  ID_Alarm_USETOALL
     END
     POPUP "Schudule"
     BEGIN

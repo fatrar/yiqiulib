@@ -77,8 +77,10 @@ struct Scheduleday
 {
     Scheduleday() : useNo(1)
     {
+        ZeroMemory(&starttime, sizeof(starttime));
+        ZeroMemory(&endtime, sizeof(endtime));
         starttime[0] = 0;
-        endtime[0] = 24*60-1;
+        endtime[0] = 24*60-1;     
     }
     int  useNo;//已经使用的个数，即排程的个数
     int  starttime[Max_Schedule_day];//以分钟为单位的24小时制开始时间

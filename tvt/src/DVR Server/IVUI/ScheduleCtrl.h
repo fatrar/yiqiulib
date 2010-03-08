@@ -80,8 +80,8 @@ public:
 
     ///////控件接口函数////////
 
-	void SetTimeSec(Scheduleday *ptime,int no);
-	int GetTimeSec(Scheduleday *ptimelist,int &no);
+	void SetTimeSec(Scheduleday *ptime);
+	int GetTimeSec(Scheduleday *ptimelist);
 
 
 	//获得一天24小时每一刻钟的状态
