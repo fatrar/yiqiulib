@@ -1,6 +1,20 @@
-// IVAlarmOutDlg.cpp : implementation file
-//
+/**CPP*************************************************************************
+ File            : IVAlarmOutDlg.cpp
+ Subsystem       : 
+ Function Name(s): CIVAlarmOutDlg
+ Author          : YiQiu
+ Date            : 2010-3-8  
+ Time            : 17:04
+ Description     : 
 
+ Revision        : 
+
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+**************************************************************************cpp**/
 #include "stdafx.h"
 #include "IVUI.h"
 #include "IVAlarmOutDlg.h"
@@ -31,7 +45,9 @@ CIVAlarmOutDlg::CIVAlarmOutDlg(CWnd* pParent /*=NULL*/)
     , m_nCurrentChan(0)
     , m_pCurentAlarmSet(NULL)
     , m_ClickItem(NULL)
-{}
+{
+    CIVCfgDoc::RegisterRuleTrigger(this);
+}
 
 CIVAlarmOutDlg::~CIVAlarmOutDlg()
 {
@@ -63,6 +79,11 @@ BEGIN_MESSAGE_MAP(CIVAlarmOutDlg, CDialog)
     ON_BN_CLICKED(IDC_USE_HOLD, &CIVAlarmOutDlg::OnBnClickedUseHold)
     ON_NOTIFY(NM_CLICK, IDC_ALARMOUT_CAMERA_TREE, &CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree)
     ON_BN_CLICKED(IDC_Apply_BT, &CIVAlarmOutDlg::OnBnClickedApplyBt)
+    ON_COMMAND(ID_Alarm_FULL, &CIVAlarmOutDlg::OnAlarmFull)
+    ON_COMMAND(ID_Alarm_EMPTY, &CIVAlarmOutDlg::OnAlarmEmpty)
+    ON_COMMAND(ID_Alarm_COPY, &CIVAlarmOutDlg::OnAlarmCopy)
+    ON_COMMAND(ID_Alarm_PASTE, &CIVAlarmOutDlg::OnAlarmPaste)
+    ON_COMMAND(ID_Alarm_USETOALL, &CIVAlarmOutDlg::OnAlarmUsetoall)
 END_MESSAGE_MAP()
 
 
@@ -195,7 +216,7 @@ void CIVAlarmOutDlg::OnInitCameraTree(
     int nChannelID,
     HTREEITEM Item )
 {
-
+    CIVCfgDoc::OnInitCameraTree(nChannelID,Item);
 }
 
 void CIVAlarmOutDlg::OnUpdateMemu( 
@@ -319,15 +340,55 @@ BOOL CIVAlarmOutDlg::IsModify()
 
 void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 {
-
+    if ( m_ClickItem == OnDeleteCameraTreeItem(m_CameraTree,nChannelID,(const void*)pIdentityID) )
+    {
+        Enable(FALSE);
+    }
 }
 
 void CIVAlarmOutDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
 {
-
+    OnAddCameraTreeItem(m_CameraTree,nChannelID,(const void*)pIdentityID);
 }
 
 void CIVAlarmOutDlg::OnUseIV( int nChannelID, BOOL bEnbale )
 {
 
 }
+
+//
+// ************************ Menu *****************************
+// {
+
+void CIVAlarmOutDlg::OnAlarmFull()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVAlarmOutDlg::OnAlarmEmpty()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVAlarmOutDlg::OnAlarmCopy()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVAlarmOutDlg::OnAlarmPaste()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVAlarmOutDlg::OnAlarmUsetoall()
+{
+    // TODO: Add your command handler code here
+}
+
+// }
+// Menu
+
+
+// End of file
+
+

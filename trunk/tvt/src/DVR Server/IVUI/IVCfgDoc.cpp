@@ -77,7 +77,6 @@ void CIVCfgDoc::RegisterRuleTrigger( IRuleTrigger* pRuleTrigger )
 
 void CIVCfgDoc::OnInitCameraTree( 
     int nChannelID, 
-    CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
     RuleSettingMap& Map = m_Doc[nChannelID];
@@ -93,9 +92,9 @@ void CIVCfgDoc::OnInitCameraTree(
         //
         // [] 以后改为贴图，来区分哪些通道正在使用
         //
-        HTREEITEM hTmp = CameraTree.InsertItem(strRuleName, Item);
+        HTREEITEM hTmp = m_CameraTree.InsertItem(strRuleName, Item);
         void* pItemData = MakeTreeItemData(nChannelID, iter->first);
-        CameraTree.SetItemData(hTmp, (DWORD_PTR)pItemData);
+        m_CameraTree.SetItemData(hTmp, (DWORD_PTR)pItemData);
     }
 }
 
@@ -121,13 +120,12 @@ void CIVCfgDoc::OnInitCameraTree(
 template<typename T>
 T* CIVCfgDoc::GetIVRuleCfgXX(
     int nChannelID,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
     /**
     *@note  1. Get ID by Tree Item And Update Item Name
     */
-    void* pItemData = (void*)CameraTree.GetItemData(Item); 
+    void* pItemData = (void*)m_CameraTree.GetItemData(Item); 
     const char* pID = (const char*)GetUserDataFromItemData(pItemData);
 
     /**
@@ -168,16 +166,14 @@ T* CIVCfgDoc::GetIVRuleCfgXX(
 //}
 WPG_Rule* CIVRuleCfgDoc::GetRule(
     int nChannelID, 
-    CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
-    return GetIVRuleCfgXX<WPG_Rule>(nChannelID,CameraTree,Item);
+    return GetIVRuleCfgXX<WPG_Rule>(nChannelID,Item);
 }
 
 void CIVRuleCfgDoc::AddRule( 
     int nChannelID, 
     const WPG_Rule& Rule, 
-    CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
     /**
@@ -205,9 +201,9 @@ void CIVRuleCfgDoc::AddRule(
     @note  3. Insert Tree Item
     */
     CString strRuleName(Rule.ruleName);
-    HTREEITEM hTmp = CameraTree.InsertItem(strRuleName, Item);
+    HTREEITEM hTmp = m_CameraTree.InsertItem(strRuleName, Item);
     void* pItemData = MakeTreeItemData(nChannelID, pID);
-    CameraTree.SetItemData(hTmp, (DWORD_PTR)pItemData);
+    m_CameraTree.SetItemData(hTmp, (DWORD_PTR)pItemData);
 
     /**
     @note  4. Do Trigger
@@ -217,16 +213,15 @@ void CIVRuleCfgDoc::AddRule(
 
 void CIVRuleCfgDoc::RemoveRule(
     int nChannelID, 
-    CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
     /**
     @note  1. Delete Tree Item
     */
-    void* pItemData = (void*)CameraTree.GetItemData(Item);
+    void* pItemData = (void*)m_CameraTree.GetItemData(Item);
     const char* pID = (const char*)GetUserDataFromItemData(pItemData);
     UnMakeTreeItemData(pItemData);
-    CameraTree.DeleteItem(Item);
+    m_CameraTree.DeleteItem(Item);
 
     /**
     @note  2. Remove To memory
@@ -275,23 +270,21 @@ void CIVRuleCfgDoc::RemoveRule(
 }
 
 template<typename T>
-inline const char* GetRuleID(
+inline const char* CIVCfgDoc::GetRuleID(
     const T& t,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item)
 {
-    void* pItemData = (void*)CameraTree.GetItemData(Item);
+    void* pItemData = (void*)m_CameraTree.GetItemData(Item);
     return (const char*)GetUserDataFromItemData(pItemData);
 }
 
 template<>
-inline const char* GetRuleID<WPG_Rule>(
+inline const char* CIVCfgDoc::GetRuleID<WPG_Rule>(
     const WPG_Rule& Rule,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item)
 {
-    CameraTree.SetItemText(Item, CString(Rule.ruleName));
-    void* pItemData = (void*)CameraTree.GetItemData(Item);
+    m_CameraTree.SetItemText(Item, CString(Rule.ruleName));
+    void* pItemData = (void*)m_CameraTree.GetItemData(Item);
     return (const char*)GetUserDataFromItemData(pItemData);
 }
 
@@ -303,14 +296,13 @@ template<typename T, typename Tfn, Tfn fn>
 void CIVCfgDoc::UpdateRuleCfgXX(
     int nChannelID, 
     const T& V,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item,
     BOOL IsRef /*= TRUE*/ )
 {
     /**
     @note  1. Get ID by Tree Item And Update Item Name
     */
-    const char* pID = GetRuleID<T>(V,CameraTree,Item);
+    const char* pID = GetRuleID<T>(V,Item);
 
     struct CXXX
     {
@@ -372,14 +364,13 @@ void CIVCfgDoc::UpdateRuleCfgXX(
 void CIVRuleCfgDoc::UpdateRule(
     int nChannelID, 
     const WPG_Rule& Rule,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item,
     BOOL IsRef )
 {
     UpdateRuleCfgXX<
         WPG_Rule, ModifyRuleFn,
         &IIVCfgMgr::IVVistor::ModifyRule>(
-        nChannelID, Rule, CameraTree, Item, IsRef);
+        nChannelID, Rule, Item, IsRef);
 }
 
 
@@ -418,23 +409,21 @@ void CIVRuleCfgDoc::DoTriggerTFun(
 
 AlarmOutSettings* CIVAlarmOutCfgDoc::GetAlarmOut(
     int nChannelID,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item )
 {
-    return GetIVRuleCfgXX<AlarmOutSettings>(nChannelID,CameraTree,Item);
+    return GetIVRuleCfgXX<AlarmOutSettings>(nChannelID,Item);
 }
 
 void CIVAlarmOutCfgDoc::UpdateAlarmOut( 
     int nChannelID, 
     const AlarmOutSettings& Alarm,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item,
     BOOL IsRef /*= TRUE*/ )
 {
     UpdateRuleCfgXX<
         AlarmOutSettings, ModifyAlarmOutFn,
         &IIVCfgMgr::IVVistor::ModifyAlarmOut>(
-        nChannelID, Alarm, CameraTree, Item, IsRef);
+        nChannelID, Alarm, Item, IsRef);
 }
 
 // CIVAlarmOutCfgDoc
@@ -456,23 +445,21 @@ void CIVAlarmOutCfgDoc::UpdateAlarmOut(
 
 ScheduleSettings* CIVScheduleCfgDoc::GetSchedule( 
     int nChannelID, 
-    CTreeCtrl& CameraTree,
     HTREEITEM Item ) 
 {
-    return GetIVRuleCfgXX<ScheduleSettings>(nChannelID,CameraTree,Item); 
+    return GetIVRuleCfgXX<ScheduleSettings>(nChannelID,Item); 
 }
 
 void CIVScheduleCfgDoc::UpdateSchedule(
     int nChannelID, 
     const ScheduleSettings& Sch,
-    CTreeCtrl& CameraTree,
     HTREEITEM Item,
     BOOL IsRef /*= TRUE*/ )
 {
     UpdateRuleCfgXX<
         ScheduleSettings, ModifyScheduleFn,
         &IIVCfgMgr::IVVistor::ModifySchedule>(
-        nChannelID, Sch, CameraTree, Item, IsRef);
+        nChannelID, Sch, Item, IsRef);
 }
 
 //

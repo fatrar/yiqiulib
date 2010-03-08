@@ -230,7 +230,81 @@ const void* GetUserDataFromItemData( void* p )
     return ((ItemAttribute*)p)->pUseData;
 }
 
+HTREEITEM OnDeleteCameraTreeItem(
+    CTreeCtrl& CameraTree,
+    int nChannelID,
+    const void* pUseData )
+{
+    HTREEITEM Root = CameraTree.GetRootItem();
+    if ( !CameraTree.ItemHasChildren(Root) )       
+    {
+        TRACE(_T("OnDeleteCameraTreeItem Not Found"));
+        return NULL;   
+    }
 
+    HTREEITEM ChannelItem = CameraTree.GetChildItem(Root);            
+    while (ChannelItem!=NULL)       
+    {
+        ItemAttribute* pInfo = (ItemAttribute*)CameraTree.GetItemData(ChannelItem);
+        if ( pInfo->Info.nChannelID != nChannelID )
+        {
+            ChannelItem = CameraTree.GetNextItem(ChannelItem, TVGN_NEXT);
+            continue;
+        }
+
+        HTREEITEM RuleItem = CameraTree.GetChildItem(ChannelItem);
+        while (RuleItem!=NULL)       
+        {
+            ItemAttribute* pInfo = (ItemAttribute*)CameraTree.GetItemData(RuleItem);
+            if ( pInfo->pUseData != pUseData )
+            {
+                RuleItem = CameraTree.GetNextItem(RuleItem, TVGN_NEXT);
+                continue;
+            }
+
+            CameraTree.DeleteItem(RuleItem);
+            TRACE(_T("OnDeleteCameraTreeItem Found"));
+            return RuleItem;
+        }
+    }
+
+    TRACE(_T("OnDeleteCameraTreeItem Not Found"));
+    return NULL;
+}
+
+HTREEITEM OnAddCameraTreeItem( 
+    CTreeCtrl& CameraTree,
+    int nChannelID, 
+    const void* pUseData )
+{
+    HTREEITEM Root = CameraTree.GetRootItem();
+    if ( !CameraTree.ItemHasChildren(Root) )       
+    {
+        TRACE(_T("OnAddCameraTreeItem Not Found"));
+        return NULL;   
+    }
+
+    HTREEITEM ChannelItem = CameraTree.GetChildItem(Root);            
+    while (ChannelItem!=NULL)       
+    {
+        ItemAttribute* pInfo = (ItemAttribute*)CameraTree.GetItemData(ChannelItem);
+        if ( pInfo->Info.nChannelID != nChannelID )
+        {
+            ChannelItem = CameraTree.GetNextItem(ChannelItem, TVGN_NEXT);
+            continue;
+        }
+
+        const char* pID = (const char*)pUseData;
+        HTREEITEM RuleItem = CameraTree.InsertItem(CString(pID),ChannelItem);
+        ItemAttribute* pTmp = new ItemAttribute(IV_Tree_Rule, nChannelID, pUseData);
+        CameraTree.SetItemData(RuleItem, (DWORD_PTR)pTmp);
+        TRACE(_T("OnAddCameraTreeItem Found"));
+        return RuleItem;
+    }
+
+    TRACE(_T("OnAddCameraTreeItem Not Found"));
+    return NULL;
+}
 
 
 

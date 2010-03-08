@@ -205,13 +205,18 @@
 #define ID_RULE_NEWRULE                 32789
 #define ID_SCHUDULE                     32790
 #define ID_ALARMOUT                     32791
+#define ID_Alarm_FULL                   32792
+#define ID_Alarm_EMPTY                  32793
+#define ID_Alarm_COPY                   32794
+#define ID_Alarm_PASTE                  32795
+#define ID_Alarm_USETOALL               32796
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1026
-#define _APS_NEXT_COMMAND_VALUE         32792
+#define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1065
 #define _APS_NEXT_SYMED_VALUE           1000
 #endif

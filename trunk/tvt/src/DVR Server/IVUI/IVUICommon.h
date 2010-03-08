@@ -101,6 +101,16 @@ void UnMakeTreeItemData(void* p);
 
 const void* GetUserDataFromItemData(void* p);
 
+HTREEITEM OnDeleteCameraTreeItem(
+    CTreeCtrl& CameraTree,
+    int nChannelID, 
+    const void* pUseData );
+
+HTREEITEM OnAddCameraTreeItem(
+    CTreeCtrl& CameraTree,
+    int nChannelID, 
+    const void* pUseData );
+
 #endif  // _IVUICOMMON_H_2010_
 
 

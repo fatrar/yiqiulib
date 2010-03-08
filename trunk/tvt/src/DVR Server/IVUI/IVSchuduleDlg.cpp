@@ -1,6 +1,20 @@
-// IVSchuduleDlg.cpp : implementation file
-//
+/**CPP*************************************************************************
+ File            : IVSchuduleDlg.cpp
+ Subsystem       : 
+ Function Name(s): CIVSchuduleDlg
+ Author          : YiQiu
+ Date            : 2010-3-8  
+ Time            : 17:04
+ Description     : 
 
+ Revision        : 
+
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+**************************************************************************cpp**/
 #include "stdafx.h"
 #include "IVUI.h"
 #include "IVSchuduleDlg.h"
@@ -14,8 +28,10 @@ CIVSchuduleDlg::CIVSchuduleDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVSchuduleDlg::IDD, pParent)
     , m_nCurrentChan(0)
     , m_ClickItem(NULL)
+    , m_pScheduleSettings(NULL)
 {
-     CScheduleCtrl::InitCursor();
+    CScheduleCtrl::InitCursor();
+    CIVCfgDoc::RegisterRuleTrigger(this);
 }
 
 CIVSchuduleDlg::~CIVSchuduleDlg()
@@ -32,6 +48,70 @@ void CIVSchuduleDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Apply_BT, m_ApplyBT);
 }
 
+void CIVSchuduleDlg::OnBnClickedAddCheck()
+{
+    if ( m_AddCheck.GetCheck() == BST_UNCHECKED )
+    {
+        m_AddCheck.SetCheck(BST_CHECKED);
+        return;
+    }
+
+    m_AddCheck.SetCheck(BST_CHECKED);
+    m_EraseCheck.SetCheck(BST_UNCHECKED);
+    for ( int i = 0; i< Week_Day; ++i )
+    {
+        m_ScheduleCtrl[i].SetOperateMode(true);
+    }  
+}
+
+void CIVSchuduleDlg::OnBnClickedEraseCheck()
+{
+    if ( m_EraseCheck.GetCheck() == BST_UNCHECKED )
+    {
+        m_EraseCheck.SetCheck(BST_CHECKED);
+        return;
+    }
+
+    m_AddCheck.SetCheck(BST_UNCHECKED);
+    m_EraseCheck.SetCheck(BST_CHECKED);
+    for ( int i = 0; i< Week_Day; ++i )
+    {
+        m_ScheduleCtrl[i].SetOperateMode(false);
+    }  
+}
+
+void CIVSchuduleDlg::OnDestroy()
+{
+    UnitCameraTree(m_CameraTree);
+    __super::OnDestroy();
+}
+
+void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    PopUpCameraMemu(m_CameraTree, 2, this, this);
+}
+
+void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    SendClickCameraTreeMes(m_CameraTree, this);
+}
+
+void CIVSchuduleDlg::OnBnClickedApplyBt()
+{
+    CollectUserSet();
+    if ( memcmp(m_pScheduleSettings, &m_TmpSchedule, sizeof(ScheduleSettings)) == 0 )
+    {
+        return;
+    }
+
+    *m_pScheduleSettings = m_TmpSchedule;
+    CIVScheduleCfgDoc::UpdateSchedule(
+        m_nCurrentChan,
+        *m_pScheduleSettings,
+        m_ClickItem);
+}
 
 BEGIN_MESSAGE_MAP(CIVSchuduleDlg, CDialog)
     ON_NOTIFY(NM_RCLICK, IDC_SCHUDULE_CAMERA_TREE, &CIVSchuduleDlg::OnNMRclickSchuduleCameraTree)
@@ -40,6 +120,11 @@ BEGIN_MESSAGE_MAP(CIVSchuduleDlg, CDialog)
     ON_WM_DESTROY()
     ON_NOTIFY(NM_CLICK, IDC_SCHUDULE_CAMERA_TREE, &CIVSchuduleDlg::OnNMClickSchuduleCameraTree)
     ON_BN_CLICKED(IDC_Apply_BT, &CIVSchuduleDlg::OnBnClickedApplyBt)
+    ON_COMMAND(ID_SCHUDULE_FULL, &CIVSchuduleDlg::OnSchuduleFull)
+    ON_COMMAND(ID_SCHUDULE_EMPTY, &CIVSchuduleDlg::OnSchuduleEmpty)
+    ON_COMMAND(ID_SCHUDULE_COPY, &CIVSchuduleDlg::OnSchuduleCopy)
+    ON_COMMAND(ID_SCHUDULE_PASTE, &CIVSchuduleDlg::OnSchudulePaste)
+    ON_COMMAND(ID_SCHUDULE_USETOALL, &CIVSchuduleDlg::OnSchuduleUsetoall)
 END_MESSAGE_MAP()
 
 
@@ -48,9 +133,6 @@ END_MESSAGE_MAP()
 BOOL CIVSchuduleDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
-
-    // TODO:  Add extra initialization here
-  
 
     CString strTmp;
     strTmp.LoadString(g_hmodule, IDS_Schedule_Add);
@@ -119,23 +201,11 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
     return TRUE;
 }
 
-void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
-{
-    *pResult = 0;
-    PopUpCameraMemu(m_CameraTree, 2, this, this);
-}
-
-void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
-{
-    *pResult = 0;
-    SendClickCameraTreeMes(m_CameraTree, this);
-}
-
 void CIVSchuduleDlg::OnInitCameraTree(
     int nChannelID,
     HTREEITEM Item )
 {
-
+    CIVCfgDoc::OnInitCameraTree(nChannelID,Item);
 }
 
 void CIVSchuduleDlg::OnUpdateMemu(
@@ -145,20 +215,7 @@ void CIVSchuduleDlg::OnUpdateMemu(
     const void* pData,
     HTREEITEM Item )
 {   
-    m_ClickItem = Item;
-    switch (Which)
-    {
-    case IV_Tree_Root:
-        break;
-    case IV_Tree_Camera:
-        m_nCurrentChan = nChannelID;
-        break;
-    case IV_Tree_Rule:
-        m_nCurrentChan = nChannelID;
-        break;
-    default:
-        break;
-    }
+    OnClickCameraTree(Which,nChannelID,pData,Item);
 }
 
 void CIVSchuduleDlg::OnClickCameraTree( 
@@ -167,7 +224,13 @@ void CIVSchuduleDlg::OnClickCameraTree(
     const void* pData, 
     HTREEITEM Item )
 {
+    if ( m_ClickItem == Item )
+    {
+        return;
+    }
+
     m_ClickItem = Item;
+    m_nCurrentChan = nChannelID;
     switch ( Which )
     {
     case IV_Tree_Root:
@@ -176,51 +239,13 @@ void CIVSchuduleDlg::OnClickCameraTree(
         break;
     case IV_Tree_Rule:
         Enable(TRUE);
-        UpdateChannel(nChannelID);
+        UpdateSchudule();
         break;
     default:
         ASSERT(FALSE);
         Enable(FALSE);
         return;
     }
-}
-
-void CIVSchuduleDlg::OnBnClickedAddCheck()
-{
-    if ( m_AddCheck.GetCheck() == BST_UNCHECKED )
-    {
-        m_AddCheck.SetCheck(BST_CHECKED);
-        return;
-    }
-
-    m_AddCheck.SetCheck(BST_CHECKED);
-    m_EraseCheck.SetCheck(BST_UNCHECKED);
-    for ( int i = 0; i< Week_Day; ++i )
-    {
-        m_ScheduleCtrl[i].SetOperateMode(true);
-    }  
-}
-
-void CIVSchuduleDlg::OnBnClickedEraseCheck()
-{
-    if ( m_EraseCheck.GetCheck() == BST_UNCHECKED )
-    {
-        m_EraseCheck.SetCheck(BST_CHECKED);
-        return;
-    }
-
-    m_AddCheck.SetCheck(BST_UNCHECKED);
-    m_EraseCheck.SetCheck(BST_CHECKED);
-    for ( int i = 0; i< Week_Day; ++i )
-    {
-        m_ScheduleCtrl[i].SetOperateMode(false);
-    }  
-}
-
-void CIVSchuduleDlg::OnDestroy()
-{
-    UnitCameraTree(m_CameraTree);
-    __super::OnDestroy();
 }
 
 void CIVSchuduleDlg::Enable( BOOL bEnable /*= TRUE*/ )
@@ -234,32 +259,77 @@ void CIVSchuduleDlg::Enable( BOOL bEnable /*= TRUE*/ )
     m_ApplyBT.EnableWindow(bEnable);
 }
 
-void CIVSchuduleDlg::UpdateChannel( int nChannelID )
+void CIVSchuduleDlg::UpdateSchudule()
 {
-    
-}
-
-void CIVSchuduleDlg::OnBnClickedApplyBt()
-{
-   
+    m_pScheduleSettings = CIVScheduleCfgDoc::GetSchedule(m_nCurrentChan,m_ClickItem);
+    ASSERT(m_pScheduleSettings);
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        m_ScheduleCtrl[i].SetTimeSec(&m_pScheduleSettings->s[0]);
+    }
 }
 
 void CIVSchuduleDlg::CollectUserSet()
 {
-
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        m_ScheduleCtrl[i].GetTimeSec(&m_TmpSchedule.s[0]);
+    }
 }
 
 void CIVSchuduleDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 {
-
+    if ( m_ClickItem == OnDeleteCameraTreeItem(m_CameraTree,nChannelID,(const void*)pIdentityID))
+    {
+        Enable(FALSE);
+    }
 }
 
 void CIVSchuduleDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
 {
-
+    OnAddCameraTreeItem(
+        m_CameraTree,
+        nChannelID,
+        (const void*)pIdentityID);
 }
 
 void CIVSchuduleDlg::OnUseIV( int nChannelID, BOOL bEnbale )
 {
 
 }
+//
+// ************************ Menu *****************************
+// {
+
+void CIVSchuduleDlg::OnSchuduleFull()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVSchuduleDlg::OnSchuduleEmpty()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVSchuduleDlg::OnSchuduleCopy()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVSchuduleDlg::OnSchudulePaste()
+{
+    // TODO: Add your command handler code here
+}
+
+void CIVSchuduleDlg::OnSchuduleUsetoall()
+{
+    // TODO: Add your command handler code here
+}
+
+// }
+// Menu
+
+
+
+
+// End of file
