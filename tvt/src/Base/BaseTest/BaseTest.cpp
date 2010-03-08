@@ -114,9 +114,14 @@ void TempTest(T2 a)
     *pTmp = a;
     //kk.*T = a;
 };
- 
+
+const char* s_Test = "aaaaaa";
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+    map<const char*, int> Map;
+    Map[s_Test] = 2;
+
     cout<<boolalpha;
     cout<<van::type_traits::has_member_f<B,int>::value<<endl;
     cout<<van::type_traits::has_member_f<A,void (A::*)()>::value<<endl;
