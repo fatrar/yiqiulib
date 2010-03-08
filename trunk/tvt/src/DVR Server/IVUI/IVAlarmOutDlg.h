@@ -11,7 +11,7 @@ class CIVAlarmOutDlg :
     public IUpdateMemu,
     public IInitCameraTree,
     public IClickCameraTree,
-    public CIVAlarmOutCfgDoc,
+    public CIVScheduleCfgDoc,
     public IRuleTrigger
 {
 	DECLARE_DYNAMIC(CIVAlarmOutDlg)
@@ -103,8 +103,8 @@ protected:
 
 private:   
     // Tree
-    CStatic m_AlarmOutGroup;
-    CTreeCtrl m_CameraTree;  
+    //CStatic m_AlarmOutGroup;
+    //CTreeCtrl m_CameraTree;  
 
     // Alarm Hold
     CStatic m_AlarmHoldGroup;

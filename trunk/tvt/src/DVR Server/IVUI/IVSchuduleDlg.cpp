@@ -28,7 +28,7 @@ void CIVSchuduleDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_SCHUDULE_CAMERA_TREE, m_CameraTree);
     DDX_Control(pDX, IDC_Add_CHECK, m_AddCheck);
     DDX_Control(pDX, IDC_Erase_CHECK, m_EraseCheck);
-    DDX_Control(pDX, IDC_Schudule_Group, m_SchuduleGroup);
+    DDX_Control(pDX, IDC_Schudule_Group, m_TreeGroup);
     DDX_Control(pDX, IDC_Apply_BT, m_ApplyBT);
 }
 
@@ -50,14 +50,16 @@ BOOL CIVSchuduleDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  Add extra initialization here
-    Enable(FALSE);
+  
 
     CString strTmp;
     strTmp.LoadString(g_hmodule, IDS_Schedule_Add);
     m_AddCheck.SetWindowText(strTmp);
     strTmp.LoadString(g_hmodule, IDS_Schedule_Erase);
     m_EraseCheck.SetWindowText(strTmp);
-        
+   
+    strTmp.LoadString(g_hmodule, IDS_Schedule_Tree_Group);
+    m_TreeGroup.SetWindowText(strTmp);
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -71,7 +73,7 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
     //
     Create(CIVSchuduleDlg::IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this, m_SchuduleGroup, 0, nHeight);
+    InitCameraTree(m_CameraTree, this, m_TreeGroup, 0, nHeight);
     
     //
     // 2. Init ScheduleCtrl
@@ -113,6 +115,7 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
         ApplyBT_Width,
         ApplyBT_Height);
    
+    Enable(FALSE);
     return TRUE;
 }
 

@@ -63,7 +63,6 @@ END_MESSAGE_MAP()
 
 BOOL CQCDlg::OnInitDialog()
 {
-    
     CDialog::OnInitDialog();
     // Add "About..." menu item to system menu.
     

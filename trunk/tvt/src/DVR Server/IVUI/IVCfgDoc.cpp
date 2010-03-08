@@ -20,6 +20,15 @@
 
 
 
+#ifdef IVCfgDoc_Use_Map
+    CIVCfgDoc::AllRuleSettingMap CIVCfgDoc::m_Doc;
+#else
+    CIVCfgDoc::RuleSettingMap CIVCfgDoc::m_Doc[Max_Channel]; 
+#endif
+
+set<int> CIVCfgDoc::m_UseChannel;
+CIVCfgDoc::RuleTriggerList CIVCfgDoc::m_RuleTrigger;
+
 void CIVCfgDoc::Init()
 {
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();

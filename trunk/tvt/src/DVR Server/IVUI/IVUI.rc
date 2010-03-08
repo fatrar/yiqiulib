@@ -453,6 +453,7 @@ BEGIN
     IDS_Close               "Close"
     IDS_Finish              "Finish"
     IDS_Apply               "Apply"
+    IDS_Rule_Tree_Group     "Rule"
 END
 
 STRINGTABLE 
@@ -554,7 +555,7 @@ BEGIN
     IDS_Filter_Multiplier   "Multiplier:"
     IDS_Schedule_Add        "Add"
     IDS_Schedule_Erase      "Erase"
-    IDS_STRING3084          "1"
+    IDS_Schedule_Tree_Group "Schedule"
 END
 
 #endif    // English (U.K.) resources
