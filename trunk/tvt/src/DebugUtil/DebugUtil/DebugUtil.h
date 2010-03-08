@@ -21,8 +21,8 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
 
 #ifndef DEBUGUTIL_EXPORTS
     #if !defined(_DEBUG)
-        #pragma comment(lib, "DebugUtil.lib")
-        #pragma message("Automatically linking with DebugUtil.lib")
+        //#pragma comment(lib, "DebugUtil.lib")
+        //#pragma message("Automatically linking with DebugUtil.lib")
     #elif defined(_DEBUG) && defined(MEMORY_CHECK)
         #ifndef DEBUGUTIL_LINK
             #define DEBUGUTIL_LINK
@@ -42,9 +42,9 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
     void __cdecl DebugOutIndex (const char *format, ... );
     void __cdecl KAssert(const char *format, ...);
 #else
-    void __cdecl DebugOut(const char* format, ...){}
-    void __cdecl DebugOutIndex(const char *format, ... ){}
-    void __cdecl KAssert(const char *format, ...){}
+    static void __cdecl DebugOut(const char* format, ...){}
+    static void __cdecl DebugOutIndex(const char *format, ... ){}
+    static void __cdecl KAssert(const char *format, ...){}
 #endif // _DEBUG
 
 // ctrgbg.h  1143
