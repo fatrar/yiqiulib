@@ -47,7 +47,7 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
         DDX_Control(pDX, IDC_CHECK1+i, m_AlarmCheck[i]);
     }
     DDX_Control(pDX, IDC_ALARMOUT_CAMERA_TREE, m_CameraTree);
-    DDX_Control(pDX, IDC_AlarmOut_Group, m_AlarmOutGroup);
+    DDX_Control(pDX, IDC_AlarmOut_Group, m_TreeGroup);
     DDX_Control(pDX, IDC_NOUSE_HOLD, m_AlarmNoHoldBt);
     DDX_Control(pDX, IDC_USE_HOLD, m_AlarmHoldBt);
     DDX_Control(pDX, IDC_AlarmHold_Group, m_AlarmHoldGroup);
@@ -75,7 +75,7 @@ BOOL CIVAlarmOutDlg::OnInitDialog()
     // TODO:  Add extra initialization here
     CString strTmp;
     strTmp.LoadString(g_hmodule, IDS_Alarm_Out_Group);
-    m_AlarmOutGroup.SetWindowText(strTmp);
+    m_TreeGroup.SetWindowText(strTmp);
 
     strTmp.LoadString(g_hmodule, IDS_Alarm_Hold_Group);
     m_AlarmHoldGroup.SetWindowText(strTmp);
@@ -118,7 +118,7 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
     //
     Create(IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this, m_AlarmOutGroup, 0, nHeight);
+    InitCameraTree(m_CameraTree, this, m_TreeGroup, 0, nHeight);
     
     //
     // 2. Init Other Child Ctrl

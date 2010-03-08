@@ -28,6 +28,7 @@
 #define IDC_RULE_CAMERA_TREE            1006
 #define IDS_Apply                       1006
 #define IDC_NOUSE_HOLD                  1007
+#define IDS_Rule_Tree_Group             1007
 #define IDC_USE_HOLD                    1008
 #define IDD_ZONEADV                     1008
 #define IDD_STAGECHANGEADV              1009
@@ -180,9 +181,9 @@
 #define IDS_STRING3082                  3081
 #define IDS_Schedule_Add                3081
 #define IDS_STRING3083                  3082
-#define IDS_Schedule_Earse              3082
 #define IDS_Schedule_Erase              3082
 #define IDS_STRING3084                  3083
+#define IDS_Schedule_Tree_Group         3083
 #define ID__NEW                         32771
 #define ID_RULE_ENABLEALLRULE           32772
 #define ID_RULE_DISABLEALLRULE          32773

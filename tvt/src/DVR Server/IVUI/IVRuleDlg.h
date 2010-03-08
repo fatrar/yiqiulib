@@ -11,7 +11,7 @@ class CIVRuleDlg :
     public IInitCameraTree,
     public IClickCameraTree,
     public IVideoSend,
-    public CIVAlarmOutCfgDoc
+    public CIVRuleCfgDoc
 {
 	DECLARE_DYNAMIC(CIVRuleDlg)
 
@@ -30,7 +30,6 @@ protected:
     virtual BOOL OnInitDialog();
     afx_msg void OnDestroy();
     afx_msg void OnPaint();
-    afx_msg void OnClose();
     afx_msg void OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnRuleEnableallrule();
@@ -86,8 +85,8 @@ protected:
     void UpdateLiveChannel(int nChannelID);
 
 private:
-    CTreeCtrl m_CameraTree;
-    CStatic m_RuleGroup;
+    //CTreeCtrl m_CameraTree;
+    //CStatic m_RuleGroup;
 
     CWnd m_PlayerWnd;
     CYUVSingleVideoPlayerEx m_Player;

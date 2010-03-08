@@ -245,18 +245,18 @@ BOOL CDSP::DeviceInit()
     file.Close();
 
 	
-    CTiCoffFile *m_pTiCoffFile[MAX_DEVICE_NUM];
-	for (i = 0; i < m_nDeviceNum; i++)
-	{
-		m_pTiCoffFile[i] = new CTiCoffFile(m_hDevice[i]);
-        m_pTiCoffFile[i]->LoadCoffFile(s_pOutFileName[m_dwVideoFormat]);
-	}
+ //   CTiCoffFile *m_pTiCoffFile[MAX_DEVICE_NUM];
+	//for (i = 0; i < m_nDeviceNum; i++)
+	//{
+	//	m_pTiCoffFile[i] = new CTiCoffFile(m_hDevice[i]);
+ //       m_pTiCoffFile[i]->LoadCoffFile(s_pOutFileName[m_dwVideoFormat]);
+	//}
 
-	for (i = 0; i < m_nDeviceNum; i++)
-	{
-		m_pTiCoffFile[i]->Wait();
-		delete m_pTiCoffFile[i];
-	}
+	//for (i = 0; i < m_nDeviceNum; i++)
+	//{
+	//	m_pTiCoffFile[i]->Wait();
+	//	delete m_pTiCoffFile[i];
+	//}
 
 	return TRUE;
 }

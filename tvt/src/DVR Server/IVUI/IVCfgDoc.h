@@ -120,7 +120,16 @@ protected:
     typedef deque<IRuleTrigger*> RuleTriggerList;
     static RuleTriggerList m_RuleTrigger;
     static set<int> m_UseChannel;
+
+    /**
+    *@note 本来这里要定义一个CTreeCtrl m_CameraTree
+    * 这样Rule，Alarm，Schedule都不需要定义，且相关的函数接口也不需要传CTreeCtrl& CameraTree,
+    * 但是要大致保持MVC的模型，还是不将View部分的东西弄进来
+    */
+    CTreeCtrl m_CameraTree;
+    CStatic m_TreeGroup;
 };
+
 
 
 class CIVRuleCfgDoc :

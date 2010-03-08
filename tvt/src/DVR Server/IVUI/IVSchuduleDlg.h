@@ -99,8 +99,8 @@ protected:
     };
 
 private:
-    CStatic m_SchuduleGroup; 
-    CTreeCtrl m_CameraTree;
+    //CStatic m_SchuduleGroup; 
+    //CTreeCtrl m_CameraTree;
 
     CScheduleCtrl m_ScheduleCtrl[Week_Day];
     CButton m_AddCheck;
