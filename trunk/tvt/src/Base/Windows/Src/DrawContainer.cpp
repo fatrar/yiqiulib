@@ -154,7 +154,8 @@ void CDrawContainer::OnMouseMessage(UINT nFlags, CPoint& point)
             {
                 m_pDrawModeNotify->OnChange(m_pSelect);
             }
-            Invalidate();
+            RedrawWindow();
+            //Invalidate();
             return;
         }
     }

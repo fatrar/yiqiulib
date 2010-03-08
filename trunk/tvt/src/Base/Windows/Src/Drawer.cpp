@@ -65,7 +65,8 @@ void CDrawer::SetLineColour(DWORD dwColor)
     m_Pen.CreatePen(PS_SOLID, m_nLineWidth, m_dwLineColor);
     m_Brush.DeleteObject();
     m_Brush.CreateSolidBrush(dwColor);
-    m_pWnd->Invalidate();
+    //m_pWnd->Invalidate();
+    m_pWnd->RedrawWindow();
 }
 
 void CDrawer::SetLineWidth(int nWidth)
@@ -73,10 +74,11 @@ void CDrawer::SetLineWidth(int nWidth)
     m_nLineWidth = nWidth;
     m_Pen.DeleteObject();
     m_Pen.CreatePen(PS_SOLID, m_nLineWidth, m_dwLineColor);
-    m_pWnd->Invalidate();
+    //m_pWnd->Invalidate();
+    m_pWnd->RedrawWindow();
 }
 
-void CDrawer::Clear(){ m_PointQueue.clear(); m_bIsOK=false; };
+void CDrawer::Clear(){ m_PointQueue.clear(); m_bIsOK=false; m_pWnd->RedrawWindow();};
 
 void CDrawer::SetDefault(const CPoint* pPoint, size_t nCount)
 {
