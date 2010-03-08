@@ -360,7 +360,7 @@ void CIVRuleDlg::OnRuleNewrule()
 
 
 //
-// ***************** IVRule Rulle Menu Command *****************
+// ***************** IVRule Rule Menu Command *****************
 // {
 
 void CIVRuleDlg::OnRuleDeleterule()

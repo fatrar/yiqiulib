@@ -100,12 +100,32 @@ void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult
 
 void CIVSchuduleDlg::OnBnClickedApplyBt()
 {
+    BOOL bModified = FALSE;
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        if ( m_ScheduleCtrl[i].IsModified() )
+        {
+            bModified = TRUE;
+            break;
+        }
+    }
+
+    if ( !bModified )
+    {
+        return;
+    }
+
     CollectUserSet();
     if ( memcmp(m_pScheduleSettings, &m_TmpSchedule, sizeof(ScheduleSettings)) == 0 )
     {
         return;
     }
 
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        m_ScheduleCtrl[i].ResetModifyFlag();
+    }
+    
     *m_pScheduleSettings = m_TmpSchedule;
     CIVScheduleCfgDoc::UpdateSchedule(
         m_nCurrentChan,
@@ -297,18 +317,25 @@ void CIVSchuduleDlg::OnUseIV( int nChannelID, BOOL bEnbale )
 {
 
 }
+
 //
 // ************************ Menu *****************************
 // {
 
 void CIVSchuduleDlg::OnSchuduleFull()
 {
-    // TODO: Add your command handler code here
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        m_ScheduleCtrl[i].Full();
+    }
 }
 
 void CIVSchuduleDlg::OnSchuduleEmpty()
 {
-    // TODO: Add your command handler code here
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        m_ScheduleCtrl[i].Empty();
+    }
 }
 
 void CIVSchuduleDlg::OnSchuduleCopy()

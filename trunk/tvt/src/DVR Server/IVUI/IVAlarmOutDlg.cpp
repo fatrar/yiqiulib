@@ -340,7 +340,8 @@ BOOL CIVAlarmOutDlg::IsModify()
 
 void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 {
-    if ( m_ClickItem == OnDeleteCameraTreeItem(m_CameraTree,nChannelID,(const void*)pIdentityID) )
+    if ( m_ClickItem == OnDeleteCameraTreeItem(
+             m_CameraTree,nChannelID,(const void*)pIdentityID) )
     {
         Enable(FALSE);
     }
@@ -348,7 +349,10 @@ void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 
 void CIVAlarmOutDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
 {
-    OnAddCameraTreeItem(m_CameraTree,nChannelID,(const void*)pIdentityID);
+    OnAddCameraTreeItem(
+        m_CameraTree,
+        nChannelID,
+        (const void*)pIdentityID);
 }
 
 void CIVAlarmOutDlg::OnUseIV( int nChannelID, BOOL bEnbale )
@@ -362,12 +366,18 @@ void CIVAlarmOutDlg::OnUseIV( int nChannelID, BOOL bEnbale )
 
 void CIVAlarmOutDlg::OnAlarmFull()
 {
-    // TODO: Add your command handler code here
+    for (int i=0; i<Alarm_Check_Num; ++i)
+    {
+        m_AlarmCheck[i].SetCheck(BST_CHECKED);
+    }
 }
 
 void CIVAlarmOutDlg::OnAlarmEmpty()
 {
-    // TODO: Add your command handler code here
+    for (int i=0; i<Alarm_Check_Num; ++i)
+    {
+        m_AlarmCheck[i].SetCheck(BST_UNCHECKED);
+    }
 }
 
 void CIVAlarmOutDlg::OnAlarmCopy()
