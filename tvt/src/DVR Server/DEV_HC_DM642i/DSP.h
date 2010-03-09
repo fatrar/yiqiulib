@@ -219,6 +219,11 @@ public:
         int nChannelID,
         const IV_RuleID& RuleID);
 
+    virtual BOOL EnableRule(
+        int nChannelID,
+        const IV_RuleID& RuleID,
+        BOOL bEnable =TRUE);
+
     virtual BOOL ModifyRule(
         int nChannelID,
         const WPG_Rule& Rule);
