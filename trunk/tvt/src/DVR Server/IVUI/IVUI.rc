@@ -451,9 +451,6 @@ BEGIN
     IDS_Previous            "Previous"
     IDS_Next                "Next"
     IDS_Close               "Close"
-    IDS_Finish              "Finish"
-    IDS_Apply               "Apply"
-    IDS_Rule_Tree_Group     "Rule"
 END
 
 STRINGTABLE 
@@ -498,6 +495,7 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_Rule_Tree_Group     "Rule"
     IDS_Invade              "Invade"
     IDS_Leave_Disappear     "Leave Disappear"
 END
@@ -556,6 +554,12 @@ BEGIN
     IDS_Schedule_Add        "Add"
     IDS_Schedule_Erase      "Erase"
     IDS_Schedule_Tree_Group "Schedule"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_Finish              "Finish"
+    IDS_Apply               "Apply"
 END
 
 #endif    // English (U.K.) resources

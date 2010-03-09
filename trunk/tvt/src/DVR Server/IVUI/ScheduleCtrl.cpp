@@ -999,7 +999,7 @@ void CScheduleCtrl::Empty()
 }
 
 ///(1010 add)///////
-void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist)
+void CScheduleCtrl::SetTimeSec(const Scheduleday *ptimelist)
 {
 	ASSERT(ptimelist);
 
@@ -1007,8 +1007,8 @@ void CScheduleCtrl::SetTimeSec(Scheduleday *ptimelist)
 	m_cRectList.RemoveAll();//Çå¿ÕÁÐ±í
 
     int nCount = ptimelist->useNo;
-    int (&starttime)[Max_Schedule_day] = ptimelist->starttime;
-    int (&endtime)[Max_Schedule_day] = ptimelist->endtime;
+    const int (&starttime)[Max_Schedule_day] = ptimelist->starttime;
+    const int (&endtime)[Max_Schedule_day] = ptimelist->endtime;
 	for (int i=0; i<nCount; i++)
 	{
 		CRect rcConvert;

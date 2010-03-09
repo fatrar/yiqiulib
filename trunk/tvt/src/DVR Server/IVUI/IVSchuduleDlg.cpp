@@ -28,6 +28,7 @@ CIVSchuduleDlg::CIVSchuduleDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVSchuduleDlg::IDD, pParent)
     , m_nCurrentChan(0)
     , m_ClickItem(NULL)
+    , m_bIsCopy(FALSE)
     , m_pScheduleSettings(NULL)
 {
     CScheduleCtrl::InitCursor();
@@ -82,24 +83,27 @@ void CIVSchuduleDlg::OnBnClickedEraseCheck()
 
 void CIVSchuduleDlg::OnDestroy()
 {
-    UnitCameraTree(m_CameraTree);
+    CameraTreeUtil::UnitCameraTree(m_CameraTree);
     __super::OnDestroy();
 }
 
 void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    PopUpCameraMemu(m_CameraTree, 2, this, this);
+    CameraTreeUtil::PopUpCameraMemu(m_CameraTree, 2, this, this);
 }
 
 void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    SendClickCameraTreeMes(m_CameraTree, this);
+    CameraTreeUtil::SendClickCameraTreeMes(m_CameraTree, this);
 }
 
 void CIVSchuduleDlg::OnBnClickedApplyBt()
 {
+    /** 
+    *@Note 1. Check ScheduleCtrl Is Modify
+    */
     BOOL bModified = FALSE;
     for (int i = 0; i< Week_Day; ++i)
     {
@@ -109,26 +113,37 @@ void CIVSchuduleDlg::OnBnClickedApplyBt()
             break;
         }
     }
-
     if ( !bModified )
     {
         return;
     }
 
-    CollectUserSet();
-    if ( memcmp(m_pScheduleSettings, &m_TmpSchedule, sizeof(ScheduleSettings)) == 0 )
+    /** 
+    *@Note 2. Compare Data Is Modify
+    */
+    ScheduleSettings TmpSchedule;
+    CollectUserSet(TmpSchedule);
+    if ( memcmp(
+        m_pScheduleSettings,
+        &TmpSchedule, 
+        sizeof(ScheduleSettings)) == 0 )
     {
         return;
     }
 
+    /** 
+    *@Note 3. Set ScheduleCtrl is Not be Modify
+    */
     for (int i = 0; i< Week_Day; ++i)
     {
         m_ScheduleCtrl[i].ResetModifyFlag();
     }
     
-    *m_pScheduleSettings = m_TmpSchedule;
+    /** 
+    *@Note 4. Update Data
+    */
+    *m_pScheduleSettings = TmpSchedule;
     CIVScheduleCfgDoc::UpdateSchedule(
-        m_nCurrentChan,
         *m_pScheduleSettings,
         m_ClickItem);
 }
@@ -170,16 +185,17 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
 {
     int nHeight = Rect.Height();
     int nWidth = Rect.Width();
-    //
-    // 1. Init Himself and CameraTree
-    //
+    
+    /** 
+    *@Note 1. Init Himself and CameraTree
+    */
     Create(CIVSchuduleDlg::IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this, m_TreeGroup, 0, nHeight);
+    CameraTreeUtil::InitCameraTree(m_CameraTree, this, m_TreeGroup, 0, nHeight);
     
-    //
-    // 2. Init ScheduleCtrl
-    //
+    /** 
+    *@Note 2. Init ScheduleCtrl
+    */
     int nSchCtrlWidth = nWidth-Week_Ctrl_X_Offset-CameraCtrl_Width;
 
     int nMed = nWidth - nSchCtrlWidth/2;
@@ -187,7 +203,7 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
     m_EraseCheck.MoveWindow(nMed+BT_X_Offset,BT_Start_Y,BT_Width, BT_Height);
     m_AddCheck.SetCheck(BST_CHECKED);
 
-    int nAllSchHeight = nHeight-(BT_Start_Y*3+ BT_Height);
+    int nAllSchHeight = nHeight-(BT_Start_Y*4+ 2*BT_Height);
     int nSchCtrlHeight = (nAllSchHeight-(Week_Day-1)*Week_Ctrl_Between_Off)/Week_Day;
     
     int nSchCtrlRight = nWidth-Week_Ctrl_X_Offset;
@@ -235,10 +251,36 @@ void CIVSchuduleDlg::OnUpdateMemu(
     const void* pData,
     HTREEITEM Item )
 {   
-    OnClickCameraTree(Which,nChannelID,pData,Item);
+    if ( m_ClickItem == Item )
+    {
+        return;
+    }
+
+    m_ClickItem = Item;
+    m_nCurrentChan = nChannelID;
+    switch ( Which )
+    {
+    case IV_Tree_Root:
+    case IV_Tree_Camera:
+        Enable(FALSE);
+        break;
+    case IV_Tree_Rule:
+    {
+        Enable(TRUE);
+        UpdateSchudule();
+        DWORD dwState =  m_bIsCopy ? Menu_Enbale : Menu_Disbale;
+        pMenu->EnableMenuItem(ID_Alarm_PASTE, dwState);
+        pMenu->EnableMenuItem(ID_Alarm_USETOALL, dwState);
+        break;
+    }
+    default:
+        ASSERT(FALSE);
+        Enable(FALSE);
+        return;
+    }
 }
 
-void CIVSchuduleDlg::OnClickCameraTree( 
+void CIVSchuduleDlg::OnClickCameraTree(
     WhichMemu Which,
     int nChannelID, 
     const void* pData, 
@@ -281,25 +323,31 @@ void CIVSchuduleDlg::Enable( BOOL bEnable /*= TRUE*/ )
 
 void CIVSchuduleDlg::UpdateSchudule()
 {
-    m_pScheduleSettings = CIVScheduleCfgDoc::GetSchedule(m_nCurrentChan,m_ClickItem);
+    m_pScheduleSettings = CIVScheduleCfgDoc::GetSchedule(m_ClickItem);
     ASSERT(m_pScheduleSettings);
-    for (int i = 0; i< Week_Day; ++i)
-    {
-        m_ScheduleCtrl[i].SetTimeSec(&m_pScheduleSettings->s[0]);
-    }
+    UpdateUI(*m_pScheduleSettings);
 }
 
-void CIVSchuduleDlg::CollectUserSet()
+void CIVSchuduleDlg::UpdateUI( const ScheduleSettings& Sch )
 {
     for (int i = 0; i< Week_Day; ++i)
     {
-        m_ScheduleCtrl[i].GetTimeSec(&m_TmpSchedule.s[0]);
+        m_ScheduleCtrl[i].SetTimeSec(&Sch.s[0]);
+    }
+}
+
+void CIVSchuduleDlg::CollectUserSet(ScheduleSettings& TmpSchedule)
+{
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        m_ScheduleCtrl[i].GetTimeSec(&TmpSchedule.s[0]);
     }
 }
 
 void CIVSchuduleDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 {
-    if ( m_ClickItem == OnDeleteCameraTreeItem(m_CameraTree,nChannelID,(const void*)pIdentityID))
+    if ( m_ClickItem == CameraTreeUtil::OnDeleteCameraTreeItem(
+        m_CameraTree,nChannelID,(const void*)pIdentityID))
     {
         Enable(FALSE);
     }
@@ -307,7 +355,7 @@ void CIVSchuduleDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 
 void CIVSchuduleDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
 {
-    OnAddCameraTreeItem(
+    CameraTreeUtil::OnAddCameraTreeItem(
         m_CameraTree,
         nChannelID,
         (const void*)pIdentityID);
@@ -340,18 +388,71 @@ void CIVSchuduleDlg::OnSchuduleEmpty()
 
 void CIVSchuduleDlg::OnSchuduleCopy()
 {
-    // TODO: Add your command handler code here
+    CollectUserSet(m_CopySchedule);
+    m_bIsCopy = TRUE;
 }
 
 void CIVSchuduleDlg::OnSchudulePaste()
 {
-    // TODO: Add your command handler code here
+    if ( !m_bIsCopy )
+    {
+        TRACE(_T("CIVSchuduleDlg::OnAlarmPaste\n"));
+        ASSERT(FALSE);
+        return;
+    }
+
+    /** 
+    *@Note 1. Compare Data Is Modify
+    */
+    if ( memcmp(
+        m_pScheduleSettings,
+        &m_CopySchedule, 
+        sizeof(ScheduleSettings)) == 0 )
+    {
+        return;
+    }
+
+    /** 
+    *@Note 2. Update UI, and ScheduleCtrl is Not be Modify
+    */
+    UpdateUI(m_CopySchedule);
+    for (int i = 0; i< Week_Day; ++i)
+    {
+        m_ScheduleCtrl[i].ResetModifyFlag();
+    }
+
+    /**
+    *@Note 3. Update Data
+    */
+    *m_pScheduleSettings = m_CopySchedule;
+    CIVScheduleCfgDoc::UpdateSchedule(
+        *m_pScheduleSettings,
+        m_ClickItem);
+
+    /**
+    *@Note 3. if Current Channel Is Use IV, Set To Device
+    */
+    if ( CIVCfgDoc::IsIVChannel(m_nCurrentChan) )
+    {
+        g_IIVDeviceBase2->ModifySchedule(
+            m_nCurrentChan,
+            *CIVCfgDoc::GetRuleID(m_ClickItem),
+            m_CopySchedule);
+    }
 }
 
 void CIVSchuduleDlg::OnSchuduleUsetoall()
 {
-    // TODO: Add your command handler code here
+    if ( !m_bIsCopy )
+    {
+        TRACE(_T("CIVAlarmOutDlg::OnSchuduleUsetoall\n"));
+        ASSERT(FALSE);
+        return;
+    }
+
+    SetCfgToAll(m_CopySchedule);
 }
+
 
 // }
 // Menu

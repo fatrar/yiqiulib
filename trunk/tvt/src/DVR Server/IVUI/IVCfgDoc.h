@@ -47,12 +47,18 @@ public:
     */
     static void Init();
 
+    /**
+    *@brief Unload data from Memory
+    */
+    static void Unit();
+
 protected:
     /**
     *@brief Register Rule Add Or Remove Trigger
     *@param	pRuleTrigger Trigger Callback Ptr
     */
-    static void RegisterRuleTrigger(IRuleTrigger* pRuleTrigger);  
+    static void RegisterRuleTrigger(
+        IRuleTrigger* pRuleTrigger);  
 
     /**
     *@brief Init Camera Tree
@@ -63,34 +69,41 @@ protected:
         int nChannelID, 
         HTREEITEM Item);
 
+    static BOOL IsIVChannel(int nChannelID);
+
+
+    const IV_RuleID* GetRuleID(HTREEITEM Item);
+
+private:
     /** 我也写了一个用宏实现的方式，但因为宏不能调式，改用模板实现
     *@brief Get Rule,Schedule,AlarmOut Data
-    *@param	nChannelID  Channel ID
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     template<typename T>
     T* GetIVRuleCfgXX(
-        int nChannelID,
         HTREEITEM Item);
 
     /** 
     *@brief Update Rule,Schedule,AlarmOut Data
-    *@param	nChannelID  Channel ID
     *@param	V  Rule or Schedule or AlarmOut
     *@param Item        Channel TreeCtrl Item HANDLE
     *@param IsRef       ...
     */
     template<typename T, typename Tfn, Tfn fn>
     void UpdateRuleCfgXX(
-        int nChannelID, 
         const T& V,
         HTREEITEM Item,
         BOOL IsRef = TRUE);
 
     template<typename T>
-    inline const char* GetRuleID(
+    inline const char* GetRuleIDXX(
         const T& t,
-        HTREEITEM Item);
+        HTREEITEM Item,
+        int& nChannelID );
+
+    template<typename T, typename Tfn1, Tfn1 fn1,
+        typename Tfn2, Tfn2 fn2>
+    void SetCfgToAllXX(const T& V);
 
 protected:
     struct RuleSettings
@@ -108,7 +121,6 @@ protected:
         ScheduleSettings Sch;
         AlarmOutSettings Alarm;
     };
-
 
 private:
     typedef map<const char*, RuleSettings*> RuleSettingMap;
@@ -133,24 +145,15 @@ protected:
     friend CIVScheduleCfgDoc;
 };
 
-
-
 class CIVRuleCfgDoc :
     protected CIVCfgDoc
 {
 protected:
     /**
-    *@brief Init Camera Tree
-    *@param	nChannelID  Channel ID
+    *@brief Get Rule
     *@param Item        Channel TreeCtrl Item HANDLE
     */
-    //void OnInitCameraTree(
-    //    int nChannelID,
-    //    HTREEITEM Item);
-
-
     WPG_Rule* GetRule(
-        int nChannelID,
         HTREEITEM Item );
 
     /**
@@ -161,35 +164,34 @@ protected:
     *@param Item        Channel TreeCtrl Item HANDLE
     */
     void AddRule(
-        int nChannelID, 
         const WPG_Rule& Rule,
         HTREEITEM Item);
 
     /**
     *@brief Remove Rule To Doc(memory And XML), And Add Tree Item, 
     *          if Set Trigger, Do Trigger Function
-    *@param	nChannelID  Channel ID
     *@param Rule        WPG Rule 
     *@param Item        Rule TreeCtrl Item HANDLE
     */
     void RemoveRule(
-        int nChannelID,
         HTREEITEM Item);
 
     /**
     *@brief Update Rule To Doc(memory And XML), And Add Tree Item
-    *@param	nChannelID  Channel ID
     *@param Rule        WPG Rule 
     *@param Item        Rule TreeCtrl Item HANDLE
     *@param IsRef       Rule point is pass to GetRule
     */
     void UpdateRule(
-        int nChannelID,
         const WPG_Rule& Rule, 
         HTREEITEM Item,
         BOOL IsRef = TRUE);
-private:
-    
+
+    void EnableRule(HTREEITEM Item, BOOL bEnable =TRUE);
+
+    void Use(int nChannelID, BOOL bEnable);
+
+private: 
     template<OnRuleXXFn T>
     inline void DoTriggerTFun(int nChannelID, const char* pIdentityID);
 };
@@ -198,31 +200,21 @@ class CIVAlarmOutCfgDoc :
     protected CIVCfgDoc
 {
 protected:
-    /**
-    *@brief Init Camera Tree
-    *@param	nChannelID  Channel ID
-    *@param Item        Channel TreeCtrl Item HANDLE
-    */
-    //void OnInitCameraTree(
-    //    int nChannelID,
-    //    HTREEITEM Item);
-
     AlarmOutSettings* GetAlarmOut(
-        int nChannelID,
         HTREEITEM Item );
 
     /**
     *@brief Update AlarmOut To Doc(memory And XML), And Add Tree Item
-    *@param	nChannelID  Channel ID
     *@param Alarm       AlarmOutSettings
     *@param Item        Rule TreeCtrl Item HANDLE
     *@param IsRef       Alarm point is pass to GetAlarmOut
     */
     void UpdateAlarmOut(
-        int nChannelID,
         const AlarmOutSettings& Alarm, 
         HTREEITEM Item,
         BOOL IsRef = TRUE);
+
+    void SetCfgToAll(const AlarmOutSettings& Alarm);
 };
 
 class CIVScheduleCfgDoc :
@@ -230,30 +222,25 @@ class CIVScheduleCfgDoc :
 {
 protected:
     /**
-    *@brief Init Camera Tree
-    *@param	nChannelID  Channel ID
+    *@brief Get Schedule
     *@param Item        Channel TreeCtrl Item HANDLE
     */
-    //void OnInitCameraTree(
-    //    int nChannelID, 
-    //    HTREEITEM Item);
-
     ScheduleSettings* GetSchedule(
-        int nChannelID,
         HTREEITEM Item );
 
     /**
     *@brief Update AlarmOut To Doc(memory And XML), And Add Tree Item
-    *@param	nChannelID  Channel ID
     *@param Sch         ScheduleSettings 
     *@param Item        Rule TreeCtrl Item HANDLE
     *@param IsRef       Sch point is pass to GetSchedule
     */
     void UpdateSchedule(
-        int nChannelID,
         const ScheduleSettings& Sch, 
         HTREEITEM Item,
         BOOL IsRef = TRUE);
+
+
+    void SetCfgToAll(const ScheduleSettings& Sch);
 };
 
 

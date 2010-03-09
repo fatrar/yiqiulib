@@ -42,7 +42,11 @@ public:
     enum { IDD = IDD_Add_Edit_Rule_Main };
 
 public:
-    void SetComomParm(int nChannelID, WPG_Rule* pRule, IVRuleType type);
+    void SetComomParm(
+        int nChannelID,
+        WPG_Rule* pRule,
+        IVRuleType type,
+        BOOL EditMode = FALSE);
 
     // IVideoSend
 protected:
@@ -149,6 +153,7 @@ protected:
 
     WPG_Rule* m_pRule;
     IVRuleType m_type;
+    BOOL m_EditMode;
 private:
     Windows::CAlarmTextStatic m_AlarmOccurStatic;
     //CStatic m_AlarmOccurStatic;

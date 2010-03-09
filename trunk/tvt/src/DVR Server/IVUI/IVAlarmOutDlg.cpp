@@ -43,6 +43,7 @@ IMPLEMENT_DYNAMIC(CIVAlarmOutDlg, CDialog)
 CIVAlarmOutDlg::CIVAlarmOutDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVAlarmOutDlg::IDD, pParent)
     , m_nCurrentChan(0)
+    , m_bIsCopy(FALSE)
     , m_pCurentAlarmSet(NULL)
     , m_ClickItem(NULL)
 {
@@ -71,6 +72,54 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Apply_BT, m_ApplyBT);
 }
 
+void CIVAlarmOutDlg::OnDestroy()
+{
+    CameraTreeUtil::UnitCameraTree(m_CameraTree);
+    __super::OnDestroy();   
+}
+
+void CIVAlarmOutDlg::OnBnClickedNouseHold()
+{
+    m_AlarmNoHoldBt.SetCheck(BST_CHECKED);
+    m_AlarmHoldBt.SetCheck(BST_UNCHECKED);
+    m_AlarmOutHoldTimeComb.EnableWindow(FALSE);
+}
+
+void CIVAlarmOutDlg::OnBnClickedUseHold()
+{
+    m_AlarmNoHoldBt.SetCheck(BST_UNCHECKED);
+    m_AlarmHoldBt.SetCheck(BST_CHECKED);
+    m_AlarmOutHoldTimeComb.EnableWindow();
+}
+
+void CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+    CameraTreeUtil::PopUpCameraMemu(
+        m_CameraTree,
+        1, this, this);
+}
+
+void CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+}
+
+void CIVAlarmOutDlg::OnBnClickedApplyBt()
+{
+    AlarmOutSettings TmpAlarmSet;
+    CollectUserSet(TmpAlarmSet);
+    if ( 0 == memcmp(
+          &TmpAlarmSet, m_pCurentAlarmSet, 
+           sizeof(AlarmOutSettings) ) )
+    {
+        return;
+    }
+
+    *m_pCurentAlarmSet = TmpAlarmSet;
+    CIVAlarmOutCfgDoc::UpdateAlarmOut(
+        *m_pCurentAlarmSet, m_ClickItem);
+}
 
 BEGIN_MESSAGE_MAP(CIVAlarmOutDlg, CDialog)
     ON_NOTIFY(NM_RCLICK, IDC_ALARMOUT_CAMERA_TREE, &CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree)
@@ -139,7 +188,9 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
     //
     Create(IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this, m_TreeGroup, 0, nHeight);
+    CameraTreeUtil::InitCameraTree(
+        m_CameraTree, this,
+        m_TreeGroup, 0, nHeight);
     
     //
     // 2. Init Other Child Ctrl
@@ -167,7 +218,7 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
 
     // Init Alarm Group
     int nChooseAlarmGroupY = Alarm_Out_Y_Offset*2 + Alarm_Hold_Height;
-    int nChooseAlarmGroupHeight = nHeight - nChooseAlarmGroupY - Alarm_Out_Y_Offset;
+    int nChooseAlarmGroupHeight = nHeight - (nChooseAlarmGroupY+2*Alarm_Out_Y_Offset+ApplyBT_Height);
     m_ChooseAlarmGroup.MoveWindow(
         nAlarmOutGroupX,
         nChooseAlarmGroupY,
@@ -200,17 +251,6 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
     return TRUE;
 }
 
-void CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
-{
-    *pResult = 0;
-    PopUpCameraMemu(m_CameraTree, 1, this, this);
-}
-
-void CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
-{
-    *pResult = 0;
-}
-
 
 void CIVAlarmOutDlg::OnInitCameraTree(
     int nChannelID,
@@ -226,18 +266,31 @@ void CIVAlarmOutDlg::OnUpdateMemu(
     const void* pData,
     HTREEITEM Item )
 {
+    if ( m_ClickItem == Item )
+    {
+        return;
+    }
+
     m_ClickItem = Item;
+    m_nCurrentChan = nChannelID;
     switch (Which)
     {
     case IV_Tree_Root:
-        break;
-    case IV_Tree_Camera:
-        m_nCurrentChan = nChannelID;
+    case IV_Tree_Camera:    
+        Enable(FALSE);
         break;
     case IV_Tree_Rule:
-        m_nCurrentChan = nChannelID;
+    {
+        Enable(TRUE);
+        UpdateAlarm();
+        DWORD dwState =  m_bIsCopy ? Menu_Enbale : Menu_Disbale;
+        pMenu->EnableMenuItem(ID_Alarm_PASTE, dwState);
+        pMenu->EnableMenuItem(ID_Alarm_USETOALL, dwState);
         break;
+    }  
     default:
+        ASSERT(FALSE);
+        Enable(FALSE);
         break;
     }
 }
@@ -248,27 +301,28 @@ void CIVAlarmOutDlg::OnClickCameraTree(
     const void* pData, 
     HTREEITEM Item )
 {
+    if ( m_ClickItem == Item )
+    {
+        return;
+    }
 
-}
-
-void CIVAlarmOutDlg::OnDestroy()
-{
-    UnitCameraTree(m_CameraTree);
-    __super::OnDestroy();   
-}
-
-void CIVAlarmOutDlg::OnBnClickedNouseHold()
-{
-    m_AlarmNoHoldBt.SetCheck(BST_CHECKED);
-    m_AlarmHoldBt.SetCheck(BST_UNCHECKED);
-    m_AlarmOutHoldTimeComb.EnableWindow(FALSE);
-}
-
-void CIVAlarmOutDlg::OnBnClickedUseHold()
-{
-    m_AlarmNoHoldBt.SetCheck(BST_UNCHECKED);
-    m_AlarmHoldBt.SetCheck(BST_CHECKED);
-    m_AlarmOutHoldTimeComb.EnableWindow();
+    m_ClickItem = Item;
+    m_nCurrentChan = nChannelID;
+    switch (Which)
+    {
+    case IV_Tree_Root:
+    case IV_Tree_Camera:    
+        Enable(FALSE);
+        break;
+    case IV_Tree_Rule:
+        Enable(TRUE);
+        UpdateAlarm();
+        break;
+    default:
+        ASSERT(FALSE);
+        Enable(FALSE);
+        break;
+    }
 }
 
 void CIVAlarmOutDlg::Enable( BOOL bEnable /*= TRUE*/ )
@@ -286,28 +340,23 @@ void CIVAlarmOutDlg::Enable( BOOL bEnable /*= TRUE*/ )
     m_ApplyBT.EnableWindow(bEnable);
 }
 
-
-void CIVAlarmOutDlg::OnBnClickedApplyBt()
+void CIVAlarmOutDlg::UpdateAlarm()
 {
-    CollectUserSet();
-    if ( !IsModify() )
-    {
-        return;
-    }
-
-
+    m_pCurentAlarmSet = CIVAlarmOutCfgDoc::GetAlarmOut(m_ClickItem);
+    ASSERT(m_pCurentAlarmSet);
+    UpdateUI(*m_pCurentAlarmSet);
 }
 
-void CIVAlarmOutDlg::CollectUserSet()
+void CIVAlarmOutDlg::CollectUserSet(AlarmOutSettings& TmpAlarmSet)
 {
     if ( BST_CHECKED == m_AlarmNoHoldBt.GetCheck())
     {
-        m_TmpAlarmSet.nHoldTime = 0;
+        TmpAlarmSet.nHoldTime = 0;
     }
     else
     {
        int nSel = m_AlarmOutHoldTimeComb.GetCurSel();
-       m_TmpAlarmSet.nHoldTime = s_szComboInt[nSel];
+       TmpAlarmSet.nHoldTime = s_szComboInt[nSel];
     }
 
     /**
@@ -315,7 +364,7 @@ void CIVAlarmOutDlg::CollectUserSet()
     * 首先通过右移可用Alarm的数目,再左移回来m，从而将需要设置的位清除为0
     * 然后在for循环中对对应位赋值
     */
-    WORD& nTable = m_TmpAlarmSet.table.nTable;
+    WORD& nTable = TmpAlarmSet.table.nTable;
     nTable >>= Alarm_Check_Num;
     nTable <<= Alarm_Check_Num;
     for (int i=0; i<Alarm_Check_Num; ++i)
@@ -324,23 +373,54 @@ void CIVAlarmOutDlg::CollectUserSet()
     }
 }
 
-BOOL CIVAlarmOutDlg::IsModify()
+void CIVAlarmOutDlg::UpdateUI( const AlarmOutSettings& Alarm )
 {
-    if ( m_pCurentAlarmSet == NULL )
+    /**
+    *@note 1. Update Hold Group
+    */
+    if ( Alarm.nHoldTime == 0 )
     {
-        ASSERT(FALSE);
-        return FALSE;
+        OnBnClickedNouseHold();
+    }
+    else
+    {
+        OnBnClickedUseHold();
+        BOOL bFound = FALSE;
+        int i = 0;
+        for (; i< sizeof(s_szComboInt)/sizeof(int); ++i)
+        {
+            if ( s_szComboInt[i] == Alarm.nHoldTime )
+            {
+                bFound = TRUE;
+                break;
+            }
+        }
+        if ( bFound )
+        {
+            m_AlarmOutHoldTimeComb.SetCurSel(i);
+        }
+        else
+        {
+            // [] heliang err +
+            TRACE(_T("UpdateUI Error Not Found Combox Index!"));
+            m_AlarmOutHoldTimeComb.SetCurSel(0);
+        }
     }
 
-    return 0 == memcmp(
-        &m_TmpAlarmSet,
-        m_pCurentAlarmSet,
-        sizeof(AlarmOutSettings));
+    /**
+    *@note 2. Update Alarm check Group
+    */
+    WORD nTable = Alarm.table.nTable;
+    for (int i = 0; i < Alarm_Check_Num; ++i)
+    {
+        register WORD nTest = 1 << i;
+        m_AlarmCheck->SetCheck( nTable&nTest );
+    }
 }
 
 void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 {
-    if ( m_ClickItem == OnDeleteCameraTreeItem(
+    if ( m_ClickItem == CameraTreeUtil::OnDeleteCameraTreeItem(
              m_CameraTree,nChannelID,(const void*)pIdentityID) )
     {
         Enable(FALSE);
@@ -349,7 +429,7 @@ void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
 
 void CIVAlarmOutDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
 {
-    OnAddCameraTreeItem(
+    CameraTreeUtil::OnAddCameraTreeItem(
         m_CameraTree,
         nChannelID,
         (const void*)pIdentityID);
@@ -382,18 +462,65 @@ void CIVAlarmOutDlg::OnAlarmEmpty()
 
 void CIVAlarmOutDlg::OnAlarmCopy()
 {
-    // TODO: Add your command handler code here
+    CollectUserSet(m_CopyAlarmSet);
 }
 
 void CIVAlarmOutDlg::OnAlarmPaste()
 {
-    // TODO: Add your command handler code here
+    if ( !m_bIsCopy )
+    {
+        TRACE(_T("CIVAlarmOutDlg::OnAlarmPaste\n"));
+        ASSERT(FALSE);
+        return;
+    }
+
+    /** 
+    *@Note 1. Compare Data Is Modify
+    */
+    if ( 0 == memcmp(
+        &m_CopyAlarmSet, m_pCurentAlarmSet, 
+        sizeof(AlarmOutSettings) ) )
+    {
+        return;
+    }
+
+    /** 
+    *@Note 2. Update UI
+    */
+    UpdateUI(m_CopyAlarmSet);
+
+    /**
+    *@Note 3. Update Data
+    */
+    *m_pCurentAlarmSet = m_CopyAlarmSet;
+    CIVAlarmOutCfgDoc::UpdateAlarmOut(
+        *m_pCurentAlarmSet, m_ClickItem);
+
+    /**
+    *@Note 3. if Current Channel Is Use IV, Set To Device
+    */
+    if ( CIVCfgDoc::IsIVChannel(m_nCurrentChan) )
+    {
+        g_IIVDeviceBase2->ModifyAlarmOut(
+            m_nCurrentChan,
+            *CIVCfgDoc::GetRuleID(m_ClickItem),
+            m_CopyAlarmSet);
+    }
 }
 
 void CIVAlarmOutDlg::OnAlarmUsetoall()
 {
-    // TODO: Add your command handler code here
+    if ( !m_bIsCopy )
+    {
+        TRACE(_T("CIVAlarmOutDlg::OnAlarmUsetoall\n"));
+        ASSERT(FALSE);
+        return;
+    }
+
+    SetCfgToAll(m_CopyAlarmSet);
 }
+
+
 
 // }
 // Menu

@@ -24,11 +24,8 @@
 #define IDS_Close                       1004
 #define IDC_ALARMOUT_CAMERA_TREE        1005
 #define IDS_FINISH                      1005
-#define IDS_Finish                      1005
 #define IDC_RULE_CAMERA_TREE            1006
-#define IDS_Apply                       1006
 #define IDC_NOUSE_HOLD                  1007
-#define IDS_Rule_Tree_Group             1007
 #define IDC_USE_HOLD                    1008
 #define IDD_ZONEADV                     1008
 #define IDD_STAGECHANGEADV              1009
@@ -102,6 +99,9 @@
 #define IDC_Choose_Alarm_Group          1061
 #define IDC_Alarm_Occur_STATIC          1063
 #define IDC_Apply_BT                    1064
+#define IDS_Finish                      2005
+#define IDS_Apply                       2006
+#define IDS_Rule_Tree_Group             3005
 #define IDS_Invade                      3006
 #define IDS_Leave_Disappear             3007
 #define IDS_LeftBehind                  3008

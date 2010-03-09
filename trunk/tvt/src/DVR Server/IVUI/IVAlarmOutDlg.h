@@ -11,7 +11,7 @@ class CIVAlarmOutDlg :
     public IUpdateMemu,
     public IInitCameraTree,
     public IClickCameraTree,
-    public CIVScheduleCfgDoc,
+    public CIVAlarmOutCfgDoc,
     public IRuleTrigger
 {
 	DECLARE_DYNAMIC(CIVAlarmOutDlg)
@@ -66,11 +66,11 @@ protected:
         BOOL bEnbale);
 
 protected:
-    void UpdateChannel(int nChannelID);
+    void CollectUserSet(AlarmOutSettings& TmpAlarmSet);
 
-    void CollectUserSet();
+    void UpdateAlarm();
 
-    BOOL IsModify();
+    void UpdateUI(const AlarmOutSettings& Alarm);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -101,9 +101,7 @@ protected:
         BT_Height   = 25,
         Combo_Width = 50,
 
-        Alarm_Hold_Height  = Alarm_Out_Y_Offset*3+2*BT_Height,
-
-    
+        Alarm_Hold_Height  = Alarm_Out_Y_Offset*3+2*BT_Height, 
     };
 
 private:   
@@ -127,7 +125,7 @@ private:
     CButton m_ApplyBT;
 
     AlarmOutSettings* m_pCurentAlarmSet;
-    AlarmOutSettings m_TmpAlarmSet;
-
-
+    //AlarmOutSettings m_TmpAlarmSet;
+    AlarmOutSettings m_CopyAlarmSet;
+    BOOL m_bIsCopy;
 };
