@@ -61,6 +61,7 @@
 #include <string>
 using namespace std;
 #include "..\..\Base\Base\Include\Common.h"
+#include "..\..\Base\Base\Include\StlHelper.h"
 #include ".\Include\IVUIInterface.h"
 #include "..\devicecontrol\IIVDevice.h"
 #include "..\DEV_HC_DM642i\Include\IVUtil.h"

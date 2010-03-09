@@ -51,7 +51,7 @@ void CIVRuleDlg::OnDestroy()
     }
 
     m_Player.UnitDirectDraw();
-    UnitCameraTree(m_CameraTree);
+    CameraTreeUtil::UnitCameraTree(m_CameraTree);
     __super::OnDestroy(); 
 }
 
@@ -65,13 +65,16 @@ void CIVRuleDlg::OnPaint()
 void CIVRuleDlg::OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    PopUpCameraMemu(m_CameraTree, 0, this, this);
+    CameraTreeUtil::PopUpCameraMemu(
+        m_CameraTree, 0, 
+        this, this);
 }
 
 void CIVRuleDlg::OnNMClickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    SendClickCameraTreeMes(m_CameraTree, this);
+    CameraTreeUtil::SendClickCameraTreeMes(
+        m_CameraTree, this);
 }
 
 BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
@@ -114,7 +117,10 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
 {
     Create(IDD, pWnd);
     MoveWindow(Rect);
-    InitCameraTree(m_CameraTree, this, m_TreeGroup, 0,Rect.Height());
+    CameraTreeUtil::InitCameraTree(
+        m_CameraTree, this,
+        m_TreeGroup, 0,
+        Rect.Height() );
 
     CRect rect;
     GetClientRect(&rect);
@@ -173,9 +179,11 @@ void CIVRuleDlg::OnUpdateMemu(
     	break;
     case IV_Tree_Camera:
         UpdateLiveChannel(nChannelID);
+        pMenu->EnableMenuItem(ID_RULE_USE, MFS_DISABLED);
     	break;
     case IV_Tree_Rule:
         UpdateLiveChannel(nChannelID);
+        
     	break;
     default:
     	break;
@@ -275,7 +283,7 @@ void CIVRuleDlg::UpdateLiveChannel(int nChannelID)
 
 void CIVRuleDlg::OnRuleEnableallrule()
 {
-    // TODO: Add your command handler code here
+    
 }
 
 void CIVRuleDlg::OnRuleDisableallrule()
@@ -285,7 +293,7 @@ void CIVRuleDlg::OnRuleDisableallrule()
 
 void CIVRuleDlg::OnRuleUse()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::Use(m_nCurrentChan,TRUE);
 }
 
 void CIVRuleDlg::OnRuleShowobject()
@@ -306,13 +314,9 @@ void CIVRuleDlg::OnRuleShowobjtrace()
 void CIVRuleDlg::OnRuleNewrule()
 {
     CIVFunctionSelDlg FunctionSelDlg;
-    if ( IDCANCEL== FunctionSelDlg.DoModal() )
-    {
-        return;
-    }
-
     if ( m_nCurrentChan == Invaild_ChannelID || 
-        m_ClickItem == NULL )
+         m_ClickItem == NULL || 
+         IDCANCEL== FunctionSelDlg.DoModal() )
     {
         return;
     }
@@ -338,8 +342,7 @@ void CIVRuleDlg::OnRuleNewrule()
         /**
         *@note 2. Save To XML and Memory, and update Tree
         */
-        AddRule(
-            m_nCurrentChan,
+        CIVRuleCfgDoc::AddRule(
             *pRule,
             m_ClickItem);    
     }
@@ -365,27 +368,56 @@ void CIVRuleDlg::OnRuleNewrule()
 
 void CIVRuleDlg::OnRuleDeleterule()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::RemoveRule(m_ClickItem);
 }
 
 void CIVRuleDlg::OnRuleEditrule()
 {
-    // TODO: Add your command handler code here
+    if ( g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
+
+    WPG_Rule* pRule = CIVRuleCfgDoc::GetRule(m_ClickItem);
+    IVRuleType RuleType = (IV_RuleID&)(pRule->ruleId).RuleID.nType;
+    CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType, this);
+    pDlg->SetComomParm(m_nCurrentChan, pRule, RuleType);
+    if ( IDOK == pDlg->DoModal() )
+    {
+        /**
+        *@note  1. Operator Device
+        */
+        g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pRule);
+
+        /**
+        *@note 2. Update To XML and Memory
+        */
+        CIVRuleCfgDoc::UpdateRule(
+            *pRule, m_ClickItem);    
+    }
+    else {}
+    delete pDlg;
+
+    if ( g_IIVDeviceBase2 )
+    {
+        g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
+    }
 }
 
 void CIVRuleDlg::OnRuleRenamerule()
 {
-    // TODO: Add your command handler code here
+    // [] 
+    m_CameraTree.EditLabel(m_ClickItem);
 }
 
 void CIVRuleDlg::OnRuleEnablerule()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::EnableRule(TRUE);
 }
 
 void CIVRuleDlg::OnRuleDisablerule()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::EnableRule(FALSE);
 }
 
 // }

@@ -58,6 +58,9 @@ struct ItemAttribute
 //HTREEITEM InsertItem(LPCTSTR lpszItem, int nImage, int nSelectedImage,
 //    HTREEITEM hParent = TVI_ROOT, HTREEITEM hInsertAfter = TVI_LAST
 
+namespace CameraTreeUtil
+{
+
 HTREEITEM InitCameraTree(
     CTreeCtrl& CameraTree,
     IInitCameraTree* pCameraTreeInitor,
@@ -141,7 +144,7 @@ void PopUpCameraMemu(
         return;
     }
     
-    CMenu* pPopup = menu.GetSubMenu(nIndex); 
+    CMenu* pPopup = menu.GetSubMenu(nIndex);
     if ( pPopup == NULL || 0 == pPopup->GetMenuItemCount() )
     {
         TRACE(_T("Popup Menu Pass!"));
@@ -230,6 +233,12 @@ const void* GetUserDataFromItemData( void* p )
     return ((ItemAttribute*)p)->pUseData;
 }
 
+int GetChannelFromItemData( void* p )
+{
+    return ((ItemAttribute*)p)->Info.nChannelID;
+}
+
+
 HTREEITEM OnDeleteCameraTreeItem(
     CTreeCtrl& CameraTree,
     int nChannelID,
@@ -306,7 +315,7 @@ HTREEITEM OnAddCameraTreeItem(
     return NULL;
 }
 
-
+}
 
 
 // End of file

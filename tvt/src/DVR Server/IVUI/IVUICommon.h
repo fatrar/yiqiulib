@@ -71,6 +71,20 @@ enum CameraTreeAttibute
     CameraCtrl_Width = TreeGroup_Width + 2*TreeGroup_Start_X,
 };
 
+enum TreeMenuAttibute
+{
+    Menu_Copy_Index = 4,
+    Menu_Paste_Index = 5,
+    Menu_Paste_All_Index = 7,  
+
+    Menu_Disbale = /*MF_BYCOMMAND |*/ MF_DISABLED | MF_GRAYED,
+    Menu_Enbale = MF_BYCOMMAND | MF_ENABLED,
+};
+
+namespace CameraTreeUtil
+{
+
+
 HTREEITEM InitCameraTree(
     CTreeCtrl& CameraTree, 
     IInitCameraTree* pCameraTreeInitor,
@@ -79,8 +93,6 @@ HTREEITEM InitCameraTree(
     int nHeight );
 
 void UnitCameraTree(CTreeCtrl& CameraTree);
-
-//HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree);
 
 void SendClickCameraTreeMes(
     CTreeCtrl& CameraTree,
@@ -101,6 +113,8 @@ void UnMakeTreeItemData(void* p);
 
 const void* GetUserDataFromItemData(void* p);
 
+int GetChannelFromItemData( void* p );
+
 HTREEITEM OnDeleteCameraTreeItem(
     CTreeCtrl& CameraTree,
     int nChannelID, 
@@ -110,6 +124,10 @@ HTREEITEM OnAddCameraTreeItem(
     CTreeCtrl& CameraTree,
     int nChannelID, 
     const void* pUseData );
+
+
+}
+
 
 #endif  // _IVUICOMMON_H_2010_
 

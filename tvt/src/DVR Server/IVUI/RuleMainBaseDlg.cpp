@@ -29,6 +29,7 @@ CRuleMainBaseDlg::CRuleMainBaseDlg(CWnd* pParent)
     , m_LineDrawer(NULL)
     , m_RectangleDrawer(NULL)
     , m_PolygonDrawer(NULL)
+    , m_EditMode(FALSE)
     , m_bUse(FALSE)
 {
      m_pDrawContainer = Windows::CreateDrawContainer();
@@ -86,20 +87,9 @@ END_MESSAGE_MAP()
 BOOL CRuleMainBaseDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
-
-    // TODO:  Add extra initialization here
     
     int x = 140, y = 15;
-    m_Rect.SetRect(x,y,int(x+352*1.4),int(y+288*1.4));
-    /*m_AlarmOccurStatic.Create(
-        _T("Alarm Occur!"),
-        WS_CHILD|WS_VISIBLE, 
-        CRect(120, 446, 200, 466), this);*/
-    /*m_PlayerWnd.Create(
-        NULL, NULL, WS_CHILD|WS_VISIBLE,
-        m_Rect,
-        this,
-        PlayerWnd_ID );*/  
+    m_Rect.SetRect(x,y,int(x+352*1.4),int(y+288*1.4)); 
     m_Player.InitDirectDraw(
         this->m_hWnd, 352, 288, &m_Rect);
     m_Player.SetVideoPlayCallback(this);
@@ -112,16 +102,24 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
         NULL,NULL,
         WS_VISIBLE|WS_CHILD,
         m_Rect, this, DrawWnd_ID);
+    if ( !m_EditMode )
+    {
+    }
+    else{}
     OnBnClickedLineCheck();
     return TRUE;
 }
 
 void CRuleMainBaseDlg::SetComomParm(
-    int nChannelID, WPG_Rule* pRule, IVRuleType type)
+    int nChannelID,
+    WPG_Rule* pRule,
+    IVRuleType type,
+    BOOL EditMode)
 {
     m_nCurrentChan = nChannelID;
     m_pRule = pRule;
     m_type = type;
+    m_EditMode = EditMode;
 }
 
 void CRuleMainBaseDlg::OnBnClickedOk()

@@ -35,11 +35,12 @@ IMPLEMENT_DYNAMIC(CIVSwitchTab, CDialog)
 CIVSwitchTab::CIVSwitchTab(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVSwitchTab::IDD, pParent)
 {
-
+    CIVCfgDoc::Init();
 }
 
 CIVSwitchTab::~CIVSwitchTab()
 {
+    CIVCfgDoc::Unit();
 }
 
 void CIVSwitchTab::DoDataExchange(CDataExchange* pDX)

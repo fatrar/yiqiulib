@@ -80,7 +80,7 @@ public:
 
     ///////控件接口函数////////
 
-	void SetTimeSec(Scheduleday *ptime);
+	void SetTimeSec(const Scheduleday *ptime);
 	int GetTimeSec(Scheduleday *ptimelist);
 
     void Full();

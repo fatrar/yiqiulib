@@ -69,17 +69,26 @@ protected:
 protected:
     void UpdateSchudule();
 
-    void CollectUserSet();
+    void CollectUserSet(ScheduleSettings& TmpSchedule);
+
+    void UpdateUI(const ScheduleSettings& Sch);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
+    afx_msg void OnDestroy();
+    
     afx_msg void OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnBnClickedAddCheck();
     afx_msg void OnBnClickedEraseCheck();
     afx_msg void OnBnClickedApplyBt();
-    afx_msg void OnDestroy();
+    
+    afx_msg void OnSchuduleFull();
+    afx_msg void OnSchuduleEmpty();
+    afx_msg void OnSchuduleCopy();
+    afx_msg void OnSchudulePaste();
+    afx_msg void OnSchuduleUsetoall();
     DECLARE_MESSAGE_MAP()
 
     enum
@@ -113,10 +122,7 @@ private:
 
 
     ScheduleSettings* m_pScheduleSettings;
-    ScheduleSettings m_TmpSchedule;
-    afx_msg void OnSchuduleFull();
-    afx_msg void OnSchuduleEmpty();
-    afx_msg void OnSchuduleCopy();
-    afx_msg void OnSchudulePaste();
-    afx_msg void OnSchuduleUsetoall();
+    //ScheduleSettings m_TmpSchedule;
+    ScheduleSettings m_CopySchedule;
+    BOOL m_bIsCopy;
 };

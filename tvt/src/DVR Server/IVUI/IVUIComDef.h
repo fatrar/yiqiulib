@@ -36,8 +36,8 @@ enum
     Filter_DIR_Start = IDS_Filter_MinObj_Info,
     Filter_Number = 4,
 
-    ApplyBT_Width = 40,
-    ApplyBT_Height = 25,
+    ApplyBT_Width = 60,
+    ApplyBT_Height = 35,
     ApplyBT_X_ROffset = ApplyBT_Width + 20,
     ApplyBT_Y_ROffset = ApplyBT_Height + 20,
 };
