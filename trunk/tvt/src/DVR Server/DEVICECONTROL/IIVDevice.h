@@ -285,6 +285,11 @@ struct IIVDeviceBase2 :
         int nChannelID,
         const IV_RuleID& RuleID)=0;
 
+    virtual BOOL EnableRule(
+        int nChannelID,
+        const IV_RuleID& RuleID,
+        BOOL bEnable =TRUE)=0;
+
     virtual BOOL ModifyRule(
         int nChannelID,
         const WPG_Rule& Rule)=0;

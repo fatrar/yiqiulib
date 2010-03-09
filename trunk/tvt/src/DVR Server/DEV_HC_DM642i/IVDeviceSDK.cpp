@@ -490,6 +490,40 @@ BOOL CDSP::Remove(
         PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
 }
 
+BOOL CDSP::EnableRule( 
+    int nChannelID,
+    const IV_RuleID& RuleID,
+    BOOL bEnable /*=TRUE*/ )
+{
+    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
+    if ( nDeviceID > m_nDeviceNum )
+    {
+        return FALSE;
+    }
+
+    if ( nChannelID!=m_szCurrentIVChannel[nDeviceID] )
+    {
+        return FALSE;
+    }
+
+    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
+    CurrentRuleSetting* pCurrentSet = NULL;
+    {
+        AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
+        RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
+        if ( iter == RuleSettings.end() )
+        {
+            return FALSE;
+        }
+
+        pCurrentSet = iter->second;
+        pCurrentSet->Rule.isEnabled = bEnable;
+    }
+
+    return SetIVSpecialParam(
+        PT_PCI_SET_UPDATE_RULE, nChannelID, 0, pCurrentSet->Rule);
+}
+
 BOOL CDSP::ModifyRule( 
     int nChannelID,
     const WPG_Rule& Rule )
