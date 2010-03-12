@@ -27,7 +27,7 @@
 //
 // ******************** Get Text Value *********************
 //
-const char* TinyXmlUtil::GetElementTextData(
+const char* TinyXmlUtil::GetTextData(
     TiXmlElement* pEle,          // User Element
     const char* pDefault )
 {
@@ -46,7 +46,7 @@ const char* TinyXmlUtil::GetElementTextData(
     return pValue;
 }
 
-bool TinyXmlUtil::GetElementTextData(
+bool TinyXmlUtil::GetTextData(
     TiXmlElement* pEle,
     int& nValue,
     int nDefault )
@@ -67,7 +67,7 @@ bool TinyXmlUtil::GetElementTextData(
     return true;
 }
 
-bool TinyXmlUtil::GetElementTextData(
+bool TinyXmlUtil::GetTextData(
     TiXmlElement* pEle,
     bool& bValue,
     bool bDefault )
@@ -83,7 +83,7 @@ bool TinyXmlUtil::GetElementTextData(
     return true;
 }
 
-bool TinyXmlUtil::GetElementTextData( 
+bool TinyXmlUtil::GetBinaryTextData( 
     TiXmlElement* pEle, /* User Element */ 
     void* pValue, /* buf */ 
     size_t& nLen )
@@ -107,7 +107,7 @@ bool TinyXmlUtil::GetElementTextData(
         (const BYTE*)pBase64Value, 
         strlen(pBase64Value), 
         pBase64Buf,
-        nLen );
+        nTrueLen );
     if ( NULL == pBase64Buf ) 
     {
         nLen = nTrueLen;
@@ -125,7 +125,7 @@ bool TinyXmlUtil::GetElementTextData(
     return true;
 }
 
-const char* TinyXmlUtil::GetChildElementTextData(
+const char* TinyXmlUtil::GetChildTextData(
     TiXmlElement* pEle,
     const char* pChildEleName,
     const char* pDefault )
@@ -142,10 +142,10 @@ const char* TinyXmlUtil::GetChildElementTextData(
         return pDefault;
     }
 
-    return GetElementTextData(pChildEle, pDefault);
+    return GetTextData(pChildEle, pDefault);
 }
 
-bool TinyXmlUtil::GetChildElementTextData(
+bool TinyXmlUtil::GetChildTextData(
     TiXmlElement* pEle, /* User Element */ 
     const char* pChildEleName, /* Will Get Data Child Element N */
     int& nValue,
@@ -164,10 +164,10 @@ bool TinyXmlUtil::GetChildElementTextData(
         return false;
     }
 
-    return GetElementTextData(pChildEle, nValue, nDefault);
+    return GetTextData(pChildEle, nValue, nDefault);
 }
 
-bool TinyXmlUtil::GetChildElementTextData(
+bool TinyXmlUtil::GetChildTextData(
     TiXmlElement* pEle, /* User Element */
     const char* pChildEleName, /* Will Get Data Child Element N */
     bool& bValue,
@@ -186,10 +186,10 @@ bool TinyXmlUtil::GetChildElementTextData(
         return false;
     }
 
-    return GetElementTextData(pChildEle, bValue, bDefault);
+    return GetTextData(pChildEle, bValue, bDefault);
 }
 
-bool TinyXmlUtil::GetChildElementTextData(
+bool TinyXmlUtil::GetChildBinaryTextData(
     TiXmlElement* pEle, /* User Element */
     const char* pChildEleName, /* Will Get Data Child Element N */ 
     void* pValue, /* buf */ 
@@ -207,13 +207,13 @@ bool TinyXmlUtil::GetChildElementTextData(
         return false;
     }
 
-    return GetElementTextData(pChildEle, pValue, nLen);
+    return GetBinaryTextData(pChildEle, pValue, nLen);
 }
 
 //
 // ****************** Set Text Value *********************
 // 
-bool TinyXmlUtil::SetElementTextData(
+bool TinyXmlUtil::SetTextData(
     TiXmlElement* pEle, /* User Element */
     const char* pValue )
 {
@@ -241,23 +241,23 @@ bool TinyXmlUtil::SetElementTextData(
     return true;
 }
 
-bool TinyXmlUtil::SetElementTextData(
+bool TinyXmlUtil::SetTextData(
     TiXmlElement* pEle, /* User Element */ 
     int nValue )
 {
     char szBuf[20] = {0};
     _itoa(nValue, szBuf, 10);
-    return SetElementTextData(pEle, szBuf);
+    return SetTextData(pEle, szBuf);
 }
 
-bool TinyXmlUtil::SetElementTextData( 
+bool TinyXmlUtil::SetTextData( 
     TiXmlElement* pEle, /* User Element */
     bool bValue )
 {
-    return SetElementTextData(pEle, (int)bValue);
+    return SetTextData(pEle, (int)bValue);
 }
 
-bool TinyXmlUtil::SetElementTextData(
+bool TinyXmlUtil::SetBinaryTextData(
     TiXmlElement* pEle, /* User Element */
     const void* pValue, 
     size_t nLen )
@@ -286,13 +286,13 @@ bool TinyXmlUtil::SetElementTextData(
     pBuf[nOutLen] = '\0';
     delete[] pBase64Data;
 
-    bool bRc = SetElementTextData(pEle, pBuf);
+    bool bRc = SetTextData(pEle, pBuf);
     delete[] pBuf;
 
     return bRc;
 }
 
-bool TinyXmlUtil::SetChildElementTextData(
+bool TinyXmlUtil::SetChildTextData(
     TiXmlElement* pEle, /* User Element */ 
     const char* pChildEleName, /* Will Get Data Child Element Name */ 
     const char* pValue )
@@ -304,33 +304,33 @@ bool TinyXmlUtil::SetChildElementTextData(
         return false;
     }
 
-    return SetElementTextData(
+    return SetTextData(
         CreateChildEle(pEle, pChildEleName),
         pValue );
 }
 
-bool TinyXmlUtil::SetChildElementTextData( 
+bool TinyXmlUtil::SetChildTextData( 
     TiXmlElement* pEle, /* User Element */ 
     const char* pChildEleName, /* Will Get Data Child Element N */ 
     int nValue )
 {
     char szBuf[20] = {0};
     _itoa(nValue, szBuf, 10);
-    return SetChildElementTextData(
+    return SetChildTextData(
         pEle, pChildEleName, szBuf );
 }
 
-bool TinyXmlUtil::SetChildElementTextData( 
+bool TinyXmlUtil::SetChildTextData( 
     TiXmlElement* pEle, /* User Element */
     const char* pChildEleName, /* Will Get Data Child Element N */ 
     bool bValue )
 {
-    return SetChildElementTextData(
+    return SetChildTextData(
         pEle, pChildEleName,
         (int)bValue );
 }
 
-bool TinyXmlUtil::SetChildElementTextData(
+bool TinyXmlUtil::SetChildBinaryTextData(
     TiXmlElement* pEle, /* User Element */ 
     const char* pChildEleName, /* Will Get Data Child Element N */ 
     const void* pValue, 
@@ -361,7 +361,7 @@ bool TinyXmlUtil::SetChildElementTextData(
     pBuf[nOutLen] = '\0';
     delete[] pBase64Data;
 
-    bool bRc = SetChildElementTextData(pEle, pChildEleName, pBuf);
+    bool bRc = SetChildTextData(pEle, pChildEleName, pBuf);
     delete[] pBuf;
     return bRc;
 }
