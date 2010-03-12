@@ -24,7 +24,7 @@
 //
 // ********************* Get Attribute *************************
 //
-const char* TinyXmlUtil::GetElementAttributeData(
+const char* TinyXmlUtil::GetAttributeData(
     TiXmlElement* pEle, /* User Element */
     const char* pAttrName, 
     const char* pDefault /*= NULL */ )
@@ -44,7 +44,7 @@ const char* TinyXmlUtil::GetElementAttributeData(
     return pData;
 }
 
-bool TinyXmlUtil::GetElementAttributeData(
+bool TinyXmlUtil::GetAttributeData(
     TiXmlElement* pEle, /* User Element */ 
     const char* pAttrName,
     int& nValue,
@@ -67,7 +67,7 @@ bool TinyXmlUtil::GetElementAttributeData(
     return true;
 }
 
-bool TinyXmlUtil::GetElementAttributeData(
+bool TinyXmlUtil::GetAttributeData(
     TiXmlElement* pEle, /* User Element */
     const char* pAttrName,
     bool& bValue, 
@@ -92,7 +92,50 @@ bool TinyXmlUtil::GetElementAttributeData(
     return true;
 }
 
-const char* TinyXmlUtil::GetChildElementAttributeData(
+bool TinyXmlUtil::GetBinaryAttributeData(
+    TiXmlElement* pEle, 
+    const char* pAttrName,
+    void* pValue, 
+    size_t& nLen )
+{
+    if ( NULL == pEle ||
+         !isValidString(pAttrName) )
+    {
+        return false;
+    }
+
+    const char* pBase64Value = pEle->Attribute(pAttrName);
+    if ( NULL == pBase64Value )
+    {
+        return false;
+    }
+
+    BYTE* pBase64Buf = NULL;
+    size_t nTrueLen = 0;
+    Base64Decode(
+        (const BYTE*)pBase64Value, 
+        strlen(pBase64Value), 
+        pBase64Buf,
+        nTrueLen );
+    if ( NULL == pBase64Buf ) 
+    {
+        nLen = nTrueLen;
+        return false;
+    }
+    if (nTrueLen > nLen)
+    {
+        delete[] pBase64Buf;
+        nLen = nTrueLen;
+        return false;
+    }
+
+    memcpy(pValue, pBase64Buf, nTrueLen);
+    nLen = nTrueLen;
+    delete[] pBase64Buf;
+    return true;
+}
+
+const char* TinyXmlUtil::GetChildAttributeData(
     TiXmlElement* pEle, /* User Element */
     const char* pChildEleName,
     const char* pChildAttrName,
@@ -111,13 +154,13 @@ const char* TinyXmlUtil::GetChildElementAttributeData(
         return pDefault;
     }
 
-    return GetElementAttributeData(
+    return GetAttributeData(
         pChildEle,
         pChildAttrName,
         pDefault );
 }
 
-bool TinyXmlUtil::GetChildElementAttributeData(
+bool TinyXmlUtil::GetChildAttributeData(
     TiXmlElement* pEle,        /* User Element */
     const char* pChildEleName, /* Will Get Data Child Element Name */
     const char* pChildAttrName,
@@ -139,14 +182,14 @@ bool TinyXmlUtil::GetChildElementAttributeData(
         return false;
     }
 
-    return GetElementAttributeData(
+    return GetAttributeData(
         pChildEle,
         pChildAttrName,
         nValue,
         nDefault );
 }
 
-bool TinyXmlUtil::GetChildElementAttributeData(
+bool TinyXmlUtil::GetChildAttributeData(
     TiXmlElement* pEle,        /* User Element */
     const char* pChildEleName, /* Will Get Data Child Element Name */ 
     const char* pChildAttrName,
@@ -168,14 +211,14 @@ bool TinyXmlUtil::GetChildElementAttributeData(
         return NULL;
     }
 
-    return GetElementAttributeData(
+    return GetAttributeData(
         pChildEle,
         pChildAttrName,
         bValue,
         bDefault );
 }
 
-bool TinyXmlUtil::SetChildElementAttributeData(
+bool TinyXmlUtil::SetChildAttributeData(
     TiXmlElement* pEle, /* User Element */ 
     const char* pChildEleName, /* Will Get Data Child Element Name */
     const char* pChildAttrName,
@@ -199,7 +242,7 @@ bool TinyXmlUtil::SetChildElementAttributeData(
     return true;
 }
 
-bool TinyXmlUtil::SetChildElementAttributeData(
+bool TinyXmlUtil::SetChildAttributeData(
     TiXmlElement* pEle, /* User Element */ 
     const char* pChildEleName, /* Will Get Data Child Element Name */
     const char* pChildAttrName, 
@@ -222,7 +265,7 @@ bool TinyXmlUtil::SetChildElementAttributeData(
     return true;
 }
 
-bool TinyXmlUtil::SetChildElementAttributeData(
+bool TinyXmlUtil::SetChildAttributeData(
     TiXmlElement* pEle, /* User Element */ 
     const char* pChildEleName, /* Will Get Data Child Element Name */
     const char* pChildAttrName,
@@ -245,7 +288,7 @@ bool TinyXmlUtil::SetChildElementAttributeData(
     return true;
 }
 
-bool TinyXmlUtil::SetAttributeData(
+bool TinyXmlUtil::SetBinaryAttributeData(
     TiXmlElement* pEle,
     const char* pChildAttrName,
     const void* pValue,
@@ -284,7 +327,6 @@ bool TinyXmlUtil::SetAttributeData(
     delete[] pBuf;
     return true;
 }
-
 
 
 
