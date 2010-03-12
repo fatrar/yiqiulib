@@ -24,97 +24,131 @@ class TiXmlDocument;
 
 namespace TinyXmlUtil
 {
-    // Get Attribute
-    // {
-    const char* GetElementAttributeData(
+    /**
+    *@note { GetElement Attribute 
+    */
+    const char* GetAttributeData(
         TiXmlElement* pEle,          // User Element
         const char* pAttrName,
         const char* pDefault = NULL );
 
 // look in TinyXmlUtil_VC6.h
 //     template<unsigned long nSize>
-//     bool GetElementAttributeData(
+//     bool GetAttributeData(
 //         TiXmlElement* pEle,          // User Element
 //         const char* pChildAttrName,
 //         char (&szValue)[nSize],
 //         const char* pDefault = NULL )
 
-    bool GetElementAttributeData(
+    bool GetAttributeData(
         TiXmlElement* pEle,         // User Element
         const char* pAttrName,
         int& nValue,
         int nDefault = 0 );
 
-    bool GetElementAttributeData(
+    bool GetAttributeData(
         TiXmlElement* pEle,         // User Element
         const char* pAttrName,
         bool& bValue,
         bool bDefault = false );
 
-    const char* GetChildElementAttributeData(
+    bool GetBinaryAttributeData(
+        TiXmlElement* pEle,
+        const char* pAttrName,
+        void* pValue, 
+        size_t& nLen );
+
+    template<typename T>
+    bool GetBinaryAttributeData(
+        TiXmlElement* pEle,
+        const char* pAttrName,
+        const T& Value )
+    {
+        return GetBinaryAttributeData(pEle, pAttrName, (void*)&Value, sizeof(T));
+    }
+    /**
+    *@note Get Child Element Attribute }
+    */
+
+    /**
+    *@note { Get Child Element Attribute
+    */
+    const char* GetChildAttributeData(
         TiXmlElement* pEle,          // User Element
         const char* pChildEleName,   // Will Get Data Child Element Name
         const char* pChildAttrName,
         const char* pDefault = NULL );
 
-//  look in  TinyXmlUtil_VC6.h
-//     bool GetChildElementAttributeData(
+//  move to TinyXmlUtil_VC6.h
+//     bool GetChildAttributeData(
 //         TiXmlElement* pEle,          // User Element
 //         const char* pChildEleName,   // Will Get Data Child Element Name
 //         const char* pChildAttrName,
 //         char (&szValue)[nSize],
 //         const char* pDefault = NULL );
 
-    bool GetChildElementAttributeData(
+    bool GetChildAttributeData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element Name
         const char* pChildAttrName,
         int& nValue,
         int nDefault = 0 );
 
-    bool GetChildElementAttributeData(
+    bool GetChildAttributeData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element Name
         const char* pChildAttrName,
         bool& bValue,
         bool bDefault = false );
-    // }
+    /**
+    *@note  Get Child Element Attribute }
+    */
 
-    // Set Attribute ( if ChildElement not exist, Create a new.) 
-    // {  
-    bool SetAttributeData(
+    /**
+    *@note { Set Element Attribute 
+    */   
+    bool SetBinaryAttributeData(
         TiXmlElement* pEle,
         const char* pChildAttrName,
         const void* pValue, 
         size_t nLen );
 
     template<typename T>
-    bool SetAttributeData(
+    bool SetBinaryAttributeData(
         TiXmlElement* pEle,
         const char* pChildAttrName,
         const T& Value )
     {
-        return SetAttributeData(pEle, pChildAttrName, (void*)&Value, sizeof(T));
+        return SetBinaryAttributeData(pEle, pChildAttrName, (void*)&Value, sizeof(T));
     }
+    /**
+    *@note Set Element Attribute }
+    */
 
-    bool SetChildElementAttributeData(
+    /**
+    *@note { Set Element Attribute 
+    *      if ChildElement not exist, Create a new. 
+    */  
+    bool SetChildAttributeData(
         TiXmlElement* pEle,          // User Element
         const char* pChildEleName,   // Will Get Data Child Element Name
         const char* pChildAttrName,
         const char* pValue = "");
 
-    bool SetChildElementAttributeData(
+    bool SetChildAttributeData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element Name
         const char* pChildAttrName,
         int nValue = 0 );
 
-    bool SetChildElementAttributeData(
+    bool SetChildAttributeData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element Name
         const char* pChildAttrName,
         bool bValue = false);
-    // }
+    /**
+    *@note Set Element Attribute } 
+    */ 
 }
 
 
