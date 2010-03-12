@@ -102,11 +102,67 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
         NULL,NULL,
         WS_VISIBLE|WS_CHILD,
         m_Rect, this, DrawWnd_ID);
-    if ( !m_EditMode )
+    CRect TmpRect;
+    m_pDrawContainer->GetClientRect(&TmpRect);
+    if ( m_EditMode )
     {
+        CPoint* pPointList = NULL;
+        IVUtil::UserToolsChoose Choose = IVUtil::GetDrawToolsByRule(*m_pRule, m_type);
+        switch (Choose)
+        {
+        case IVUtil::Choose_Line:
+        {   
+            WPG_TripwireEventDescription& des = m_pRule->ruleDescription.description.tripwireEventDescription;
+            CPoint szPointBuf[2];
+            IVUtil::WPGTripwireToPointList(des, TmpRect, szPointBuf);
+            m_LineDrawer->SetDefault(szPointBuf, 2);
+            OnBnClickedLineCheck();
+            if ( des.direction == ANY_DIRECTION )
+            {
+                m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_All);
+                OnBnClickedBothCheck();
+            }
+            else if ( des.direction == LEFT_TO_RIGHT )
+            {
+                m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Left);
+                OnBnClickedLeftCheck();
+            }
+            else if ( des.direction == RIGHT_TO_LEFT )
+            {
+                m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Right);
+                OnBnClickedRightCheck();
+            }
+            else{}
+        	break;
+        }
+        case IVUtil::Choose_Rectangle:
+        {
+            size_t nCount;
+            pPointList = IVUtil::WPGPolygonToPointList(
+                m_pRule->ruleDescription.description.aoiEventDescription.polygon,
+                TmpRect, nCount );
+            m_RectangleDrawer->SetDefault(pPointList, nCount);
+            OnBnClickedZoneCheck();
+            OnBnClickedRectangleCheck();
+            break;
+        }    
+        case IVUtil::Choose_Polygon:
+        {    
+            size_t nCount;
+            pPointList = IVUtil::WPGPolygonToPointList(
+            m_pRule->ruleDescription.description.aoiEventDescription.polygon,
+            TmpRect, nCount );
+            m_PolygonDrawer->SetDefault(pPointList, nCount);
+            OnBnClickedZoneCheck();
+            OnBnClickedPolygonCheck();
+    	    break;
+        }
+        default:
+        	break;
+        }
     }
     else{}
-    OnBnClickedLineCheck();
+    
     return TRUE;
 }
 
@@ -128,6 +184,7 @@ void CRuleMainBaseDlg::OnBnClickedOk()
     {
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     }
+    GatherUseSet();
     OnOK();
 }
 
@@ -142,7 +199,7 @@ void CRuleMainBaseDlg::OnBnClickedCancel()
 
 void CRuleMainBaseDlg::OnBnClickedAdvBt()
 {  
-    if ( m_nToolsChoose == Choose_Line )
+    if ( m_nToolsChoose == IVUtil::Choose_Line )
     {
         CLineAdvDlg Dlg;
         Dlg.Init(m_pRule);
@@ -195,7 +252,7 @@ void CRuleMainBaseDlg::DrawToolChange( Windows::IDrawer* pDrawer )
 
 void CRuleMainBaseDlg::OnBnClickedLineCheck()
 {
-    m_nToolsChoose = Choose_Line;
+    m_nToolsChoose = IVUtil::Choose_Line;
     m_LineBT.SetCheck(BST_CHECKED);
     m_ZoneBT.SetCheck(BST_UNCHECKED);
     m_SelectBT.SetCheck(BST_UNCHECKED);
@@ -212,7 +269,7 @@ void CRuleMainBaseDlg::OnBnClickedLineCheck()
 
 void CRuleMainBaseDlg::OnBnClickedZoneCheck()
 {
-    m_nToolsChoose = Choose_Rectangle;
+    m_nToolsChoose = IVUtil::Choose_Rectangle;
     m_LineBT.SetCheck(BST_UNCHECKED);
     m_ZoneBT.SetCheck(BST_CHECKED);
     m_SelectBT.SetCheck(BST_UNCHECKED);
@@ -268,15 +325,15 @@ void CRuleMainBaseDlg::OnBnClickedColourBt()
     }  
 
     DWORD dwColour = Dlg.GetColor();
-    if ( m_nToolsChoose == Choose_Line )
+    if ( m_nToolsChoose == IVUtil::Choose_Line )
     {
         m_LineDrawer->SetLineColour(dwColour);
     }
-    else if (m_nToolsChoose == Choose_Rectangle)
+    else if (m_nToolsChoose == IVUtil::Choose_Rectangle)
     {
         m_RectangleDrawer->SetLineColour(dwColour);
     }
-    else if (m_nToolsChoose == Choose_Polygon)
+    else if (m_nToolsChoose == IVUtil::Choose_Polygon)
     {
         m_PolygonDrawer->SetLineColour(dwColour);
     }
@@ -284,7 +341,7 @@ void CRuleMainBaseDlg::OnBnClickedColourBt()
 
 void CRuleMainBaseDlg::OnBnClickedPolygonCheck()
 {
-    m_nToolsChoose = Choose_Polygon;
+    m_nToolsChoose = IVUtil::Choose_Polygon;
     m_RectangleBT.SetCheck(BST_UNCHECKED);
     m_PolygonBT.SetCheck(BST_CHECKED);
     DrawToolChange(m_PolygonDrawer);
@@ -292,7 +349,7 @@ void CRuleMainBaseDlg::OnBnClickedPolygonCheck()
 
 void CRuleMainBaseDlg::OnBnClickedRectangleCheck()
 {
-    m_nToolsChoose = Choose_Rectangle;
+    m_nToolsChoose = IVUtil::Choose_Rectangle;
     m_RectangleBT.SetCheck(BST_CHECKED);
     m_PolygonBT.SetCheck(BST_UNCHECKED);
     DrawToolChange(m_RectangleDrawer);
@@ -304,14 +361,17 @@ void CRuleMainBaseDlg::OnClose()
     CDialog::OnClose();
 }
 
-#define YUV422 1
 BOOL CRuleMainBaseDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
 {
     CRect Rect = m_Rect;
     FILETIME* time = (FILETIME*)&bufStruct->localTime;
     //GetClientRect(&Rect);
     ClientToScreen(&Rect);
-    m_Player.Show(&Rect, bufStruct->pBuf, YUV422, 0, time);
+    m_Player.Show(
+        &Rect, 
+        bufStruct->pBuf,
+        CSingleVideoPlayer::YUV422,
+        0, time);
 
     g_IIVDeviceBase2->ReleaseLiveBuf(bufStruct);
     return TRUE;
@@ -344,7 +404,6 @@ void CRuleMainBaseDlg::UseToolCtrlMode(ToolMode Mode)
     	break;
     case Zone_Mode:
         m_LineBT.EnableWindow(FALSE);
-        OnBnClickedZoneCheck();
     	break;
     default:
     	break;

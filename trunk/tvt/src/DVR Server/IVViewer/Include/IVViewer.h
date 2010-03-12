@@ -51,6 +51,13 @@ struct IIVDataSaver
        
 struct IIVViewer
 {
+    enum
+    {
+        Show_Object = 0x1,
+        Show_Trace  = 0x2,
+        Show_Object_Trace = Show_Object|Show_Trace,
+    };
+
     // 显示目标矩形框和路径时的回调，
     // 传入DC和正在播放的数据帧的时间
     virtual BOOL Paint(
@@ -60,13 +67,16 @@ struct IIVViewer
         const FILETIME& time)=0;
 
     // bState=true显示目标和路径，否则隐藏
-    virtual BOOL ShowObjTrace(int nChannelID, bool bState)=0;
+    virtual void SetObjTraceShowState(int nChannelID, bool bShow)=0;
 
     // 得到目标和路径是否正在显示
-    virtual BOOL GetObjTraceState(int nChannelID, bool& bState)=0;
+    virtual void GetObjTraceShowState(int nChannelID, bool& bShow)=0;
 
     // 设置显示哪些，是目标还是轨迹
     virtual void SetDataShowState(int nChannelID, int nState)=0;
+
+    // 设置显示哪些，是目标还是轨迹
+    virtual void GetDataShowState(int nChannelID, int& nState)=0;
 };
 
 // 得到对应的对象指针

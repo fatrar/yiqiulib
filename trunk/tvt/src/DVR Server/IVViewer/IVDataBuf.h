@@ -102,8 +102,8 @@ protected:
         }
         ~ChannelTarget()
         {
-            STLDeleteSequence(TargetList);
-            STLDeleteSequence(TargetSaveList);
+            StlHelper::STLDeleteSequence(TargetList);
+            StlHelper::STLDeleteSequence(TargetSaveList);
         }
 
         GroupTarget* Find(const FILETIME& time);

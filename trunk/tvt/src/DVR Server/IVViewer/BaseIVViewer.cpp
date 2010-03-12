@@ -28,7 +28,7 @@ CBaseIVViewer::~CBaseIVViewer(void)
 {
     for ( int i= 0; i<Max_Device_Num; ++i )
     {
-        STLDeleteAssociate(m_pViewerBuf[i].PointBuf);
+        StlHelper::STLDeleteAssociate(m_pViewerBuf[i].PointBuf);
     }
     safeDeleteArray(m_pViewerBuf);
 }
@@ -46,11 +46,14 @@ inline void TranslateToRect(
     bottom = nHeight*(WPG_Rect.y+WPG_Rect.height) + ClientRect.top;
 }
 
+/**
+@note 将画出窗口的目标过滤
+*/
 bool IsVaildWPGTarget(const WPG_Target& Data)
 {
     const WPG_RectangleF& Rect = Data.boundingBox;
-    if ( Rect.height > 1 ||
-         Rect.width > 1 ||
+    if ( (Rect.height+Rect.y) > 1 ||
+         (Rect.width+Rect.x) > 1 ||
          Rect.x > 1 ||
          Rect.y > 1 )
     {
@@ -95,25 +98,29 @@ BOOL CBaseIVViewer::Paint(
         bNeedFresh = TRUE;
     }
 
-    HGDIOBJ hObject = ::GetStockObject(NULL_BRUSH);
-    HGDIOBJ hOldObj = ::SelectObject(dc, hObject);
-    //RECT ObjRect;
-    int left, top, right, bottom;
-    for (int i =0; i<nTarCount;++i)
+    TShowState& ShowState = m_ShowState[nChannelID];
+    if ( ShowState.bShow && (ShowState.nState& Show_Object) )
     {
-        WPG_Target& Tar = pTarBuf[i];
-        
-        // 过滤超过视频窗口的目标，
-        // 不能在SDK和Buf数据接收事过滤，不然会造成目标丢失
-        if ( !IsVaildWPGTarget(Tar) )
+        static HGDIOBJ hBrush = ::GetStockObject(NULL_BRUSH);
+        HGDIOBJ hOldObj = ::SelectObject(dc, hBrush);
+        //RECT ObjRect;
+        int left, top, right, bottom;
+        for (int i =0; i<nTarCount;++i)
         {
-            continue;
-        }
+            WPG_Target& Tar = pTarBuf[i];
 
-        TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
-        ::Rectangle(dc, left, top, right, bottom);
+            // 过滤超过视频窗口的目标，
+            // 不能在SDK和Buf数据接收事过滤，不然会造成目标丢失
+            if ( !IsVaildWPGTarget(Tar) )
+            {
+                continue;
+            }
+
+            TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
+            ::Rectangle(dc, left, top, right, bottom);
+        }
+        ::SelectObject(dc, hOldObj);
     }
-    ::SelectObject(dc, hOldObj);
 
     if ( bNeedFresh )
     {
@@ -126,25 +133,35 @@ BOOL CBaseIVViewer::Paint(
         RefrehPoint(m_pViewerBuf[nDeviceID].PointBuf, DataQueue, time);
     }
 
-    DrawTrace(dc, m_pViewerBuf[nDeviceID].PointBuf, rect);
 
+    if ( ShowState.bShow && (ShowState.nState& Show_Trace) )
+    {
+        DrawTrace(dc, m_pViewerBuf[nDeviceID].PointBuf, rect);
+    }
+    
     return TRUE;
 }
 
-BOOL CBaseIVViewer::ShowObjTrace( int nChannelID, bool bState )
+void CBaseIVViewer::SetObjTraceShowState( int nChannelID, bool bShow )
 {
-    return TRUE;
+    m_ShowState[nChannelID].bShow = bShow;
 }
 
-BOOL CBaseIVViewer::GetObjTraceState( int nChannelID, bool& bState )
+void CBaseIVViewer::GetObjTraceShowState( int nChannelID, bool& bShow )
 {
-    return TRUE;
+    bShow = m_ShowState[nChannelID].bShow;
 }
 
 void CBaseIVViewer::SetDataShowState( int nChannelID, int nState )
 {
-
+    m_ShowState[nChannelID].nState = nState;
 }
+
+void CBaseIVViewer::GetDataShowState( int nChannelID, int& nState )
+{
+    nState = m_ShowState[nChannelID].nState;
+}
+
 
 // 好像这部分有内存泄漏，要具体查下。
 void CBaseIVViewer::RefrehPoint( 

@@ -103,6 +103,7 @@ void CIVAlarmOutDlg::OnNMRclickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResul
 void CIVAlarmOutDlg::OnNMClickAlarmoutCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
+    CameraTreeUtil::SendClickCameraTreeMes(m_CameraTree, this);
 }
 
 void CIVAlarmOutDlg::OnBnClickedApplyBt()
@@ -410,12 +411,15 @@ void CIVAlarmOutDlg::UpdateUI( const AlarmOutSettings& Alarm )
     /**
     *@note 2. Update Alarm check Group
     */
+    TRACE("Start Alarm Table \n");
     WORD nTable = Alarm.table.nTable;
     for (int i = 0; i < Alarm_Check_Num; ++i)
     {
-        register WORD nTest = 1 << i;
-        m_AlarmCheck->SetCheck( nTable&nTest );
+        register WORD nVlaue = ( nTable & (1<<i) ) >> i;
+        TRACE("%d", nVlaue);
+        m_AlarmCheck[i].SetCheck( nVlaue );
     }
+    TRACE("\nEnd Alarm Table \n");
 }
 
 void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
@@ -462,6 +466,7 @@ void CIVAlarmOutDlg::OnAlarmEmpty()
 
 void CIVAlarmOutDlg::OnAlarmCopy()
 {
+    m_bIsCopy = TRUE;
     CollectUserSet(m_CopyAlarmSet);
 }
 

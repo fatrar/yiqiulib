@@ -85,12 +85,11 @@ protected:
         Invaild_ChannelID = -1,
     };
 
-    typedef map<string, WPG_Rule*> ChannelRule;
-
-    void LoadCfgDataToBuf();
-
     void UpdateLiveChannel(int nChannelID);
 
+    void UpdateCameraMenu(CMenu* pMenu);
+
+    void UpdateRuleMenu(CMenu* pMenu);
 private:
     //CTreeCtrl m_CameraTree;
     //CStatic m_RuleGroup;
@@ -98,7 +97,5 @@ private:
     CWnd m_PlayerWnd;
     CYUVSingleVideoPlayerEx m_Player;
     int m_nCurrentChan;
-    HTREEITEM m_ClickItem;
-    ChannelRule m_AllRule[Max_Channel];
-  
+    HTREEITEM m_ClickItem;  
 };

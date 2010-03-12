@@ -237,6 +237,11 @@ BOOL CDSP::DeviceInit()
         return FALSE;
     }
 
+    if ( IDNO == MessageBox(NULL, _T("Is Load Card Program?"), _T("Info"), MB_YESNO))
+    {
+        return TRUE;
+    }
+
     CFile file;
     if (!file.Open(s_pOutFileName[m_dwVideoFormat], CFile::modeRead))
     {

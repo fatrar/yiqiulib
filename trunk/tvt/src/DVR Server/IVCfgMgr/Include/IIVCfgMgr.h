@@ -91,7 +91,7 @@ struct IIVCfgMgr
 
     /**
     @purpose        : 删除一条规则
-    @notice         : 删除后可能会使以前遍历的IVVistor失效，
+    @notice         : 删除后可能会使以前遍历的IVVistor失效，需要重新Begin得到IVVistor
                       这个跟stl的deque类似，所以注意的地方跟它一样
     @param nChannelID : 通道号
     @param IVVistor : 实际的操作过程，应该是首先通过Begin到End遍历，

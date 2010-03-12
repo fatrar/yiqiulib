@@ -188,6 +188,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IVCfgMgrComdef.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IVVistor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -219,6 +227,10 @@
 			</File>
 			<File
 				RelativePath=".\IVCfgMgr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVCfgMgrComdef.h"
 				>
 			</File>
 			<File

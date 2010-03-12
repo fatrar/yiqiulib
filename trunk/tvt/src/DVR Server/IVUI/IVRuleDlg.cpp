@@ -176,14 +176,15 @@ void CIVRuleDlg::OnUpdateMemu(
     switch (Which)
     {
     case IV_Tree_Root:
+        m_nCurrentChan = nChannelID;
     	break;
     case IV_Tree_Camera:
         UpdateLiveChannel(nChannelID);
-        pMenu->EnableMenuItem(ID_RULE_USE, MFS_DISABLED);
+        UpdateCameraMenu(pMenu);
     	break;
     case IV_Tree_Rule:
         UpdateLiveChannel(nChannelID);
-        
+        UpdateRuleMenu(pMenu);
     	break;
     default:
     	break;
@@ -216,7 +217,6 @@ void CIVRuleDlg::OnClickCameraTree(
     }
 }
 
-//#define YUV422 1
 BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
 {
     CRect Rect;
@@ -230,36 +230,6 @@ BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
 
     g_IIVDeviceBase2->ReleaseLiveBuf(bufStruct);
     return TRUE;
-}
-
-void CIVRuleDlg::LoadCfgDataToBuf()
-{
-    IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
-    for (int i=0; i<Max_Channel; ++i)
-    {
-        ChannelRule& RuleMap = m_AllRule[i];
-        for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(i);
-            Iter != pIVCfgMgr->End();
-            Iter = Iter.Next() )
-        {
-            const char* pID = Iter.GetIdentityID();
-            if ( pID == NULL )
-            {
-                // log ..
-                TRACE("Iter.GetIdentityID() == NULL\n");
-                continue;
-            }
-
-            WPG_Rule* pRule = new WPG_Rule;
-            if ( Iter.GetRule(*pRule) )
-            {
-                delete pRule;
-                continue;
-            }
-
-            RuleMap[string(pID)] = pRule;
-        }
-    }
 }
 
 void CIVRuleDlg::UpdateLiveChannel(int nChannelID)
@@ -276,6 +246,79 @@ void CIVRuleDlg::UpdateLiveChannel(int nChannelID)
     g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
 }
 
+void CIVRuleDlg::UpdateCameraMenu( CMenu* pMenu )
+{
+    if ( CIVRuleCfgDoc::IsIVChannel(m_nCurrentChan) )
+    {
+        pMenu->CheckMenuItem(ID_RULE_USE, MFS_CHECKED|MF_BYCOMMAND);
+    }
+    else
+    {
+        pMenu->CheckMenuItem(ID_RULE_USE, MFS_UNCHECKED|MF_BYCOMMAND);
+    }
+
+    int nState = CIVRuleCfgDoc::GetShowState(m_nCurrentChan);
+    if ( nState == IIVViewer::Show_Object )
+    {
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWOBJECT, 
+            MFS_CHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWTRACE,
+            MFS_UNCHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWOBJTRACE,
+            MFS_UNCHECKED|MF_BYCOMMAND);
+    
+    }
+    else if ( nState == IIVViewer::Show_Trace )
+    {
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWOBJECT,
+            MFS_UNCHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWTRACE,
+            MFS_CHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWOBJTRACE,
+            MFS_UNCHECKED|MF_BYCOMMAND);
+    }
+    else
+    {
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWOBJECT,
+            MFS_UNCHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWTRACE,
+            MFS_UNCHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_SHOWOBJTRACE,
+            MFS_CHECKED|MF_BYCOMMAND);
+    }
+
+}
+
+void CIVRuleDlg::UpdateRuleMenu( CMenu* pMenu )
+{
+    if ( CIVRuleCfgDoc::IsRuleEnbale(m_ClickItem) )
+    {
+        pMenu->CheckMenuItem(
+            ID_RULE_ENABLERULE,
+            MFS_CHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_DISABLERULE, 
+            MFS_UNCHECKED|MF_BYCOMMAND);
+    }
+    else
+    {
+        pMenu->CheckMenuItem(
+            ID_RULE_ENABLERULE,
+            MFS_UNCHECKED|MF_BYCOMMAND);
+        pMenu->CheckMenuItem(
+            ID_RULE_DISABLERULE,
+            MFS_CHECKED|MF_BYCOMMAND);
+    }
+}
 
 //
 // ***************** IVRule Camera Menu Command *****************
@@ -293,22 +336,46 @@ void CIVRuleDlg::OnRuleDisableallrule()
 
 void CIVRuleDlg::OnRuleUse()
 {
-    CIVRuleCfgDoc::Use(m_nCurrentChan,TRUE);
+    if ( CIVRuleCfgDoc::IsUse(m_nCurrentChan) )
+    {
+        CIVRuleCfgDoc::Use(m_nCurrentChan,false); 
+    }
+    else
+    {
+        if ( g_IIVDeviceBase2->IsHaveFreeDevice() )
+        {
+            CIVRuleCfgDoc::Use(m_nCurrentChan,true);
+        }
+        else
+        {
+            MessageBox(
+                _T("Is not enought IV Channel, You Must Stop Other IV Channel First!"));
+        }
+    }
 }
 
 void CIVRuleDlg::OnRuleShowobject()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::SetShowState(
+        m_nCurrentChan, IIVViewer::Show_Object);
+    IVLiveFactory::GetLiveViewer()->SetDataShowState(
+        m_nCurrentChan, IIVViewer::Show_Object);
 }
 
 void CIVRuleDlg::OnRuleShowtrace()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::SetShowState(
+        m_nCurrentChan, IIVViewer::Show_Trace);
+    IVLiveFactory::GetLiveViewer()->SetDataShowState(
+        m_nCurrentChan, IIVViewer::Show_Trace);
 }
 
 void CIVRuleDlg::OnRuleShowobjtrace()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::SetShowState(
+        m_nCurrentChan, IIVViewer::Show_Object_Trace);
+    IVLiveFactory::GetLiveViewer()->SetDataShowState(
+        m_nCurrentChan, IIVViewer::Show_Object_Trace);
 }
 
 void CIVRuleDlg::OnRuleNewrule()
@@ -337,7 +404,8 @@ void CIVRuleDlg::OnRuleNewrule()
         /**
         *@note  1. Operator Device
         */
-        g_IIVDeviceBase2->Add(m_nCurrentChan, *pRule);
+        if ( g_IIVDeviceBase2->IsUse(m_nCurrentChan) )
+            g_IIVDeviceBase2->Add(m_nCurrentChan, *pRule);
 
         /**
         *@note 2. Save To XML and Memory, and update Tree
@@ -379,15 +447,17 @@ void CIVRuleDlg::OnRuleEditrule()
     }
 
     WPG_Rule* pRule = CIVRuleCfgDoc::GetRule(m_ClickItem);
-    IVRuleType RuleType = (IV_RuleID&)(pRule->ruleId).RuleID.nType;
+    IV_RuleID& RuleID = (IV_RuleID&)(pRule->ruleId);
+    IVRuleType RuleType = RuleID.RuleID.nType;
     CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType, this);
-    pDlg->SetComomParm(m_nCurrentChan, pRule, RuleType);
+    pDlg->SetComomParm(m_nCurrentChan, pRule, RuleType, TRUE);
     if ( IDOK == pDlg->DoModal() )
     {
         /**
         *@note  1. Operator Device
         */
-        g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pRule);
+        if ( g_IIVDeviceBase2->IsUse(m_nCurrentChan) )
+            g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pRule);
 
         /**
         *@note 2. Update To XML and Memory
@@ -412,12 +482,12 @@ void CIVRuleDlg::OnRuleRenamerule()
 
 void CIVRuleDlg::OnRuleEnablerule()
 {
-    CIVRuleCfgDoc::EnableRule(TRUE);
+    CIVRuleCfgDoc::EnableRule(m_ClickItem, TRUE);
 }
 
 void CIVRuleDlg::OnRuleDisablerule()
 {
-    CIVRuleCfgDoc::EnableRule(FALSE);
+    CIVRuleCfgDoc::EnableRule(m_ClickItem, FALSE);
 }
 
 // }
