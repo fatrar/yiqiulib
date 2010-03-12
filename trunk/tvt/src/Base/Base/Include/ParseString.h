@@ -21,6 +21,7 @@
 #include <deque>
 #include <string>
 #include <sstream>
+#include <iomanip>
 using namespace std;
 
 BEGIN_BASE_ENGINE
@@ -97,6 +98,8 @@ public:
 protected:
     void Parse(const char* pStr)
     {
+        if ( NULL == pStr ){ return; }
+
         const char *pNew, *pOld = pStr;
         for (pNew=pStr; *pNew ; ++pNew)
         {
@@ -134,6 +137,7 @@ template<const char cDelimiter = ';'>
 class CMakeString
 {
 public:
+    CMakeString(){ m_buf<< std::setw(4);}
     typedef CMakeString<cDelimiter> _Myt;
 
     template<typename T>
@@ -143,7 +147,7 @@ public:
         return *this;
     }
 
-    const char* str(){ return m_buf.str().c_str(); }
+    string str(){ return m_buf.str(); }
 protected:
     stringstream m_buf;
 };
