@@ -83,8 +83,8 @@ struct Scheduleday
         endtime[0] = 24*60-1;     
     }
     int  useNo;//已经使用的个数，即排程的个数
-    int  starttime[Max_Schedule_day];//以分钟为单位的24小时制开始时间
-    int	 endtime[Max_Schedule_day];//以分钟为单位的24小时制结束时间
+    unsigned short starttime[Max_Schedule_day];//以分钟为单位的24小时制开始时间
+    unsigned short endtime[Max_Schedule_day];//以分钟为单位的24小时制结束时间
     //每一个排程项用下标相同的起始和终止时间来表示
 };
 
@@ -166,10 +166,9 @@ union IV_RuleID
             SystemTimeToFileTime(&syt, &SetTime);
         }
 
-        DWORD ID;          // 0x00
-        FILETIME SetTime;  // 0x04
-        BYTE nType;        // 0xC
-        BYTE resvr[3];     // 0xD
+        DWORD ID:4;          // 0x00
+        IVRuleType nType:4;  // 0x04
+        FILETIME SetTime;    // 0x08
     } RuleID;
 
     unsigned char szRuleId[16];
