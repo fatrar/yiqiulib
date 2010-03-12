@@ -33,7 +33,7 @@ namespace TinyXmlUtil
     // Get Text Value
     // {
     // Get pUserEle Child Element Name=pChildEleName Text
-    const char* GetElementTextData(
+    const char* GetTextData(
         TiXmlElement* pEle,          // User Element
         const char* pDefault = NULL);
 
@@ -44,120 +44,120 @@ namespace TinyXmlUtil
     //         char (&szValue)[nSize],
     //         const char* pDefault = NULL)
 
-    bool GetElementTextData(
+    bool GetTextData(
         TiXmlElement* pEle,          // User Element
         int& nValue,
         int nDefault = 0);
 
-    bool GetElementTextData(
+    bool GetTextData(
         TiXmlElement* pEle,          // User Element
         bool& bValue,
         bool bDefault = false);
 
-    bool GetElementTextData(
+    bool GetBinaryTextData(
         TiXmlElement* pEle,          // User Element
         void* pValue,                // buf
         size_t& nLen );
 
     template<typename T>
-    bool GetElementTextData(
+    bool GetBinaryTextData(
         TiXmlElement* pEle,          // User Element
         T& Value )
     {
         size_t nLen = sizeof(T);
-        return GetElementTextData(pEle, (void*)&Value, nLen);
+        return GetBinaryTextData(pEle, (void*)&Value, nLen);
     }
 
-    const char* GetChildElementTextData(
+    const char* GetChildTextData(
         TiXmlElement* pEle,          // User Element
         const char* pChildEleName,   // Will Get Data Child Element Name
         const char* pDefault = NULL);
 
-    bool GetChildElementTextData(
+    bool GetChildTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         int& nValue,
         int nDefault = 0 );
 
-    bool GetChildElementTextData(
+    bool GetChildTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         bool& bValue,
         bool bDefault = false );
 
-    bool GetChildElementTextData(
+    bool GetChildBinaryTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         void* pValue,               // buf
         size_t& nLen );
 
     template<typename T>
-    bool GetChildElementTextData(
+    bool GetChildBinaryTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         T& Value )
     {
         size_t nLen = sizeof(T);
-        return GetChildElementTextData(pEle, pChildEleName, (void*)&Value, nLen);
+        return GetChildBinaryTextData(pEle, pChildEleName, (void*)&Value, nLen);
     }
     // }
 
     // Set Text Value
     // {
     // Get pUserEle Child Element Name=pChildEleName Text
-    bool SetElementTextData(
+    bool SetTextData(
         TiXmlElement* pEle,          // User Element
         const char* pValue );
 
-    bool SetElementTextData(
+    bool SetTextData(
         TiXmlElement* pEle,          // User Element
         int nValue );
 
-    bool SetElementTextData(
+    bool SetTextData(
         TiXmlElement* pEle,          // User Element
         bool bValue );
 
-    bool SetElementTextData(
+    bool SetBinaryTextData(
         TiXmlElement* pEle,          // User Element
         const void* pValue,
         size_t nLen );
 
     template<typename T>
-    bool SetElementTextData(
+    bool SetBinaryTextData(
         TiXmlElement* pEle,          // User Element
         const T& Value)
     {
-        return SetElementTextData(pEle, (void*)&Value, sizeof(T));
+        return SetBinaryTextData(pEle, (void*)&Value, sizeof(T));
     }
 
-    bool SetChildElementTextData(
+    bool SetChildTextData(
         TiXmlElement* pEle,          // User Element
         const char* pChildEleName,   // Will Get Data Child Element Name
         const char* pValue );
 
-    bool SetChildElementTextData(
+    bool SetChildTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         int nValue );
 
-    bool SetChildElementTextData(
+    bool SetChildTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         bool bValue );
 
-    bool SetChildElementTextData(
+    bool SetChildBinaryTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         const void* pValue,
         size_t nLen );
 
     template<typename T>
-    bool SetChildElementTextData(
+    bool SetChildBinaryTextData(
         TiXmlElement* pEle,         // User Element
         const char* pChildEleName,  // Will Get Data Child Element N
         const T& Value )
     {
-        return SetChildElementTextData(pEle, pChildEleName, (void*)&Value, sizeof(T));
+        return SetChildBinaryTextData(pEle, pChildEleName, (void*)&Value, sizeof(T));
     }
     // }
 

@@ -23,7 +23,7 @@ namespace TinyXmlUtil
 
 #if defined(_MSC_VER) && (_MSC_VER <= 1200 )  // vc6 and old version use
 	
-bool GetElementTextData(
+bool GetTextData(
     TiXmlElement* pEle,          // User Element
     char* szValue,
     const char* pDefault = NULL)
@@ -38,13 +38,13 @@ bool GetElementTextData(
 }
 
 template<unsigned long nSize>
-bool GetElementAttributeData(
+bool GetAttributeData(
 	TiXmlElement* pEle,          // User Element
 	const char* pChildAttrName,
 	char* szValue,
 	const char* pDefault = NULL )
 {
-	const char* pTmpVal = GetElementAttributeData(pEle, pChildAttrName, pDefault);
+	const char* pTmpVal = GetAttributeData(pEle, pChildAttrName, pDefault);
 	if ( NULL == pTmpVal )
 	{
 		return false;
@@ -53,14 +53,14 @@ bool GetElementAttributeData(
 	return (0 == strcpy(szValue, pTmpVal));
 }
 
-bool GetChildElementAttributeData(
+bool GetChildAttributeData(
 	TiXmlElement* pEle,          // User Element
 	const char* pChildEleName,   // Will Get Data Child Element Name
 	const char* pChildAttrName,
 	char* szValue,
 	const char* pDefault = NULL )
 {
-	const char* pTmpVal = GetChildElementAttributeData(
+	const char* pTmpVal = GetChildAttributeData(
 		pEle, pChildEleName, pChildAttrName, pDefault);
 	if ( NULL == pTmpVal )
 	{
@@ -73,12 +73,12 @@ bool GetChildElementAttributeData(
 #else
 
 template<unsigned long nSize>
-bool GetElementTextData(
+bool GetTextData(
 	TiXmlElement* pEle,          // User Element
 	char (&szValue)[nSize],
 	const char* pDefault = NULL)
 {
-	const char* pTmpVal = GetElementTextData(pEle, pDefault);
+	const char* pTmpVal = GetTextData(pEle, pDefault);
 	if ( NULL == pTmpVal )
 	{
 		return false;
@@ -88,14 +88,14 @@ bool GetElementTextData(
 }
 
 template<unsigned long nSize>
-bool GetChildElementAttributeData(
+bool GetChildAttributeData(
     TiXmlElement* pEle,          // User Element
     const char* pChildEleName,   // Will Get Data Child Element Name
     const char* pChildAttrName,
     char (&szValue)[nSize],
     const char* pDefault = NULL )
 {
-    const char* pTmpVal = GetChildElementAttributeData(
+    const char* pTmpVal = GetChildAttributeData(
         pEle, pChildEleName, pChildAttrName, pDefault);
     if ( NULL == pTmpVal )
     {
@@ -106,13 +106,13 @@ bool GetChildElementAttributeData(
 }
 
 template<unsigned long nSize>
-bool GetElementAttributeData(
+bool GetAttributeData(
 	TiXmlElement* pEle,          // User Element
 	const char* pChildAttrName,
 	char (&szValue)[nSize],
 	const char* pDefault = NULL )
 {
-	const char* pTmpVal = GetElementAttributeData(pEle, pChildAttrName, pDefault);
+	const char* pTmpVal = GetAttributeData(pEle, pChildAttrName, pDefault);
 	if ( NULL == pTmpVal )
 	{
 		return false;
