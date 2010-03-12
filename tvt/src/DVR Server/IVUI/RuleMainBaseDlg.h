@@ -114,10 +114,6 @@ protected:
 protected:
     enum 
     {
-        Choose_Line,
-        Choose_Rectangle,
-        Choose_Polygon,
-
         PlayerWnd_ID = 0x8100,
         DrawWnd_ID = 0x8101,
     };
@@ -139,7 +135,7 @@ protected:
     CButton m_RectangleBT;
     CButton m_PolygonBT;
 
-    int m_nToolsChoose;
+    IVUtil::UserToolsChoose m_nToolsChoose;
 
     CWnd m_PlayerWnd;
     CYUVSingleVideoPlayer m_Player;

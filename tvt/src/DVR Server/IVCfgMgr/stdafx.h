@@ -35,4 +35,7 @@
 #include "..\..\Base\Base\Include\StringHelp.h"
 using namespace OCI;
 
+#include "..\DEVICEControl\WPG_EventOccurrence.h"
+#include "..\DEVICEControl\IIVDevice.h"
+#include "IVCfgMgrComdef.h"
 // TODO: reference additional headers your program requires here

@@ -44,12 +44,13 @@ public:
         const FILETIME& time);
 
     // bState=true显示目标和路径，否则隐藏
-    virtual BOOL ShowObjTrace(int nChannelID, bool bState);
+    virtual void SetObjTraceShowState(int nChannelID, bool bShow);
 
-    // 得到目标和路径是否正在显示
-    virtual BOOL GetObjTraceState(int nChannelID, bool& bState);
+    virtual void GetObjTraceShowState(int nChannelID, bool& bShow);
 
     virtual void SetDataShowState(int nChannelID, int nState);
+
+    virtual void GetDataShowState(int nChannelID, int& nState);
 
 protected:
     typedef deque<WPG_PointF> PointList;
@@ -76,8 +77,15 @@ protected:
         const RECT& rect );
 
 protected:
-    int m_nState;
-    BOOL m_bShow;
+    struct TShowState
+    {
+        TShowState():nState(Show_Object_Trace),bShow(TRUE){}
+        int nState;
+        BOOL bShow;
+    };
+    
+    //map<int, TShowState> m_ShowState;
+    TShowState m_ShowState[MAX_IV_Channel];
 
     //typedef map<int, ChannelPoint> AllChannelPoint;
    // AllChannelPoint m_PointRecord;

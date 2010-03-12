@@ -36,7 +36,7 @@ void CFilterDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_FILTER_ON, m_FiterOnBt);
     DDX_Control(pDX, IDC_FILTER_OFF, m_FiterOffBt);
     DDX_Text(pDX, IDC_Multiplier, m_strMultiplier);
-    DDX_Text(pDX, IDC_EDIT2, m_nMultiplierEdit);
+    DDX_Text(pDX, IDC_Muti_Edit, m_nMultiplierEdit);
 	DDV_MinMaxFloat(pDX, m_nMultiplierEdit, 0.01f, 100.0f);
 }
 
@@ -174,7 +174,11 @@ BOOL CFilterDlg::OnInitDialog()
 
 #define ShowMultiplier(s)  \
     GetDlgItem(IDC_Multiplier)->ShowWindow(s);\
-    GetDlgItem(IDC_EDIT2)->ShowWindow(s)
+    GetDlgItem(IDC_Muti_Edit)->ShowWindow(s)
+
+#define EnableMultiplier(s) \
+    GetDlgItem(IDC_Multiplier)->EnableWindow(s);\
+    GetDlgItem(IDC_Muti_Edit)->EnableWindow(s)
 
 #define DisableAllDrawer() \
     m_szRectangleDrawer[0]->Enable(FALSE); \
@@ -261,6 +265,7 @@ void CFilterDlg::DoClickOne(int nItem)
         case 2:
             DisableAllDrawer();
             ShowMultiplier(SW_SHOW);
+            EnableMultiplier(TRUE);
             break;
         case 3:
             DisableAllDrawer();
@@ -293,6 +298,7 @@ void CFilterDlg::DoClickOne(int nItem)
             break;
         case 2:
             ShowMultiplier(SW_SHOW);
+            EnableMultiplier(FALSE);
             break;
         }
     }
@@ -347,6 +353,7 @@ void CFilterDlg::OnBnClickedFilterOn()
         break;
     case 2:
         ShowMultiplier(SW_SHOW);
+        GetDlgItem(IDC_Muti_Edit)->EnableWindow(TRUE);
         break;
     case 3:      
         break;
@@ -377,7 +384,8 @@ void CFilterDlg::OnBnClickedFilterOff()
         m_szRectangleDrawer[3]->Enable(FALSE);
         break;
     case 2:
-        ShowMultiplier(SW_HIDE);
+        ShowMultiplier(SW_SHOW);
+        GetDlgItem(IDC_Muti_Edit)->EnableWindow(FALSE);
         break;
     case 3:      
         break;

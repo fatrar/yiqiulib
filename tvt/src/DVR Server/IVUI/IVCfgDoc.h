@@ -71,7 +71,6 @@ protected:
 
     static BOOL IsIVChannel(int nChannelID);
 
-
     const IV_RuleID* GetRuleID(HTREEITEM Item);
 
 private:
@@ -128,10 +127,12 @@ private:
 #ifdef IVCfgDoc_Use_Map
     typedef map<int, RuleSettingMap> AllRuleSettingMap;
     static AllRuleSettingMap m_Doc;
+    static map<int, int> m_ShowState;
 #else
     static RuleSettingMap m_Doc[Max_Channel]; 
+    static int m_ShowState[Max_Channel];
 #endif
-    
+
     typedef deque<IRuleTrigger*> RuleTriggerList;
     static RuleTriggerList m_RuleTrigger;
     static set<int> m_UseChannel;
@@ -189,7 +190,13 @@ protected:
 
     void EnableRule(HTREEITEM Item, BOOL bEnable =TRUE);
 
-    void Use(int nChannelID, BOOL bEnable);
+    void Use(int nChannelID, bool bEnable);
+    bool IsUse(int nChannelID); 
+
+    int GetShowState(int nChannelID);
+    void SetShowState(int nChannelID, int nState);
+
+    BOOL IsRuleEnbale(HTREEITEM Item);
 
 private: 
     template<OnRuleXXFn T>

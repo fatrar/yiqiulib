@@ -303,14 +303,39 @@ BOOL CDSP::Use( int nChannelID, bool bState )
     
     // when is running and Set Run --> pass
     // when is stop and Set Stop --> pass
-    if ( (m_szCurrentIVChannel[nDeviceID]==nChannelID && bState) ||
-         (m_szCurrentIVChannel[nDeviceID]!=nChannelID && !bState) )
+    do 
     {
-        return TRUE;
+        // 如果这个卡，有剩余的智能的通道，只能调用开始智能
+        if ( m_szCurrentIVChannel[nDeviceID] == Device_Free_Flag )
+        {
+            if (bState)
+            {
+                m_szCurrentIVChannel[nDeviceID] = nChannelID;
+                break;
+            }
+            
+            return FALSE;
+        }
+
+        if (m_szCurrentIVChannel[nDeviceID]==nChannelID)
+        {
+            // 如果这个卡使用的通道与传入参数一样
+            // 命令为启用，就pass，停止就调用板卡
+            if (bState){ return TRUE;}
+            
+            m_szCurrentIVChannel[nDeviceID] = Device_Free_Flag;
+            break;
+        }
+        else
+        {
+            // 这里的意思为正在有其他通道使用智能，
+            // 如果函数调用非对应通道的停止，那么返回TRUE
+            // 如果开始智能那必须先停止正在跑的，所以返回FALSE
+            return !bState;
+        }
     }
+    while (0);
    
-    // Other Set to DSP
-    m_szCurrentIVChannel[nDeviceID] = nChannelID;
     return SetParam(
         PT_PCI_SET_AI_ENABLE, nChannelID, int(bState) );
 }

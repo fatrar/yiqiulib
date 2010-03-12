@@ -75,6 +75,7 @@
 #define IDC_FILTER_OFF                  1037
 #define IDC_SPIN1                       1038
 #define IDC_EDIT2                       1039
+#define IDC_Muti_Edit                   1039
 #define IDC_Multiplier                  1040
 #define IDC_IV_Tab_Group                1041
 #define IDC_Add_CHECK                   1042

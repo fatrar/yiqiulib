@@ -1007,20 +1007,20 @@ void CScheduleCtrl::SetTimeSec(const Scheduleday *ptimelist)
 	m_cRectList.RemoveAll();//清空列表
 
     int nCount = ptimelist->useNo;
-    const int (&starttime)[Max_Schedule_day] = ptimelist->starttime;
-    const int (&endtime)[Max_Schedule_day] = ptimelist->endtime;
+    const WORD (&starttime)[Max_Schedule_day] = ptimelist->starttime;
+    const WORD (&endtime)[Max_Schedule_day] = ptimelist->endtime;
 	for (int i=0; i<nCount; i++)
 	{
 		CRect rcConvert;
 		WEEKTIMESECTION TimeSect;
-		TimeSect.startTimeSec=starttime[i]*60;
+		TimeSect.startTimeSec=int(starttime[i])*60;
 		if (endtime[i]== 1440-1)
 		{
-			TimeSect.endTimeSec=(endtime[i]+1)*60;
+			TimeSect.endTimeSec=(int(endtime[i])+1)*60;
 		}
 		else
 		{
-			TimeSect.endTimeSec=endtime[i]*60;
+			TimeSect.endTimeSec=int(endtime[i])*60;
 		}
 		//将时间区域转换为矩形
 		TimeSectToRect(TimeSect, rcConvert);
@@ -1422,6 +1422,12 @@ void CScheduleCtrl::OnSize(UINT nType, int cx, int cy)
 	rcDeflate.DeflateRect(0, 0, DECREASE_SIZE, DECREASE_SIZE);
 
 	/*改变控间大小的时候 必须把那个相对于以前的位置的矩形区域列表进行从新转换成新的位置的矩形区域*/
+
+    if ( rcDeflate.Width() == 0 ||
+         rcDeflate.Height() == 0 )
+    {
+        return;
+    }
 
 	InitRect(rcDeflate);/**/
 

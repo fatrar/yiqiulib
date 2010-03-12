@@ -156,6 +156,11 @@ BOOL CInvadeAddDlg::OnInitDialog()
 {
     CRuleAddMainDlg::OnInitDialog();
     UseToolCtrlMode(Use_All_Mode);
+    if ( !m_EditMode )
+    {
+        OnBnClickedLineCheck();
+    }
+    //
     return TRUE;
 }
 
@@ -164,29 +169,32 @@ BOOL CInvadeAddDlg::GatherUseSet()
     CRect rect;
     m_pDrawContainer->GetClientRect(&rect);
     WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
-    if ( m_nToolsChoose == Choose_Line )
+    if ( m_nToolsChoose == IVUtil::Choose_Line )
     {
         if ( !GetUseInputLineInfor(m_LineDrawer, rect, des.tripwireEventDescription))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
         }
+        m_pRule->ruleDescription.type = TRIPWIRE_EVENT;
     }
-    else if (m_nToolsChoose == Choose_Rectangle)
+    else if (m_nToolsChoose == IVUtil::Choose_Rectangle)
     {
         if ( !GetUseInputRectangleInfor(m_RectangleDrawer, rect, des.aoiEventDescription.polygon))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
         }
+        m_pRule->ruleDescription.type = AOI_EVENT;
     }
-    else if (m_nToolsChoose == Choose_Polygon)
+    else if (m_nToolsChoose == IVUtil::Choose_Polygon)
     {
-        if ( GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
+        if ( !GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
         }
+        m_pRule->ruleDescription.type = AOI_EVENT;
     }
     else 
     {
@@ -196,17 +204,15 @@ BOOL CInvadeAddDlg::GatherUseSet()
     return TRUE;
 }
 
-//BOOL CLeaveDisappearAddDlg::OnInitDialog()
-//{
-//    CRuleAddMainDlg::OnInitDialog();
-//    UseToolCtrlMode(Use_All_Mode);
-//    return TRUE;
-//}
-
 BOOL CLeftBehindAddDlg::OnInitDialog()
 {
     CRuleAddMainDlg::OnInitDialog();
     UseToolCtrlMode(Zone_Mode);
+    if ( !m_EditMode )
+    {
+        OnBnClickedZoneCheck();
+    }
+    
     return TRUE;
 }
 
@@ -215,7 +221,7 @@ BOOL CLeftBehindAddDlg::GatherUseSet()
     CRect rect;
     m_pDrawContainer->GetClientRect(&rect);
     WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
-    if (m_nToolsChoose == Choose_Rectangle)
+    if (m_nToolsChoose == IVUtil::Choose_Rectangle)
     {
         if ( !GetUseInputRectangleInfor(m_RectangleDrawer, rect, des.aoiEventDescription.polygon))
         {
@@ -223,9 +229,9 @@ BOOL CLeftBehindAddDlg::GatherUseSet()
             return FALSE;
         }
     }
-    else if (m_nToolsChoose == Choose_Polygon)
+    else if (m_nToolsChoose == IVUtil::Choose_Polygon)
     {
-        if ( GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
+        if ( !GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
         {
             AfxMessageBox(_T("Please Input line!"));
             return FALSE;
@@ -239,17 +245,14 @@ BOOL CLeftBehindAddDlg::GatherUseSet()
     return TRUE;
 }
 
-//BOOL CLoitersAddDlg::OnInitDialog()
-//{
-//    CRuleAddMainDlg::OnInitDialog();
-//    UseToolCtrlMode(Zone_Mode);
-//    return TRUE;
-//}
-
 BOOL CStatisticAddDlg::OnInitDialog()
 {
     CRuleAddMainDlg::OnInitDialog();
     UseToolCtrlMode(Line_Mode);
+    if ( !m_EditMode )
+    {
+        OnBnClickedLineCheck();
+    }
     return TRUE;
 }
 
@@ -257,6 +260,10 @@ BOOL CVehicleRetrogradeAddDlg::OnInitDialog()
 {
     CRuleAddMainDlg::OnInitDialog();
     UseToolCtrlMode(Zone_Mode);
+    if ( !m_EditMode )
+    {
+        OnBnClickedZoneCheck();
+    }
     return TRUE;
 }
 
@@ -264,6 +271,10 @@ BOOL CIllegalParkingAddDlg::OnInitDialog()
 {
     CRuleAddMainDlg::OnInitDialog();
     UseToolCtrlMode(Zone_Mode);
+    if ( !m_EditMode )
+    {
+        OnBnClickedZoneCheck();
+    }
     return TRUE;
 }
 

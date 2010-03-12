@@ -153,7 +153,7 @@ static void WPGRectToPointList(
     szPointBuf[1].y = szPointBuf[0].y;
 
     szPointBuf[2].x = szPointBuf[1].x;
-    szPointBuf[2].y = int((Rect.y+Rect.height)*nHeight);;
+    szPointBuf[2].y = int((Rect.y+Rect.height)*nHeight);
     szPointBuf[3].x = szPointBuf[0].x;
     szPointBuf[3].y = szPointBuf[2].y;
 }
@@ -171,7 +171,105 @@ static void PointListToWPGRect(
     Rect.height = float(szPointBuf[2].y-szPointBuf[0].y)/nHeight;
 }
 
+static CPoint* WPGPolygonToPointList(
+    const WPG_PolygonF& polygon,
+    const CRect& WindowRect,
+    size_t& nCount )
+{
+    nCount = polygon.numPoints;
+    CPoint* pPoint = new CPoint[nCount];
+    int nWidth = WindowRect.Width();
+    int nHeight = WindowRect.Height();
+    const WPG_PointF (&points)[WPG_MAX_NUM_OF_POINTS] = polygon.points;
+    for ( int i=0; i<nCount; ++i )
+    {
+        pPoint[i].x = int(points[i].x*nWidth);
+        pPoint[i].y = int(points[i].y*nHeight);
+    }
+    return pPoint;
 }
+
+static void WPGTripwireToPointList(
+    WPG_TripwireEventDescription& des,
+    const CRect& WindowRect,
+    CPoint (&szPointBuf)[2])
+{
+    int nWidth = WindowRect.Width();
+    int nHeight = WindowRect.Height();
+    szPointBuf[0].x = int(des.startPoint.x*nWidth);
+    szPointBuf[0].y = int(des.startPoint.y*nHeight);
+    szPointBuf[1].x = int(des.endPoint.x*nWidth);
+    szPointBuf[1].y = int(des.endPoint.y*nHeight);
+}
+
+
+enum UserToolsChoose
+{
+    Choose_Invaild = -1,
+    Choose_Line,
+    Choose_Rectangle,
+    Choose_Polygon,
+    Choose_Nothing,
+};
+
+static UserToolsChoose JudgeUserChooseBySet(const WPG_PolygonF& polygon)
+{
+    if ( polygon.numPoints != 4 )
+    {
+        return Choose_Polygon;
+    }
+
+    if ( polygon.points[0].x == polygon.points[3].x &&
+         polygon.points[0].y == polygon.points[1].y &&
+         polygon.points[1].x == polygon.points[2].x &&
+         polygon.points[2].y == polygon.points[3].y )
+    {
+        return Choose_Rectangle;
+    }
+
+    return Choose_Polygon;
+}
+
+static UserToolsChoose GetDrawToolsByRule(
+    const WPG_Rule& Rule,
+    IVRuleType t = IV_UnKnown)
+{
+    if ( t == IV_UnKnown )
+    {
+        t = ((IV_RuleID&)(Rule.ruleId)).RuleID.nType;
+    }  
+    
+    const WPG_RuleDescription& ruleDes = Rule.ruleDescription;
+    switch(t)
+    {
+    case IV_Invade:
+    case IV_Leave_Disappear:
+        if ( ruleDes.type == TRIPWIRE_EVENT)
+        {
+            return Choose_Line;
+        }
+        return JudgeUserChooseBySet(ruleDes.description.aoiEventDescription.polygon);
+
+    case IV_LeftBehind:
+    case IV_Loiters:
+        return JudgeUserChooseBySet(ruleDes.description.aoiEventDescription.polygon);
+    
+    case IV_Statistic:
+        return Choose_Line;
+    case IV_Vehicle_Retrograde:
+    case IV_Illegal_Parking:
+        assert(false);
+        break;
+    case IV_Stage_Change:
+        return Choose_Nothing;
+    default:
+        assert(false);
+        break;
+    }
+    return Choose_Invaild;
+};
+
+};
 
 #endif  // _IVUTIL_H_2010_
 

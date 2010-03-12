@@ -21,6 +21,7 @@
 #include ".\Include\IIVCfgMgr.h"
 
 
+
 class CIVCfgMgr :
     public IIVCfgMgr ,
     public Singleton<CIVCfgMgr>
@@ -60,14 +61,13 @@ public:
 
     virtual void GetDataShowState(int nChannelID,int& nState);
 
+protected: 
+
+
 private:
     TiXmlDocument m_Doc;
     TiXmlElement* m_pRootEle;
 };
-
-
-
-
 
 
 #endif  // End of file

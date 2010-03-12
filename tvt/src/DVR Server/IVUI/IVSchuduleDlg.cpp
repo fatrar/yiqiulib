@@ -90,7 +90,9 @@ void CIVSchuduleDlg::OnDestroy()
 void CIVSchuduleDlg::OnNMRclickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;
-    CameraTreeUtil::PopUpCameraMemu(m_CameraTree, 2, this, this);
+    CameraTreeUtil::PopUpCameraMemu(
+        m_CameraTree, 
+        2, this, this);
 }
 
 void CIVSchuduleDlg::OnNMClickSchuduleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
@@ -332,7 +334,7 @@ void CIVSchuduleDlg::UpdateUI( const ScheduleSettings& Sch )
 {
     for (int i = 0; i< Week_Day; ++i)
     {
-        m_ScheduleCtrl[i].SetTimeSec(&Sch.s[0]);
+        m_ScheduleCtrl[i].SetTimeSec(&Sch.s[i]);
     }
 }
 
@@ -340,7 +342,7 @@ void CIVSchuduleDlg::CollectUserSet(ScheduleSettings& TmpSchedule)
 {
     for (int i = 0; i< Week_Day; ++i)
     {
-        m_ScheduleCtrl[i].GetTimeSec(&TmpSchedule.s[0]);
+        m_ScheduleCtrl[i].GetTimeSec(&TmpSchedule.s[i]);
     }
 }
 
@@ -375,6 +377,7 @@ void CIVSchuduleDlg::OnSchuduleFull()
     for (int i = 0; i< Week_Day; ++i)
     {
         m_ScheduleCtrl[i].Full();
+        m_ScheduleCtrl[i].RedrawWindow();
     }
 }
 
@@ -383,6 +386,7 @@ void CIVSchuduleDlg::OnSchuduleEmpty()
     for (int i = 0; i< Week_Day; ++i)
     {
         m_ScheduleCtrl[i].Empty();
+        m_ScheduleCtrl[i].RedrawWindow();
     }
 }
 
