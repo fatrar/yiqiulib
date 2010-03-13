@@ -209,6 +209,13 @@ public:
 
     // IIVDeviceBase2
 public:
+    /**
+    *@note Add a Rule, when Program is Run, Set All Rule To Device which channel is Auto Run Channel
+    *@param	nChannelID  Channel ID
+    *@param RuleID      Rule ID 
+    *@param bEnable     Enable or Disable
+    *@return Is Succeeded
+    */
     virtual BOOL Add(
         int nChannelID,
         const WPG_Rule& Rule,
@@ -219,6 +226,13 @@ public:
         int nChannelID,
         const IV_RuleID& RuleID);
 
+    /**
+    *@note Enable a Rule
+    *@param	nChannelID  Channel ID
+    *@param RuleID      Rule ID 
+    *@param bEnable     Enable or Disable
+    *@return Is Succeeded
+    */
     virtual BOOL EnableRule(
         int nChannelID,
         const IV_RuleID& RuleID,

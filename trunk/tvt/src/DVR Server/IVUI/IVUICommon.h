@@ -77,7 +77,7 @@ enum TreeMenuAttibute
     Menu_Paste_Index = 5,
     Menu_Paste_All_Index = 7,  
 
-    Menu_Disbale = /*MF_BYCOMMAND |*/ MF_DISABLED | MF_GRAYED,
+    Menu_Disbale = MF_BYCOMMAND | MF_DISABLED | MF_GRAYED,
     Menu_Enbale = MF_BYCOMMAND | MF_ENABLED,
 };
 

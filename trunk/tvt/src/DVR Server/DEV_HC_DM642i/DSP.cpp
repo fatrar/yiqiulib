@@ -171,7 +171,7 @@ CDSP::CDSP()
 
     // IV .. Init
     memset(m_szCurrentIVChannel, Device_Free_Flag, sizeof(m_szCurrentIVChannel));
-    m_szCurrentIVChannel[0] = 1;
+    //m_szCurrentIVChannel[0] = 0;
 
     ZeroMemory(m_szHaveStatistic, sizeof(m_szHaveStatistic));
 

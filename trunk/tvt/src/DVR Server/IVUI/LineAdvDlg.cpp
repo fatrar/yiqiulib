@@ -116,7 +116,7 @@ void CLineAdvDlg::OnBnClickedOk()
     if ( m_strRuleNameEdit.GetLength() == 0 )
     {
         strTmp.LoadString(IDS_RuleName_Alarm);
-        if ( AfxMessageBox(strTmp) == IDCANCEL )
+        if ( AfxMessageBox(strTmp, MB_OKCANCEL) == IDCANCEL )
         {
             return;
         }  
@@ -149,7 +149,7 @@ void CLineAdvDlg::OnBnClickedOk()
     {
         CString strTmp;
         strTmp.LoadString(IDS_Object_Alarm);
-        if ( AfxMessageBox(strTmp) == IDCANCEL )
+        if ( AfxMessageBox(strTmp, MB_OKCANCEL) == IDCANCEL )
         {
             return;
         }

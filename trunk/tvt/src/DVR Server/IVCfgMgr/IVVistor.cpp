@@ -113,6 +113,14 @@ bool IIVCfgMgr::IVVistor::ModifyAlarmOut(const AlarmOutSettings& Alarm)
     assert(m_pEle);
     return TinyXmlUtil::SetChildBinaryTextData(m_pEle, _AlarmOut, Alarm);
 }
+
+bool IIVCfgMgr::IVVistor::EnableRule( bool bEnbale )
+{
+    assert(m_pEle);
+    m_pEle->SetAttribute(_RuleEnable, bEnbale);
+    return true;
+}
+
 // } 
 // Modify
 

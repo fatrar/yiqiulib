@@ -97,6 +97,12 @@ BOOL CDSP::SetIVParamToDSP( int nDevice )
         
         PPARAMPACK pPack = (PPARAMPACK)(pBuf + sizeof(DWORD));    
         IVParmData& IVData = m_pIVPack[nDevice].param.front();
+
+        TRACE(
+            "ChannelID=%d, Command=%d\n", 
+            IVData.Commadparm.chanNum,
+            IVData.Commadparm.paramType);
+
         *pPack = IVData.Commadparm;
         memcpy(pPack+1, &IVData.Rule, sizeof(WPG_Rule));
         m_pIVPack[nDevice].param.pop_front();

@@ -182,7 +182,7 @@ BOOL CInvadeAddDlg::GatherUseSet()
     {
         if ( !GetUseInputRectangleInfor(m_RectangleDrawer, rect, des.aoiEventDescription.polygon))
         {
-            AfxMessageBox(_T("Please Input line!"));
+            AfxMessageBox(_T("Please Input Rectangle!"));
             return FALSE;
         }
         m_pRule->ruleDescription.type = AOI_EVENT;
@@ -191,7 +191,7 @@ BOOL CInvadeAddDlg::GatherUseSet()
     {
         if ( !GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
         {
-            AfxMessageBox(_T("Please Input line!"));
+            AfxMessageBox(_T("Please Input Polygon!"));
             return FALSE;
         }
         m_pRule->ruleDescription.type = AOI_EVENT;
@@ -225,7 +225,7 @@ BOOL CLeftBehindAddDlg::GatherUseSet()
     {
         if ( !GetUseInputRectangleInfor(m_RectangleDrawer, rect, des.aoiEventDescription.polygon))
         {
-            AfxMessageBox(_T("Please Input line!"));
+            AfxMessageBox(_T("Please Input Rectangle!"));
             return FALSE;
         }
     }
@@ -233,7 +233,7 @@ BOOL CLeftBehindAddDlg::GatherUseSet()
     {
         if ( !GetUseInputPolygonInfor(m_PolygonDrawer, rect, des.aoiEventDescription.polygon))
         {
-            AfxMessageBox(_T("Please Input line!"));
+            AfxMessageBox(_T("Please Input Polygon!"));
             return FALSE;
         }
     }

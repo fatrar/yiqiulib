@@ -198,6 +198,8 @@ protected:
 
     BOOL IsRuleEnbale(HTREEITEM Item);
 
+    void EnableAllRule(int nChannelID, bool bEnable);
+
 private: 
     template<OnRuleXXFn T>
     inline void DoTriggerTFun(int nChannelID, const char* pIdentityID);

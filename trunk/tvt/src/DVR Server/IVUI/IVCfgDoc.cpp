@@ -429,6 +429,7 @@ void CIVRuleCfgDoc::EnableRule(
     {
         // log
         TRACE(_T("CIVRuleCfgDoc::RemoveRule No Found Iter!\n"));
+        ASSERT(FALSE);
     }
     else
     {
@@ -520,7 +521,6 @@ void CIVCfgDoc::UpdateRuleCfgXX(
     */
     BOOL bFound = FALSE;
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
-    pIVCfgMgr->Begin(nChannelID);
     for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(nChannelID);
         Iter != pIVCfgMgr->End();
         Iter = Iter.Next() )
@@ -629,6 +629,56 @@ BOOL CIVRuleCfgDoc::IsRuleEnbale( HTREEITEM Item )
     }
 
     return MapIter->second->Rule.isEnabled;
+}
+
+void CIVRuleCfgDoc::EnableAllRule( int nChannelID, bool bEnable )
+{
+    /**
+    @note  1. Update To Memory
+    *         if Use IV, update to Device
+    */
+    RuleSettingMap& Map = m_Doc[nChannelID];
+    RuleSettingMap::iterator MapIter;
+    bool bIsUseIV = IsUse(nChannelID);
+    if ( bIsUseIV )
+    {
+        for ( MapIter = Map.begin();
+              MapIter!= Map.end();
+              ++MapIter )
+        {
+            WPG_Rule& Rule = MapIter->second->Rule; 
+            if ( Rule.isEnabled == bEnable )
+            {
+                continue;
+            }
+
+            Rule.isEnabled = bEnable;
+            IV_RuleID& RuleID = (IV_RuleID&)Rule.ruleId;
+            g_IIVDeviceBase2->EnableRule(nChannelID, RuleID, bEnable);
+        }
+    }
+    else
+    {
+        for ( MapIter = Map.begin();
+              MapIter!= Map.end();
+              ++MapIter )
+        {
+            MapIter->second->Rule.isEnabled = bEnable;
+        }
+    }
+
+    /**
+    @note  2. Update To XML
+    */
+    BOOL bFound = FALSE;
+    IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
+    for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(nChannelID);
+          Iter != pIVCfgMgr->End();
+          Iter = Iter.Next() )
+    {
+        Iter.EnableRule(bEnable);
+    }
+    pIVCfgMgr->Apply();
 }
 
 //
