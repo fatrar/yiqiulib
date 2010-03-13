@@ -271,8 +271,8 @@ void CIVSchuduleDlg::OnUpdateMemu(
         Enable(TRUE);
         UpdateSchudule();
         DWORD dwState =  m_bIsCopy ? Menu_Enbale : Menu_Disbale;
-        pMenu->EnableMenuItem(ID_Alarm_PASTE, dwState);
-        pMenu->EnableMenuItem(ID_Alarm_USETOALL, dwState);
+        pMenu->EnableMenuItem(ID_SCHUDULE_PASTE, dwState);
+        pMenu->EnableMenuItem(ID_SCHUDULE_USETOALL, dwState);
         break;
     }
     default:

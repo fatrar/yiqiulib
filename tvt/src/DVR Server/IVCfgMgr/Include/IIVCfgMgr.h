@@ -1,5 +1,5 @@
 /*H***************************************************************************
- File            : IVCfgMgr.h
+ @File           : IVCfgMgr.h
  Subsystem       : 
  Function Name(s): CIVCfgMgr
  Author          : YiQiu
@@ -67,6 +67,8 @@ struct IIVCfgMgr
         bool ModifyRule(const WPG_Rule& Rule);   // Can`t modify Rule type(ruleId)
         bool ModifySchedule(const ScheduleSettings& Sch);
         bool ModifyAlarmOut(const AlarmOutSettings& Alarm);
+
+        bool EnableRule(bool bEnbale);
 
     private:
         TiXmlElement* m_pEle;       // 指向一个规则的节点

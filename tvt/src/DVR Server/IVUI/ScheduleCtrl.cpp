@@ -116,8 +116,8 @@ void CScheduleCtrl::InitRect(const CRect rect)
 	m_rcRightTop.right = rect.right;
 	m_rcRightTop.bottom = (rect.Height( ))/2;
 
-	m_nHourScale = (float)(m_rcRightTop.Width()-12)/24.0;
-	m_nMinuteScale = (float)m_nHourScale/4.0;
+	m_nHourScale = (int)((m_rcRightTop.Width()-12)/24.0);
+	m_nMinuteScale = (int)(m_nHourScale/4.0);
 	m_nLeftNoScale = (m_rcRightTop.Width() - m_nHourScale*24)/2;
 
 	m_rcRightBottom.left = rect.left + (rect.Width( ))/6;

@@ -326,12 +326,12 @@ void CIVRuleDlg::UpdateRuleMenu( CMenu* pMenu )
 
 void CIVRuleDlg::OnRuleEnableallrule()
 {
-    
+    CIVRuleCfgDoc::EnableAllRule(m_nCurrentChan, true);
 }
 
 void CIVRuleDlg::OnRuleDisableallrule()
 {
-    // TODO: Add your command handler code here
+    CIVRuleCfgDoc::EnableAllRule(m_nCurrentChan, false);
 }
 
 void CIVRuleDlg::OnRuleUse()
