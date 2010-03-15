@@ -1,5 +1,5 @@
 /*H***************************************************************************
- File            : ParseString.h
+ @File            : ParseString.h
  Subsystem       : 
  Function Name(s): CParseString
  Author          : YiQiu
