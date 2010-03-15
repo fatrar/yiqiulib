@@ -32,12 +32,19 @@
 
 #include <atlbase.h>
 #include <atlstr.h>
-
+#include <atlimage.h>
  
 #include <atlapp.h> 
 
 
 
 extern CAppModule _Module; 
+
+
+#include "..\DEVICEControl\IIVDevice.h"
+
+#include "PicCtrl.h"
+
+
 
 // TODO: reference additional headers your program requires here

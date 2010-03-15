@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\..\bin\$(ConfigurationName)\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="1"
@@ -64,6 +64,7 @@
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				ImportLibrary="../../lib/$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -93,7 +94,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\..\bin\$(ConfigurationName)\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -139,6 +140,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="../../lib/$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -176,7 +178,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\PicCtrl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SnapShotUI.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SnapShotWnd.cpp"
 				>
 			</File>
 			<File
@@ -205,6 +215,18 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\ISnapShot.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PicCtrl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SnapShotWnd.h"
+				>
+			</File>
 			<File
 				RelativePath=".\stdafx.h"
 				>
