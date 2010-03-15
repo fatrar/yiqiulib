@@ -42,7 +42,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	CIVSwtichTab m_IVSwtichTab;
+	//CIVSwtichTab m_IVSwtichTab;
+    HWND m_SnapShotWnd;
 };
 
 //{{AFX_INSERT_LOCATION}}

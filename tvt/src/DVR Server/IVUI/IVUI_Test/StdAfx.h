@@ -24,7 +24,9 @@
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#include "IVSwtichTab.h"
+#include "..\..\SnapShotUI\ISnapShot.h"
+
+//#include "IVSwtichTab.h"
 
 
 #ifdef _UNICODE

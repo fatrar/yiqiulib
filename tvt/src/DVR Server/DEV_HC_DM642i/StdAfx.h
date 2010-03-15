@@ -150,7 +150,9 @@ private:
 
 #define ERROR_RETURN_FALSE(x) ERROR_RETURN(x, FALSE)
 
-
+#undef TRACE
+#define TRACE XTRACE
+#include "XTrace.h"
 
 #ifdef _UNICODE
 #if defined _M_IX86

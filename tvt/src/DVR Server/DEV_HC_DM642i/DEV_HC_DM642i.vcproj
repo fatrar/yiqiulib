@@ -409,6 +409,10 @@
 				RelativePath="TiCoffFile.h"
 				>
 			</File>
+			<File
+				RelativePath=".\XTrace.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

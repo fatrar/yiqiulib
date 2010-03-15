@@ -70,6 +70,10 @@ enum
     AlarmOutTable_Count = 10,
 
     Max_Channel = 4,
+
+    Max_SnapShot_Pic_Size = 64 * 1024,  // 一张JPG图的最大大小
+    Max_SnapShot_Pic_Count = 3,         // 一次最多几张图
+    //#define	VIDEO_BUFFER_MAX_FRAME_LENGTH		IDEO_BUFFER_MAX_FRAME_LENGTH		(64 * 1024)
 };
 
 // 时间是按顺序排，从小到大
