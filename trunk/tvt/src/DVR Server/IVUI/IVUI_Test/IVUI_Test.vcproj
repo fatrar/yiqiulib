@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="IVUI_Test"
 	ProjectGUID="{08CEE1D5-43A2-4BA7-A83B-64D02A367884}"
+	RootNamespace="IVUI_Test"
 	Keyword="MFCProj"
 	>
 	<Platforms>
@@ -111,8 +112,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="..\..\..\bin\$(ConfigurationName)\"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -170,11 +171,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Debug/IVUI_Test.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\;"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/IVUI_Test.pdb"
 				SubSystem="2"
 				TargetMachine="1"
 			/>
