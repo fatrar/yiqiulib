@@ -57,7 +57,7 @@ BOOL CIVUI_TestDlg::OnInitDialog()
 	GetClientRect(&rect);
 
     HWND hWnd = m_hWnd;
-    m_pISnapShotSender = CreateSnapShotWnd(m_hWnd, rect.Width());
+    m_pISnapShotSender = SnapShotWnd::CreateSnapShotWnd(m_hWnd, rect.Width());
 
 	//m_IVSwtichTab.Create(NULL, "" , WS_CHILD|WS_VISIBLE, rect, this, WM_USER);
 	//m_IVSwtichTab.Init(this, rect);
@@ -71,27 +71,28 @@ BOOL CIVUI_TestDlg::OnInitDialog()
 
 void CIVUI_TestDlg::OnPaint() 
 {
-	if (IsIconic())
-	{
-		CPaintDC dc(this); // device context for painting
+    CPaintDC dc(this);
+	//if (IsIconic())
+	//{
+	//	 // device context for painting
 
-		SendMessage(WM_ICONERASEBKGND, (WPARAM) dc.GetSafeHdc(), 0);
+	//	SendMessage(WM_ICONERASEBKGND, (WPARAM) dc.GetSafeHdc(), 0);
 
-		// Center icon in client rectangle
-		int cxIcon = GetSystemMetrics(SM_CXICON);
-		int cyIcon = GetSystemMetrics(SM_CYICON);
-		CRect rect;
-		GetClientRect(&rect);
-		int x = (rect.Width() - cxIcon + 1) / 2;
-		int y = (rect.Height() - cyIcon + 1) / 2;
+	//	// Center icon in client rectangle
+	//	int cxIcon = GetSystemMetrics(SM_CXICON);
+	//	int cyIcon = GetSystemMetrics(SM_CYICON);
+	//	CRect rect;
+	//	GetClientRect(&rect);
+	//	int x = (rect.Width() - cxIcon + 1) / 2;
+	//	int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// Draw the icon
-		dc.DrawIcon(x, y, m_hIcon);
-	}
-	else
-	{
-		CDialog::OnPaint();
-	}
+	//	// Draw the icon
+	//	dc.DrawIcon(x, y, m_hIcon);
+	//}
+	//else
+	//{
+	//	CDialog::OnPaint();
+	//}
 }
 
 // The system calls this to obtain the cursor to display while the user drags
@@ -131,7 +132,7 @@ void CIVUI_TestDlg::OnBnClickedTest()
         BOOL bRc = ReadFile(hFile,pTemBuf,dwFileSize,&dwByteRead,NULL);//把文件读入内存缓冲区 
         CloseHandle(hFile);//关闭打开的文件 
         
-        m_pISnapShotSender->OnSnapShotSend(0, 0, pTemBuf, dwFileSize);
+        m_pISnapShotSender->OnSnapShotSend(0, 0, 0,pTemBuf, dwFileSize);
 
         delete[] pTemBuf;
     }

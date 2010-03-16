@@ -20,16 +20,17 @@
 
 CSnapShotWnd::CSnapShotWnd(void)
     : m_nIndex(NULL)
+    , n_bState(TRUE)
 {
     for (int i=0; i<Max_SnapShot_Pic_Count; ++i)
     {
         m_hGlobal[i] = GlobalAlloc(GMEM_MOVEABLE, Max_SnapShot_Pic_Size);
     }
 
-   // m_Image[0].Load(_T("E:\\1.jpg"));
-   // m_Image[1].Load(_T("E:\\2.jpg"));
-   // m_PicCtrl[0] = m_Image[0];
-   // m_PicCtrl[1] = m_Image[1];
+   //m_Image[0].Load(_T("E:\\1.jpg"));
+   //m_Image[1].Load(_T("E:\\2.jpg"));
+   //m_PicCtrl[0] = m_Image[0];
+   //m_PicCtrl[1] = m_Image[1];
 }
 
 CSnapShotWnd::~CSnapShotWnd(void)
@@ -55,28 +56,25 @@ LRESULT CSnapShotWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& b
 
 LRESULT CSnapShotWnd::OnEraseBkgnd(HDC hdc)
 {
-
-
+    //return FALSE;
     return TRUE; // background is erased
 }
 
 LRESULT CSnapShotWnd::OnPaint(HDC hdc)
 {
-//TRACE(_T("CSnapShotWnd::OnPaint\n"));
     CPaintDC dc(m_hWnd);   
     return 0;
 }
-
+ 
 LRESULT CSnapShotWnd::OnInitDialog(HWND hwndFocus, LPARAM lParam)
 {
-   
     return TRUE; // set focus to default control
 }
-
 
 void CSnapShotWnd::OnSnapShotSend(
     int nChannelID,
     DWORD dwRuleID, 
+    FILETIME* pTime,
     BYTE* pData,
     size_t nLen )
 {
@@ -127,7 +125,8 @@ void CSnapShotWnd::OnSnapShotSend(
     //RedrawWindow();
     //Invalidate();
     //PostMessage(WM_PAINT);
-    PostMessage(WM_REDRAWWINDOW);
+    //PostMessage(WM_REDRAWWINDOW);
+    RedrawWindow();
 }
 
 HWND CSnapShotWnd::Create(
@@ -136,29 +135,43 @@ HWND CSnapShotWnd::Create(
     SnapShotWnd::SnapShotPos Pos, 
     int nTop )
 {
-    int nPicCtrlWidth = int((nWidth-4*PicCtrl_X_Start)/3.0);
+    CRect Parentrect;
+    ::GetClientRect(hWndParent, &Parentrect);
+    if (nWidth == 0)
+    {
+        nWidth = Parentrect.Width();
+    }
+
+    int nPicCtrlWidth = int((nWidth-(Max_SnapShot_Pic_Count+1)*PicCtrl_X_Start)*1.0/Max_SnapShot_Pic_Count);
     int nPicCtrlHeight = int(nPicCtrlWidth*288/352.0);
-    int nAllHeight = nPicCtrlHeight + 2*PicCtrl_Y_Start;
-    
-    CRect rect(0,0,nWidth,nAllHeight);
+    int nAllHeight = nPicCtrlHeight + 2*PicCtrl_Y_Start + Bt_Height;
+   
+    m_MaxRect.SetRect(0,0,nWidth,nAllHeight);
     if (Pos == SnapShotWnd::SnapShot_Top)
     {}
     else if (Pos == SnapShotWnd::SnapShot_Bottom)
     {
-        CRect Tmprect;
-        ::GetClientRect(hWndParent, &Tmprect);
-        rect.MoveToY(Tmprect.Height()-nAllHeight);
+        m_MaxRect.MoveToY(Parentrect.Height()-nAllHeight);
     }
     else
     {
-        rect.MoveToY(nTop);
+        m_MaxRect.MoveToY(nTop);
     }
-    __super::Create(hWndParent, _U_RECT(rect));
+    __super::Create(hWndParent, _U_RECT(m_MaxRect));
     ShowWindow(SW_SHOW);
     
+    m_MinRect.SetRect(0, Parentrect.Height()-Bt_Height, nWidth, Parentrect.Height());
+
+    CRect BTRect(0,0,nWidth,Bt_Height);
+    m_ShowBt.Create(
+        *this, _U_RECT(BTRect),
+        _T("Close"), WS_CHILD|WS_VISIBLE,0,
+        IDC_CLICKBT );
+    m_ShowBt.ShowWindow(SW_SHOW);
+
     RECT Tmprect;
-    Tmprect.top = PicCtrl_Y_Start;
-    Tmprect.bottom = PicCtrl_Y_Start + nPicCtrlHeight; 
+    Tmprect.top = PicCtrl_Y_Start + Bt_Height;
+    Tmprect.bottom = Tmprect.top + nPicCtrlHeight; 
     for (int i=0; i<Max_SnapShot_Pic_Count; ++i)
     {
         Tmprect.left = PicCtrl_X_Start + i*(PicCtrl_X_Start+nPicCtrlWidth);   
@@ -173,10 +186,25 @@ HWND CSnapShotWnd::Create(
 LRESULT CSnapShotWnd::OnRedrawWindow(
     UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
 {
-    RedrawWindow();
+    //RedrawWindow();
     return TRUE;
 }
 
+void CSnapShotWnd::OnClickBT(
+    UINT uCode, int nID, HWND hwndCtrl )
+{
+    TRACE(_T("One Click!!!\n"));
+    n_bState = !n_bState;
+    if ( n_bState )
+    {
+        MoveWindow(&m_MaxRect);
+    }
+    else
+    {
+        MoveWindow(&m_MinRect);
+    }
+    //return TRUE;
+}
 
 
 namespace SnapShotWnd
@@ -201,3 +229,9 @@ BOOL DestroySnapShotWnd()
 }
 
 // End of file
+
+LRESULT CSnapShotWnd::OnBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+
+    return 0;
+}

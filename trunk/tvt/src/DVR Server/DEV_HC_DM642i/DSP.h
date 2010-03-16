@@ -274,6 +274,7 @@ public:
     virtual void SetIVAlarmOutCallBack(
         AlarmCallBackFn pAlarmCallBackFn, void* pParm);
     virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender);
+    virtual void SetSnapShotCallBack(ISnapShotSender* pSnapShotSender);
 
     // Do IV Data
 private:

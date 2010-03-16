@@ -21,10 +21,14 @@
 #pragma once
 
 
+typedef CWinTraits<
+      WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN| 
+      WS_CLIPSIBLINGS|WS_BORDER|
+      WS_EX_DLGMODALFRAME, 0> CMyControlWinTraits;
 
 
 class CSnapShotWnd
-    : public CWindowImpl<CSnapShotWnd, CWindow, CControlWinTraits>
+    : public CWindowImpl<CSnapShotWnd, CWindow, CMyControlWinTraits>
     , public ISnapShotSender
 {
 public:
@@ -42,11 +46,15 @@ protected:
         PicCtrl_Width = 352,
         PicCtrl_Height = 288,
 
-        WM_REDRAWWINDOW = WM_USER + 1,
+        Bt_Height = 20,
+
+
+        WM_REDRAWWINDOW = WM_USER + 100,
+        IDC_CLICKBT = WM_USER + 200,
     };
 
 public:
-    DECLARE_WND_CLASS(_T("My Window Class"))
+    DECLARE_WND_CLASS(_T("Yiqiu SnapShotWnd Window Class"))
 
     BEGIN_MSG_MAP(CSnapShotWnd)
         MESSAGE_HANDLER(WM_CLOSE, OnClose)
@@ -55,6 +63,8 @@ public:
         MSG_WM_ERASEBKGND(OnEraseBkgnd)
         MSG_WM_PAINT(OnPaint)
         MSG_WM_INITDIALOG(OnInitDialog)
+        COMMAND_ID_HANDLER_EX(IDC_CLICKBT, OnClickBT)
+        //COMMAND_CODE_HANDLER_EX(BN_CLICKED, OnBnClicked)
     END_MSG_MAP()
 
 public:
@@ -69,6 +79,7 @@ protected:
     virtual void OnSnapShotSend(
         int nChannelID, 
         DWORD dwRuleID,
+        FILETIME* pTime,
         BYTE* pData,
         size_t nLen);
 
@@ -79,9 +90,8 @@ protected:
     LRESULT OnEraseBkgnd(HDC hdc);
     LRESULT OnPaint(HDC hdc);
     LRESULT OnInitDialog(HWND hwndFocus, LPARAM lParam);
+    void OnClickBT(UINT uCode, int nID, HWND hwndCtrl);
 
-
-    
 private:
     CImage m_Image[Max_SnapShot_Pic_Count];
     HGLOBAL m_hGlobal[Max_SnapShot_Pic_Count];
@@ -89,8 +99,13 @@ private:
 
     size_t m_nIndex;
 
+    CRect m_MinRect;
+    CRect m_MaxRect;
+    CButton m_ShowBt;
+    BOOL n_bState;
 public:
     
+    LRESULT OnBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 };
 
 

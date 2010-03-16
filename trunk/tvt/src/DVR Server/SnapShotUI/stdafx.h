@@ -37,7 +37,7 @@
  
 #include <atlapp.h> 
 #include <atltypes.h>
-
+#include <atlctrls.h>
 
 extern CAppModule _Module; 
 

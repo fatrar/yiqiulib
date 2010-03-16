@@ -1805,5 +1805,4 @@ DWORD CDSP::NetFrameRateInc(int inc)
 	return RefreshNetFrameRate();
 }
 
-
 // end of file  old -> 2114

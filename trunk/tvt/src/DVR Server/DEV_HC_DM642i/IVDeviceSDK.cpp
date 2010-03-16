@@ -261,6 +261,9 @@ void CDSP::DoIVAlarm(
     //}
 }
 
+static bool s_bSavePic = true;
+#include <fstream>
+
 void CDSP::DoSnapShot(
     int nChannelID,
     const WPG_EventOccurrence* pEvent,
@@ -272,14 +275,32 @@ void CDSP::DoSnapShot(
     }
 
     for (int i = 0; i<pEvent->numOfSlices; ++i)
-    {
+    {   
         const WPG_EventSlice& slices = pEvent->slices[i];
+
+        if( s_bSavePic )
+        {
+            static int j = 0;
+            static char szBuf[MAX_PATH] = {0};
+            sprintf_s(szBuf, "C:\\%d.jpg", j++);
+            ofstream Write(szBuf, ios::binary);
+            Write.write((char*)pFirstPic, slices.snapshotLength-16);
+            Write.close();
+        }
+
+        BYTE* pPic = pFirstPic;
+        SYSTIME* pSysTime = (SYSTIME*)(pFirstPic+slices.snapshotLength-16);
+        LONGLONG nTime = ChangeTime(*pSysTime);
+        FILETIME* pTime = (FILETIME*)&nTime;
         m_pSnapShotSender->OnSnapShotSend(
             nChannelID,
             (DWORD)pEvent->ruleId,
-            pFirstPic,
-            slices.snapshotLength );
-        pFirstPic += slices.snapshotLength;
+            pTime,
+            pPic,
+            slices.snapshotLength-16 );
+        pFirstPic = (BYTE*)pSysTime+16;
+
+        
     }
 }
 
@@ -727,6 +748,11 @@ void CDSP::SetIVDataCallBack(
 {
      m_pIVDataSender = pIVDataSender;
      m_pIVDataSender->Init(m_nDeviceNum, CHANNEL_PER_DEVICE);
+}
+
+void CDSP::SetSnapShotCallBack( ISnapShotSender* pSnapShotSender )
+{
+    m_pSnapShotSender = pSnapShotSender;
 }
 
 

@@ -71,8 +71,8 @@ enum
 
     Max_Channel = 4,
 
-    Max_SnapShot_Pic_Size = 64 * 1024,  // 一张JPG图的最大大小
-    Max_SnapShot_Pic_Count = 3,         // 一次最多几张图
+    Max_SnapShot_Pic_Size = 128 * 1024,  // 一张JPG图的最大大小
+    Max_SnapShot_Pic_Count = 6,         // 一次最多几张图
     //#define	VIDEO_BUFFER_MAX_FRAME_LENGTH		IDEO_BUFFER_MAX_FRAME_LENGTH		(64 * 1024)
 };
 
@@ -212,12 +212,14 @@ struct IIVAlarmCallBack
         const FILETIME* pTime)=0;
 };
 
-struct IIVSimulationAlarmCallBack
+struct ISnapShotSender
 {
-    virtual void OnAlarmCallBack(
-        IVRuleType type,
-        int nChannelID,
-        const FILETIME* pTime)=0;
+    virtual void OnSnapShotSend(
+        int nChannelID, 
+        DWORD dwRuleID,
+        FILETIME* pTime,
+        BYTE* pData,
+        size_t nLen) = 0;
 };
 
 struct IIVDeviceSetter
@@ -227,16 +229,10 @@ struct IIVDeviceSetter
 
     // 设置智能数据发送的回调，由IVLiveFactory得到这个指针
     virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender)=0;
+
+    virtual void SetSnapShotCallBack(ISnapShotSender* pSnapShotSender)=0;
 };
 
-struct ISnapShotSender
-{
-    virtual void OnSnapShotSend(
-        int nChannelID, 
-        DWORD dwRuleID,
-        BYTE* pData,
-        size_t nLen) = 0;
-};
 
 // 这个结构体在DeviceControl有定义，但是为了不跟他粘在一起，
 // 单独定义，并用宏防止重定义。包含DeviceControl必须应引用很多其他头文件，
@@ -262,6 +258,14 @@ typedef struct _FrameBufStruct
 struct IVideoSend
 {
     virtual BOOL OnVideoSend(FRAMEBUFSTRUCT *bufStruct) = 0;
+};
+
+struct IIVSimulationAlarmCallBack
+{
+    virtual void OnAlarmCallBack(
+        IVRuleType type,
+        int nChannelID,
+        const FILETIME* pTime)=0;
 };
 
 struct IIVSimulation

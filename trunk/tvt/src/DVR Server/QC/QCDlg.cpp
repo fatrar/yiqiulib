@@ -7,7 +7,7 @@
 //#include "ioctlV.h"
 //#include "overlay.h"
 #include "SignalDlg.h"
-#include "CfgDlg.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -139,11 +139,14 @@ BOOL CQCDlg::OnInitDialog()
         return FALSE;
     }
     
-    //typedef IIVDeviceSetter* (*fn)();
-    GeIVDeviceSetterFn f = 
+    m_pSnapShotSender = SnapShotWnd::CreateSnapShotWnd(m_hWnd);
+
+    GeIVDeviceSetterFn f1 = 
         (GeIVDeviceSetterFn)::GetProcAddress(
         m_DSPDLL, g_szIVDeviceFuncName[GeIVDeviceSetter_Index] );
-    f()->SetIVDataCallBack( IVLiveFactory::GetDataSender() );
+    IIVDeviceSetter* pIVDeviceSetter = f1();
+    pIVDeviceSetter->SetIVDataCallBack( IVLiveFactory::GetDataSender() );
+    pIVDeviceSetter->SetSnapShotCallBack(m_pSnapShotSender);
 
     GetIVDeviceBase2Fn f2 = 
         (GetIVDeviceBase2Fn)::GetProcAddress(
@@ -184,26 +187,27 @@ BOOL CQCDlg::OnInitDialog()
 
 void CQCDlg::OnPaint() 
 {
-    if (IsIconic())
-    {
-        CPaintDC dc(this); // device context for painting
-        
-        SendMessage(WM_ICONERASEBKGND, (WPARAM) dc.GetSafeHdc(), 0);
-        
-        // Center icon in client rectangle
-        int cxIcon = GetSystemMetrics(SM_CXICON);
-        int cyIcon = GetSystemMetrics(SM_CYICON);
-        CRect rect;
-        GetClientRect(&rect);
-        int x = (rect.Width() - cxIcon + 1) / 2;
-        int y = (rect.Height() - cyIcon + 1) / 2;
-        
-        // Draw the icon
-        dc.DrawIcon(x, y, m_hIcon);
-    }
-    else
-    {
-        CDialog::OnPaint();
+    CPaintDC dc(this);
+    //if (IsIconic())
+    //{
+    //    CPaintDC dc(this); // device context for painting
+    //    
+    //    SendMessage(WM_ICONERASEBKGND, (WPARAM) dc.GetSafeHdc(), 0);
+    //    
+    //    // Center icon in client rectangle
+    //    int cxIcon = GetSystemMetrics(SM_CXICON);
+    //    int cyIcon = GetSystemMetrics(SM_CYICON);
+    //    CRect rect;
+    //    GetClientRect(&rect);
+    //    int x = (rect.Width() - cxIcon + 1) / 2;
+    //    int y = (rect.Height() - cyIcon + 1) / 2;
+    //    
+    //    // Draw the icon
+    //    dc.DrawIcon(x, y, m_hIcon);
+    //}
+    //else
+    //{
+    //    CDialog::OnPaint();
 
 #ifdef UI_DEBUG
         return;
@@ -215,7 +219,7 @@ void CQCDlg::OnPaint()
         }
         else
             m_ddraw->DrawOverlayBack();
-    }
+    //}
 }
 
 // The system calls this to obtain the cursor to display while the user drags
@@ -476,10 +480,7 @@ YU_NEXT_LINE:
 
 void CQCDlg::OnBnClickedShowIvConfig()
 {
-    // TODO: Add your control notification handler code here
-    CCfgDlg Dlg;
-    Dlg.DoModal();
-    //m_IVDlg.DoModal();
+    CfgDlg.DoModal();
 }
 
 void CQCDlg::OnRButtonDown(UINT nFlags, CPoint point)
