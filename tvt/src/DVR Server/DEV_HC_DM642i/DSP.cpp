@@ -291,8 +291,6 @@ void CDSP::DeviceExit()
             STLDeleteAssociate(m_RuleCfgMap[i]);
         }
 	}
-
-
 }
 
 BOOL CDSP::Initialize(DWORD dwVideoFormat, CAPTURECALLBACK *pVideoCallBack, CAPTURECALLBACK *pAudioCallBack)
@@ -416,14 +414,28 @@ BOOL CDSP::ReleaseBuffer(DWORD isVideo, DWORD DelBufPara)
 
 BOOL CDSP::CreateWorkerThread()
 {
+    HANDLE TempEvent[MAX_DEVICE_NUM] = {0};
 	m_bQuit = FALSE;  
     for ( int i=0; i< m_nDeviceNum; ++i )
     {
         m_hThreadPrv[i] = CreateThread(NULL, 0, OnThreadPrv, new ThreadParm(this, i), 0, NULL);
         m_hThreadCompressStrm[i] = CreateThread(NULL, 0, OnThreadCompressStrm, new ThreadParm(this, i), 0, NULL);
         m_hThreadAud[i] = CreateThread(NULL, 0, OnThreadAud, new ThreadParm(this, i), 0, NULL);
+
+        // CREATE_SUSPENDED
+        TempEvent[i] = CreateEvent(NULL,FALSE,FALSE,NULL);
+        m_hSmooth[i] = CreateThread(
+            NULL, 0, OnThreadSmooth,
+            new SmoonthThreadParm(this, i, TempEvent[i]),
+            0, &(m_dwSmoothTheadID[i]));
     }
 
+    // 等待平滑线程创建消息栈
+    WaitForMultipleObjects(m_nDeviceNum, TempEvent, TRUE, INFINITE);
+    for ( int j=0; j<m_nDeviceNum; ++j)
+    {
+        CloseHandle(TempEvent[j]);
+    }
 	return TRUE;
 }
 
@@ -1804,5 +1816,7 @@ DWORD CDSP::NetFrameRateInc(int inc)
 
 	return RefreshNetFrameRate();
 }
+
+
 
 // end of file  old -> 2114

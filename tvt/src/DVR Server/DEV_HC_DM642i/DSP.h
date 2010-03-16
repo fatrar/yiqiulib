@@ -173,9 +173,17 @@ private:
 protected:
     struct ThreadParm
     {
-        ThreadParm(CDSP* p, DWORD ID):pthis(p),dwDeviceID(ID){}
+        ThreadParm(CDSP* p, DWORD ID)
+            : pthis(p), dwDeviceID(ID){}
         CDSP* pthis;
         DWORD dwDeviceID;
+    };
+
+    struct SmoonthThreadParm : public ThreadParm
+    {
+        SmoonthThreadParm(CDSP* p, DWORD ID, HANDLE h)
+            : ThreadParm(p,ID), handle(h){}
+        HANDLE handle;
     };
 
     // IV New Add
@@ -348,6 +356,20 @@ private:
 
     // just test
     SYSTIME  m_prevVideoTime;
+
+    // Smooth IV Live
+    HANDLE m_hSmooth[MAX_DEVICE_NUM];
+    DWORD m_dwSmoothTheadID[MAX_DEVICE_NUM];
+
+    enum SmoothDef
+    {
+        Suspend_Thread,
+        Push_Live_Data,
+    };
+
+    static DWORD WINAPI OnThreadSmooth(PVOID pParam);
+    void LoopLiveSmooth(int nDevice, HANDLE h);
+    void FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList);
 };
 
 
