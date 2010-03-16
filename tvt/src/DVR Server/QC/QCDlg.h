@@ -18,6 +18,7 @@
 #include ".\devicecontrol\devicecontrol.h"
 //#include "CodecMgr.h"
 #include "TextStatic.h"
+#include "CfgDlg.h"
 
 class CDirectDraw;
 class CQCDlg : public CDialog
@@ -59,6 +60,9 @@ protected:
 protected:
 	HINSTANCE m_DSPDLL;
 	HICON m_hIcon;
+
+    CCfgDlg CfgDlg;
+    ISnapShotSender* m_pSnapShotSender;
 
 	// Generated message map functions
 	//{{AFX_MSG(CQCDlg)

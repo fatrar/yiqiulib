@@ -33,6 +33,7 @@ using namespace DeviceFactory;
 
 #include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
+#include "..\SnapShotUI\Include\ISnapShot.h"
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

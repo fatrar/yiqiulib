@@ -20,8 +20,8 @@
 
 
 
-#include "..\..\Base\Base\Include\Common.h"
-#include "..\DEVICEControl\IIVDevice.h"
+#include "..\..\..\Base\Base\Include\Common.h"
+#include "..\..\DEVICEControl\IIVDevice.h"
 
 
 #ifdef SNAPSHOTUI_EXPORTS
@@ -51,7 +51,7 @@ enum SnapShotPos
 // hWndParent
 SNAPSHOTUI_API ISnapShotSender* CreateSnapShotWnd(
     HWND hWnd,
-    int nWidth,
+    int nWidth = 0,
     SnapShotPos Pos = SnapShot_Bottom,
     int nTop = 0 );
 
