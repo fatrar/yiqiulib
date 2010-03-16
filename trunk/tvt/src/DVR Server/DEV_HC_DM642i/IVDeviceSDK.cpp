@@ -756,4 +756,117 @@ void CDSP::SetSnapShotCallBack( ISnapShotSender* pSnapShotSender )
 }
 
 
+// {
+// *************** Smooth IV Live  ***************
+// 
+
+DWORD WINAPI CDSP::OnThreadSmooth( PVOID pParam )
+{
+    SmoonthThreadParm* pThreadParm = (SmoonthThreadParm*)pParam;
+    SmoonthThreadParm p = *pThreadParm;
+    delete pThreadParm;
+    p.pthis->LoopLiveSmooth(p.dwDeviceID, p.handle);
+    return 0;
+}
+
+void CDSP::FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList)
+{
+    deque<FRAMEBUFSTRUCT*>::iterator iter;
+    for ( iter = LiveList.begin();
+          iter!= LiveList.end();
+          ++iter)
+    {
+        ReleaseLiveBuf(*iter);
+    }
+    LiveList.clear();
+}
+
+void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList)
+{
+
+}
+
+// 先实现一版不带时间修正的（WM_TIMER）
+void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
+{
+    MSG msg;
+    PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+    if(!SetEvent(h))
+    {    
+        printf("set event error,%d\n",GetLastError());      
+        return ;
+    }
+
+    // 默认休眠
+    SuspendThread(m_hSmooth[nDevice]);
+
+    static const int s_FrameRate[2] = {25, 33};
+
+    // 这个申明三个变量而不放在线程实际处理函数里面是为了提高运行效率
+    int nChannel = -1;
+    FRAMEBUFSTRUCT* p = NULL;
+    bool bCallflag = true;
+    bool bCanSendLive = false;
+
+    deque<FRAMEBUFSTRUCT*> LiveList;
+    int nEventID = SetTimer(NULL, 0, s_FrameRate[m_dwVideoFormat], NULL);
+    while(1)
+    {     
+        BOOL bRc = GetMessage(&msg, 0,0,0);
+        if ( !bRc )
+        {
+            TRACE(_T("LoopLiveSmooth GetMessage Failed!\n"));
+            ASSERT(false);
+            continue;
+        }
+   
+        switch(msg.message)
+        { 
+        case Suspend_Thread:
+            FreeLiveList(LiveList);
+            SuspendThread(m_hSmooth[nDevice]);
+            break;
+        case Push_Live_Data:
+            if ( msg.wParam != nDevice)
+            {
+                TRACE(_T("Push_Live_Data Filter Some!\n"));
+            }
+            else
+            {
+                LiveList.push_back((FRAMEBUFSTRUCT*)msg.lParam);
+            }
+            break;
+        case WM_QUIT:
+            goto end;
+        case WM_TIMER:
+            if (bCanSendLive && LiveList.size() != 0)
+            {
+                p = LiveList.front();
+                nChannel = p->ChannelIndex;
+                m_VideoSendCS.Lock();
+                if ( m_szVideoSend[nChannel] )
+                {
+                    m_szVideoSend[nChannel]->OnVideoSend(p);
+                    bCallflag = false;
+                }
+                m_VideoSendCS.Unlock();
+
+                if ( bCallflag )
+                {
+                    m_pVideoCallBack(p);
+                }
+                LiveList.pop_front();
+            }
+            break;
+        }
+    }
+
+end:
+    KillTimer(NULL, nEventID);
+}
+
+// Smooth IV Live
+// }
+
+
 // End of file
