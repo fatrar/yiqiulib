@@ -130,13 +130,29 @@ void CSnapShotWnd::OnSnapShotSend(
     PostMessage(WM_REDRAWWINDOW);
 }
 
-HWND CSnapShotWnd::Create( HWND hWndParent, int nWidth )
+HWND CSnapShotWnd::Create(
+    HWND hWndParent,
+    int nWidth, 
+    SnapShotWnd::SnapShotPos Pos, 
+    int nTop )
 {
     int nPicCtrlWidth = int((nWidth-4*PicCtrl_X_Start)/3.0);
     int nPicCtrlHeight = int(nPicCtrlWidth*288/352.0);
     int nAllHeight = nPicCtrlHeight + 2*PicCtrl_Y_Start;
     
     CRect rect(0,0,nWidth,nAllHeight);
+    if (Pos == SnapShotWnd::SnapShot_Top)
+    {}
+    else if (Pos == SnapShotWnd::SnapShot_Bottom)
+    {
+        CRect Tmprect;
+        ::GetClientRect(hWndParent, &Tmprect);
+        rect.MoveToY(Tmprect.Height()-nAllHeight);
+    }
+    else
+    {
+        rect.MoveToY(nTop);
+    }
     __super::Create(hWndParent, _U_RECT(rect));
     ShowWindow(SW_SHOW);
     
@@ -161,13 +177,19 @@ LRESULT CSnapShotWnd::OnRedrawWindow(
     return TRUE;
 }
 
-#include "ISnapShot.h"
+
+
+namespace SnapShotWnd
+{
 
 static CSnapShotWnd g_Wnd;
 
-ISnapShotSender* CreateSnapShotWnd(HWND hWnd, int nWidth)
+ISnapShotSender* CreateSnapShotWnd(
+    HWND hWnd, int nWidth,
+    SnapShotPos Pos,
+    int nTop )
 {
-    /*hWnd = */g_Wnd.Create(hWnd, nWidth);;
+    /*hWnd = */g_Wnd.Create(hWnd, nWidth, Pos, nTop);
     return &g_Wnd;
 }
 
@@ -176,5 +198,6 @@ BOOL DestroySnapShotWnd()
     return g_Wnd.DestroyWindow();
 }
 
+}
 
 // End of file

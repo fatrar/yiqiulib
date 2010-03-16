@@ -58,7 +58,11 @@ public:
     END_MSG_MAP()
 
 public:
-    HWND Create(HWND hWndParent, int nWidth);
+    HWND Create(
+        HWND hWndParent,
+        int nWidth, 
+        SnapShotWnd::SnapShotPos Pos, 
+        int nTop);
 
      // ISnapShotSender
 protected:
