@@ -1,10 +1,11 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by IVUI_Test.rc
 //
 #define IDD_IVUI_TEST_DIALOG            102
 #define IDR_MAINFRAME                   128
 #define IDC_BUTTON1                     1000
+#define IDC_TEST                        1000
 
 // Next default values for new objects
 // 

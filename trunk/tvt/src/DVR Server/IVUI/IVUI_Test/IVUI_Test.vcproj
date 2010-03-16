@@ -336,5 +336,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="IVUI_Test.rc"
+		/>
 	</Globals>
 </VisualStudioProject>
