@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CIVUI_TestDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
+    ON_BN_CLICKED(IDC_TEST, &CIVUI_TestDlg::OnBnClickedTest)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,8 @@ BOOL CIVUI_TestDlg::OnInitDialog()
 	CRect rect;
 	GetClientRect(&rect);
 
-    m_SnapShotWnd = CreateSnapShotWnd(m_hWnd, rect.Width());
+    HWND hWnd = m_hWnd;
+    m_pISnapShotSender = CreateSnapShotWnd(m_hWnd, rect.Width());
 
 	//m_IVSwtichTab.Create(NULL, "" , WS_CHILD|WS_VISIBLE, rect, this, WM_USER);
 	//m_IVSwtichTab.Init(this, rect);
@@ -97,4 +99,40 @@ void CIVUI_TestDlg::OnPaint()
 HCURSOR CIVUI_TestDlg::OnQueryDragIcon()
 {
 	return (HCURSOR) m_hIcon;
+}
+
+void CIVUI_TestDlg::OnBnClickedTest()
+{
+    CFileDialog Dlg(TRUE);
+    if ( IDOK == Dlg.DoModal() )
+    {
+        CString strPath = Dlg.GetPathName();
+
+        //打开硬盘中的图形文件 
+        HANDLE hFile=CreateFile(
+            strPath,
+            GENERIC_READ, 
+            FILE_SHARE_READ,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL); 
+        if (hFile==INVALID_HANDLE_VALUE) 
+        {
+            return;
+        }
+
+        DWORD dwFileSize=GetFileSize(hFile,NULL);//获取文件字节数
+        if (dwFileSize == INVALID_FILE_SIZE) 
+            return; 
+
+        BYTE* pTemBuf = new BYTE[dwFileSize];
+        DWORD dwByteRead = 0;
+        BOOL bRc = ReadFile(hFile,pTemBuf,dwFileSize,&dwByteRead,NULL);//把文件读入内存缓冲区 
+        CloseHandle(hFile);//关闭打开的文件 
+        
+        m_pISnapShotSender->OnSnapShotSend(0, 0, pTemBuf, dwFileSize);
+
+        delete[] pTemBuf;
+    }
 }

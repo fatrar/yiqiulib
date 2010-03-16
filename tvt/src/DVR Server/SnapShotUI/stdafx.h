@@ -30,12 +30,13 @@
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
 
+#include <assert.h>
 #include <atlbase.h>
 #include <atlstr.h>
 #include <atlimage.h>
  
 #include <atlapp.h> 
-
+#include <atltypes.h>
 
 
 extern CAppModule _Module; 
@@ -44,6 +45,9 @@ extern CAppModule _Module;
 #include "..\DEVICEControl\IIVDevice.h"
 
 #include "PicCtrl.h"
+
+
+#define TRACE ATLTRACE
 
 
 

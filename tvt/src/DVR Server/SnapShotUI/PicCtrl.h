@@ -40,7 +40,16 @@ public:
     END_MSG_MAP()
 
 public:
-    void SetImage(CImage* pImage){m_pImage=pImage;}
+    void operator = (const CImage& pImage)
+    {
+        m_pImage = &pImage;
+    } 
+    //void SetImage(CImage* pImage){m_pImage=pImage;}
+
+    void Attach(CPicCtrl& t)
+    {
+        m_pImage = t.m_pImage;
+    }
 
 protected:
     LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -55,7 +64,7 @@ protected:
 
     };
 protected:
-    CImage* m_pImage;
+    const CImage* m_pImage;
 };
 
 

@@ -43,7 +43,8 @@ protected:
 
 private:
 	//CIVSwtichTab m_IVSwtichTab;
-    HWND m_SnapShotWnd;
+    ISnapShotSender* m_pISnapShotSender;
+    afx_msg void OnBnClickedTest();
 };
 
 //{{AFX_INSERT_LOCATION}}

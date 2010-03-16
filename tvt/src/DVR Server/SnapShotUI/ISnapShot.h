@@ -21,6 +21,7 @@
 
 
 #include "..\..\Base\Base\Include\Common.h"
+#include "..\DEVICEControl\IIVDevice.h"
 
 
 #ifdef SNAPSHOTUI_EXPORTS
@@ -39,8 +40,8 @@
 
 
 
-
-SNAPSHOTUI_API HWND CreateSnapShotWnd(HWND hWndParent, int nWidth);
+// hWndParent
+SNAPSHOTUI_API ISnapShotSender* CreateSnapShotWnd(HWND hWnd, int nWidth);
 
 SNAPSHOTUI_API BOOL DestroySnapShotWnd();
 
