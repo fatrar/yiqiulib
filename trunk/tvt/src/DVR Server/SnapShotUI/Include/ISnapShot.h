@@ -38,12 +38,31 @@
 #endif
 
 
+namespace SnapShotWnd
+{
 
+enum SnapShotPos
+{
+    SnapShot_Top,
+    SnapShot_Bottom,
+    SnapShot_Use_Spectify,
+};
 
 // hWndParent
-SNAPSHOTUI_API ISnapShotSender* CreateSnapShotWnd(HWND hWnd, int nWidth);
+SNAPSHOTUI_API ISnapShotSender* CreateSnapShotWnd(
+    HWND hWnd,
+    int nWidth,
+    SnapShotPos Pos = SnapShot_Bottom,
+    int nTop = 0 );
 
 SNAPSHOTUI_API BOOL DestroySnapShotWnd();
+
+};
+
+
+
+
+
 
 
 

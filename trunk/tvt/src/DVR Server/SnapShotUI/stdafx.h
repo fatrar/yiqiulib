@@ -43,6 +43,7 @@ extern CAppModule _Module;
 
 
 #include "..\DEVICEControl\IIVDevice.h"
+#include ".\Include\ISnapShot.h"
 
 #include "PicCtrl.h"
 
