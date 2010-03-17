@@ -980,13 +980,18 @@ void CDirectDraw::ShowDSP(
 		m_pddsPrimary->Blt(&R, m_pDDSBackYUY2[lIndex], NULL, DDBLT_ASYNC, NULL);
 
         // 显示智能矩形框和路径
-        HDC dc;
-        m_pddsPrimary->GetDC(&dc);
-
-        IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
-        pViewer->Paint(lIndex, dc, R, time);
         
-        m_pddsPrimary->ReleaseDC(dc);	
+        if ( lIndex ==  0 )
+        {
+            HDC dc;
+            m_pddsPrimary->GetDC(&dc);
+
+            IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
+            pViewer->Paint(lIndex, dc, R, time);
+
+            m_pddsPrimary->ReleaseDC(dc);
+        }
+ 	
     }
 	else
 	{

@@ -138,7 +138,11 @@ CDSP::CDSP()
     ZeroMemory(m_pDrvHeadOfNetBuf, sizeof(m_pDrvHeadOfNetBuf));
     ZeroMemory(m_pDrvHeadOfMobileBuf, sizeof(m_pDrvHeadOfMobileBuf));
     ZeroMemory(m_pDrvHeadOfCapBuf, sizeof(m_pDrvHeadOfCapBuf));
+
+#ifndef PRECOPY
     ZeroMemory(m_pDrvHeadOfPrvBuf, sizeof(m_pDrvHeadOfPrvBuf));
+#endif // _DEBUG
+    
 
     for (i = 0; i < MAX_DEVICE_NUM; i++)
     {
@@ -509,7 +513,7 @@ BOOL CDSP::CreateBuffer()
 		{
 #ifdef PRECOPY
             m_pPrvBuf[i][j].pBuf = new BYTE[CIF_BUFF_SIZE]; //heliang fix
-            m_pDrvHeadOfPrvBuf[i][j] = new TVT_CAP_STATUS; //heliang+
+            //m_pDrvHeadOfPrvBuf[i][j] = new TVT_CAP_STATUS; //heliang+
 #else
             m_pPrvBuf[i][j].pBuf = NULL;
             m_pDrvHeadOfPrvBuf[i][j] = NULL;
@@ -564,7 +568,7 @@ void CDSP::DestroyBuffer()
         {
             safeDeleteArray(m_pPrvBuf[i][j].pBuf);
             m_pPrvBuf[i][j].nVLostFlag = 1;
-            safeDeleteArray(m_pDrvHeadOfPrvBuf[i][j]); 
+            //safeDeleteArray(m_pDrvHeadOfPrvBuf[i][j]); 
         }
 #endif
 
@@ -706,7 +710,7 @@ void CDSP::GetOneChannelPreData(
     BYTE* pBuf = pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel + PREV_VBI_SIZE;
 #ifdef PRECOPY      // 使用copy一份      
     memcpy(m_pPrvBuf[nDevice][nIndex].pBuf, pBuf, CIF_BUFF_SIZE); 
-    memcpy(m_pDrvHeadOfPrvBuf[nDevice][nIndex], pStatus, sizeof(TVT_CAP_STATUS));	//该缓冲对应的DRIVER层BUF头
+    //memcpy(m_pDrvHeadOfPrvBuf[nDevice][nIndex], pStatus, sizeof(TVT_CAP_STATUS));	//该缓冲对应的DRIVER层BUF头
 #else              // 使用数据引用
     m_pPrvBuf[nDevice][nIndex].pBuf = pBuf;
     m_pDrvHeadOfPrvBuf[nDevice][nIndex] = pStatus;
