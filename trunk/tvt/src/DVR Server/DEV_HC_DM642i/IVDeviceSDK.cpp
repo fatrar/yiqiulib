@@ -125,10 +125,33 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     unsigned int& dwNumberOfTargets = pIVVBI->dwNumberOfTargets;
     unsigned int& dwNumberOfEvents = pIVVBI->dwNumberOfEvents;
     
-    LONGLONG nTime = ChangeTime(m_prevVideoTime);
-    //LONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
+#ifdef _UseLiveTime
+    ULONGLONG nTime = ChangeTime(m_prevVideoTime);
+#else
+    //ULONGLONG nLiveTime = ChangeTime(m_prevVideoTime);
+    ULONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
+  
+    static BOOL s_Flag = FALSE;
+    if ( !s_Flag )
+    {
+        SYSTEMTIME syt;
+        //FileTimeToSystemTime((FILETIME*)&nLiveTime, &syt1);
+        FileTimeToSystemTime((FILETIME*)&nTime, &syt);
+        char szbuf[128] = {0};
+        sprintf_s(
+            szbuf, "First IV coming, Data Time=%d:%d:%d.%d\n", 
+            syt.wHour, syt.wMinute,
+            syt.wSecond, syt.wMilliseconds);
+        //OutputDebugString(szbuf);
+        TRACE(szbuf);
+        s_Flag = TRUE;
+        return;
+    }
+    //ASSERT( CompareFileTime((FILETIME*)&nLiveTime, (FILETIME*)&nTime) > 0 );
+#endif
+
     FILETIME* pTime = (FILETIME*)&nTime;
-    
+
     int& nChannelID = m_szCurrentIVChannel[nDevice];
     // 1. Do Obj&Trace
     if ( m_pIVDataSender )
@@ -138,6 +161,15 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
             *pTime,
             (WPG_Target*)(pIVData+sizeof(TVT_AI_VBI)),
             dwNumberOfTargets );
+    }
+
+    if ( !m_bFisrtIVDataFlag[nDevice] )
+    {
+        PostThreadMessage(
+            m_dwSmoothTheadID[nDevice],
+            IV_Data_Coming,
+            pTime->dwLowDateTime, pTime->dwHighDateTime);
+        m_bFisrtIVDataFlag[nDevice] = TRUE;
     }
 
     // 2. Do IV Alarm & SnapShot
@@ -363,6 +395,14 @@ BOOL CDSP::Use( int nChannelID, bool bState )
     }
     while (0);
    
+    if ( bState )
+    {
+        ResumeThread(m_hSmooth[nDeviceID]);
+    }
+    else
+    {
+        SuspendThread(m_hSmooth[nDeviceID]);
+    }
     return SetParam(
         PT_PCI_SET_AI_ENABLE, nChannelID, int(bState) );
 }
@@ -769,6 +809,29 @@ DWORD WINAPI CDSP::OnThreadSmooth( PVOID pParam )
     return 0;
 }
 
+void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
+{
+    bool bflag = true;
+    m_VideoSendCS.Lock();
+    if ( m_szVideoSend[nChannel] )
+    {
+        if ( !m_szVideoSend[nChannel]->OnVideoSend(p) )
+        {
+            ReleaseLiveBuf(p);
+        }
+        bflag = false;
+    }
+    m_VideoSendCS.Unlock();
+
+    if ( bflag )
+    {
+        if ( !m_pVideoCallBack(p) )
+        {
+            ReleaseLiveBuf(p);
+        }
+    }
+}
+
 void CDSP::FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList)
 {
     deque<FRAMEBUFSTRUCT*>::iterator iter;
@@ -781,9 +844,17 @@ void CDSP::FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList)
     LiveList.clear();
 }
 
-void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList)
+void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList, FRAMEBUFSTRUCT* p)
 {
 
+}
+
+void AdjustLiveList(deque<FRAMEBUFSTRUCT*>& LiveList, FILETIME& ftime)
+{
+    //if ( )
+    //{
+    //}
+    return ;
 }
 
 // 先实现一版不带时间修正的（WM_TIMER）
@@ -791,6 +862,7 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 {
     MSG msg;
     PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+    //BOOL bRc = PeekMessage(&msg, NULL, 0, WM_USER, PM_NOREMOVE);
     if(!SetEvent(h))
     {    
         printf("set event error,%d\n",GetLastError());      
@@ -802,17 +874,19 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 
     static const int s_FrameRate[2] = {25, 33};
 
-    // 这个申明三个变量而不放在线程实际处理函数里面是为了提高运行效率
+    // 这个几个变量的申明而不放在线程实际处理函数里面
+    // 是为了提高运行效率
     int nChannel = -1;
     FRAMEBUFSTRUCT* p = NULL;
     bool bCallflag = true;
     bool bCanSendLive = false;
+    FILETIME fTime;
 
     deque<FRAMEBUFSTRUCT*> LiveList;
     int nEventID = SetTimer(NULL, 0, s_FrameRate[m_dwVideoFormat], NULL);
     while(1)
     {     
-        BOOL bRc = GetMessage(&msg, 0,0,0);
+        BOOL bRc = GetMessage(&msg, NULL,0,0);
         if ( !bRc )
         {
             TRACE(_T("LoopLiveSmooth GetMessage Failed!\n"));
@@ -824,6 +898,8 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
         { 
         case Suspend_Thread:
             FreeLiveList(LiveList);
+            bCanSendLive = false;
+            m_bFisrtIVDataFlag[nDevice] = FALSE;
             SuspendThread(m_hSmooth[nDevice]);
             break;
         case Push_Live_Data:
@@ -836,6 +912,12 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
                 LiveList.push_back((FRAMEBUFSTRUCT*)msg.lParam);
             }
             break;
+        case IV_Data_Coming:
+            fTime.dwLowDateTime = msg.wParam;
+            fTime.dwHighDateTime = msg.lParam;
+            AdjustLiveList(LiveList, fTime);
+            bCanSendLive =true;
+            break;
         case WM_QUIT:
             goto end;
         case WM_TIMER:
@@ -843,18 +925,12 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
             {
                 p = LiveList.front();
                 nChannel = p->ChannelIndex;
-                m_VideoSendCS.Lock();
-                if ( m_szVideoSend[nChannel] )
-                {
-                    m_szVideoSend[nChannel]->OnVideoSend(p);
-                    bCallflag = false;
-                }
-                m_VideoSendCS.Unlock();
 
-                if ( bCallflag )
-                {
-                    m_pVideoCallBack(p);
-                }
+                SYSTEMTIME syt1;
+                FileTimeToSystemTime(
+                    (FILETIME*)&p->FrameTime, &syt1);
+               
+                VideoSend(nChannel, p);
                 LiveList.pop_front();
             }
             break;
