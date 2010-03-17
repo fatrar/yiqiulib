@@ -360,16 +360,20 @@ private:
     // Smooth IV Live
     HANDLE m_hSmooth[MAX_DEVICE_NUM];
     DWORD m_dwSmoothTheadID[MAX_DEVICE_NUM];
+    BOOL m_bFisrtIVDataFlag[MAX_DEVICE_NUM];
 
     enum SmoothDef
     {
-        Suspend_Thread,
+        Suspend_Thread = WM_USER + 1,
         Push_Live_Data,
+        IV_Data_Coming,
     };
 
     static DWORD WINAPI OnThreadSmooth(PVOID pParam);
     void LoopLiveSmooth(int nDevice, HANDLE h);
-    void FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList);
+    inline void FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList);
+    inline void VideoSend(int nChannel, FRAMEBUFSTRUCT* p);
+    void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList, FRAMEBUFSTRUCT* p);
 };
 
 

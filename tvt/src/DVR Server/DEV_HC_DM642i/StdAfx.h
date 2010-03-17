@@ -114,6 +114,8 @@ private:
 // 定义编译宏，live数据是使用Copy一份还是引用数据
 #define PRECOPY
 
+//#define _UseLiveTime
+
 class CStopWatch
 {
 public:

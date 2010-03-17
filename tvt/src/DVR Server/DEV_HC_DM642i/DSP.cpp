@@ -176,6 +176,7 @@ CDSP::CDSP()
     ZeroMemory(m_szHaveStatistic, sizeof(m_szHaveStatistic));
 
     ZeroMemory(m_szVideoSend, sizeof(m_szVideoSend));
+    ZeroMemory(m_bFisrtIVDataFlag, sizeof(m_bFisrtIVDataFlag));
 }
 
 CDSP::~CDSP()
@@ -696,6 +697,7 @@ void CDSP::GetOneChannelPreData(
         !pVBI->byInvalid ||
         !FindPrvBuf(nDevice, nIndex) )
     {
+        TRACE("videoLoss ...............\n");
         ReleaseDriverBuffer(pStatus);
         return;
     }    
@@ -709,7 +711,7 @@ void CDSP::GetOneChannelPreData(
     m_pPrvBuf[nDevice][nIndex].pBuf = pBuf;
     m_pDrvHeadOfPrvBuf[nDevice][nIndex] = pStatus;
 #endif // PRECOPY
-    //m_pPrvBuf[nDevice][nIndex].localTime = pVBI->;
+
     m_pPrvBuf[nDevice][nIndex].width = pVBI->dwWidth;
     m_pPrvBuf[nDevice][nIndex].height = pVBI->dwHeight;
     m_pPrvBuf[nDevice][nIndex].localTime = ChangeTime(pVBI->prevVideoTime);
@@ -721,24 +723,52 @@ void CDSP::GetOneChannelPreData(
 
     PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
     
-    bool bflag = true;
-    m_VideoSendCS.Lock();
-    if ( m_szVideoSend[nChannel] )
+//#ifdef _DEBUG  
+    static BOOL s_Flag[4] = {0};
+    if ( !s_Flag[nChannel] )
     {
-        m_szVideoSend[nChannel]->OnVideoSend(&m_pPrvBuf[nDevice][nIndex]);
-        bflag = false;
+        ULONGLONG nTest = m_pPrvBuf[nDevice][nIndex].localTime;
+        SYSTEMTIME syt;
+        FileTimeToSystemTime((FILETIME*)&nTest, &syt);
+        char szbuf[128] = {0};
+        sprintf_s(
+            szbuf, "First Live channel=%d,Data Time =%d:%d:%d.%d\n", 
+            nChannel,
+            syt.wHour, syt.wMinute,
+            syt.wSecond, syt.wMilliseconds);
+        //OutputDebugString(szbuf);
+        TRACE(szbuf);
+        s_Flag[nChannel] = TRUE;
     }
-    m_VideoSendCS.Unlock();
+//#endif
 
-    if ( bflag )
+    do 
     {
-        BOOL bRc = m_pVideoCallBack(&m_pPrvBuf[nDevice][nIndex]);
+        FRAMEBUFSTRUCT* p = &m_pPrvBuf[nDevice][nIndex];
+        if ( nChannel != m_szCurrentIVChannel[nDevice] )
+        {
+            VideoSend(nChannel, p);
+            break;
+        }
+        
+        BOOL bRc = PostThreadMessage(
+            m_dwSmoothTheadID[nDevice],
+            Push_Live_Data,
+            nDevice, (LPARAM)p);
+        if ( !bRc )
+        {
+            TRACE(_T("PostThreadMessage Failed!\n"));
+            ReleaseLiveBuf(p);
+        }  
     }
-    
+    while (0); 
+
 #ifdef PRECOPY 
     ReleaseDriverBuffer(pStatus);
 #endif
 }
+
+
 /*
 功能说明 : 处理所有压缩流
 			(取代原始ProcessNet和ProcessCap两个处理函数，及以后的手机流也在此处理)
@@ -926,7 +956,7 @@ void CDSP::ProcessAud(INT nDevice)
 		switch(dwWait)
 		{
 		case WAIT_TIMEOUT:
-			TRACE("Devide : %d ProcessAud WAIT_TIMEOUT\n", nDevice);
+			//TRACE("Devide : %d ProcessAud WAIT_TIMEOUT\n", nDevice);
 			break;
 		case WAIT_ABANDONED:
 		case WAIT_FAILED:
@@ -1602,6 +1632,10 @@ void CDSP::ReleasePrvBuf(INT nDevice, INT nIndex)
         m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
 #endif
         m_pPrvBuf[nDevice][nIndex].nVLostFlag = 1;
+    }
+    else
+    {
+        TRACE("ReleasePrvBuf Failed!\n");
     }
 }
 
