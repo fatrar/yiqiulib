@@ -72,6 +72,17 @@ TargetQueue* CIVDataBuf::GetData(
     int nChannelID,
     const FILETIME& time )
 { 
+#ifdef _DEBUG
+    SYSTEMTIME syt;
+    FileTimeToSystemTime(&time, &syt);
+    char szbuf[64] = {0};
+    sprintf_s(
+        szbuf, "Get IV Data Time =%d:%d:%d.%d\n", 
+        syt.wHour, syt.wMinute,
+        syt.wSecond, syt.wMilliseconds);
+    OutputDebugString(szbuf);
+#endif
+
     if ( !m_IsInit )
     {
         return NULL;
@@ -103,6 +114,17 @@ BOOL CIVDataBuf::OnIVDataSend(
     const WPG_Target* pData,
     size_t nLen )
 {
+#ifdef _DEBUG
+    SYSTEMTIME syt;
+    FileTimeToSystemTime(&time, &syt);
+    char szbuf[64] = {0};
+    sprintf_s(
+        szbuf, "Push IV Data Time =%d:%d:%d.%d\n", 
+        syt.wHour, syt.wMinute,
+        syt.wSecond, syt.wMilliseconds);
+    OutputDebugString(szbuf);
+#endif
+    
     if ( !m_IsInit )
     {
         return FALSE;

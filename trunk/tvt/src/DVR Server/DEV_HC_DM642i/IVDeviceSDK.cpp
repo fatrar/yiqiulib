@@ -437,7 +437,7 @@ void CDSP::Start(
         return;
     }
 
-    AutoLockAndUnlock(m_SimulationCS);
+    AutoLockAndUnlock(m_SimulationCS[nChannelID]);
     m_pIVAlarmCallBack = p;
     m_SimulationChanID = nChannelID;
     int nUseChannel = m_szCurrentIVChannel[nDeviceID];
@@ -470,7 +470,7 @@ void CDSP::Stop( int nChannelID )
         return;
     }
 
-    AutoLockAndUnlock(m_SimulationCS);
+    AutoLockAndUnlock(m_SimulationCS[nChannelID]);
     m_pIVAlarmCallBack = NULL;
     m_SimulationChanID = Invaild_ChannelID;
     int nUseChannel = m_szCurrentIVChannel[nDeviceID];
@@ -711,7 +711,7 @@ void CDSP::RegisterLiveDataCallBack(
     int nChannelID,
     IVideoSend* pVideoSend )
 {
-    AutoLockAndUnlock(m_VideoSendCS);
+    AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
     m_szVideoSend[nChannelID] = pVideoSend;
 }
 
@@ -719,7 +719,7 @@ void CDSP::UnRegisterLiveDataCallBack(
     int nChannelID,
     IVideoSend* pVideoSend )
 {
-    AutoLockAndUnlock(m_VideoSendCS);
+    AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
     ASSERT(pVideoSend == m_szVideoSend[nChannelID]);
     m_szVideoSend[nChannelID] = NULL;
 }
@@ -812,7 +812,7 @@ DWORD WINAPI CDSP::OnThreadSmooth( PVOID pParam )
 void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
 {
     bool bflag = true;
-    m_VideoSendCS.Lock();
+    m_VideoSendCS[nChannel].Lock();
     if ( m_szVideoSend[nChannel] )
     {
         if ( !m_szVideoSend[nChannel]->OnVideoSend(p) )
@@ -821,7 +821,7 @@ void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
         }
         bflag = false;
     }
-    m_VideoSendCS.Unlock();
+    m_VideoSendCS[nChannel].Unlock();
 
     if ( bflag )
     {
