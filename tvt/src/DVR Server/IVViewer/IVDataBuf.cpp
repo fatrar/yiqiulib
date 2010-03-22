@@ -18,37 +18,10 @@
 #include "stdafx.h"
 #include "IVDataBuf.h"
 
-
-struct ThreadParm
-{
-    ThreadParm(CIVDataBuf* p, HANDLE handle):pthis(p),h(handle){}
-    CIVDataBuf* pthis;
-    HANDLE h;
-};
-
-enum ThreadMsg
-{
-    On_Send_Data,
-
-    On_End_Thread,
-};
-
-enum
-{
-    _SaveFileEvent = 0,
-    _OpenFileEvent = 1,
-    _CloseFileEvnet = 2,
-};
-
-
 static const char c_szIVFileExt[] = ".iv";
-
-#define _EventTypeCount 3
-#define _GetEventCount(d, c) (1+d*c*_EventTypeCount)
 
 CIVDataBuf::CIVDataBuf(void)
     : m_nLastPos(0)
-    , m_nBufRemain(MAX_IV_BUF_Size)
     , m_IsInit(FALSE)
     , m_pTargetBuf(NULL)
     , m_Event(NULL)
@@ -72,16 +45,16 @@ TargetQueue* CIVDataBuf::GetData(
     int nChannelID,
     const FILETIME& time )
 { 
-#ifdef _DEBUG
-    SYSTEMTIME syt;
-    FileTimeToSystemTime(&time, &syt);
-    char szbuf[64] = {0};
-    sprintf_s(
-        szbuf, "Get IV Data Time =%d:%d:%d.%d\n", 
-        syt.wHour, syt.wMinute,
-        syt.wSecond, syt.wMilliseconds);
-    OutputDebugString(szbuf);
-#endif
+//#ifdef _DEBUG
+//    SYSTEMTIME syt;
+//    FileTimeToSystemTime(&time, &syt);
+//    char szbuf[64] = {0};
+//    sprintf_s(
+//        szbuf, "Get IV Data Time =%d:%d:%d.%d\n", 
+//        syt.wHour, syt.wMinute,
+//        syt.wSecond, syt.wMilliseconds);
+//    OutputDebugString(szbuf);
+//#endif
 
     if ( !m_IsInit )
     {
@@ -101,7 +74,6 @@ TargetQueue* CIVDataBuf::GetData(
     }
 
     pGroupTarget->m_TargetQueue->AddRef();
-    SetEvent(m_Event[1+nChannelID]);
     return pGroupTarget->m_TargetQueue;
 }
 
@@ -114,36 +86,49 @@ BOOL CIVDataBuf::OnIVDataSend(
     const WPG_Target* pData,
     size_t nLen )
 {
-#ifdef _DEBUG
-    SYSTEMTIME syt;
-    FileTimeToSystemTime(&time, &syt);
-    char szbuf[64] = {0};
-    sprintf_s(
-        szbuf, "Push IV Data Time =%d:%d:%d.%d\n", 
-        syt.wHour, syt.wMinute,
-        syt.wSecond, syt.wMilliseconds);
-    OutputDebugString(szbuf);
-#endif
+//#ifdef _DEBUG
+//    SYSTEMTIME syt;
+//    FileTimeToSystemTime(&time, &syt);
+//    char szbuf[64] = {0};
+//    sprintf_s(
+//        szbuf, "Push IV Data Time =%d:%d:%d.%d\n", 
+//        syt.wHour, syt.wMinute,
+//        syt.wSecond, syt.wMilliseconds);
+//    OutputDebugString(szbuf);
+//#endif
     
     if ( !m_IsInit )
     {
         return FALSE;
     }
 
-    if ( 0 ==  nLen )
+    if ( 0 == nLen )
     {
         return TRUE;
     }
-
+    
+    /**
+    *@note 1. 找是否有目标数据缓存(TargetQueue)
+    */
     int nBufPos = FindBuf();
     if ( nBufPos == NO_BUF_Ramain )
     {
+        DebugOut("CIVDataBuf::OnIVDataSend No Find Buf!\n");
         return FALSE;
     }
 
+    /**
+    *@note 2. 对TargetQueue设置使用标志，然后将数据指针传给GroupTarget，
+    * 由他去加载新的数据到TargetQueue
+    */
+    TargetQueue* pTemp = &m_pTargetBuf[nBufPos];
+    pTemp->Use(GetMyWantEvent(SaveFile_Event,nChannelID));
     GroupTarget* pGroupTarget = new GroupTarget(
-        time, pData, nLen, &m_pTargetBuf[nBufPos]);
+        time, pData, nLen, pTemp);
    
+    /**
+    *@note 3. 将数据插入队列，等待外部取这个数据进行显示
+    */
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
     AutoLockAndUnlock(m_cs);
     ChanTarget.PushBack(pGroupTarget);
@@ -164,7 +149,7 @@ BOOL CIVDataBuf::Init(int nDeviceCount,int nEveryDeviceChannelNum)
     m_nEveryDeviceChannelNum = nEveryDeviceChannelNum;
 
     // 第一个是为设置事件要他结束线程，Save File / open / close * nDeviceCount
-    int nEventCount = _GetEventCount(nDeviceCount, nEveryDeviceChannelNum);
+    int nEventCount = GetEventCount();
     m_Event = new HANDLE[nEventCount];
     for ( int i=0; i<nEventCount; ++i )
     {
@@ -188,13 +173,13 @@ BOOL CIVDataBuf::Unit()
     }
   
     SetEvent(m_Event[0]);
-    int nEventCount = _GetEventCount(m_nDeviceCount, m_nEveryDeviceChannelNum);
     if ( m_Thread )
     {
         WaitForSingleObject(m_Thread, -1);
         CloseHandle(m_Thread); m_Thread = NULL;
     }
     
+    int nEventCount = GetEventCount();
     for ( int i=0; i<nEventCount; ++i )
     {
         CloseHandle(m_Event[i]); m_Event[i] = NULL;
@@ -206,16 +191,6 @@ BOOL CIVDataBuf::Unit()
     m_IsInit = FALSE;
     return TRUE;
 }
-
-//BOOL CIVDataBuf::ShowObjTrace(int nChannelID,  bool bState )
-//{
-//    return TRUE;
-//}
-//
-//BOOL CIVDataBuf::GetObjTraceState(int nChannelID,  bool& bState )
-//{
-//    return TRUE;
-//}
 
 //
 // IIVDataSaver
@@ -246,12 +221,8 @@ BOOL CIVDataBuf::Close(
 BOOL CIVDataBuf::DeleteIVFile( 
     const char* pPath )
 {
-    if ( !m_IsInit )
-    {
-        return FALSE;
-    }
-
-    if ( !isValidString(pPath) )
+    if ( !m_IsInit ||
+         !isValidString(pPath) )
     {
         return FALSE;
     }
@@ -271,17 +242,17 @@ BOOL CIVDataBuf::TellPreAlarmTime( int time )
 
 size_t WINAPI CIVDataBuf::SaveFileThread( void* pParm )
 {
-    return ((CIVDataBuf*)pParm)->SaveFileLoopFun(NULL);
+    return ((CIVDataBuf*)pParm)->SaveFileLoopFun();
 }
 
-size_t CIVDataBuf::SaveFileLoopFun(HANDLE h)
+size_t CIVDataBuf::SaveFileLoopFun()
 {
+    DWORD dwEventCount = GetEventCount();
     BOOL bExit = FALSE;
     while (!bExit)
     {
         DWORD dwRc = WaitForMultipleObjects(
-            1+m_nDeviceCount*3,
-            m_Event, FALSE, -1 );
+            dwEventCount, m_Event, FALSE, -1 );
         switch (dwRc)
         {
         case WAIT_ABANDONED:
@@ -296,23 +267,24 @@ size_t CIVDataBuf::SaveFileLoopFun(HANDLE h)
             DWORD dwOffsetValue = dwRc - (WAIT_OBJECT_0 +1);
             DWORD dwEventID = dwOffsetValue%(m_nDeviceCount*m_nEveryDeviceChannelNum);
             //DWORD dwDeviceID = dwOffsetValue%(_EventTypeCount*m_nEveryDeviceChannelNum);
-            DWORD dwChannelID = dwOffsetValue%(_EventTypeCount);
+            DWORD dwChannelID = dwOffsetValue%(Event_Count);
             if ( dwChannelID >= m_nEveryDeviceChannelNum )
             {
                 // log
+                assert(false);
                 break;
             }
 
             switch (dwEventID)
             {
-            case _SaveFileEvent:
+            case SaveFile_Event:
                 //ResetEvent()
                 DoSaveFileEvent(dwChannelID);
                 break;
-            case _OpenFileEvent:
+            case OpenFile_Event:
                 DoOpenFileEvevt(dwChannelID);
                 break;
-            case _CloseFileEvnet:
+            case CloseFile_Evnet:
                 DoCloseFileEvent(dwChannelID);
                 break;
             default:
@@ -348,11 +320,6 @@ size_t CIVDataBuf::SaveFileLoopFun(HANDLE h)
 
 int CIVDataBuf::FindBuf()
 {
-   /* if ( m_nBufRemain == 0 )
-    {
-        return NO_BUF_Ramain;
-    }*/
-
     // 算法需要检验是否正确
     for (WORD i=m_nLastPos; i<MAX_IV_BUF_Size; ++i)
     {
@@ -391,9 +358,11 @@ void CIVDataBuf::DoSaveFileEvent(DWORD dwChannel)
           listIter!= TarList.end(); )
     {
         GroupTarget* pGroupTarget = *listIter;
-        if ( pGroupTarget->m_TargetQueue->nRef == 0 )
+        if ( pGroupTarget->m_TargetQueue->nRef == 0 ||
+             pGroupTarget->m_TargetQueue->nUse == Buf_No_Use )
         {
             pGroupTarget->m_TargetQueue->nUse = Buf_No_Use;
+            pGroupTarget->m_TargetQueue->nRef = 0;
             delete pGroupTarget;
             TarList.erase(listIter);
             listIter = TarList.begin();
@@ -419,16 +388,50 @@ void CIVDataBuf::DoCloseFileEvent( DWORD dwChannel )
 
 }
 
-GroupTarget* CIVDataBuf::ChannelTarget::Find( const FILETIME& time )
+HANDLE CIVDataBuf::GetMyWantEvent( IVBufEvent e, int nChannelID )
+{
+    return m_Event[1+Event_Count*nChannelID + (e+1)];
+}
+
+DWORD CIVDataBuf::GetEventCount()
+{
+    static DWORD s_nEventCount = 1+m_nDeviceCount*m_nEveryDeviceChannelNum*Event_Count;
+    return s_nEventCount; 
+}
+
+/**
+****************** ChannelTarget ******************
+*/
+GroupTarget* CIVDataBuf::ChannelTarget::Find(const FILETIME& time)
 {
     if ( 0 == TargetList.size() )
     {
         return NULL;
     }
 
+    /**
+    *@note if Find Time > Buffer list[i]，Move list 0-i to Save list,return NULL
+    *   if Find time == Buffer list[i],Move list 0-i to Save list, and return find
+    *   if Find time < Buffer[any], do nothing,return NULL
+    *@note use **iter ^ time(A) and not use **iter > time and **iter == time(B),
+    * the reason is A compare once, B compare twice
+    */
     GroupTarget* pGroupTarget = NULL;
-    list<GroupTarget*>::iterator iter;
-    for ( iter = TargetList.begin(); ; ++iter)
+    list<GroupTarget*>::iterator iter = TargetList.begin();
+    long nState = **iter ^ time;
+    if ( nState > 0 )
+    {
+        return NULL;
+    }
+    else if ( nState == 0 )
+    {
+        pGroupTarget = *iter;     
+        TargetSaveList.push_back(pGroupTarget);
+        TargetList.pop_front(); 
+        return pGroupTarget;
+    }
+
+    for ( ++iter; ; ++iter)
     {
         if ( iter == TargetList.end() )
         {
@@ -436,20 +439,21 @@ GroupTarget* CIVDataBuf::ChannelTarget::Find( const FILETIME& time )
             break;
         }
 
-        if ( **iter == time )
+        nState = **iter ^ time;
+        if ( nState == 0 )
         {
+            DebugOut("Find Obj!\n");
             pGroupTarget = *iter;
             TargetSaveList.splice(
                 TargetSaveList.end(), TargetList, TargetList.begin(), ++iter);
             break;
         }
-        else if ( **iter > time )
+        else if ( nState > 0 )
         {
             TargetSaveList.splice(
                 TargetSaveList.end(), TargetList, TargetList.begin(), ++iter);
             break;
-        }  
-     
+        }
     }
 
     return pGroupTarget;

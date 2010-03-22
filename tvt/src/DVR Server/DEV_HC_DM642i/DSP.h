@@ -105,15 +105,25 @@ protected:
 	BOOL FindAudBuf(INT nDevice, INT &nIndex);
 	void ReleasePrvBuf(INT nDevice, INT nIndex);
 	BOOL FindPrvBuf(INT nDevice, INT &nIndex);
-	
-    CCriticalSection m_pPrvBufCS[MAX_DEVICE_NUM];	
+
+#ifdef Use_Single_Buffer	
+    CCriticalSection m_pPrvBufCS[MAX_CHANNEL_NUM];
+#else
+    CCriticalSection m_pPrvBufCS[MAX_DEVICE_NUM];
+#endif
+
     CCriticalSection m_pNetBufCS[MAX_DEVICE_NUM];
 	CCriticalSection m_pMobileBufCS[MAX_DEVICE_NUM];
 	CCriticalSection m_pNetBufCS_RT[MAX_DEVICE_NUM];	//<REC-NET>
     CCriticalSection m_pAudBufCS[MAX_DEVICE_NUM];
     CCriticalSection m_pCapBufCS[MAX_DEVICE_NUM];
 
+#ifdef Use_Single_Buffer
+    FRAMEBUFSTRUCT m_pPrvBuf[MAX_CHANNEL_NUM][PRV_BUF_NUM];
+#else
     FRAMEBUFSTRUCT m_pPrvBuf[MAX_DEVICE_NUM][PRV_BUF_NUM];
+#endif // Use_Single_Buffer
+
 	FRAMEBUFSTRUCT m_pNetBuf[MAX_DEVICE_NUM][NET_BUF_NUM];
 	FRAMEBUFSTRUCT m_pMobileBuf[MAX_DEVICE_NUM][MOBILE_BUF_NUM];
 	FRAMEBUFSTRUCT m_pNetBuf_RT[MAX_DEVICE_NUM][CAP_BUF_NUM];	//<REC-NET>  
@@ -123,6 +133,8 @@ protected:
 protected:
     void DestroyWorkerThread();
 	BOOL CreateWorkerThread();
+
+    BOOL CreateBuffer();
 	void DestroyBuffer();
 	HANDLE m_hThreadAud[MAX_DEVICE_NUM];
 	HANDLE m_hThreadPrv[MAX_DEVICE_NUM];
@@ -132,17 +144,16 @@ protected:
 	static DWORD WINAPI OnThreadPrv(PVOID pParam);
 	static DWORD WINAPI OnThreadCompressStrm(PVOID pParam);
 
-	BOOL CreateBuffer();
 	CAPTURECALLBACK * m_pAudioCallBack;
 	CAPTURECALLBACK * m_pVideoCallBack;
 	DWORD m_dwVideoFormat;
-	void DeviceExit();
-
+	
 	HANDLE m_hCompressEvent[MAX_DEVICE_NUM];
 	HANDLE m_hAudEvent[MAX_DEVICE_NUM];
 	HANDLE m_hPrvEvent[MAX_DEVICE_NUM];
 
 	BOOL DeviceInit();
+    void DeviceExit();
 	HANDLE m_hDevice[MAX_DEVICE_NUM];
 	BOOL ControlDriver(INT nIndex, DWORD dwIoControlCode, LPVOID lpInBuffer, DWORD nInBufferSize, LPVOID lpOutBuffer, DWORD nOutBufferSize, LPDWORD lpBytesReturned);
 
@@ -371,11 +382,12 @@ private:
         Suspend_Thread = WM_USER + 1,
         Push_Live_Data,
         IV_Data_Coming,
+        Play_Again,
     };
 
     static DWORD WINAPI OnThreadSmooth(PVOID pParam);
     void LoopLiveSmooth(int nDevice, HANDLE h);
-    inline void FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList);
+    inline void FreeLiveList(list<FRAMEBUFSTRUCT*>& LiveList);
     inline void VideoSend(int nChannel, FRAMEBUFSTRUCT* p);
     void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList, FRAMEBUFSTRUCT* p);
 };

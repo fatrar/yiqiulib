@@ -5,6 +5,10 @@
 #include "stdafx.h"
 
 LARGE_INTEGER CStopWatch::s_nCpuClcok = CStopWatch::Init();
+
+CStopWatchCallTest::CStopWatchIniter CStopWatchCallTest::Initer;
+LARGE_INTEGER CStopWatchCallTest::s_nCpuClcok;
+LARGE_INTEGER CStopWatchCallTest::s_nPreClcok;
 /*
 一.
 修改内容 : 实现局域网实时传输

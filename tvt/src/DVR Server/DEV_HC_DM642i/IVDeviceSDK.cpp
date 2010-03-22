@@ -131,8 +131,34 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     //ULONGLONG nLiveTime = ChangeTime(m_prevVideoTime);
     ULONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
   
-    static BOOL s_Flag = FALSE;
-    if ( !s_Flag )
+    {
+    //CStopWatchCallTest aa;
+    }
+    //static ULONGLONG s_MaxBt = 0;
+    //static ULONGLONG s_PreTime = 0;
+    //ULONGLONG nTestTmp = nTime-s_PreTime;
+    //
+    //if ( (nTestTmp > s_MaxBt || nTestTmp >125*10000 ) && s_PreTime!=0 )
+    //{
+    //    if ( nTestTmp > s_MaxBt )
+    //    {
+    //         s_MaxBt = nTestTmp;
+    //    }
+    //   
+    //    long nValue = nTestTmp/10000;
+    //    //SYSTEMTIME syt;
+    //    //FileTimeToSystemTime((FILETIME*)&nTestTmp, &syt);
+    //    static char szbuf[128] = {0};
+    //    sprintf_s(
+    //        szbuf, "Max Data Time=%dms\n", 
+    //        nValue);
+    //    //OutputDebugString(szbuf);
+    //    TRACE(szbuf);
+    //}
+    //s_PreTime = nTime;
+
+    static int s_nNum = 0;
+    if ( s_nNum )
     {
         SYSTEMTIME syt;
         //FileTimeToSystemTime((FILETIME*)&nLiveTime, &syt1);
@@ -144,8 +170,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
             syt.wSecond, syt.wMilliseconds);
         //OutputDebugString(szbuf);
         TRACE(szbuf);
-        s_Flag = TRUE;
-        return;
+        --s_nNum;
     }
     //ASSERT( CompareFileTime((FILETIME*)&nLiveTime, (FILETIME*)&nTime) > 0 );
 #endif
@@ -163,13 +188,13 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
             dwNumberOfTargets );
     }
 
-    if ( !m_bFisrtIVDataFlag[nDevice] )
+    //if ( !m_bFisrtIVDataFlag[nDevice] )
     {
         PostThreadMessage(
             m_dwSmoothTheadID[nDevice],
             IV_Data_Coming,
             pTime->dwLowDateTime, pTime->dwHighDateTime);
-        m_bFisrtIVDataFlag[nDevice] = TRUE;
+        //m_bFisrtIVDataFlag[nDevice] = TRUE;
     }
 
     // 2. Do IV Alarm & SnapShot
@@ -729,6 +754,7 @@ void CDSP::ReleaseLiveBuf( FRAMEBUFSTRUCT* p )
     DWORD& DelBufPara = p->BufferPara;
     int nDevice = DelBufPara >> 8 & 0xFF;
     int nIndex = DelBufPara & 0xFF;
+
     ReleasePrvBuf(nDevice, nIndex);
 }
 //
@@ -832,9 +858,9 @@ void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
     }
 }
 
-void CDSP::FreeLiveList(deque<FRAMEBUFSTRUCT*>& LiveList)
+void CDSP::FreeLiveList(list<FRAMEBUFSTRUCT*>& LiveList)
 {
-    deque<FRAMEBUFSTRUCT*>::iterator iter;
+    list<FRAMEBUFSTRUCT*>::iterator iter;
     for ( iter = LiveList.begin();
           iter!= LiveList.end();
           ++iter)
@@ -849,48 +875,133 @@ void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList, FRAMEBUFSTRUCT* p)
 
 }
 
-void AdjustLiveList(deque<FRAMEBUFSTRUCT*>& LiveList, FILETIME& ftime)
+
+template<int nFrame>
+void AdjustPostMessage(
+    list<FRAMEBUFSTRUCT*>& LiveList,
+    volatile int& nPostMessage)
 {
-    //if ( )
-    //{
-    //}
-    return ;
+    size_t nQueueSize = LiveList.size();
+    if (nQueueSize < 2)
+    {
+        return;
+    }
+
+    FILETIME& Begin = (FILETIME&)(LiveList.front()->FrameTime);
+    FILETIME& End = (FILETIME&)(LiveList.back()->FrameTime);
+    long nCompare = End - Begin;
+    if ( nCompare <= 0 )
+    {
+        ASSERT(FALSE);
+        return;
+    }
+
+    __int64 nTmp =25*nCompare;
+    int nTheoryValue = nTmp/1000;
+    nPostMessage = int(nTheoryValue) - int(nQueueSize);
 }
+
+void AdjustLiveList(
+    list<FRAMEBUFSTRUCT*>& LiveList,
+    list<FRAMEBUFSTRUCT*>& BufList,
+    FILETIME& ftime)
+{   
+    size_t nQueueSize = BufList.size();
+    if ( nQueueSize == 0 )
+    {
+        return;
+    }
+
+    list<FRAMEBUFSTRUCT*>::iterator iter = BufList.begin();
+    FILETIME& Test = (FILETIME&)(*iter)->FrameTime;
+    if ( Test > ftime )
+    {
+        //TRACE(" > First!...\n");
+        return;
+    }
+    else if (Test == ftime)
+    {
+        //TRACE(" == First!...\n");
+        LiveList.splice(LiveList.end(), BufList, iter, iter);
+        //AdjustPostMessage<nFrame>(LiveList,nPostMessage);
+        return;
+    }
+
+    for ( ; ; ++iter )
+    {
+        if ( iter == BufList.end() )
+        {
+            //TRACE("splice All ...\n");
+            LiveList.splice(LiveList.end(), BufList);
+            break;
+        }
+        if ( Test > ftime )
+        {
+            //TRACE("splice > ...\n");
+            LiveList.splice(LiveList.end(), BufList, BufList.begin(), --iter);
+            break;
+        }
+        if ( Test == ftime )
+        {
+            //TRACE("splice == ...\n");
+            LiveList.splice(LiveList.end(), BufList, BufList.begin(), iter);
+            break;
+        }
+    }
+    //AdjustPostMessage<nFrame>(LiveList,nPostMessage);
+}
+
+typedef void (*AdjustLiveListFn)(list<FRAMEBUFSTRUCT*>&,list<FRAMEBUFSTRUCT*>&,FILETIME&);
+typedef void (*AdjustPostMessageFn)(list<FRAMEBUFSTRUCT*>&,volatile int&);
 
 // 先实现一版不带时间修正的（WM_TIMER）
 void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 {
+    TRACE("LoopLiveSmooth: Device=%d, Start Create Message Quque!\n", nDevice);
     MSG msg;
     PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
     //BOOL bRc = PeekMessage(&msg, NULL, 0, WM_USER, PM_NOREMOVE);
     if(!SetEvent(h))
     {    
-        printf("set event error,%d\n",GetLastError());      
+        TRACE("LoopLiveSmooth: Device=%d, Set event error,%d\n",
+            GetLastError(), nDevice); 
+        ASSERT(FALSE);
         return ;
     }
 
-    // 默认休眠
-    SuspendThread(m_hSmooth[nDevice]);
-
-    static const int s_FrameRate[2] = {25, 33};
+    TRACE("LoopLiveSmooth: Device=%d, Create Message Quque Finish!\n", nDevice);
 
     // 这个几个变量的申明而不放在线程实际处理函数里面
     // 是为了提高运行效率
     int nChannel = -1;
     FRAMEBUFSTRUCT* p = NULL;
-    bool bCallflag = true;
-    bool bCanSendLive = false;
+    volatile bool bCallflag = true;
+    volatile bool bCanSendLive = false;
     FILETIME fTime;
 
-    deque<FRAMEBUFSTRUCT*> LiveList;
-    int nEventID = SetTimer(NULL, 0, s_FrameRate[m_dwVideoFormat], NULL);
+    static const int s_FrameRate[2] = {25, 33};
+    AdjustPostMessageFn AdjustFn =
+        m_dwVideoFormat==0 ? AdjustPostMessage<25>:AdjustPostMessage<33>;
+
+    list<FRAMEBUFSTRUCT*> BufList;
+    list<FRAMEBUFSTRUCT*> LiveList;
+
+    volatile int nPostMessage = 0;
+
+    int nFrame = s_FrameRate[m_dwVideoFormat];
+    int nEventID = SetTimer(NULL, 0, 1000/nFrame, NULL);
+    
     while(1)
     {     
         BOOL bRc = GetMessage(&msg, NULL,0,0);
         if ( !bRc )
         {
-            TRACE(_T("LoopLiveSmooth GetMessage Failed!\n"));
-            ASSERT(false);
+            DWORD dwError = GetLastError();
+            if ( dwError != 0 )
+            {
+                TRACE(_T("LoopLiveSmooth GetMessage Failed!\n"));
+                ASSERT(false);
+            }
             continue;
         }
    
@@ -909,29 +1020,101 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
             }
             else
             {
-                LiveList.push_back((FRAMEBUFSTRUCT*)msg.lParam);
+                BufList.push_back((FRAMEBUFSTRUCT*)msg.lParam);
             }
             break;
         case IV_Data_Coming:
             fTime.dwLowDateTime = msg.wParam;
             fTime.dwHighDateTime = msg.lParam;
-            AdjustLiveList(LiveList, fTime);
-            bCanSendLive =true;
+            AdjustLiveList(LiveList, BufList, fTime);
+            //AdjustPostMessage<25>(LiveList);
+            AdjustFn(LiveList,nPostMessage);
+            if ( !bCanSendLive )
+            {
+                static int nTest = 2;
+                --nTest;
+                if ( nTest == 0 )
+                {
+                    bCanSendLive = true;
+                }
+            }
+            //AdjustFn(LiveList, BufList, fTime, nPostMessage);
+            //bCanSendLive =true;
+            break;
+        case Play_Again:
+            if (bCanSendLive && LiveList.size() != 0)
+            {
+                p = LiveList.front();
+                if ( p )
+                {
+                    nChannel = p->ChannelIndex;
+
+                    /* SYSTEMTIME syt1;
+                    FileTimeToSystemTime(
+                    (FILETIME*)&p->FrameTime, &syt1);*/
+
+                    VideoSend(nChannel, p);
+                }
+
+                LiveList.pop_front();
+            }
             break;
         case WM_QUIT:
             goto end;
         case WM_TIMER:
-            if (bCanSendLive && LiveList.size() != 0)
+            static size_t s_nListSize = 0;
+            s_nListSize = LiveList.size();
+            if (bCanSendLive && s_nListSize != 0)
             {
-                p = LiveList.front();
-                nChannel = p->ChannelIndex;
+                //if ( nPostMessage < 0 )
+                //{
+                //    ++nPostMessage;
+                //    break;
+                //}
 
-                SYSTEMTIME syt1;
-                FileTimeToSystemTime(
-                    (FILETIME*)&p->FrameTime, &syt1);
-               
-                VideoSend(nChannel, p);
+                static bool s_Drop = false;
+                if ( s_nListSize > 10 )
+                {
+ 
+                    TRACE("List Size = %d, Buf size=%d\n", s_nListSize, BufList.size());
+
+                    //--nPostMessage;
+                    if ( s_Drop )
+                    {
+                        PostThreadMessage(m_dwSmoothTheadID[nDevice], Play_Again,0, 0);
+                        
+                    }
+                    s_Drop = !s_Drop;
+                    //else
+                    //{
+                    //    ReleaseLiveBuf(LiveList.front());
+                    //    LiveList.pop_front();
+                    //    s_Drop = true;
+                    //}
+                }
+
+                p = LiveList.front();
+                if ( p )
+                {
+                    nChannel = p->ChannelIndex;
+
+                   /* SYSTEMTIME syt1;
+                    FileTimeToSystemTime(
+                        (FILETIME*)&p->FrameTime, &syt1);*/
+
+                    
+                    //CStopWatchCallTest aa;
+                    
+                    VideoSend(nChannel, p);
+                }
                 LiveList.pop_front();
+
+                //if ( nPostMessage > 0 )
+                //{
+                //    --nPostMessage;
+                //    PostThreadMessage(m_dwSmoothTheadID[nDevice], Play_Again,0, 0);
+                //}
+                
             }
             break;
         }

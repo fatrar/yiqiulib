@@ -48,6 +48,10 @@
 #include <map>
 using namespace std;
 
+#include "..\..\Base\Base\Include\Common.h"
+#include "..\..\Base\System\Include\TimeUtil.h"
+using namespace OCI;
+
 #include "common.h"
 #include "Define.h"
 
@@ -62,6 +66,9 @@ using namespace std;
 
 static char* s_pOutFileName[] = {OUT_FILE_NAME_PAL, OUT_FILE_NAME_NTSC};
 static char* s_pStandardName[] = {"PAL", "NTSC"};
+
+#define safeCloseHandle(h) if((h)){CloseHandle((h)); (h)=NULL;}
+
 
 //#define TEST_VERSION
 #ifdef TEST_VERSION
@@ -105,14 +112,16 @@ private:
 
 #define safeCloseHandle(h) if((h)){CloseHandle((h)); (h)=NULL;}
 
-#define safeDelete(ptr)		 if((ptr)) {delete (ptr); (ptr) = 0;}
-#define safeDeleteArray(ptr) if((ptr)) {delete[] (ptr); (ptr) = 0;}
+//#define safeDelete(ptr)		 if((ptr)) {delete (ptr); (ptr) = 0;}
+//#define safeDeleteArray(ptr) if((ptr)) {delete[] (ptr); (ptr) = 0;}
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 // 定义编译宏，live数据是使用Copy一份还是引用数据
 #define PRECOPY
+
+#define Use_Single_Buffer
 
 //#define _UseLiveTime
 
@@ -143,6 +152,61 @@ private:
     LARGE_INTEGER m_nEnterTime;
 };
 
+#undef TRACE
+#define TRACE XTRACE
+#include "XTrace.h"
+
+
+class CStopWatchCallTest
+{
+public:
+    CStopWatchCallTest()
+    {
+        LARGE_INTEGER nEnterTime;
+        QueryPerformanceCounter(&nEnterTime);
+        if ( s_nPreClcok.QuadPart == 0 )
+        {
+            s_nPreClcok = nEnterTime;
+        }
+        else
+        {
+            double nTime = double(nEnterTime.QuadPart-s_nPreClcok.QuadPart)/s_nCpuClcok.QuadPart;
+            //if ( nTime > 0.15 )
+            {
+                TRACE("time is %f\n", nTime);
+            }
+            s_nPreClcok = nEnterTime;
+        }
+    }
+    //~CStopWatchCallTest()
+    //{
+    //    LARGE_INTEGER nLeaveTime;
+    //    QueryPerformanceCounter(&nLeaveTime);
+    //    double nTime = double(nLeaveTime.QuadPart-m_nEnterTime.QuadPart)/s_nCpuClcok.QuadPart;
+    //    TRACE("time is %f\n", nTime);
+    //}
+
+    static void Init()
+    {
+        QueryPerformanceFrequency(&s_nCpuClcok);
+        s_nPreClcok.QuadPart = 0;
+    }
+private:
+    static class CStopWatchIniter
+    {
+    public:
+        CStopWatchIniter()
+        {
+            CStopWatchCallTest::Init();
+        }
+    } Initer;
+private:
+    static LARGE_INTEGER s_nCpuClcok;
+    static LARGE_INTEGER s_nPreClcok;
+    //LARGE_INTEGER m_nEnterTime;
+};
+
+
 
 //#define StartStopWatch()  CStopWatch ____stop(__FUNCTION__)
 #define StartStopWatch() 
@@ -152,9 +216,6 @@ private:
 
 #define ERROR_RETURN_FALSE(x) ERROR_RETURN(x, FALSE)
 
-#undef TRACE
-#define TRACE XTRACE
-#include "XTrace.h"
 
 #ifdef _UNICODE
 #if defined _M_IX86

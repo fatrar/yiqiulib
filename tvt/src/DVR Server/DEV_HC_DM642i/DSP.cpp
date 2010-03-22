@@ -40,6 +40,8 @@ BOOL FindTBuf(
             return TRUE;
         }
     }
+
+    TRACE("videoLoss %d no buffer!\n", nIndex);
     return FALSE;
 }
 
@@ -371,20 +373,33 @@ BOOL CDSP::SetSwitch(DWORD *pSwitch, DWORD ChannelNum)
 
 union BufPara
 {
+    BufPara(int nBufIndex,int nDeviceID,int nChannelID, int nBufType)
+    {
+        Para.nBufIndex = nBufIndex;
+        Para.nDeviceID = nDeviceID;
+        Para.nChannelID = nChannelID;
+        Para.nBufType = nBufType;
+    }
+    BufPara(DWORD a){dwPara = a;}
+    BufPara& operator = (DWORD a){dwPara=a;return *this;}
+
     DWORD dwPara;
     struct PARA
     {
-        short nIndex:8;
-        short nDevice:8;
-        short nType:16;
+        int nBufIndex:8;
+        int nDeviceID:8;
+        int nChannelID:8;
+        TVT_ENUM_VIDEO_STREAM_TYPE nBufType:8;
     } Para; 
 };
 
 BOOL CDSP::ReleaseBuffer(DWORD isVideo, DWORD DelBufPara)
 {
-	int nType = DelBufPara >> 16 & 0xFF;
-	int nDevice = DelBufPara >> 8 & 0xFF;
-	int nIndex = DelBufPara & 0xFF;
+    BufPara Para(DelBufPara);
+	int nType = Para.Para.nBufType;
+	int nDevice = Para.Para.nDeviceID;
+	int nIndex = Para.Para.nBufIndex;
+    int nChannelID = Para.Para.nChannelID;
 	
 	if (isVideo != 0)
 	{
@@ -432,15 +447,26 @@ BOOL CDSP::CreateWorkerThread()
         m_hSmooth[i] = CreateThread(
             NULL, 0, OnThreadSmooth,
             new SmoonthThreadParm(this, i, TempEvent[i]),
-            0, &(m_dwSmoothTheadID[i]));
+            0, &m_dwSmoothTheadID[i]);
+
+        char szBuf[64] = {0};
+        sprintf_s(szBuf, 
+            "SmoonthThread Thead HANDLE=%x, ID=%x\n",
+            m_hSmooth[i], 
+            m_dwSmoothTheadID[i]);
+        OutputDebugString(szBuf);
     }
 
+    TRACE("CreateWorkerThread: Wait For Smooth Thread Create Message Quque!\n");
     // 等待平滑线程创建消息栈
     WaitForMultipleObjects(m_nDeviceNum, TempEvent, TRUE, INFINITE);
     for ( int j=0; j<m_nDeviceNum; ++j)
     {
+        // 默认休眠
+        SuspendThread(m_hSmooth[m_nDeviceNum]);
         CloseHandle(TempEvent[j]);
     }
+    TRACE("CreateWorkerThread: Smooth Thread Create Message Quque OK!\n");
 	return TRUE;
 }
 
@@ -465,6 +491,11 @@ void CDSP::DestroyWorkerThread()
         {
             SetEvent(m_hCompressEvent[j]);
         }
+
+        if ( m_hSmooth[j] != NULL )
+        {
+            PostThreadMessage(m_dwSmoothTheadID[j],WM_QUIT,0,0);
+        }
     }
 
 #define DestroyThread(h, strlog) \
@@ -486,10 +517,13 @@ void CDSP::DestroyWorkerThread()
     DWORD dwExitCode;
 	for (int i = 0; i < m_nDeviceNum; i++)	//zhangzhen	2007/03/01
 	{
-        DestroyThread(m_hThreadPrv[i], "TerminateThread m_hThreadPrv %d\n");
-        DestroyThread(m_hThreadAud[i], "TerminateThread m_hThreadAud %d\n") ;
-        DestroyThread(m_hThreadCompressStrm[i], "TerminateThread m_hThreadCompressStrm %d\n");
+        DestroyThread(m_hThreadPrv[i], "Terminate Live Thread End Time %d\n");
+        DestroyThread(m_hThreadAud[i], "Terminate Audio Thread End Time %d\n") ;
+        DestroyThread(m_hThreadCompressStrm[i], "Terminate Compress Thread End Time %d\n");
+
+        DestroyThread(m_hSmooth[i], "Terminate Smooth Thread End Time %d\n");
 	}
+
 }
 
 BOOL CDSP::CreateBuffer()
@@ -508,19 +542,19 @@ BOOL CDSP::CreateBuffer()
 			m_pCapBuf[i][j].pBuf = NULL;
 			m_pCapBuf[i][j].nVLostFlag = 1;
 		}
-
+#ifndef Use_Single_Buffer
 		for (j = 0; j < PRV_BUF_NUM; j++)
 		{
-#ifdef PRECOPY
+#   ifdef PRECOPY
             m_pPrvBuf[i][j].pBuf = new BYTE[CIF_BUFF_SIZE]; //heliang fix
             //m_pDrvHeadOfPrvBuf[i][j] = new TVT_CAP_STATUS; //heliang+
-#else
+#   else
             m_pPrvBuf[i][j].pBuf = NULL;
             m_pDrvHeadOfPrvBuf[i][j] = NULL;
-#endif // PRECOPY	
-			m_pPrvBuf[i][j].nVLostFlag = 1;
-            
+#   endif // PRECOPY	
+			m_pPrvBuf[i][j].nVLostFlag = 1;   
 		}
+#endif
 
 		for (j = 0; j < NET_BUF_NUM; j++)
 		{
@@ -543,6 +577,16 @@ BOOL CDSP::CreateBuffer()
         m_pIVParmBuf[i] = new BYTE[MAX_IV_Parm_Buf_Size];
 	}
 
+#ifdef Use_Single_Buffer
+    for (int k = 0; k<MAX_CHANNEL_NUM; ++k)
+    {
+        for (int l=0; l<PRV_BUF_NUM;++l)
+        {
+            m_pPrvBuf[k][l].pBuf = new BYTE[CIF_BUFF_SIZE]; //heliang fix
+            m_pPrvBuf[k][l].nVLostFlag = 1;
+        }
+    }
+#endif
 	return TRUE;
 }
 
@@ -561,8 +605,10 @@ void CDSP::DestroyBuffer()
 		{
              safeDeleteArray(m_pNetBuf_RT[i][j].pBuf);
 		}
+#ifdef Use_Single_Buffer
 
-#ifdef PRECOPY 
+#else
+#   ifdef PRECOPY 
         //heliang+
         for (j = 0; j < PRV_BUF_NUM; j++)
         {
@@ -570,6 +616,7 @@ void CDSP::DestroyBuffer()
             m_pPrvBuf[i][j].nVLostFlag = 1;
             //safeDeleteArray(m_pDrvHeadOfPrvBuf[i][j]); 
         }
+#   endif
 #endif
 
         safeDeleteArray(m_pIVParmBuf[i]);
@@ -613,7 +660,7 @@ void CDSP::ProcessPrv(INT nDevice)
 		{
 			if(m_pPack[nDevice].param.size() == 0)
 			{
-				break;
+				break; 
 			}
 		}
 
@@ -697,41 +744,56 @@ void CDSP::GetOneChannelPreData(
     // if channel is close or video loss or is valid
     // or not enough buffer
     if ( m_pSwitch[nDevice * CHANNEL_PER_DEVICE + nChannel] == 0 ||
-        pVBI->videoLoss ||
-        !pVBI->byInvalid ||
-        !FindPrvBuf(nDevice, nIndex) )
+         pVBI->videoLoss ||
+         !pVBI->byInvalid )
     {
-        TRACE("videoLoss ...............\n");
+        TRACE("Data loss videoLoss %d\n", nChannel);
         ReleaseDriverBuffer(pStatus);
         return;
-    }    
+    }  
+
+#ifdef Use_Single_Buffer
+    if ( !FindPrvBuf(nChannel, nIndex) )
+#else
+    if ( !FindPrvBuf(nDevice, nIndex) )
+#endif // Use_Single_Buffer
+    {
+        TRACE("not enough buffer loss videoLoss %d\n", nChannel);
+        ReleaseDriverBuffer(pStatus);
+        return;
+    }
 
     //数据部分指针
     BYTE* pBuf = pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel + PREV_VBI_SIZE;
-#ifdef PRECOPY      // 使用copy一份      
-    memcpy(m_pPrvBuf[nDevice][nIndex].pBuf, pBuf, CIF_BUFF_SIZE); 
-    //memcpy(m_pDrvHeadOfPrvBuf[nDevice][nIndex], pStatus, sizeof(TVT_CAP_STATUS));	//该缓冲对应的DRIVER层BUF头
-#else              // 使用数据引用
-    m_pPrvBuf[nDevice][nIndex].pBuf = pBuf;
-    m_pDrvHeadOfPrvBuf[nDevice][nIndex] = pStatus;
-#endif // PRECOPY
+#ifdef Use_Single_Buffer
+    FRAMEBUFSTRUCT& Frame = m_pPrvBuf[nChannel][nIndex];
+    memcpy(Frame.pBuf, pBuf, CIF_BUFF_SIZE);
+#else
+    FRAMEBUFSTRUCT& Frame = m_pPrvBuf[nDevice][nIndex];
+#   ifdef PRECOPY      // 使用copy一份
+    memcpy(Frame.pBuf, pBuf, CIF_BUFF_SIZE);
+#   else              // 使用数据引用
+    Frame.pBuf = pBuf;
+    Frame = pStatus;
+#   endif // PRECOPY
 
-    m_pPrvBuf[nDevice][nIndex].width = pVBI->dwWidth;
-    m_pPrvBuf[nDevice][nIndex].height = pVBI->dwHeight;
-    m_pPrvBuf[nDevice][nIndex].localTime = ChangeTime(pVBI->prevVideoTime);
-    m_pPrvBuf[nDevice][nIndex].FrameTime = m_pPrvBuf[nDevice][nIndex].localTime;
-    m_pPrvBuf[nDevice][nIndex].ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
-    m_pPrvBuf[nDevice][nIndex].BufLen = m_dwPrvBufSize;
-    m_pPrvBuf[nDevice][nIndex].nStreamID = VIDEO_STREAM_PREVIEW;
-    m_pPrvBuf[nDevice][nIndex].BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
+#endif // Use_Single_Buffer
+    Frame.width = pVBI->dwWidth;
+    Frame.height = pVBI->dwHeight;
+    Frame.localTime = ChangeTime(pVBI->prevVideoTime);
+    Frame.FrameTime = m_pPrvBuf[nDevice][nIndex].localTime;
+    Frame.ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
+    Frame.BufLen = m_dwPrvBufSize;
+    Frame.nStreamID = VIDEO_STREAM_PREVIEW;
+    Frame.BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
 
     PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
     
 //#ifdef _DEBUG  
-    static BOOL s_Flag[4] = {0};
-    if ( !s_Flag[nChannel] )
+    static int s_nNum = 0;
+    if ( s_nNum && nChannel == 0)
     {
-        ULONGLONG nTest = m_pPrvBuf[nDevice][nIndex].localTime;
+        ULONGLONG nTest = Frame.localTime;
         SYSTEMTIME syt;
         FileTimeToSystemTime((FILETIME*)&nTest, &syt);
         char szbuf[128] = {0};
@@ -742,27 +804,30 @@ void CDSP::GetOneChannelPreData(
             syt.wSecond, syt.wMilliseconds);
         //OutputDebugString(szbuf);
         TRACE(szbuf);
-        s_Flag[nChannel] = TRUE;
+        --s_nNum;
     }
 //#endif
 
     do 
     {
-        FRAMEBUFSTRUCT* p = &m_pPrvBuf[nDevice][nIndex];
+        //FRAMEBUFSTRUCT* p = &m_pPrvBuf[nDevice][nIndex];
         if ( nChannel != m_szCurrentIVChannel[nDevice] )
         {
-            VideoSend(nChannel, p);
+            VideoSend(nChannel, &Frame);
             break;
         }
         
         BOOL bRc = PostThreadMessage(
             m_dwSmoothTheadID[nDevice],
             Push_Live_Data,
-            nDevice, (LPARAM)p);
+            nDevice, (LPARAM)&Frame);
         if ( !bRc )
         {
-            TRACE(_T("PostThreadMessage Failed!\n"));
-            ReleaseLiveBuf(p);
+            TRACE(
+                _T("PostThreadMessage Failed! thread id=%d, LastError=%d\n"),
+                m_dwSmoothTheadID[nDevice],
+                GetLastError() );
+            ReleaseLiveBuf(&Frame);
         }  
     }
     while (0); 
@@ -1392,13 +1457,11 @@ BOOL CDSP::CaptureStart()
 	memset(&stIn, 0, sizeof(APP_DRIVER_BUFFER_INFO));
 	for (i = 0; i < m_nDeviceNum; i++)
 	{
-		BOOL bRtn = ControlDriver(i,
-				IOCTL_SHOW_STREAM_START,
-				&stIn,
-				sizeof(APP_DRIVER_BUFFER_INFO),
-				NULL,
-				0,
-				&dwRtn);
+		BOOL bRtn = ControlDriver(
+            i, IOCTL_SHOW_STREAM_START,
+			&stIn, sizeof(APP_DRIVER_BUFFER_INFO),
+			NULL,0,
+			&dwRtn);
 		if (bRtn == 0)
 		{
 			return FALSE;
@@ -1595,7 +1658,12 @@ BOOL CDSP::FindCapBuf(INT nDevice, INT &nIndex)
 
 BOOL CDSP::FindPrvBuf(INT nDevice, INT &nIndex)
 {
+#ifdef Use_Single_Buffer
+    // nDevice 其实是通道了
     return FindTBuf<PRV_BUF_NUM>(nDevice, nIndex,m_pPrvBufCS,m_pPrvBuf);
+#else
+    return FindTBuf<PRV_BUF_NUM>(nDevice, nIndex,m_pPrvBufCS,m_pPrvBuf);
+#endif // Use_Single_Buffer   
 }
 
 void CDSP::ReleaseAudBuf(INT nDevice, INT nIndex)

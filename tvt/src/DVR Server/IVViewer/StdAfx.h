@@ -49,6 +49,7 @@ using namespace std;
 #include "..\..\Base\Base\Include\Singleton.h"
 #include "..\..\Base\System\Include\Thread.h"
 #include "..\..\Base\Base\Include\StlHelper.h"
+#include "..\..\Base\System\Include\TimeUtil.h"
 using namespace OCI;
 
 #include "..\DEVICEControl\WPG_EventOccurrence.h"
