@@ -83,15 +83,26 @@ public:
     virtual BOOL TellPreAlarmTime(int time);
 
 protected:
-    static size_t WINAPI SaveFileThread(void* pParm);
-    size_t SaveFileLoopFun(HANDLE h);
+    enum IVBufEvent
+    {
+        SaveFile_Event = 0,
+        OpenFile_Event = 1,
+        CloseFile_Evnet = 2,
+        Event_Count,
+    };
 
+    static size_t WINAPI SaveFileThread(void* pParm);
+    size_t SaveFileLoopFun();
+
+    inline HANDLE GetMyWantEvent(IVBufEvent e, int nChannelID);
+    inline DWORD GetEventCount();
     
     void DoSaveFileEvent(DWORD dwChannel);
     void DoOpenFileEvevt(DWORD dwChannel);
     void DoCloseFileEvent(DWORD dwChannel);
 
     int FindBuf();
+
 protected:
     class ChannelTarget
     {
@@ -112,15 +123,12 @@ protected:
 
         long GetTimeMaxBetween();
 
-
-        bool SaveSome();
-
     public:
-        list<GroupTarget*> TargetList;
-        //list<GroupTarget*>::iterator iterIndex;
+
+        list<GroupTarget*> TargetList;      // 智能的还没有显示的数据队列
         //CFile File;
 
-        list<GroupTarget*> TargetSaveList;
+        list<GroupTarget*> TargetSaveList;  // 已经播放或者数据已不可能显示智能数据队列
         string strNewFilePath;
     };
 
@@ -134,16 +142,20 @@ protected:
     HANDLE m_Thread;
     size_t m_nThreadID;
 
+    // if m_nDeviceCount=1,m_nEveryDeviceChannelNum=2
+    // m_Event[2*3+1] = {
+    //       WAIT_OBJECT_0,
+    //      _Save,_Open,_Close,    // chan0
+    //      _Save,_Open,_Close  }; // chan1
     HANDLE* m_Event; // Save File, Open/close File +
-    int m_nDeviceCount;
-    int m_nEveryDeviceChannelNum;
+    DWORD m_nDeviceCount;
+    DWORD m_nEveryDeviceChannelNum;
     BOOL m_IsInit;
 
     int m_nPreAlarmTime;
 
 protected:
     TargetQueue* m_pTargetBuf;
-    WORD m_nBufRemain;
     WORD m_nLastPos;
 };
 

@@ -37,8 +37,6 @@ TargetQueue* CIVLiveViewer::GetIVData(
     return s_pIVDataBuf->GetData(nChannelID, time);
 }
 
-
-
 IIVViewer* IVLiveFactory::GetLiveViewer(void)
 {
     return CIVLiveViewer::getInstancePtr();

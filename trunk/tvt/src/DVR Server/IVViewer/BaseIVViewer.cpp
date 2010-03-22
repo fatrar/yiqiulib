@@ -129,8 +129,8 @@ BOOL CBaseIVViewer::Paint(
         viewBuf.time = time;
         memcpy(viewBuf.TarBuf, DataQueue->Tar, DataQueue->nCount*sizeof(WPG_Target));
         viewBuf.nTarCount = DataQueue->nCount;
-        DataQueue->Release();
         RefrehPoint(m_pViewerBuf[nDeviceID].PointBuf, DataQueue, time);
+        DataQueue->Release();
     }
 
 
