@@ -1,7 +1,7 @@
 /*H***************************************************************************
-File            : DebugUtil.h
+File            : MemCheck.h
 Subsystem       : 
-Function Name(s): DebugUtil
+Function Name(s): 
 
 Description     : 
 Author          : Yiqiu
@@ -37,16 +37,6 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
 #endif
 
 
-#ifdef _DEBUG
-    void __cdecl DebugOut(const char* format, ...);
-    void __cdecl DebugOutIndex (const char *format, ... );
-    void __cdecl KAssert(const char *format, ...);
-#else
-    static void __cdecl DebugOut(const char* format, ...){}
-    static void __cdecl DebugOutIndex(const char *format, ... ){}
-    static void __cdecl KAssert(const char *format, ...){}
-#endif // _DEBUG
-
 // ctrgbg.h  1143
 // for memory leak
 #if defined(MEMORY_CHECK) && defined(_DEBUG)
@@ -76,24 +66,5 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
     static ds memory_check;
 #endif
 
-
-//#ifdef WIN32
-//#   ifdef _DEBUG
-//#      define MEMORY_CHECK ds memory_check
-//#   endif //_DEBUG
-//#   ifndef _DEBUG
-//#      define MEMORY_CHECK int memory_check
-//#   endif // _DEBUG
-//#else
-//#   define MEMORY_CHECK int memory_check
-//#endif
-
-        // NEW
-
-//#if defined(_DEBUG)&&defined(_CRTDBG_MAP_ALLOC)
-//#define new new(_NORMAL_BLOCK, __FILE__,__LINE__)
-//#else
-//        //#define new new
-//#endif
 
 #endif
