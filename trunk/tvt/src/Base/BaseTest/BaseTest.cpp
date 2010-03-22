@@ -120,8 +120,14 @@ void TempTest(T2 a)
 const char* s_Test = "aaaaaa";
 
 
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+    list<int> aa, bb;
+    bb.insert(bb.begin(), 10, 100);
+    aa.splice(aa.end(), bb);
+   // aa.insert(aa.end(), 10, NULL);
+
     OCI::StringHelp::CParseString<> m_buf; 
    // m_buf  << 1234 << "aaaaa"; 
     //string& strTmp = m_buf.str();
