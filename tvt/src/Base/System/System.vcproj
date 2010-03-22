@@ -229,6 +229,10 @@
 				RelativePath=".\Src\Thread.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Src\TimeUtil.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -240,6 +244,10 @@
 			</File>
 			<File
 				RelativePath=".\Include\Thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\TimeUtil.h"
 				>
 			</File>
 		</Filter>

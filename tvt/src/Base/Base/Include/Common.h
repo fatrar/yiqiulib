@@ -152,6 +152,8 @@ typedef unsigned __int64		uint64;
 #ifndef saferelease
 #	define saferelease(ptr)		if ((ptr)) {(ptr)->release(); (ptr) = 0;}
 #endif
+
+
 /** ±àÒëÆÚAssert,²Î¿¼boost¿â,Èç£º
 STATIC_ASSERT(sizeof(long) > 8);
 */

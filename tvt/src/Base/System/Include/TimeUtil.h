@@ -38,6 +38,11 @@ inline bool operator > (const FILETIME&t1, const FILETIME&t2)
     return CompareFileTime(&t1, &t2) > 0;
 }
 
+inline long operator ^ (const FILETIME&t1, const FILETIME&t2) 
+{
+    return CompareFileTime(&t1, &t2);
+}
+
 // return ∫¡√Î
 inline long operator - (const FILETIME&t1, const FILETIME&t2)
 {
