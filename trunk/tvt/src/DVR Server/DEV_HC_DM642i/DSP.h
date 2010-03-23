@@ -103,14 +103,10 @@ protected:
 	void ReleaseNetBuf_RT(INT nDevice, INT nIndex);	//<REC-NET>
 	void ReleaseAudBuf(INT nDevice, INT nIndex);
 	BOOL FindAudBuf(INT nDevice, INT &nIndex);
-	void ReleasePrvBuf(INT nDevice, INT nIndex);
-	BOOL FindPrvBuf(INT nDevice, INT &nIndex);
+	void ReleasePrvBuf(int nDevice, int nChannelID, INT nIndex);
+	BOOL FindPrvBuf(int nChannelID, INT &nIndex);
 
-#ifdef Use_Single_Buffer	
     CCriticalSection m_pPrvBufCS[MAX_CHANNEL_NUM];
-#else
-    CCriticalSection m_pPrvBufCS[MAX_DEVICE_NUM];
-#endif
 
     CCriticalSection m_pNetBufCS[MAX_DEVICE_NUM];
 	CCriticalSection m_pMobileBufCS[MAX_DEVICE_NUM];
@@ -118,11 +114,8 @@ protected:
     CCriticalSection m_pAudBufCS[MAX_DEVICE_NUM];
     CCriticalSection m_pCapBufCS[MAX_DEVICE_NUM];
 
-#ifdef Use_Single_Buffer
+
     FRAMEBUFSTRUCT m_pPrvBuf[MAX_CHANNEL_NUM][PRV_BUF_NUM];
-#else
-    FRAMEBUFSTRUCT m_pPrvBuf[MAX_DEVICE_NUM][PRV_BUF_NUM];
-#endif // Use_Single_Buffer
 
 	FRAMEBUFSTRUCT m_pNetBuf[MAX_DEVICE_NUM][NET_BUF_NUM];
 	FRAMEBUFSTRUCT m_pMobileBuf[MAX_DEVICE_NUM][MOBILE_BUF_NUM];
@@ -161,11 +154,6 @@ private:
 	PTVT_CAP_STATUS m_pDrvHeadOfNetBuf[MAX_DEVICE_NUM][NET_BUF_NUM];	//记录每个网络缓冲区所属的DRIVER层缓冲头
 	PTVT_CAP_STATUS m_pDrvHeadOfMobileBuf[MAX_DEVICE_NUM][MOBILE_BUF_NUM];	//记录每个手机缓冲区所属的DRIVER层缓冲头
 	PTVT_CAP_STATUS m_pDrvHeadOfCapBuf[MAX_DEVICE_NUM][CAP_BUF_NUM];	//记录每个录像缓冲区所属的DRIVER层缓冲头
-
-#ifndef PRECOPY
-    PTVT_CAP_STATUS m_pDrvHeadOfPrvBuf[MAX_DEVICE_NUM][PRV_BUF_NUM];	//记录每个现场缓冲区所属的DRIVER层缓冲头
-#endif
-    
 
 	BOOL m_bNextFrameIsKeyRcd[MAX_CHANNEL_NUM];	//录像流关键帧需求状态	TRUE--下帧必须是关键帧，FALSE--无要求(可以为关键帧，也可以是非关键帧)
 	BOOL m_bNextFrameIsKeyNet[MAX_CHANNEL_NUM];	//网络流关键帧需求状态	TRUE--下帧必须是关键帧，FALSE--无要求(可以为关键帧，也可以是非关键帧)
@@ -383,9 +371,16 @@ private:
         Push_Live_Data,
         IV_Data_Coming,
         Play_Again,
+        End_Thead,
     };
 
     static DWORD WINAPI OnThreadSmooth(PVOID pParam);
+
+    template<int nDevice>
+    static void CALLBACK SmoothTimer(UINT uID,UINT uMsg,DWORD dwUser,DWORD dw1,DWORD dw2);
+
+    LPTIMECALLBACK GetSmoothTimer(int nDevice);
+
     void LoopLiveSmooth(int nDevice, HANDLE h);
     inline void FreeLiveList(list<FRAMEBUFSTRUCT*>& LiveList);
     inline void VideoSend(int nChannel, FRAMEBUFSTRUCT* p);

@@ -286,6 +286,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IVFileCommon.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IVLiveViewer.h"
 				>
 			</File>

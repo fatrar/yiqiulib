@@ -39,6 +39,7 @@
 
 #include <vfw.h>
 #include "..\DEVICEControl\DeviceControl.h"
+#pragma comment(lib, "winmm.lib") 
 
 #include "winioctl.h"
 //#include "ioctl.h"
@@ -48,6 +49,7 @@
 #include <map>
 using namespace std;
 
+
 #include "..\..\Base\Base\Include\Common.h"
 #include "..\..\Base\System\Include\TimeUtil.h"
 using namespace OCI;
@@ -55,7 +57,36 @@ using namespace OCI;
 #include "common.h"
 #include "Define.h"
 
-#include "math.h"
+#undef TRACE
+#define TRACE XTRACE
+#include "XTrace.h"
+
+#include "..\..\DebugUtil\DebugUtil\StopWatch.h"
+union BufPara
+{
+    BufPara(int nBufIndex,int nDeviceID,int nChannelID, TVT_ENUM_VIDEO_STREAM_TYPE nBufType)
+    {
+        Para.nBufIndex = nBufIndex;
+        Para.nDeviceID = nDeviceID;
+        Para.nChannelID = nChannelID;
+        Para.nBufType = nBufType;
+    }
+    BufPara(DWORD a){dwPara = a;}
+    BufPara& operator = (DWORD a){dwPara=a;return *this;}
+    operator DWORD(){return dwPara;}
+   
+    DWORD dwPara;
+    struct PARA
+    {
+        int nBufIndex:8;
+        int nDeviceID:8;
+        int nChannelID:8;
+        TVT_ENUM_VIDEO_STREAM_TYPE nBufType:8;
+    } Para; 
+};
+
+
+#include <math.h>
 
 #include "..\DEVICEControl\IIVDevice.h"
 //zhangzhen 2007/02/09
@@ -70,7 +101,7 @@ static char* s_pStandardName[] = {"PAL", "NTSC"};
 #define safeCloseHandle(h) if((h)){CloseHandle((h)); (h)=NULL;}
 
 
-//#define TEST_VERSION
+#define TEST_VERSION
 #ifdef TEST_VERSION
     extern void WriteTestLog(LPCSTR pstrFormat...);
     extern void PrintFrameRate(int chl, int streamtype);
@@ -119,97 +150,10 @@ private:
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 // 定义编译宏，live数据是使用Copy一份还是引用数据
-#define PRECOPY
-
-#define Use_Single_Buffer
-
+//#define PRECOPY
+//#define Use_Single_Buffer
 //#define _UseLiveTime
 
-class CStopWatch
-{
-public:
-    CStopWatch(CString strFunName)
-    {
-        QueryPerformanceCounter(&m_nEnterTime);
-        m_strFunName = strFunName;
-    }
-    ~CStopWatch()
-    {
-        LARGE_INTEGER nLeaveTime;
-        QueryPerformanceCounter(&nLeaveTime);
-        double nTime = double(nLeaveTime.QuadPart-m_nEnterTime.QuadPart)/s_nCpuClcok.QuadPart;
-        TRACE("%s time is %f\n", m_strFunName, nTime);
-    }
-
-    static LARGE_INTEGER Init()
-    {
-        QueryPerformanceFrequency(&s_nCpuClcok);
-        return s_nCpuClcok;
-    }
-private:
-    static LARGE_INTEGER s_nCpuClcok;
-    CString m_strFunName;
-    LARGE_INTEGER m_nEnterTime;
-};
-
-#undef TRACE
-#define TRACE XTRACE
-#include "XTrace.h"
-
-
-class CStopWatchCallTest
-{
-public:
-    CStopWatchCallTest()
-    {
-        LARGE_INTEGER nEnterTime;
-        QueryPerformanceCounter(&nEnterTime);
-        if ( s_nPreClcok.QuadPart == 0 )
-        {
-            s_nPreClcok = nEnterTime;
-        }
-        else
-        {
-            double nTime = double(nEnterTime.QuadPart-s_nPreClcok.QuadPart)/s_nCpuClcok.QuadPart;
-            //if ( nTime > 0.15 )
-            {
-                TRACE("time is %f\n", nTime);
-            }
-            s_nPreClcok = nEnterTime;
-        }
-    }
-    //~CStopWatchCallTest()
-    //{
-    //    LARGE_INTEGER nLeaveTime;
-    //    QueryPerformanceCounter(&nLeaveTime);
-    //    double nTime = double(nLeaveTime.QuadPart-m_nEnterTime.QuadPart)/s_nCpuClcok.QuadPart;
-    //    TRACE("time is %f\n", nTime);
-    //}
-
-    static void Init()
-    {
-        QueryPerformanceFrequency(&s_nCpuClcok);
-        s_nPreClcok.QuadPart = 0;
-    }
-private:
-    static class CStopWatchIniter
-    {
-    public:
-        CStopWatchIniter()
-        {
-            CStopWatchCallTest::Init();
-        }
-    } Initer;
-private:
-    static LARGE_INTEGER s_nCpuClcok;
-    static LARGE_INTEGER s_nPreClcok;
-    //LARGE_INTEGER m_nEnterTime;
-};
-
-
-
-//#define StartStopWatch()  CStopWatch ____stop(__FUNCTION__)
-#define StartStopWatch() 
 
 #define ERROR_RETURN_VOID(x) if(x) {SetLastError(DVRERR_DRIVERMUSTINIT); return;}
 #define ERROR_RETURN(x,y) if(x) {SetLastError(DVRERR_DRIVERMUSTINIT); return (y);}

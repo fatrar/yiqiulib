@@ -4,11 +4,7 @@
 
 #include "stdafx.h"
 
-LARGE_INTEGER CStopWatch::s_nCpuClcok = CStopWatch::Init();
 
-CStopWatchCallTest::CStopWatchIniter CStopWatchCallTest::Initer;
-LARGE_INTEGER CStopWatchCallTest::s_nCpuClcok;
-LARGE_INTEGER CStopWatchCallTest::s_nPreClcok;
 /*
 一.
 修改内容 : 实现局域网实时传输
@@ -138,20 +134,11 @@ void WriteTestLog(int fileno, LPCSTR pstrFormat...)
 
 void PrintFrameRate(int chl, int streamtype)
 {
-	static float FrameRate[16*3] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-									0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-									0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-									};
+	static float FrameRate[16*3] = {0};
 //	static float FrameRate8000[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	static int nFrameNum[16*3] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-									0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-									0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-									};
+    static int nFrameNum[16*3] = {0};
 //	static int nFrameNum8000[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	static DWORD dwStartTime[16*3] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-										0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-										0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-										};
+	static DWORD dwStartTime[16*3] = {0};
 
 	int	no = -1;
 	switch(streamtype)
