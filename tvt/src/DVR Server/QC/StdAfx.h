@@ -31,7 +31,7 @@ using namespace DeviceFactory;
 #include "..\IVViewer\Include\IVViewer.h"
 #include "..\ivui\Include\IVUIInterface.h"
 
-#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
+#include "..\..\DebugUtil\DebugUtil\MemCheck.h"
 
 #include "..\SnapShotUI\Include\ISnapShot.h"
 

@@ -30,7 +30,6 @@ CQCDlg *main;
 CQCDlg::CQCDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CQCDlg::IDD, pParent)
 {
-    DebugOut("CQCDlg:CQCDlg()\n");
     main=this;
 
     //{{AFX_DATA_INIT(CQCDlg)

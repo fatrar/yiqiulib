@@ -91,6 +91,8 @@ protected:
         Event_Count,
     };
 
+    typedef list<GroupTarget*> TTargetList;
+
     static size_t WINAPI SaveFileThread(void* pParm);
     size_t SaveFileLoopFun();
 
@@ -104,10 +106,31 @@ protected:
     int FindBuf();
 
 protected:
+    struct FileInfo
+    {
+        FileInfo(
+            const char* pPath, 
+            const FILETIME& time)
+            :Path(pPath),OpenTime(time),IsColse(FALSE){}
+        FileInfo(){}
+        FileInfo& operator = (const FileInfo& a)
+        {
+            Path      = a.Path;
+            OpenTime  = a.OpenTime;
+            CloseTime = a.CloseTime;
+            IsColse   = a.IsColse;
+            return *this;
+        }
+        string Path;
+        FILETIME OpenTime;
+        FILETIME CloseTime;
+        BOOL IsColse;
+    };
+
     class ChannelTarget
     {
     public:
-        ChannelTarget()
+        ChannelTarget() : dwPrePos(0),dwCurPos(0)
         {
             //iterIndex = TargetList.end();
         }
@@ -121,15 +144,54 @@ protected:
 
         inline void PushBack(GroupTarget* pGroupTarget);
 
-        long GetTimeMaxBetween();
+        void NewFileComing(
+            const char* pPath,
+            const FILETIME& time);
 
+        void FillHeadToFile(
+            const FILETIME& OpenTime );
+
+        bool FileClose(const FILETIME& time);
+
+        void DropSomeData(int nPreAlarmTime);
+
+        void TrySaveData(int nPreAlarmTime);
+
+        void SaveData(int nPreAlarmTime, FileInfo* Info = NULL);
+
+        void SaveDataHeadToFile(
+            IVFileDataHead& DataHead, 
+            WORD nTargetCount,
+            const FILETIME& t);
+
+        void SaveTargetToFile(
+            const TargetQueue* m_TargetQueue );
+
+        void UpdatePos()
+        {
+            dwPrePos = 0;
+            dwCurPos = sizeof(IVFileHead);
+        }
+
+        void UpdateFileInfo()
+        {
+            FilePathList.pop_front();
+        }
+
+    protected:
+        typedef deque<FileInfo> FileInfoList;
     public:
 
-        list<GroupTarget*> TargetList;      // 智能的还没有显示的数据队列
+        TTargetList TargetList;      // 智能的还没有显示的数据队列
         //CFile File;
 
-        list<GroupTarget*> TargetSaveList;  // 已经播放或者数据已不可能显示智能数据队列
-        string strNewFilePath;
+        TTargetList TargetSaveList;  // 已经播放或者数据已不可能显示智能数据队列
+      
+        ofstream Writer;
+        DWORD dwPrePos;
+        DWORD dwCurPos;
+        CriticalSection cs;
+        FileInfoList FilePathList;
     };
 
     //typedef map<int, ChannelTarget> AllChannelTarget;
@@ -153,6 +215,7 @@ protected:
     BOOL m_IsInit;
 
     int m_nPreAlarmTime;
+    DWORD m_dwMaxBufCount;
 
 protected:
     TargetQueue* m_pTargetBuf;

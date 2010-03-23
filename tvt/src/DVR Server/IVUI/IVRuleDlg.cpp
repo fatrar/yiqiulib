@@ -221,8 +221,8 @@ BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
 {
     CRect Rect;
     FILETIME* time = (FILETIME*)&bufStruct->localTime;
-    GetClientRect(&Rect);
-    ClientToScreen(&Rect);
+    m_PlayerWnd.GetClientRect(&Rect);
+    m_PlayerWnd.ClientToScreen(&Rect);
     m_Player.Show(
         &Rect, bufStruct->pBuf,
         bufStruct->width, bufStruct->height,

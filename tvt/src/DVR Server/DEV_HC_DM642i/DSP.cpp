@@ -141,11 +141,6 @@ CDSP::CDSP()
     ZeroMemory(m_pDrvHeadOfMobileBuf, sizeof(m_pDrvHeadOfMobileBuf));
     ZeroMemory(m_pDrvHeadOfCapBuf, sizeof(m_pDrvHeadOfCapBuf));
 
-#ifndef PRECOPY
-    ZeroMemory(m_pDrvHeadOfPrvBuf, sizeof(m_pDrvHeadOfPrvBuf));
-#endif // _DEBUG
-    
-
     for (i = 0; i < MAX_DEVICE_NUM; i++)
     {
         m_hDevice[i] = NULL;
@@ -371,33 +366,12 @@ BOOL CDSP::SetSwitch(DWORD *pSwitch, DWORD ChannelNum)
 	return TRUE;
 }
 
-union BufPara
-{
-    BufPara(int nBufIndex,int nDeviceID,int nChannelID, int nBufType)
-    {
-        Para.nBufIndex = nBufIndex;
-        Para.nDeviceID = nDeviceID;
-        Para.nChannelID = nChannelID;
-        Para.nBufType = nBufType;
-    }
-    BufPara(DWORD a){dwPara = a;}
-    BufPara& operator = (DWORD a){dwPara=a;return *this;}
-
-    DWORD dwPara;
-    struct PARA
-    {
-        int nBufIndex:8;
-        int nDeviceID:8;
-        int nChannelID:8;
-        TVT_ENUM_VIDEO_STREAM_TYPE nBufType:8;
-    } Para; 
-};
 
 BOOL CDSP::ReleaseBuffer(DWORD isVideo, DWORD DelBufPara)
 {
     BufPara Para(DelBufPara);
 	int nType = Para.Para.nBufType;
-	int nDevice = Para.Para.nDeviceID;
+	int nDeviceID = Para.Para.nDeviceID;
 	int nIndex = Para.Para.nBufIndex;
     int nChannelID = Para.Para.nChannelID;
 	
@@ -405,28 +379,28 @@ BOOL CDSP::ReleaseBuffer(DWORD isVideo, DWORD DelBufPara)
 	{
 		if (nType == VIDEO_STREAM_PREVIEW)
 		{
-			ReleasePrvBuf(nDevice, nIndex);
+			ReleasePrvBuf(nDeviceID, nChannelID, nIndex);
 		}
 		else if (nType == VIDEO_STREAM_CAPTURE)
 		{
-			ReleaseCapBuf(nDevice, nIndex);
+			ReleaseCapBuf(nDeviceID, nIndex);
 		}
 		else if (nType == VIDEO_STREAM_NET)
 		{
-			ReleaseNetBuf(nDevice, nIndex);
+			ReleaseNetBuf(nDeviceID, nIndex);
 		}
 		else if (nType == VIDEO_STREAM_MOBILE)
 		{
-			ReleaseMobileBuf(nDevice, nIndex);
+			ReleaseMobileBuf(nDeviceID, nIndex);
 		}
 		else if (nType == VIDEO_STREAM_NET_REALTIME)	//<REC-NET>
 		{
-			ReleaseNetBuf_RT(nDevice, nIndex);
+			ReleaseNetBuf_RT(nDeviceID, nIndex);
 		}
 	}
 	else
 	{
-		ReleaseAudBuf(nDevice, nIndex);
+		ReleaseAudBuf(nDeviceID, nIndex);
 	}
 
 	return TRUE;
@@ -494,7 +468,8 @@ void CDSP::DestroyWorkerThread()
 
         if ( m_hSmooth[j] != NULL )
         {
-            PostThreadMessage(m_dwSmoothTheadID[j],WM_QUIT,0,0);
+            BOOL bRc = PostThreadMessage(m_dwSmoothTheadID[j],End_Thead,0,0);
+            DWORD dwErr = GetLastError();
         }
     }
 
@@ -542,19 +517,6 @@ BOOL CDSP::CreateBuffer()
 			m_pCapBuf[i][j].pBuf = NULL;
 			m_pCapBuf[i][j].nVLostFlag = 1;
 		}
-#ifndef Use_Single_Buffer
-		for (j = 0; j < PRV_BUF_NUM; j++)
-		{
-#   ifdef PRECOPY
-            m_pPrvBuf[i][j].pBuf = new BYTE[CIF_BUFF_SIZE]; //heliang fix
-            //m_pDrvHeadOfPrvBuf[i][j] = new TVT_CAP_STATUS; //heliang+
-#   else
-            m_pPrvBuf[i][j].pBuf = NULL;
-            m_pDrvHeadOfPrvBuf[i][j] = NULL;
-#   endif // PRECOPY	
-			m_pPrvBuf[i][j].nVLostFlag = 1;   
-		}
-#endif
 
 		for (j = 0; j < NET_BUF_NUM; j++)
 		{
@@ -577,8 +539,7 @@ BOOL CDSP::CreateBuffer()
         m_pIVParmBuf[i] = new BYTE[MAX_IV_Parm_Buf_Size];
 	}
 
-#ifdef Use_Single_Buffer
-    for (int k = 0; k<MAX_CHANNEL_NUM; ++k)
+    for (int k = 0; k<m_nDeviceNum*CHANNEL_PER_DEVICE; ++k)
     {
         for (int l=0; l<PRV_BUF_NUM;++l)
         {
@@ -586,7 +547,7 @@ BOOL CDSP::CreateBuffer()
             m_pPrvBuf[k][l].nVLostFlag = 1;
         }
     }
-#endif
+
 	return TRUE;
 }
 
@@ -605,22 +566,18 @@ void CDSP::DestroyBuffer()
 		{
              safeDeleteArray(m_pNetBuf_RT[i][j].pBuf);
 		}
-#ifdef Use_Single_Buffer
-
-#else
-#   ifdef PRECOPY 
-        //heliang+
-        for (j = 0; j < PRV_BUF_NUM; j++)
-        {
-            safeDeleteArray(m_pPrvBuf[i][j].pBuf);
-            m_pPrvBuf[i][j].nVLostFlag = 1;
-            //safeDeleteArray(m_pDrvHeadOfPrvBuf[i][j]); 
-        }
-#   endif
-#endif
 
         safeDeleteArray(m_pIVParmBuf[i]);
 	}
+
+    for (int k = 0; k<m_nDeviceNum*CHANNEL_PER_DEVICE; ++k)
+    {
+        for (int l=0; l<PRV_BUF_NUM;++l)
+        {
+            safeDeleteArray(m_pPrvBuf[k][l].pBuf);
+            m_pPrvBuf[k][l].nVLostFlag = 1;
+        }
+    }
 }
 
 DWORD WINAPI CDSP::OnThreadAud(PVOID pParam)
@@ -728,6 +685,7 @@ void CDSP::GetPrvData(int nDevice)
     }
 }
 
+
 void CDSP::GetOneChannelPreData(
     int nChannel, 
     int nDevice,
@@ -752,11 +710,15 @@ void CDSP::GetOneChannelPreData(
         return;
     }  
 
-#ifdef Use_Single_Buffer
+    
+    if ( nChannel == 0 )
+    {
+        // CFrameCount<0> aa;
+    }
+
+    //PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
+
     if ( !FindPrvBuf(nChannel, nIndex) )
-#else
-    if ( !FindPrvBuf(nDevice, nIndex) )
-#endif // Use_Single_Buffer
     {
         TRACE("not enough buffer loss videoLoss %d\n", nChannel);
         ReleaseDriverBuffer(pStatus);
@@ -765,19 +727,10 @@ void CDSP::GetOneChannelPreData(
 
     //数据部分指针
     BYTE* pBuf = pData + CAP_STATUS_SIZE + (PREV_VBI_SIZE + CIF_BUFF_SIZE + MOTION_STATUS) * nChannel + PREV_VBI_SIZE;
-#ifdef Use_Single_Buffer
-    FRAMEBUFSTRUCT& Frame = m_pPrvBuf[nChannel][nIndex];
-    memcpy(Frame.pBuf, pBuf, CIF_BUFF_SIZE);
-#else
-    FRAMEBUFSTRUCT& Frame = m_pPrvBuf[nDevice][nIndex];
-#   ifdef PRECOPY      // 使用copy一份
-    memcpy(Frame.pBuf, pBuf, CIF_BUFF_SIZE);
-#   else              // 使用数据引用
-    Frame.pBuf = pBuf;
-    Frame = pStatus;
-#   endif // PRECOPY
 
-#endif // Use_Single_Buffer
+    FRAMEBUFSTRUCT& Frame = m_pPrvBuf[nChannel][nIndex];
+
+    memcpy(Frame.pBuf, pBuf, CIF_BUFF_SIZE);
     Frame.width = pVBI->dwWidth;
     Frame.height = pVBI->dwHeight;
     Frame.localTime = ChangeTime(pVBI->prevVideoTime);
@@ -785,9 +738,8 @@ void CDSP::GetOneChannelPreData(
     Frame.ChannelIndex = nDevice * CHANNEL_PER_DEVICE + nChannel;
     Frame.BufLen = m_dwPrvBufSize;
     Frame.nStreamID = VIDEO_STREAM_PREVIEW;
-    Frame.BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nIndex;
+    Frame.BufferPara = BufPara(nIndex,nDevice,nChannel,VIDEO_STREAM_PREVIEW);
 
-    PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
     
 //#ifdef _DEBUG  
     static int s_nNum = 0;
@@ -810,7 +762,6 @@ void CDSP::GetOneChannelPreData(
 
     do 
     {
-        //FRAMEBUFSTRUCT* p = &m_pPrvBuf[nDevice][nIndex];
         if ( nChannel != m_szCurrentIVChannel[nDevice] )
         {
             VideoSend(nChannel, &Frame);
@@ -832,9 +783,7 @@ void CDSP::GetOneChannelPreData(
     }
     while (0); 
 
-#ifdef PRECOPY 
     ReleaseDriverBuffer(pStatus);
-#endif
 }
 
 
@@ -1656,14 +1605,9 @@ BOOL CDSP::FindCapBuf(INT nDevice, INT &nIndex)
     return FindTBuf<CAP_BUF_NUM>(nDevice, nIndex,m_pCapBufCS,m_pCapBuf);
 }
 
-BOOL CDSP::FindPrvBuf(INT nDevice, INT &nIndex)
+BOOL CDSP::FindPrvBuf(int nChannelID, INT &nIndex)
 {
-#ifdef Use_Single_Buffer
-    // nDevice 其实是通道了
-    return FindTBuf<PRV_BUF_NUM>(nDevice, nIndex,m_pPrvBufCS,m_pPrvBuf);
-#else
-    return FindTBuf<PRV_BUF_NUM>(nDevice, nIndex,m_pPrvBufCS,m_pPrvBuf);
-#endif // Use_Single_Buffer   
+    return FindTBuf<PRV_BUF_NUM>(nChannelID, nIndex,m_pPrvBufCS,m_pPrvBuf);
 }
 
 void CDSP::ReleaseAudBuf(INT nDevice, INT nIndex)
@@ -1692,18 +1636,12 @@ void CDSP::ReleaseCapBuf(INT nDevice, INT nIndex)
     }
 }
 
-void CDSP::ReleasePrvBuf(INT nDevice, INT nIndex)
+void CDSP::ReleasePrvBuf(int nDevice, int nChannelID, INT nIndex)
 {
     AutoLockAndUnlock(m_pPrvBufCS[nDevice]);
-    if(m_pPrvBuf[nDevice][nIndex].nVLostFlag == 0)
+    if(m_pPrvBuf[nChannelID][nIndex].nVLostFlag == 0)
     {
-#ifdef PRECOPY 
-#else
-        ReleaseDriverBuffer(m_pDrvHeadOfPrvBuf[nDevice][nIndex]);//zhangzhen 2007/02/09
-        m_pDrvHeadOfPrvBuf[nDevice][nIndex] = NULL;
-        m_pPrvBuf[nDevice][nIndex].pBuf = NULL;
-#endif
-        m_pPrvBuf[nDevice][nIndex].nVLostFlag = 1;
+        m_pPrvBuf[nChannelID][nIndex].nVLostFlag = 1;
     }
     else
     {

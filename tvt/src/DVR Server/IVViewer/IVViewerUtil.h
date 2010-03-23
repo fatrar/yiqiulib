@@ -28,7 +28,9 @@ enum
     MAX_Obj_Trace_Point = 64, // 6秒
 
     // 1秒10帧，缓存5秒，4个通道
-    MAX_IV_BUF_Size = 10*5*4,  // all buf size = 4804*200 .= 800K 
+    Max_PreAlarm_Time = 60,    // 预录像最大60秒 maxbuf = ((60*10*4) *4808) .= 12MB, 4张卡1秒10帧数据，一个数据4808B
+    Single_Device_Buf_Size = Max_PreAlarm_Time*10,
+    //MAX_IV_BUF_Size = 10*5*4,  // all buf size = 4804*200 .= 800K 
 
     Buf_No_Use      = 0,
     NO_BUF_Ramain   = -1,

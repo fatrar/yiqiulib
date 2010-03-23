@@ -920,7 +920,10 @@ void CDirectDraw::FreeDSPBack()
 		}
 	}
 }
-																//djx 2008/7/22 4108
+			
+
+#include "XTrace.h"
+//djx 2008/7/22 4108
 void CDirectDraw::ShowDSP(
     const CRect& rect,
     const FILETIME& time,
@@ -980,6 +983,12 @@ void CDirectDraw::ShowDSP(
 		m_pddsPrimary->Blt(&R, m_pDDSBackYUY2[lIndex], NULL, DDBLT_ASYNC, NULL);
 
         // 显示智能矩形框和路径
+        if ( lIndex == 0 )
+        {
+            SYSTEMTIME syt;
+            GetLocalTime(&syt);
+            xTrace("%d-%d:%d\n", syt.wMinute, syt.wSecond, syt.wMilliseconds);
+        }
         
         if ( lIndex ==  0 )
         {

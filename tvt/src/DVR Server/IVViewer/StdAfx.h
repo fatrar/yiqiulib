@@ -41,8 +41,9 @@
 #include <deque>
 #include <map>
 //#include <set>
+#include <string>
 #include <list>
-//#include <fstream>
+#include <fstream>
 using namespace std;
 
 
@@ -55,10 +56,12 @@ using namespace OCI;
 #include "..\DEVICEControl\WPG_EventOccurrence.h"
 #include "..\DEVICEControl\IIVDataSender.h"
 
-#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
+#include "..\..\DebugUtil\DebugUtil\MemCheck.h"
+#include "..\..\DebugUtil\DebugUtil\Trace.h"
 #include "IVViewerUtil.h"
 
 #include "Include\IVViewer.h"
+#include "IVFileCommon.h"
 
 
 #ifdef _UNICODE

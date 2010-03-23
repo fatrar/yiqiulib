@@ -170,16 +170,19 @@ void CBaseIVViewer::RefrehPoint(
     const FILETIME& time )
 {
     ChannelPoint PointTmpBuf;
+    ChannelPoint::iterator iter;
     for (int i=0; i<DataQueue->nCount; ++i)
     {
         // 如果有就利用原来的那个指针，插入数据
         // 并将数据放入临时的ChannelPoint中
         const WPG_Target& tar = DataQueue->Tar[i];
-        PointList* pPointList = PointBuf[tar.equalId];
-        if ( pPointList )
+        iter = PointBuf.find(tar.equalId);
+        PointList* pPointList  = NULL;
+        if ( iter != PointBuf.end() )
         {
+            pPointList = iter->second;
             pPointList->push_back(tar.centroid);
-            PointBuf.erase(tar.equalId);
+            PointBuf.erase(iter);
         }
         else
         {
@@ -188,11 +191,11 @@ void CBaseIVViewer::RefrehPoint(
             pPointList->push_back(tar.centroid);
         }
 
+        assert(PointTmpBuf[tar.equalId]==NULL);
         PointTmpBuf[tar.equalId] = pPointList;
     }
 
     // 释放那些目标丢失的数据
-    ChannelPoint::iterator iter;
     for ( iter = PointBuf.begin();
           iter!= PointBuf.end();
           ++iter )
