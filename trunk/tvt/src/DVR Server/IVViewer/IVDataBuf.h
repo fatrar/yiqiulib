@@ -54,16 +54,6 @@ public:
 
     virtual BOOL Unit();
 
-    //// bState=true显示目标和路径，否则隐藏
-    //virtual BOOL ShowObjTrace(
-    //    int nChannelID,
-    //    bool bState);
-
-    //// 得到目标和路径是否正在显示
-    //virtual BOOL GetObjTraceState(
-    //    int nChannelID,
-    //    bool& bState);
-
     // IIVDataSaver
 public:
     // 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
@@ -106,94 +96,11 @@ protected:
     int FindBuf();
 
 protected:
-    struct FileInfo
-    {
-        FileInfo(
-            const char* pPath, 
-            const FILETIME& time)
-            :Path(pPath),OpenTime(time),IsColse(FALSE){}
-        FileInfo(){}
-        FileInfo& operator = (const FileInfo& a)
-        {
-            Path      = a.Path;
-            OpenTime  = a.OpenTime;
-            CloseTime = a.CloseTime;
-            IsColse   = a.IsColse;
-            return *this;
-        }
-        string Path;
-        FILETIME OpenTime;
-        FILETIME CloseTime;
-        BOOL IsColse;
-    };
+    struct FileInfo;
 
-    class ChannelTarget
-    {
-    public:
-        ChannelTarget() : dwPrePos(0),dwCurPos(0)
-        {
-            //iterIndex = TargetList.end();
-        }
-        ~ChannelTarget()
-        {
-            StlHelper::STLDeleteSequence(TargetList);
-            StlHelper::STLDeleteSequence(TargetSaveList);
-        }
+    class ChannelTarget;
 
-        GroupTarget* Find(const FILETIME& time);
-
-        inline void PushBack(GroupTarget* pGroupTarget);
-
-        void NewFileComing(
-            const char* pPath,
-            const FILETIME& time);
-
-        void FillHeadToFile(
-            const FILETIME& OpenTime );
-
-        bool FileClose(const FILETIME& time);
-
-        void DropSomeData(int nPreAlarmTime);
-
-        void TrySaveData(int nPreAlarmTime);
-
-        void SaveData(int nPreAlarmTime, FileInfo* Info = NULL);
-
-        void SaveDataHeadToFile(
-            IVFileDataHead& DataHead, 
-            WORD nTargetCount,
-            const FILETIME& t);
-
-        void SaveTargetToFile(
-            const TargetQueue* m_TargetQueue );
-
-        void UpdatePos()
-        {
-            dwPrePos = 0;
-            dwCurPos = sizeof(IVFileHead);
-        }
-
-        void UpdateFileInfo()
-        {
-            FilePathList.pop_front();
-        }
-
-    protected:
-        typedef deque<FileInfo> FileInfoList;
-    public:
-
-        TTargetList TargetList;      // 智能的还没有显示的数据队列
-        //CFile File;
-
-        TTargetList TargetSaveList;  // 已经播放或者数据已不可能显示智能数据队列
-      
-        ofstream Writer;
-        DWORD dwPrePos;
-        DWORD dwCurPos;
-        CriticalSection cs;
-        FileInfoList FilePathList;
-    };
-
+protected:
     //typedef map<int, ChannelTarget> AllChannelTarget;
     typedef ChannelTarget* AllChannelTarget;
 
@@ -221,7 +128,6 @@ protected:
     TargetQueue* m_pTargetBuf;
     WORD m_nLastPos;
 };
-
 
 
 

@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChannelTarget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IVDataBuf.cpp"
 				>
 			</File>
@@ -279,6 +283,10 @@
 			>
 			<File
 				RelativePath=".\BaseIVViewer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ChannelTarget.h"
 				>
 			</File>
 			<File
