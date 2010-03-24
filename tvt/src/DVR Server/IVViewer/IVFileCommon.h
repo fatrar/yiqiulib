@@ -64,6 +64,11 @@ struct IVFileDataIndex
     DWORD DataOffset;
 };
 
+enum
+{
+    Max_IVData_Index  = 200,  
+};
+
 struct IVFileHead
 {
     IVFileHead():dwIndexNum(0){}
@@ -73,7 +78,7 @@ struct IVFileHead
     FILETIME BeginTime;
     FILETIME EndTime;
     DWORD dwIndexNum;
-    IVFileDataIndex dwIndex[200];
+    IVFileDataIndex DataIndex[200];
 };
 
 struct IVFileDataHead
@@ -87,7 +92,7 @@ struct IVFileDataHead
 
 
 
-
+static const char c_szIVFileExt[] = ".iv";
 
 
 
