@@ -16,7 +16,7 @@ public:
 	enum { IDD = IDD_IVTAB };
 
 public:
-    BOOL Init(CWnd* pWnd, const CRect& rect);
+    BOOL Init(HWND hWnd, const CRect& rect);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

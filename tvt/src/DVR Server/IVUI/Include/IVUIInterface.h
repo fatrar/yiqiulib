@@ -37,12 +37,12 @@
 
 //#include <afxwin.h>
 
-class CDialog;
-
-
-IVUI_API CDialog* CreateIVConfigDlg(CWnd* pWnd, const CRect& rect);
-IVUI_API void ReleaseIVConfigDlg();
-IVUI_API void SetIVOpeator(IIVDeviceBase2* p);
+namespace IVUIFactory
+{
+    IVUI_API HWND CreateIVConfigDlg(HWND hWnd, const RECT& rect);
+    IVUI_API void ReleaseIVConfigDlg();
+    IVUI_API void SetIVOpeator(IIVDeviceBase2* p);
+};
 
 
 

@@ -149,8 +149,8 @@ BOOL CQCDlg::OnInitDialog()
 
     GetIVDeviceBase2Fn f2 = 
         (GetIVDeviceBase2Fn)::GetProcAddress(
-        m_DSPDLL, g_szIVDeviceFuncName[GetIVDeviceBase2_Index]);;
-    SetIVOpeator(f2());
+        m_DSPDLL, g_szIVDeviceFuncName[GetIVDeviceBase2_Index]);
+    IVUIFactory::SetIVOpeator(f2());
 
     m_card_infor.resPassWord = m_MyDSP->Password();
     
@@ -257,7 +257,6 @@ void CQCDlg::OnFinish()
         m_card_infor.resResult = TRUE;
     }
     
-    ReleaseIVConfigDlg();
     CDialog::OnOK();
 }
 

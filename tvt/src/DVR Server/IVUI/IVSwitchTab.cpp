@@ -61,10 +61,10 @@ END_MESSAGE_MAP()
 // CIVSwitchTab message handlers
 
 
-BOOL CIVSwitchTab::Init(CWnd* pWnd, const CRect& rect)
+BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
 {
     //AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
+    CWnd* pWnd = CWnd::FromHandle(hWnd);
     Create(CIVSwitchTab::IDD, pWnd);
 
     m_IVTabGroup.MoveWindow(
@@ -150,6 +150,13 @@ void CIVSwitchTab::OnBnClickedRule()
     // TODO: Add your control notification handler code here
 }
 
+void CIVSwitchTab::OnClose()
+{
+    // TODO: Add your message handler code here and/or call default
+
+    CDialog::OnClose();
+}
+
 
 CIVSwitchTab* g_pIVSwitchTab = NULL;
 IIVDeviceBase2* g_IIVDeviceBase2 =NULL;
@@ -157,7 +164,10 @@ IIVDeviceBase2* g_IIVDeviceBase2 =NULL;
 #undef new
 #define new new
 
-CDialog* CreateIVConfigDlg(CWnd* pWnd, const CRect& rect)
+namespace IVUIFactory
+{
+
+HWND CreateIVConfigDlg(HWND hWnd, const RECT& rect)
 {
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
     
@@ -166,8 +176,8 @@ CDialog* CreateIVConfigDlg(CWnd* pWnd, const CRect& rect)
         g_pIVSwitchTab = new CIVSwitchTab();
     }
     
-    g_pIVSwitchTab->Init(pWnd, rect);
-    return g_pIVSwitchTab;
+    g_pIVSwitchTab->Init(hWnd, rect);
+    return g_pIVSwitchTab->m_hWnd;
 }
 
 void ReleaseIVConfigDlg()
@@ -182,9 +192,5 @@ void SetIVOpeator( IIVDeviceBase2* p )
     g_IIVDeviceBase2 = p;
 }
 
-void CIVSwitchTab::OnClose()
-{
-    // TODO: Add your message handler code here and/or call default
-    
-    CDialog::OnClose();
 }
+
