@@ -92,9 +92,6 @@ protected:
     //map<int, TShowState> m_ShowState;
     TShowState m_ShowState[MAX_IV_Channel];
 
-    //typedef map<int, ChannelPoint> AllChannelPoint;
-   // AllChannelPoint m_PointRecord;
-
     ViewerBuf* m_pViewerBuf;  
 };
 

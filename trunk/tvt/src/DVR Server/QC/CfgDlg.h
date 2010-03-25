@@ -22,5 +22,5 @@ public:
     virtual BOOL OnInitDialog();
 
 private:
-    CDialog* m_pIVDlg;
+    //CDialog* m_pIVDlg;
 };
