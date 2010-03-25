@@ -101,7 +101,7 @@ static char* s_pStandardName[] = {"PAL", "NTSC"};
 #define safeCloseHandle(h) if((h)){CloseHandle((h)); (h)=NULL;}
 
 
-#define TEST_VERSION
+//#define TEST_VERSION
 #ifdef TEST_VERSION
     extern void WriteTestLog(LPCSTR pstrFormat...);
     extern void PrintFrameRate(int chl, int streamtype);

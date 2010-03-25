@@ -6,7 +6,8 @@
  Date            : 2010-3-4  
  Time            : 17:47
  Description     : 
-
+   该文件的CIVCfgDoc大量使用了模板使用抽象的功能，
+   如果没有C++这么强大的泛型编程，估计CPP估计要多写一倍多的代码
  Revision        : 
 
  History
@@ -73,37 +74,6 @@ protected:
 
     const IV_RuleID* GetRuleID(HTREEITEM Item);
 
-private:
-    /** 我也写了一个用宏实现的方式，但因为宏不能调式，改用模板实现
-    *@brief Get Rule,Schedule,AlarmOut Data
-    *@param Item        Channel TreeCtrl Item HANDLE
-    */
-    template<typename T>
-    T* GetIVRuleCfgXX(
-        HTREEITEM Item);
-
-    /** 
-    *@brief Update Rule,Schedule,AlarmOut Data
-    *@param	V  Rule or Schedule or AlarmOut
-    *@param Item        Channel TreeCtrl Item HANDLE
-    *@param IsRef       ...
-    */
-    template<typename T, typename Tfn, Tfn fn>
-    void UpdateRuleCfgXX(
-        const T& V,
-        HTREEITEM Item,
-        BOOL IsRef = TRUE);
-
-    template<typename T>
-    inline const char* GetRuleIDXX(
-        const T& t,
-        HTREEITEM Item,
-        int& nChannelID );
-
-    template<typename T, typename Tfn1, Tfn1 fn1,
-        typename Tfn2, Tfn2 fn2>
-    void SetCfgToAllXX(const T& V);
-
 protected:
     struct RuleSettings
     {
@@ -144,6 +114,39 @@ protected:
     friend CIVRuleCfgDoc;
     friend CIVAlarmOutCfgDoc;
     friend CIVScheduleCfgDoc;
+
+private:
+    /** 我也写了一个用宏实现的方式，但因为宏不能调式，改用模板实现
+    *@brief Get Rule,Schedule,AlarmOut Data
+    *@param Item        Channel TreeCtrl Item HANDLE
+    */
+    template<typename T, T RuleSettings::*P>
+    T* GetIVRuleCfgXX(
+        HTREEITEM Item);
+
+    /** 
+    *@brief Update Rule,Schedule,AlarmOut Data
+    *@param	V  Rule or Schedule or AlarmOut
+    *@param Item        Channel TreeCtrl Item HANDLE
+    *@param IsRef       ...
+    */
+    template<typename T, typename Tfn, Tfn fn>
+    void UpdateRuleCfgXX(
+        const T& V,
+        HTREEITEM Item,
+        BOOL IsRef = TRUE);
+
+    template<typename T>
+    inline const char* GetRuleIDXX(
+        const T& t,
+        HTREEITEM Item,
+        int& nChannelID );
+
+    template<
+        typename T, T RuleSettings::*P,
+        typename Tfn1, Tfn1 fn1,
+        typename Tfn2, Tfn2 fn2>
+        void SetCfgToAllXX(const T& V);
 };
 
 class CIVRuleCfgDoc :

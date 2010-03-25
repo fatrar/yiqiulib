@@ -55,14 +55,37 @@ public:
         StlHelper::STLDeleteSequence(TargetSaveList);
     }
 
+    /**
+    *@note 下面两个函数的功能是将数据放查询队列和根据查询队列查询数据
+    *      查询队列的线程锁由上层做 
+    */
     GroupTarget* Find(const FILETIME& time);
+    void PushBack(GroupTarget* pGroupTarget){TargetList.push_back(pGroupTarget);}
 
-    void PushBack(GroupTarget* pGroupTarget);
-
+    /**
+    *@note 下面两个函数的功能是上层发现有文件打开或关闭，将信息传到这边
+    */
     void NewFileComing(
         const char* pPath,
-        const FILETIME& time);
+        const FILETIME& time)
+    {
+        AutoLockAndUnlock(cs);
+        FilePathList.push_back( FileInfo(pPath, time) );
+    }
+    bool FileClose(const FILETIME& time);
 
+    void TrySaveData(int nPreAlarmTime);
+protected:
+    enum
+    {
+        /**
+        *@note 5秒保存一个索引，在最坏的情况(文件保存0.5Hour)，有360个索引，
+        *  那么在200的情况下，有160做丢弃
+        */
+        Head_Index_Interval = 10*5,
+    };
+
+protected:
     void FillHeadToFile(
         const FILETIME& OpenTime )
     {
@@ -71,17 +94,6 @@ public:
         UpdatePos();
     }
 
-    bool FileClose(const FILETIME& time);
-
-    void TrySaveData(int nPreAlarmTime);
-
-protected:
-    enum
-    {
-        Head_Index_Interval = 10,
-    };
-
-protected:
     void DropSomeData(int nPreAlarmTime);
 
     void SaveData(
@@ -121,7 +133,7 @@ protected:
         const FILETIME& t,
         DWORD DataOffset);
 
-    void UpdateDataIndexToFile();
+    void UpdateDataIndexToFile(const FILETIME& EndTime);
 
 protected:
     typedef deque<FileInfo> FileInfoList;
@@ -135,6 +147,17 @@ public:
     DWORD dwPrePos;
     DWORD dwCurPos;
 
+    /**
+    *@note 下面三个参数主要为了保存索引数据，即IV文件头
+    *@param FileHead 算法在默认分配一个IV文件头，每次写文件头(包括打开文件和关闭),
+    *     都用这数据做缓存数据写进文件缓存
+    *@param dwCount 用来多少个数据才保存一次文件索引，
+    *     默认定义为Head_Index_Interval，这个值只是记录有多少次了
+    *@param MoreDataIndex 毕竟还是有可能FileHead(默认Max_IVData_Index)的索引数据会写完，
+    *     写FileHead写完了，就将索引放进MoreDataIndex，
+    *     这个时候在文件保存时需要将FileHead和MoreDataIndex的索引数据在平均丢弃，
+    *     算法见对于处理函数UpdateDataIndexToFile的注解
+    */
     IVFileHead FileHead;
     DWORD dwCount;
     deque<IVFileDataIndex> MoreDataIndex;
@@ -148,7 +171,14 @@ public:
 
 
 
-
+/**
+*@note  
+*@param	  
+*@param   
+*@param  
+*@param  
+*@return 
+*/
 
 
 #endif  // _CHANNELTARGET_H_2010_

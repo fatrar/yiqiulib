@@ -18,7 +18,7 @@ Copyright (c) xx Tech Co.,Ltd.
 #define _BASEIVVIEWER_H_2010_1
 
 
-
+static int g_PointList = 0;
 
 
 class CBaseIVViewer :
@@ -58,6 +58,11 @@ protected:
 
     struct ViewerBuf
     {
+        ~ViewerBuf()
+        {
+            g_PointList -= PointBuf.size();
+            StlHelper::STLDeleteAssociate(PointBuf);
+        }
         WPG_Target TarBuf[TARGET_MAX_NUM];
         int nTarCount;
         FILETIME time;

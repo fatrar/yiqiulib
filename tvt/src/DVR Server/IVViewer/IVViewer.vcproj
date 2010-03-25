@@ -290,6 +290,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DropIndexAlgorithm.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IVDataBuf.h"
 				>
 			</File>

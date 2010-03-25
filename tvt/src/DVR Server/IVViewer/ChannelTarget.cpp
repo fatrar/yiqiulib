@@ -21,7 +21,8 @@
 
 
 
-GroupTarget* CIVDataBuf::ChannelTarget::Find(const FILETIME& time)
+GroupTarget* CIVDataBuf::ChannelTarget::Find(
+    const FILETIME& time)
 {
     if ( 0 == TargetList.size() )
     {
@@ -61,7 +62,7 @@ GroupTarget* CIVDataBuf::ChannelTarget::Find(const FILETIME& time)
         nState = **iter ^ time;
         if ( nState == 0 )
         {
-            DebugOut("Find Obj!\n");
+            DebugOut("ChannelTarget::Find Find Obj!\n");
             pGroupTarget = *iter;
             TargetSaveList.splice(
                 TargetSaveList.end(), TargetList, TargetList.begin(), ++iter);
@@ -76,20 +77,6 @@ GroupTarget* CIVDataBuf::ChannelTarget::Find(const FILETIME& time)
     }
 
     return pGroupTarget;
-}
-
-void CIVDataBuf::ChannelTarget::PushBack(
-    GroupTarget* pGroupTarget )
-{
-    TargetList.push_back(pGroupTarget);
-}
-
-void CIVDataBuf::ChannelTarget::NewFileComing( 
-    const char* pPath, 
-    const FILETIME& time )
-{
-    AutoLockAndUnlock(cs);
-    FilePathList.push_back( FileInfo(pPath, time) );
 }
 
 bool CIVDataBuf::ChannelTarget::FileClose(
@@ -228,6 +215,7 @@ void CIVDataBuf::ChannelTarget::SaveData(
             long nState = Info->CloseTime ^ pGroupTarget->m_time;
             if ( nState < 0 )
             {
+                UpdateDataIndexToFile(Info->CloseTime);
                 Writer.close();
                 UpdateFileInfo();
                 return;
@@ -253,6 +241,7 @@ void CIVDataBuf::ChannelTarget::SaveData(
 
             if ( nState == 0 )
             {
+                UpdateDataIndexToFile(Info->CloseTime);
                 Writer.close();
                 UpdateFileInfo();
                 return;
@@ -361,9 +350,106 @@ void CIVDataBuf::ChannelTarget::UpdateDataIndex(
     }
 }
 
-void CIVDataBuf::ChannelTarget::UpdateDataIndexToFile()
-{
+typedef CDropTableMgr<BYTE, Max_IVData_Index> ArrayDropTableMgr;
+typedef ArrayDropTableMgr::c_DropTable ArrayDropTable;
+typedef CDropTableMgr2<BYTE> QueueDropTableMgr;
+typedef QueueDropTableMgr::c_DropTable QueueDropTable;
 
+/**
+*@note 这个函数算法比较复杂，需要验证
+*/
+void CIVDataBuf::ChannelTarget::UpdateDataIndexToFile(
+    const FILETIME& EndTime)
+{
+    /**
+    *@note 1. 将IV文件头EndTime赋值，注意这个值是上层传过来的视频文件最后一帧时间
+    *    将Writer文件指针移到开始，这样就可以直接覆盖文件打开的那个
+    *    当MoreDataIndex有数据，那么就需要将FileHead和MoreDataIndex的索引数据在平均丢弃，
+    *    然后将调整后的时候放在FileHead中
+    *    MoreDataIndex没数据，那么直接写FileHead就好
+    */
+    FileHead.EndTime =EndTime;
+    Writer.seekp(0);
+    size_t nQueueSize = MoreDataIndex.size();
+    if ( nQueueSize != 0 )
+    {
+        /**
+        *@note 2. 写算出FileHead和MoreDataIndex分别要丢多少
+        */
+        IVFileDataIndex (&DataIndex)[Max_IVData_Index] = FileHead.DataIndex;
+        size_t nArrayDrop = 
+            (Max_IVData_Index*nQueueSize)/(Max_IVData_Index+nQueueSize);
+        size_t nQueueDrop = nQueueSize - nArrayDrop;
+
+        /**
+        *@note 3. 根据FileHead的丢弃值，根据ArrayDropTableMgr得到丢弃表
+        *         然后根据丢弃表，将丢弃不要，重新移动队列使其连续
+        */
+        ArrayDropTableMgr* p = ArrayDropTableMgr::getInstancePtr();
+        ArrayDropTable* t = p->GetDropTable(nArrayDrop);
+        size_t nSize = t->size();
+        size_t nIndex = 0;
+        assert( nSize != 0 && nSize == nArrayDrop );
+        {       
+            /**
+            *@note 3.1. 首先头段因为不需要移动，直接将nIndex移到一个丢弃位置
+            */
+            ArrayDropTable::const_iterator iter1 = t->begin(),iter2=iter1; 
+            nIndex = *iter1;
+
+            /**
+            *@note 3.2. 处理中间段，只要将两个丢弃位置的数据左移
+            *           左移到由每次处理后，nIndex移动的最后位置决定
+            */
+            ++iter2;
+            for ( ; iter2 != t->end() ; iter1 = iter2, ++iter2)
+            {
+                for (BYTE i=*iter1; i<*iter2-1; ++i, ++nIndex)
+                {
+                    DataIndex[nIndex] = DataIndex[i+1];
+                }
+            }
+
+            /**
+            *@note 3.3. 处理尾段，尾端是没有丢弃位置的结束值，
+            *           那么用Buf长度决定
+            */
+            for (BYTE i=*iter1; i<Max_IVData_Index-1; ++i,++nIndex)
+            {
+                DataIndex[nIndex] = DataIndex[i+1];
+            } 
+        }
+
+        /**
+        *@note 3. 根据MoreDataIndex的丢弃值，根据QueueDropTableMgr得到丢弃表
+        *         然后将不需要丢弃的数据拷贝到FileHead
+        */
+        QueueDropTableMgr* q = QueueDropTableMgr::getInstancePtr();
+        QueueDropTable* t2 = q->GetDropTable(nQueueDrop, nQueueSize);
+        nSize = t2->size();
+        assert( nSize != 0 && nSize == nQueueDrop);
+        {
+            QueueDropTable::const_iterator iter = t2->begin();
+            deque<IVFileDataIndex>::iterator IndexIter = MoreDataIndex.begin();
+            for ( BYTE nQueueIndex = 0;
+                  IndexIter!=MoreDataIndex.end();
+                   ++IndexIter, ++nQueueIndex )
+            {
+                if ( iter!=t2->end() && *iter == nQueueIndex )
+                {
+                    ++iter;
+                    continue;      
+                } 
+
+                DataIndex[nIndex] = *IndexIter;
+                ++ nIndex;
+            }
+        }
+    }
+
+    Writer.write(
+        (char*)&FileHead,
+        sizeof(IVFileHead) );
 }
 
 
