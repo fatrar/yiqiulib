@@ -15,6 +15,7 @@
 
  Copyright (c) xxxx Ltd.
 **************************************************************************cpp**/
+#include "stdafx.h"
 #include "Trace.h"
 
 #ifdef _DEBUG
@@ -23,7 +24,6 @@
 #pragma warning(disable: 4996)
 
 #define  Max_Buf_Size  1024
-static const char s_strLine[] = "=======================================================\n";
 
 
 
@@ -68,7 +68,7 @@ void KAssert(const char *format, ...)
     OutputDebugString(szbuf);
 
     fprintf (stderr, "%s", szbuf) ;
-    exit ( EXIT_FAILURE ) ;
+    exit( EXIT_FAILURE ) ;
 }
 
 

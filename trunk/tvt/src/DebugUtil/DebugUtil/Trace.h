@@ -25,7 +25,7 @@
     #if !defined(_DEBUG)
     //#pragma comment(lib, "DebugUtil.lib")
     //#pragma message("Automatically linking with DebugUtil.lib")
-    #elif defined(_DEBUG) && defined(MEMORY_CHECK)
+    #elif defined(_DEBUG) /*&& defined(MEMORY_CHECK)*/
         #ifndef DEBUGUTIL_LINK
         #define DEBUGUTIL_LINK
             #pragma comment(lib, "DebugUtil_Debug.lib")
@@ -41,9 +41,9 @@
     void __cdecl DebugOutIndex (const char *format, ... );
     void __cdecl KAssert(const char *format, ...);
 #else
-    inline void __cdecl DebugOut(const char* format, ...){}
-    inline void __cdecl DebugOutIndex(const char *format, ... ){}
-    inline void __cdecl KAssert(const char *format, ...){}
+    #define DebugOut __noop
+    #define  DebugOutIndex __noop
+    #define KAssert __noop
 #endif // _DEBUG
 
 
