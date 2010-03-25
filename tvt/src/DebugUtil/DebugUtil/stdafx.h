@@ -5,12 +5,24 @@
 
 #pragma once
 
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#endif
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 #include <stdio.h>
 #include <tchar.h>
+#include <stdlib.h>
+#include <math.h>
+#include <windows.h>
+#include <string>
+using namespace std;
+#pragma warning(disable: 4996)
 
 
+static const char s_strLine[] = "=======================================================\n";
+
+#define TRACE 
 
 // TODO: reference additional headers your program requires here
 #ifdef _UNICODE

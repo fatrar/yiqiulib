@@ -14,23 +14,9 @@ History
 
 Copyright (c) DOWSHU Electronica (China) Ltd.
 *************************************************************************CPP*/
+#include "stdafx.h"
 #include "MemCheck.h"
-
-
-#ifdef _DEBUG
-
-
-#pragma warning(disable: 4996)
-
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501
-#endif
-
-#include <stdio.h>   
-#include <windows.h>
-#include <tchar.h>
-
-
+#include "Trace.h"
 
 
 
