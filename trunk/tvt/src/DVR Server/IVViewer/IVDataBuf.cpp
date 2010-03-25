@@ -243,6 +243,7 @@ BOOL CIVDataBuf::DeleteIVFile(
 
 BOOL CIVDataBuf::TellPreAlarmTime( int time )
 {
+    m_nPreAlarmTime = time;
     return TRUE;
 }
 
@@ -254,8 +255,7 @@ size_t WINAPI CIVDataBuf::SaveFileThread( void* pParm )
 size_t CIVDataBuf::SaveFileLoopFun()
 {
     DWORD dwEventCount = GetEventCount();
-    BOOL bExit = FALSE;
-    while (!bExit)
+    while (1)
     {
         DWORD dwRc = WaitForMultipleObjects(
             dwEventCount, m_Event, FALSE, -1 );
@@ -267,8 +267,7 @@ size_t CIVDataBuf::SaveFileLoopFun()
         case WAIT_TIMEOUT:
         	break;
         case WAIT_OBJECT_0:
-            bExit = TRUE;
-        	break;
+            return 0;
         default:
             DWORD dwOffsetValue = dwRc - (WAIT_OBJECT_0 +1);
             DWORD dwEventID = dwOffsetValue%(m_nDeviceCount*m_nEveryDeviceChannelNum);
@@ -357,8 +356,8 @@ void CIVDataBuf::DoSaveFileEvent(DWORD dwChannel)
     {
         return;
     }
-    
-
+   
+    ChanTarget.TrySaveData(m_nPreAlarmTime);
 }
 
 void CIVDataBuf::DoOpenFileEvevt( DWORD dwChannel )
@@ -373,7 +372,7 @@ void CIVDataBuf::DoCloseFileEvent( DWORD dwChannel )
 
 HANDLE CIVDataBuf::GetMyWantEvent( IVBufEvent e, int nChannelID )
 {
-    return m_Event[1+Event_Count*nChannelID + (e+1)];
+    return m_Event[1+Event_Count*nChannelID + e];
 }
 
 DWORD CIVDataBuf::GetEventCount()

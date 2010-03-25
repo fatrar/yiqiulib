@@ -26,11 +26,9 @@ CBaseIVViewer::CBaseIVViewer(void)
 
 CBaseIVViewer::~CBaseIVViewer(void)
 {
-    for ( int i= 0; i<Max_Device_Num; ++i )
-    {
-        StlHelper::STLDeleteAssociate(m_pViewerBuf[i].PointBuf);
-    }
     safeDeleteArray(m_pViewerBuf);
+
+    DebugOut("g_PointList = %d\n", g_PointList);
 }
 
 inline void TranslateToRect(
@@ -188,6 +186,8 @@ void CBaseIVViewer::RefrehPoint(
         {
             // 没找到就直接new一个新的内存
             pPointList = new PointList();
+           
+            ++g_PointList;
             pPointList->push_back(tar.centroid);
         }
 
@@ -200,6 +200,7 @@ void CBaseIVViewer::RefrehPoint(
           iter!= PointBuf.end();
           ++iter )
     {
+        --g_PointList;
         delete iter->second;
     }
     PointBuf.clear();

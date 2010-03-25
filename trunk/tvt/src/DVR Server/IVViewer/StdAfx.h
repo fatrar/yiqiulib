@@ -60,6 +60,7 @@ using namespace OCI;
 #include "..\..\DebugUtil\DebugUtil\Trace.h"
 #include "IVViewerUtil.h"
 
+#include "DropIndexAlgorithm.h"
 #include "Include\IVViewer.h"
 #include "IVFileCommon.h"
 

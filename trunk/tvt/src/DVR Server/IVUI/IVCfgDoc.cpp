@@ -164,7 +164,7 @@ void CIVCfgDoc::OnInitCameraTree(
 //
 // 上面写了一个用define实现的同样功能的 由于宏方式不能调式，所以模板复杂实现
 //
-template<typename T>
+template<typename T, T CIVCfgDoc::RuleSettings::*P>
 T* CIVCfgDoc::GetIVRuleCfgXX(
     HTREEITEM Item )
 {
@@ -186,18 +186,7 @@ T* CIVCfgDoc::GetIVRuleCfgXX(
         return NULL;
     }
   
-    struct CXXX
-    {
-        CXXX(RuleSettings* p):m_p(p){}
-        T* OutPut(){T* p(NULL); return OutPut(p);};
-        WPG_Rule* OutPut(WPG_Rule* p){return &m_p->Rule;}
-        ScheduleSettings* OutPut(ScheduleSettings*p){return &m_p->Sch;}
-        AlarmOutSettings* OutPut(AlarmOutSettings*p){return &m_p->Alarm;}
-        RuleSettings* m_p;
-    };
-
-    CXXX XX(MapIter->second);
-    return XX.OutPut();
+    return &(MapIter->second->*P);
 }
 
 template<typename T>
@@ -223,18 +212,12 @@ inline const char* CIVCfgDoc::GetRuleIDXX<WPG_Rule>(
     return (const char*)GetUserDataFromItemData(pItemData);
 }
 
-template<typename T, typename Tfn1, Tfn1 fn1,
+template<
+    typename T, T CIVCfgDoc::RuleSettings::*P,
+    typename Tfn1, Tfn1 fn1,
     typename Tfn2, Tfn2 fn2>
 void CIVCfgDoc::SetCfgToAllXX(const T& V)
 {
-    struct CXXX
-    {
-        CXXX(RuleSettings* p):m_p(p){}
-        void Set(const ScheduleSettings&p){m_p->Sch=p;}
-        void Set(const AlarmOutSettings&p){m_p->Alarm=p;}
-        RuleSettings* m_p;
-    };
-
     /**
     *@note  1. Set Cfg To XML and Memory
     */
@@ -255,7 +238,7 @@ void CIVCfgDoc::SetCfgToAllXX(const T& V)
             ++iter )
         {
             RuleSettings* pRuleSettings = iter->second;
-            CXXX(pRuleSettings).Set(V);
+            pRuleSettings->*P = V;
         }
     }
     pIVCfgMgr->Apply();
@@ -298,7 +281,7 @@ void CIVCfgDoc::SetCfgToAllXX(const T& V)
 WPG_Rule* CIVRuleCfgDoc::GetRule( 
     HTREEITEM Item )
 {
-    return GetIVRuleCfgXX<WPG_Rule>(Item);
+    return GetIVRuleCfgXX<WPG_Rule, &RuleSettings::Rule>(Item);
 }
 
 void CIVRuleCfgDoc::AddRule( 
@@ -528,7 +511,6 @@ void CIVCfgDoc::UpdateRuleCfgXX(
         const char* pTmpID = Iter.GetIdentityID();
         if ( pTmpID == pID )
         {
-            //fn f = &IIVCfgMgr;
             (Iter.*fn)(V);
             pIVCfgMgr->Apply();
             return;
@@ -647,7 +629,7 @@ void CIVRuleCfgDoc::EnableAllRule( int nChannelID, bool bEnable )
               ++MapIter )
         {
             WPG_Rule& Rule = MapIter->second->Rule; 
-            if ( Rule.isEnabled == bEnable )
+            if ( bool(Rule.isEnabled) == bEnable )
             {
                 continue;
             }
@@ -694,7 +676,7 @@ void CIVRuleCfgDoc::EnableAllRule( int nChannelID, bool bEnable )
 AlarmOutSettings* CIVAlarmOutCfgDoc::GetAlarmOut(
     HTREEITEM Item )
 {
-    return GetIVRuleCfgXX<AlarmOutSettings>(Item);
+    return GetIVRuleCfgXX<AlarmOutSettings, &RuleSettings::Alarm>(Item);
 }
 
 void CIVAlarmOutCfgDoc::UpdateAlarmOut( 
@@ -712,7 +694,8 @@ void CIVAlarmOutCfgDoc::SetCfgToAll(
     const AlarmOutSettings& Alarm )
 {
     CIVCfgDoc::SetCfgToAllXX<
-        AlarmOutSettings, 
+        AlarmOutSettings,
+        &RuleSettings::Alarm,
         ModifyAlarmOutFn,
         &IIVCfgMgr::IVVistor::ModifyAlarmOut,
         DeviceModifyAlarmOutFn,
@@ -731,7 +714,7 @@ void CIVAlarmOutCfgDoc::SetCfgToAll(
 ScheduleSettings* CIVScheduleCfgDoc::GetSchedule( 
     HTREEITEM Item ) 
 {
-    return GetIVRuleCfgXX<ScheduleSettings>(Item); 
+    return GetIVRuleCfgXX<ScheduleSettings, &RuleSettings::Sch>(Item); 
 }
 
 void CIVScheduleCfgDoc::UpdateSchedule(
@@ -750,6 +733,7 @@ void CIVScheduleCfgDoc::SetCfgToAll(
 {
     CIVCfgDoc::SetCfgToAllXX<
         ScheduleSettings,
+        &RuleSettings::Sch,
         ModifyScheduleFn,
         &IIVCfgMgr::IVVistor::ModifySchedule,
         DeviceModifyScheduleFn,

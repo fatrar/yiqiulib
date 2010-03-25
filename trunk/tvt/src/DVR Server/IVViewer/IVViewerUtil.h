@@ -77,7 +77,7 @@ struct TargetQueue
         --nRef;
         if ( nRef == 0 )
         {
-            nUse = Buf_No_Use;
+            //nUse = Buf_No_Use;
             if ( hSaveEvent )
             {
                 SetEvent(hSaveEvent);

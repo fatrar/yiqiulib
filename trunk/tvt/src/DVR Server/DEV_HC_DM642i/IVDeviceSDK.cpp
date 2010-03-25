@@ -923,14 +923,11 @@ void AdjustLiveList(
     FILETIME& Test = (FILETIME&)(*iter)->FrameTime;
     if ( Test > ftime )
     {
-        //TRACE(" > First!...\n");
         return;
     }
     else if (Test == ftime)
     {
-        //TRACE(" == First!...\n");
         LiveList.splice(LiveList.end(), BufList, iter, iter);
-        //AdjustPostMessage<nFrame>(LiveList,nPostMessage);
         return;
     }
 
@@ -938,19 +935,16 @@ void AdjustLiveList(
     {
         if ( iter == BufList.end() )
         {
-            //TRACE("splice All ...\n");
             LiveList.splice(LiveList.end(), BufList);
             break;
         }
         if ( Test > ftime )
         {
-            //TRACE("splice > ...\n");
             LiveList.splice(LiveList.end(), BufList, BufList.begin(), --iter);
             break;
         }
         if ( Test == ftime )
         {
-            //TRACE("splice == ...\n");
             LiveList.splice(LiveList.end(), BufList, BufList.begin(), iter);
             break;
         }

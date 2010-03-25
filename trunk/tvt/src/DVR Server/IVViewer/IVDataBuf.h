@@ -97,7 +97,6 @@ protected:
 
 protected:
     struct FileInfo;
-
     class ChannelTarget;
 
 protected:

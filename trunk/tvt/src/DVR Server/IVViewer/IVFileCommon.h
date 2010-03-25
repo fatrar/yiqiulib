@@ -78,7 +78,7 @@ struct IVFileHead
     FILETIME BeginTime;
     FILETIME EndTime;
     DWORD dwIndexNum;
-    IVFileDataIndex DataIndex[200];
+    IVFileDataIndex DataIndex[Max_IVData_Index];
 };
 
 struct IVFileDataHead
