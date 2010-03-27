@@ -29,10 +29,10 @@ public:
     CVideoStdDLg(void);
 public:
     int m_bSignal;
-public:
-	enum { IDD = IDD_DIALOGSELECTSIGNAL };
 
-
+    enum { IDD = IDD_DIALOGSELECTSIGNAL };
+protected:
+	
 	BEGIN_MSG_MAP(CVideoStdDLg)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		COMMAND_ID_HANDLER(IDOK, OnOK)
@@ -43,6 +43,7 @@ public:
         DDX_RADIO(IDC_RADIO1, m_bSignal)
     END_DDX_MAP()
 
+protected:
 // Handler prototypes (uncomment arguments if needed):
 //	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 //	LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

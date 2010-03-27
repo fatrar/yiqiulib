@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DEV_HC_DM642i", "DEV_HC_DM642i\DEV_HC_DM642i.vcproj", "{225F3400-0F16-4C98-91CB-2418F298C6FC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVUI_Test", "IVUI\IVUI_Test\IVUI_Test.vcproj", "{08CEE1D5-43A2-4BA7-A83B-64D02A367884}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVViewer", "IVViewer\IVViewer.vcproj", "{AAE56DA0-D81C-4717-A473-664DF6A6855D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QC", "QC\QC.vcproj", "{316C5D77-60C9-445D-9F3F-8FC1F466408C}"
@@ -17,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SnapShotUI", "SnapShotUI\Sn
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVTest_UI", "IVTest_UI\IVTest_UI.vcproj", "{EEAC3DA5-6D3D-4F97-9664-5015F5960C9C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugUtil", "..\DebugUtil\DebugUtil\DebugUtil.vcproj", "{12617E60-A2A4-4169-BFFE-902793636268}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -27,10 +27,6 @@ Global
 		{225F3400-0F16-4C98-91CB-2418F298C6FC}.Debug|Win32.Build.0 = Debug|Win32
 		{225F3400-0F16-4C98-91CB-2418F298C6FC}.Release|Win32.ActiveCfg = Release|Win32
 		{225F3400-0F16-4C98-91CB-2418F298C6FC}.Release|Win32.Build.0 = Release|Win32
-		{08CEE1D5-43A2-4BA7-A83B-64D02A367884}.Debug|Win32.ActiveCfg = Debug|Win32
-		{08CEE1D5-43A2-4BA7-A83B-64D02A367884}.Debug|Win32.Build.0 = Debug|Win32
-		{08CEE1D5-43A2-4BA7-A83B-64D02A367884}.Release|Win32.ActiveCfg = Release|Win32
-		{08CEE1D5-43A2-4BA7-A83B-64D02A367884}.Release|Win32.Build.0 = Release|Win32
 		{AAE56DA0-D81C-4717-A473-664DF6A6855D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AAE56DA0-D81C-4717-A473-664DF6A6855D}.Debug|Win32.Build.0 = Debug|Win32
 		{AAE56DA0-D81C-4717-A473-664DF6A6855D}.Release|Win32.ActiveCfg = Release|Win32
@@ -55,6 +51,10 @@ Global
 		{EEAC3DA5-6D3D-4F97-9664-5015F5960C9C}.Debug|Win32.Build.0 = Debug|Win32
 		{EEAC3DA5-6D3D-4F97-9664-5015F5960C9C}.Release|Win32.ActiveCfg = Release|Win32
 		{EEAC3DA5-6D3D-4F97-9664-5015F5960C9C}.Release|Win32.Build.0 = Release|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Debug|Win32.ActiveCfg = Debug|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Debug|Win32.Build.0 = Debug|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Release|Win32.ActiveCfg = Release|Win32
+		{12617E60-A2A4-4169-BFFE-902793636268}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

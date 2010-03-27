@@ -66,7 +66,8 @@ protected:
         const tagRECT* rect,    // Õë¶ÔÆÁÄ»×ø±ê
         const FILETIME* pTime,
         HWND hwnd,
-        int nFlag );
+        int nFlag,
+        DWORD dwUserData );
 
 protected:
     virtual BOOL GatherUseSet(){return TRUE;};

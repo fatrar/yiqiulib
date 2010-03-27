@@ -28,10 +28,13 @@ CIVDataBuf::CIVDataBuf(void)
     , m_Thread(NULL)
     , m_nPreAlarmTime()
 {
+    DebugOut("CIVDataBuf() \n");
+    memory_check.Init("IV Viewer");
 }
 
 CIVDataBuf::~CIVDataBuf(void)
 {
+    DebugOut("~CIVDataBuf() \n");
     if ( m_IsInit )
     {
         Unit();

@@ -81,7 +81,7 @@ BOOL CBaseIVViewer::Paint(
     {  
         if ( nChannelID != m_pViewerBuf[nDeviceID].ChannelID )
         {
-            m_pViewerBuf[nDeviceID].ChannelID = -1;
+            //m_pViewerBuf[nDeviceID].ChannelID = -1;
             return FALSE;
         }
         
