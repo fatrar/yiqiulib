@@ -17,7 +17,7 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
 #include "stdafx.h"
 #include "MemCheck.h"
 #include "Trace.h"
-
+#pragma init_seg(lib)
 
 
 #if defined(MEMORY_CHECK) && defined(_DEBUG)
@@ -34,6 +34,9 @@ ds::ds()
     {
         GetModuleFileName(hModule, g_szProjectName, MAX_PATH);
         FreeLibrary(hModule);
+        DebugOut(
+            "\n*******************Memory Check %s!\n\n",
+            g_szProjectName );
     }
     else
     {
@@ -67,6 +70,7 @@ void ds::Init(const char* pProject)
 
 //volatile ds memory_check;
 ds memory_check;
+
 
 #endif
 

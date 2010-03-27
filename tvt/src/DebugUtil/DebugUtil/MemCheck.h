@@ -19,6 +19,8 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
 
 #define MEMORY_CHECK
 
+
+
 #ifndef DEBUGUTIL_EXPORTS
     #if !defined(_DEBUG)
         //#pragma comment(lib, "DebugUtil.lib")
