@@ -136,6 +136,7 @@ protected:
     void UpdateDataIndexToFile(const FILETIME& EndTime);
 
 protected:
+    typedef list<GroupTarget*> TTargetList;
     typedef deque<FileInfo> FileInfoList;
 
 public:

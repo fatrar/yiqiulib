@@ -81,8 +81,6 @@ protected:
         Event_Count,
     };
 
-    typedef list<GroupTarget*> TTargetList;
-
     static size_t WINAPI SaveFileThread(void* pParm);
     size_t SaveFileLoopFun();
 

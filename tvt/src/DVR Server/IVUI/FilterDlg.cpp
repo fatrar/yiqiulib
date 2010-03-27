@@ -152,7 +152,7 @@ BOOL CFilterDlg::OnInitDialog()
     m_Rect.SetRect(x,y, x+352,y+288);
     m_Player.InitDirectDraw(
         this->m_hWnd, 352, 288, &m_Rect);
-    m_Player.SetVideoPlayCallback(this);
+    m_Player.SetVideoPlayCallback(this, m_nCurrentChan);
     if ( g_IIVDeviceBase2 )
     {
         g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
@@ -409,7 +409,10 @@ BOOL CFilterDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
     return TRUE;
 }
 
-BOOL CFilterDlg::OnVideoPlay( HDC dc, const tagRECT* rect, /* Õë¶ÔÆÁ?×ø±ê */ const FILETIME* pTime, HWND hwnd, int nFlag )
+BOOL CFilterDlg::OnVideoPlay( 
+    HDC dc, const tagRECT* rect, 
+    const FILETIME* pTime,
+    HWND hwnd, int nFlag, DWORD dwUserData )
 {
     m_pDrawContainer->Invalidate();
     return TRUE;

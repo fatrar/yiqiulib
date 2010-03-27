@@ -92,7 +92,7 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
     m_Rect.SetRect(x,y,int(x+352*1.4),int(y+288*1.4)); 
     m_Player.InitDirectDraw(
         this->m_hWnd, 352, 288, &m_Rect);
-    m_Player.SetVideoPlayCallback(this);
+    m_Player.SetVideoPlayCallback(this, m_nCurrentChan);
     if ( g_IIVDeviceBase2 )
     {
         g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
@@ -415,12 +415,13 @@ BOOL CRuleMainBaseDlg::OnVideoPlay(
     const tagRECT* rect,
     const FILETIME* pTime, 
     HWND hwnd,
-    int nFlag )
+    int nFlag,
+    DWORD dwUserData )
 {
     //m_Drawer->ShowWindow(SW_HIDE);
     //m_Drawer->ShowWindow(SW_SHOW);
-    IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
-    pViewer->Paint(m_nCurrentChan, dc, *rect, *pTime);
+    static IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
+    pViewer->Paint(dwUserData, dc, *rect, *pTime);
 
     m_pDrawContainer->Invalidate();
     return TRUE;
