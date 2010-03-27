@@ -11,6 +11,7 @@
 #include <string>
 #include <list>
 #include <memory>
+#include <fstream>
 #include <iomanip>
 using namespace std;
 
@@ -120,9 +121,40 @@ void TempTest(T2 a)
 const char* s_Test = "aaaaaa";
 
 
+struct IVFileDataHead
+{
+    DWORD dwPrePos;
+    DWORD dwNextPos;
+    WORD dwTargetNum;
+    WORD dwReserve;
+    FILETIME t;
+};
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    const char pPath[] = "C:\\1234.txt";
+    ofstream Writer(pPath, ios::binary);
+    DWORD a = 1;
+    Writer.write((char*)&a, sizeof(DWORD));
+    a =2;
+    Writer.write((char*)&a, sizeof(DWORD));
+    WORD b = 3;
+    Writer.write((char*)&b, sizeof(WORD));
+    b = 4;
+    Writer.write((char*)&b, sizeof(WORD));
+
+    FILETIME t;
+    t.dwHighDateTime = 0;
+    t.dwLowDateTime = 15;
+    Writer.write((char*)&t, sizeof(FILETIME));
+    Writer.close();
+
+    ifstream Reader(pPath, ios::binary);
+    IVFileDataHead Head;
+    Reader.read((char*)&Head, sizeof(IVFileDataHead));
+
+
     list<int> aa, bb;
     bb.insert(bb.begin(), 10, 100);
     aa.splice(aa.end(), bb);

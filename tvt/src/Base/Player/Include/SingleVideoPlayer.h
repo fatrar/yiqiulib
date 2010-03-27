@@ -50,7 +50,8 @@ struct IVideoPlayCallBack
         const tagRECT* rect,    // 针对屏幕坐标
         const FILETIME* pTime,
         HWND hwnd,
-        int nFlag ) = 0;   // 0为临时的， 1为永久的那个
+        int nFlag,
+        DWORD dwUserData ) = 0;   // 0为临时的， 1为永久的那个
 };
 
 
@@ -68,9 +69,22 @@ public:
 
     void SetBackColour(DWORD dwColour){ m_dwBackColour = dwColour; }
 
-    void SetVideoPlayCallback(IVideoPlayCallBack* p){m_pIVideoPlayCallBack=p;}
+    void SetVideoPlayCallback(
+        IVideoPlayCallBack* p,
+        DWORD dwUserData )
+    {
+        m_dwUserData = dwUserData;
+        m_pIVideoPlayCallBack=p;
+    }
 
     void ShowBack();
+
+    inline void OnVideoPlay(
+        const tagRECT* rect, 
+        const FILETIME* pTime,
+        IVideoPlayCallBack* p,
+        DWORD dwUserData);
+
 public:
     enum YUVFormat
     {
@@ -106,6 +120,8 @@ protected:
     IDirectDrawSurface7* m_pDDSBack;
 
     DWORD m_dwWidth, m_dwHeight;
+
+    DWORD m_dwUserData;
 };
 
 
@@ -124,7 +140,8 @@ public:
         DWORD format,
         int src420Subtype=0,
         const FILETIME* pTime = NULL,
-        IVideoPlayCallBack* p = NULL );
+        IVideoPlayCallBack* p = NULL,
+        DWORD dwUserData = 0);
 };
 
 class SINGLEVIDEOPLAYER_CLASS CYUVSingleVideoPlayerEx :
@@ -138,7 +155,8 @@ public:
         DWORD format,
         int src420Subtype=0,
         const FILETIME* pTime = NULL,
-        IVideoPlayCallBack* p = NULL );
+        IVideoPlayCallBack* p = NULL,
+        DWORD dwUserData = 0 );
 
 protected:
     void Show(
@@ -147,7 +165,8 @@ protected:
         DWORD format,
         int src420Subtype=0,
         const FILETIME* pTime = NULL,
-        IVideoPlayCallBack* p = NULL ) {};
+        IVideoPlayCallBack* p = NULL,
+        DWORD dwUserData = 0 ) {};
 };
 
 class SINGLEVIDEOPLAYER_CLASS CRGBSingleVideoPlayer :
@@ -163,7 +182,8 @@ public:
         const tagRECT* rect,
         const BYTE *pBuf,
         const FILETIME* pTime = NULL,
-        IVideoPlayCallBack* p = NULL);
+        IVideoPlayCallBack* p = NULL,
+        DWORD dwUserData = 0);
 };
 
 class SINGLEVIDEOPLAYER_CLASS CRGBSingleVideoPlayerEx :
@@ -175,14 +195,16 @@ public:
         const BYTE *pBuf,
         DWORD dwWidth, DWORD dwHeight,
         const FILETIME* pTime = NULL,
-        IVideoPlayCallBack* p = NULL);
+        IVideoPlayCallBack* p = NULL,
+        DWORD dwUserData = 0);
 
 protected:
     void Show(
         const tagRECT* rect,
         const BYTE *pBuf,
         const FILETIME* pTime = NULL,
-        IVideoPlayCallBack* p = NULL){};
+        IVideoPlayCallBack* p = NULL,
+        DWORD dwUserData = 0){};
 };
 
 

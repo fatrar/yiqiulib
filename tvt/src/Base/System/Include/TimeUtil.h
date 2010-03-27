@@ -44,7 +44,7 @@ inline long operator ^ (const FILETIME&t1, const FILETIME&t2)
 }
 
 // return ∫¡√Î
-inline long operator - (const FILETIME&t1, const FILETIME&t2)
+inline __int64 operator - (const FILETIME&t1, const FILETIME&t2)
 {
     return (*((__int64*)&t1)-*((__int64*)&t2))/10000;
 }
