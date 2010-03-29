@@ -273,24 +273,90 @@ Flash Build 4 序列号
 
 
 
+-----------------------------------------------------------
+
+11:07 2010-3-25
+想想这段研究模板这些泛型编程比较多，就写一些最近一些模板的一些妙用把。
+
+1.模板实现某个类的静态变量的多个实例
+
+ 在effective   C＋＋中page   32，条款7中   
+  template<class   T>   
+  class   NewHandleerSupport   
+  {   
+        public:   
+        static   new_handler   set_new_handler(new_handler   p);   
+        static   void   *   operator   new(size_t   size);   
+  private:   
+        static   new_handler   currentHandler;   
+  }   
+    
+  template<class   T>   
+  new_handler   NewHandlerSupport<T>::set_new_handler(new_handler   p)   
+  {   
+        new_handler   oldHanler   =currentHandler;   
+        currentHandler=p;   
+        return   oldHandler;   
+  }   
+    
+  class   X:public   NewHandlerSupport<X>   
+  {}   
+这个很显然模板参数是没有点用的，但是因为定义了模板使静态成员变量currentHandler，
+在没定义一个模板参数就有一个实例
+
+
+
+17:33 2010-3-26
+
+关于全部变量初始化顺序问题，
+在同一个文件里面，谁先申明谁就先，当不在一个文件当中时，可以用下面的编译指令去改变，
+一般(compiler) 这个参数是用以 CRT库我们最好不要使用。
+  #pragma init_seg(compiler)
+   #pragma init_seg(lib)
+   #pragma init_seg(user)
+   #pragma init_seg("user_defined_segment_name")
+
+
+ex：
+http://www.wangchao.net.cn/bbsdetail_39013.html
+http://support.microsoft.com/kb/104248/zh-cn
+　Visual C++ 提供了 #pragma init_seg 这样一个编译指令来控制一个翻译单位中对象的初始化顺序。打开 Visual C++ 自带的 CRT 源代码文件 cout.cpp，你会发现如下的语句：
+　　#pragma warning(disable: 4074)
+　　#pragma init_seg(compiler)
+　　_CRTIMP2 ostream cout(&fout);
+　　通过使用 #pragma init_seg(compiler) 这个指令，在 cout.cpp 文件中的所有对象都被放在 compiler 这个初始化组，这个组中的对象总是最先初始化和最后析构。当然，这个组是保留给微软 C/C++ 运行库使用的，我们不应该使用它。在我们自己的代码里，如果希望一些对象先于其他对象初始化，我们可以使用 #pragma init_seg(lib) 指令，放置在 lib 组的对象总是比 compiler 组的对象初始化晚，但要先于其他对象。#pragma init_seg 指令还有其他一些高级用法让你进行更细致的控制。
 
 
 
 
+9:24 2010-3-29
+
+A、关于几个编译的选项：
+
+1. 对齐
+#pragma pack(push, _AFX_PACKING)
+#pragma pack(pop)
+
+2. 去警告
+#pragma warning( push )
+#pragma warning( disable: 4121 )
+
+#pragma warning( pop )
 
 
+B、这么编译内联的文件
+  一直以来我们都会发现在调式MFC库时，会跳转到Inl的MFC文件，
+  这因为一直是因为是调式才进去的，也一直以为这是MFC为了调式才用这个东西。
+  
+今天突然发现这个是MFC如果设置静态编译，而设的内联方式，
+说白了就是，别人在包含MFC某些类库的头文件的时候，在头文件里面由包含了的实现文件，
+ MFC用inl文件后缀，这个文件其实没做什么特殊处理只是在文件中没有包含原本的头文件，
+只是加了个#pragma once，防止重编译（包含多次编译），而我在自己的机器测试也发现inl文件，
+VS2005默认是不处理的，也就是当作普通的txt文件，但是在头文件包含，那么他就会当做C，CPP这些代码编译处理
 
-
-
-
-
-
-
-
-
-
-
-
+通过这个我也明白MFC工程有个静态编译的办法了，以前也一直以为是用MFC静态库和MFC动态库做的，
+其实准确说来是 还要加上inl的方式，以后我在我写的库也用这一招， 
+又学会一招。。 嘿嘿。。。。
 
 
 
