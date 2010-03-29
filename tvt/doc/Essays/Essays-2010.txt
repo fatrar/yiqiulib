@@ -343,6 +343,24 @@ A、关于几个编译的选项：
 
 #pragma warning( pop )
 
+3. 宏定义
+#pragma push_macro("malloc")
+#undef malloc
+
+#pragma pop_macro("malloc")
+
+1. 解释 
+    (1) #pragma push_macro("MACRO_NAME") 是把当前与宏 MACRO_NAME 相关联的字符串值保存到栈中; 
+    (2) #pragma pop_macro("MACRO_NAME") 是把栈中之前保存的与宏 MACRO_NAME 相关联的字符串值重新关联到宏 MACRO_NAME 上. 
+    
+2. 说明 
+    (1) 必须先用 push_macro 将宏 MACRO_NAME 所关联的字符串值压入栈, 然后才能用 pop_macro 将其弹出; 
+    (2) 如果多次用 push_macro 将宏 MACRO_NAME 多次所关联的不同字符串值压入栈, 则栈中保存的是宏 MACRO_NAME 最后一次压入的, 即用 pop_macro 弹出的是宏 MACRO_NAME 最后一次 push_macro 入的; 
+    (3) 用 push_macro 将多个宏压入栈中, 再用 pop_macro 弹出时, 弹出字符串值的规则不是"先进后出(FILO)"或"后进先出(LIFO)", 而是与 pop_macro 所要弹出的宏名相关.
+
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/g5dsk/archive/2009/12/28/5088439.aspx
+
 
 B、这么编译内联的文件
   一直以来我们都会发现在调式MFC库时，会跳转到Inl的MFC文件，
@@ -360,7 +378,18 @@ VS2005默认是不处理的，也就是当作普通的txt文件，但是在头文件包含，那么他就会当做C
 
 
 
+C、std::advance  std::distance
+  std::advance 得到位置
+  std::distance 两个Iter之间的距离
+    list<int>::iterator itr = i.begin();   
+    advance(itr,2);   
+    cout<<"itr forward two is: ";   
+    cout<<*itr<<endl;   
 
+    itr = i.begin();   
+    list<int>::iterator _itr = i.end();   
+    cout<<"the dinstance bewtreen itr and Itr is: ";   
+    cout<<distance(itr,_itr)<<endl; 
 
 
 
