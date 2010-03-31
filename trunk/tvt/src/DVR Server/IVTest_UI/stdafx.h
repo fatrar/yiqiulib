@@ -11,6 +11,8 @@
 #define _WIN32_IE	0x0501
 #define _RICHEDIT_VER	0x0200
 
+#include <fstream>
+using namespace std;
 #include <atlstr.h>   
 #define _WTL_NO_CSTRING  
 

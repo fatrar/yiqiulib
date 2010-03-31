@@ -172,12 +172,12 @@ CDSP::CDSP()
 
     // IV .. Init
     memset(m_szCurrentIVChannel, Device_Free_Flag, sizeof(m_szCurrentIVChannel));
-    //m_szCurrentIVChannel[0] = 0;
-
-    ZeroMemory(m_szHaveStatistic, sizeof(m_szHaveStatistic));
 
     ZeroMemory(m_szVideoSend, sizeof(m_szVideoSend));
-    ZeroMemory(m_bFisrtIVDataFlag, sizeof(m_bFisrtIVDataFlag));
+    //ZeroMemory(m_bFisrtIVDataFlag, sizeof(m_bFisrtIVDataFlag));
+
+    ZeroMemory(m_pStatisticRule, sizeof(m_pStatisticRule));
+   // ZeroMemory(m_szHaveStatistic, sizeof(m_szHaveStatistic));
 }
 
 CDSP::~CDSP()
@@ -190,16 +190,14 @@ BOOL CDSP::DeviceInit()
 {
 	int i;
 	char szName[20];
-	static APP_DRIVER_BUFFER_INFO stIn;
-	static APP_DRIVER_BUFFER_INFO stOut;
-
+	APP_DRIVER_BUFFER_INFO stIn, stOut;
 	DWORD dwBytesReturned;
 
 	for (i = 0; i < MAX_DEVICE_NUM; i++)
 	{
 		sprintf(szName, "%s%d", PCI_DEVICE_STRING, i + 1);
 		m_hDevice[i] = CreateFile(
-            szName, 
+            szName,
 			GENERIC_READ | GENERIC_WRITE,
 			0,
 			NULL,
@@ -422,25 +420,16 @@ BOOL CDSP::CreateWorkerThread()
             NULL, 0, OnThreadSmooth,
             new SmoonthThreadParm(this, i, TempEvent[i]),
             0, &m_dwSmoothTheadID[i]);
-
-        char szBuf[64] = {0};
-        sprintf_s(szBuf, 
-            "SmoonthThread Thead HANDLE=%x, ID=%x\n",
-            m_hSmooth[i], 
-            m_dwSmoothTheadID[i]);
-        OutputDebugString(szBuf);
     }
 
-    TRACE("CreateWorkerThread: Wait For Smooth Thread Create Message Quque!\n");
     // 等待平滑线程创建消息栈
     WaitForMultipleObjects(m_nDeviceNum, TempEvent, TRUE, INFINITE);
     for ( int j=0; j<m_nDeviceNum; ++j)
     {
         // 默认休眠
-        SuspendThread(m_hSmooth[m_nDeviceNum]);
+        SuspendThread(m_hSmooth[j]);
         CloseHandle(TempEvent[j]);
     }
-    TRACE("CreateWorkerThread: Smooth Thread Create Message Quque OK!\n");
 	return TRUE;
 }
 
@@ -473,32 +462,49 @@ void CDSP::DestroyWorkerThread()
         }
     }
 
-#define DestroyThread(h, strlog) \
-    if (h != NULL)\
-    {	DWORD dwStart = GetTickCount();\
-        WaitForSingleObject(h, 2000); \
-        if (GetExitCodeThread(h, &dwExitCode)) \
-        {   \
-            if (dwExitCode == STILL_ACTIVE) \
-            {\
-                TRACE(strlog, i);\
-                TerminateThread(h, 1);\
-            }\
-        }\
-        TRACE(strlog, GetTickCount()-dwStart);\
-        CloseHandle(h);  h = NULL;\
-    }
+    struct CDestroyThread 
+    {
+        CDestroyThread(HANDLE& h, const char* pLog, int nDevice)
+        {
+            if (h == NULL)
+            {
+                return;
+            }
 
-    DWORD dwExitCode;
+            DWORD dwStart = GetTickCount();
+            WaitForSingleObject(h, 2000);
+            DWORD dwExitCode;
+            if (GetExitCodeThread(h, &dwExitCode))
+            {   
+                if (dwExitCode == STILL_ACTIVE)
+                {
+                    TRACE(pLog, nDevice);
+                    TerminateThread(h, 1);
+                }
+            }
+            TRACE(pLog, GetTickCount()-dwStart);
+            CloseHandle(h);  h = NULL;
+        }
+    };
+
+#define DestroyThread(h, strlog,nDevice) CDestroyThread Conn(DestroyThread,__LINE__)(h,strlog,nDevice)
+
 	for (int i = 0; i < m_nDeviceNum; i++)	//zhangzhen	2007/03/01
 	{
-        DestroyThread(m_hThreadPrv[i], "Terminate Live Thread End Time %d\n");
-        DestroyThread(m_hThreadAud[i], "Terminate Audio Thread End Time %d\n") ;
-        DestroyThread(m_hThreadCompressStrm[i], "Terminate Compress Thread End Time %d\n");
+        DestroyThread(
+            m_hThreadPrv[i],
+            "Terminate Live Thread End Time %d\n", i);
+        DestroyThread(
+            m_hThreadAud[i], 
+            "Terminate Audio Thread End Time %d\n", i) ;
+        DestroyThread(
+            m_hThreadCompressStrm[i],
+            "Terminate Compress Thread End Time %d\n", i);
 
-        DestroyThread(m_hSmooth[i], "Terminate Smooth Thread End Time %d\n");
+        DestroyThread(
+            m_hSmooth[i],
+            "Terminate Smooth Thread End Time %d\n", i);
 	}
-
 }
 
 BOOL CDSP::CreateBuffer()
@@ -536,7 +542,11 @@ BOOL CDSP::CreateBuffer()
 			m_pNetBuf_RT[i][j].nVLostFlag = 1;
 		}
 
+        // 智能命令队列
         m_pIVParmBuf[i] = new BYTE[MAX_IV_Parm_Buf_Size];
+
+        // 统计
+        m_pStatisticRule[i] = new StatisticSetting;
 	}
 
     for (int k = 0; k<m_nDeviceNum*CHANNEL_PER_DEVICE; ++k)
@@ -568,6 +578,7 @@ void CDSP::DestroyBuffer()
 		}
 
         safeDeleteArray(m_pIVParmBuf[i]);
+        safeDeleteArray(m_pStatisticRule[i]);
 	}
 
     for (int k = 0; k<m_nDeviceNum*CHANNEL_PER_DEVICE; ++k)
@@ -771,7 +782,7 @@ void CDSP::GetOneChannelPreData(
         BOOL bRc = PostThreadMessage(
             m_dwSmoothTheadID[nDevice],
             Push_Live_Data,
-            nDevice, (LPARAM)&Frame);
+            nChannel, (LPARAM)&Frame);
         if ( !bRc )
         {
             TRACE(
@@ -1861,6 +1872,195 @@ DWORD CDSP::NetFrameRateInc(int inc)
 	return RefreshNetFrameRate();
 }
 
+BOOL CDSP::AddStatistic(
+    int nChannelID,
+    int nDeviceID,
+    const WPG_Rule& Rule )
+{
+    StatisticSetting* p = m_pStatisticRule[nDeviceID];
+    if ( p == NULL )
+    {
+        ASSERT(false);
+        TRACE("CDSP::AddStatistic Failed!\n");
+        return FALSE;
+    }
 
+    if ( p->IsEnable )
+    {
+        ASSERT(false);
+        TRACE("CDSP::AddStatistic Is Already Start!\n");
+        return FALSE;
+    }
+
+    BOOL bRc = _AddStatistic(nChannelID, Rule);
+    if ( bRc )
+    {
+        ASSERT(false);
+        p->Rule = Rule;
+        p->IsEnable = TRUE;
+    }
+
+    return bRc;
+}
+
+BOOL CDSP::RemoveStatistic( 
+    int nChannelID, 
+    int nDeviceID,
+    const IV_RuleID& RuleID )
+{
+    StatisticSetting* p = m_pStatisticRule[nDeviceID];
+    if ( p == NULL && 
+         0 == memcmp(&RuleID, p->Rule.ruleId, 16) )
+    {
+        ASSERT(false);
+        TRACE("CDSP::AddStatistic Failed!\n");
+        return FALSE;
+    }
+
+    if ( !p->IsEnable )
+    {
+        ASSERT(false);
+        TRACE("CDSP::AddStatistic Is Already Stop!\n");
+        return FALSE;
+    }
+
+    BOOL bRc = _RemoveStatistic(nChannelID, p->Rule);
+    if ( bRc )
+    {
+        ASSERT(false);
+        p->IsEnable = FALSE;
+    }
+    
+    return bRc;
+}
+
+BOOL CDSP::_AddStatistic(
+    int nChannelID,
+    const WPG_Rule& Rule )
+{
+    WPG_LINE_CROSS_DIRECTION dir = 
+        Rule.ruleDescription.description.tripwireEventDescription.direction;
+    if ( dir == INVALID_DIRECTION )
+    {
+        TRACE("CDSP::_AddStatistic Invalid Rule!\n");
+        return FALSE;
+    }
+
+    if ( dir == ANY_DIRECTION ||
+         dir == LEFT_TO_RIGHT )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+    }
+    if ( dir == ANY_DIRECTION ||
+         dir == RIGHT_TO_LEFT )
+    {
+        IV_RuleID& Sencond = (IV_RuleID&)Rule.ruleId;
+        ++Sencond.RuleID.ID;
+        SetIVSpecialParam(
+            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+        --Sencond.RuleID.ID;
+    }
+    return TRUE;
+}
+
+BOOL CDSP::_RemoveStatistic(
+    int nChannelID,
+    const WPG_Rule& Rule )
+{
+    WPG_LINE_CROSS_DIRECTION dir = 
+        Rule.ruleDescription.description.tripwireEventDescription.direction;
+    if ( dir == INVALID_DIRECTION )
+    {
+        TRACE("CDSP::_RemoveStatistic Invalid Rule!\n");
+        return FALSE;
+    }
+
+    if ( dir == ANY_DIRECTION ||
+         dir == LEFT_TO_RIGHT )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
+    }
+    if ( dir == ANY_DIRECTION ||
+         dir == RIGHT_TO_LEFT )
+    {
+        IV_RuleID& Sencond = (IV_RuleID&)Rule.ruleId;
+        ++Sencond.RuleID.ID;
+        SetIVSpecialParam(
+            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
+        --Sencond.RuleID.ID;
+    }
+    return TRUE;
+}
+
+void CDSP::SimulationAddRule(
+    int nChannelID,
+    const WPG_Rule& Rule)
+{
+    m_SimulationRuleID = Rule.ruleId;
+    if ( IV_Statistic != m_SimulationRuleID.RuleID.nType )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+        return;
+    }
+
+    m_StatisticDir = 
+        Rule.ruleDescription.description.tripwireEventDescription.direction;
+    if ( m_StatisticDir == ANY_DIRECTION ||
+         m_StatisticDir == LEFT_TO_RIGHT )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+    }
+    if ( m_StatisticDir == ANY_DIRECTION ||
+         m_StatisticDir == RIGHT_TO_LEFT )
+    {
+        IV_RuleID& Second = (IV_RuleID&)Rule.ruleId;
+        ++Second.RuleID.ID;
+        SetIVSpecialParam(
+            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+        --Second.RuleID.ID;
+    }
+
+    ASSERT(m_StatisticDir!=INVALID_DIRECTION);
+}
+
+void CDSP::SimulationRemoveRule(
+    int nChannelID)
+{
+    /**
+    *@note 如果不是模拟就直接发送删除命令
+    */
+    static WPG_Rule Rule;
+    memcpy(Rule.ruleId, &m_SimulationRuleID, 16);
+    if ( IV_Statistic != m_SimulationRuleID.RuleID.nType )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
+        return;
+    }
+
+    /**
+    *@note 如果是模拟就需要特殊处理，删除两个规则
+    */
+    ASSERT(m_StatisticDir!=INVALID_DIRECTION);   
+    if ( m_StatisticDir == ANY_DIRECTION ||
+         m_StatisticDir == LEFT_TO_RIGHT )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
+    }
+    if ( m_StatisticDir == ANY_DIRECTION ||
+         m_StatisticDir == RIGHT_TO_LEFT )
+    {
+        IV_RuleID& Second = (IV_RuleID&)Rule.ruleId;
+        ++Second.RuleID.ID;
+        SetIVSpecialParam(
+            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
+        --Second.RuleID.ID;
+    }
+}
 
 // end of file  old -> 2114

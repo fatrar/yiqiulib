@@ -103,9 +103,6 @@ private:
     CRect m_MaxRect;
     CButton m_ShowBt;
     BOOL n_bState;
-public:
-    
-    LRESULT OnBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 };
 
 

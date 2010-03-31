@@ -288,5 +288,9 @@
 			Name="RESOURCE_FILE"
 			Value="IVTest_UI.rc"
 		/>
+		<Global
+			Name="WTLHELPER.Menu.IDR_IV_Config"
+			Value="CMainDlg"
+		/>
 	</Globals>
 </VisualStudioProject>

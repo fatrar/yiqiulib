@@ -127,6 +127,14 @@ BOOL CIVDataBuf::OnIVDataSend(
     return TRUE;
 }
 
+/**
+*@note i=0  dir A, i=1 dir B
+*/
+void CIVDataBuf::OnStatisticAdd( int i )
+{
+
+}
+
 BOOL CIVDataBuf::Init(
     int nDeviceCount,
     int nEveryDeviceChannelNum)
@@ -383,7 +391,6 @@ DWORD CIVDataBuf::GetEventCount()
     static DWORD s_nEventCount = 1+m_nDeviceCount*m_nEveryDeviceChannelNum*Event_Count;
     return s_nEventCount; 
 }
-
 
 
 

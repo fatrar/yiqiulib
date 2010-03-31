@@ -125,10 +125,14 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     unsigned int& dwNumberOfTargets = pIVVBI->dwNumberOfTargets;
     unsigned int& dwNumberOfEvents = pIVVBI->dwNumberOfEvents;
     
+    if ( dwNumberOfEvents != 0 )
+    {
+        TRACE("NO Zero.........\n");
+    }
 #ifdef _UseLiveTime
     ULONGLONG nTime = ChangeTime(m_prevVideoTime);
 #else
-    //ULONGLONG nLiveTime = ChangeTime(m_prevVideoTime);
+    //ULONGLONG nTime = ChangeTime(m_prevVideoTime);
     ULONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
   
     {
@@ -201,20 +205,24 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     WPG_EventOccurrence* pFirstEvent = 
         (WPG_EventOccurrence*)(pIVData+sizeof(TVT_AI_VBI)+dwNumberOfTargets*sizeof(WPG_Target));
     BYTE* pFirstPic = (BYTE*)pFirstEvent + dwNumberOfEvents*sizeof(WPG_EventOccurrence);
+    
     // 如果是模拟通道
-    if (m_pIVAlarmCallBack && nChannelID==m_SimulationChanID)
     {
-        for ( int i=0 ;i<dwNumberOfEvents;
-              ++i, ++pFirstEvent )
+        AutoLockAndUnlock(m_SimulationCS);
+        if (m_pIVAlarmCallBack && nChannelID==m_SimulationChanID)
         {
-            const AlarmOutTable* pTable = NULL;
-            IV_RuleID* RuleID = (IV_RuleID*)pFirstEvent->ruleId;
-            m_pIVAlarmCallBack->OnAlarmCallBack(
-                (IVRuleType)RuleID->RuleID.nType,
-                nChannelID, pTime );
-        }
+            for ( int i=0 ;i<dwNumberOfEvents;
+                  ++i, ++pFirstEvent )
+            {
+                const AlarmOutTable* pTable = NULL;
+                IV_RuleID* RuleID = (IV_RuleID*)pFirstEvent->ruleId;
+                m_pIVAlarmCallBack->OnAlarmCallBack(
+                    (IVRuleType)RuleID->RuleID.nType,
+                    nChannelID, pTime );
+            }
 
-        return;
+            return;
+        }
     }
    
     // 如果没有不是模拟通道，就按正常逻辑
@@ -318,7 +326,7 @@ void CDSP::DoIVAlarm(
     //}
 }
 
-static bool s_bSavePic = true;
+static bool s_bSavePic = false;
 #include <fstream>
 
 void CDSP::DoSnapShot(
@@ -326,7 +334,7 @@ void CDSP::DoSnapShot(
     const WPG_EventOccurrence* pEvent,
     BYTE*& pFirstPic)
 {
-    if ( !m_ShowSnapShot || !m_pSnapShotSender )
+    if ( /*!m_ShowSnapShot ||*/ !m_pSnapShotSender )
     {
         return;
     }
@@ -355,9 +363,7 @@ void CDSP::DoSnapShot(
             pTime,
             pPic,
             slices.snapshotLength-16 );
-        pFirstPic = (BYTE*)pSysTime+16;
-
-        
+        pFirstPic = (BYTE*)pSysTime+16;      
     }
 }
 
@@ -451,7 +457,7 @@ BOOL CDSP::IsHaveFreeDevice( void )
 // ********************* IIVSimulation *******************
 // 
 
-void CDSP::Start(
+BOOL CDSP::StartSimulation(
     int nChannelID,
     IIVSimulationAlarmCallBack* p,
     const WPG_Rule& Rule )
@@ -459,58 +465,176 @@ void CDSP::Start(
     int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
     if ( nDeviceID > m_nDeviceNum )
     {
-        return;
+        return FALSE;
     }
 
-    AutoLockAndUnlock(m_SimulationCS[nChannelID]);
+    /**
+    *@remarks 模拟的整个过程逻辑很复杂，
+    *  牵涉平滑，原本设置的还原，报警的输出
+    *这里一定将每种情况调式一下
+    */
+
+    /**
+    *@note 1. 设置模拟回调，通道，当前正在执行智能的通道
+    */
+    AutoLockAndUnlock(m_SimulationCS);
     m_pIVAlarmCallBack = p;
     m_SimulationChanID = nChannelID;
-    int nUseChannel = m_szCurrentIVChannel[nDeviceID];
-    if ( nUseChannel == Device_Free_Flag ) // 还没使用智能
-    {
+    m_LastRunChanID = m_szCurrentIVChannel[nDeviceID];
+    m_SimulationRuleID = Rule.ruleId;
+
+    /**
+    *@note 2. 将当前使用智能的通道设为模拟通道    
+    */
+    m_szCurrentIVChannel[nDeviceID] = nChannelID;
+
+    /**
+    *@note 3. 根据不同情况处理
+    */
+    const IV_RuleID& RuleID = Rule.ruleId; 
+    if ( m_LastRunChanID == Device_Free_Flag ) 
+    {    
+        /**
+        *@note 3.1. 如果还没使用智能，就直接启用这个通道的智能，
+        *           然后添加规则
+        */
+        DWORD dwExitCode;
+        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
+        if ( !bRc)
+        {
+            ASSERT(FALSE);
+            return FALSE;
+        }
+    
+        if ( dwExitCode == STILL_ACTIVE )
+        {
+            TRACE("StartSimulation Thread Still Active!\n"); 
+            ASSERT(FALSE);
+        }
+        else
+        {
+            ResumeThread(m_hSmooth[nDeviceID]);
+        }
+        
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 1);
-        m_RuleID = Rule.ruleId;
         Add(nChannelID, Rule);
     }
-    else if ( nUseChannel == nChannelID ) // 刚好正在使用智能
+    else if ( m_LastRunChanID == nChannelID )
     {
-        m_RuleID = Rule.ruleId;
-        Add(nChannelID, Rule);
+        /**
+        *@note 3.2. 如果刚好正在使用智能，就直接添加规则
+        */
+        //Add(nChannelID, Rule);
+        SimulationAddRule(nChannelID, Rule);
     }
-    else //被其他的占用
+    else
     {
-        SetParam(PT_PCI_SET_AI_ENABLE, nUseChannel, 0);
+        /**
+        *@note 3.3. 如果被其他的占用，首先停用占用的，然后开启模拟的，
+        *           最后添加规则
+        */
+        DWORD dwExitCode;
+        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
+        if ( !bRc)
+        {
+            ASSERT(FALSE);
+            return FALSE;
+        }
+
+        if ( dwExitCode != STILL_ACTIVE )
+        {
+            TRACE("StartSimulation Thread Dead!\n"); 
+            ASSERT(FALSE);
+            return FALSE;
+        }
+
+        SetParam(PT_PCI_SET_AI_ENABLE, m_LastRunChanID, 0);
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 1);
-        m_RuleID = Rule.ruleId;
-        Add(nChannelID, Rule);
+        //Add(nChannelID, Rule);
+        SimulationAddRule(nChannelID, Rule);
     }
+
+    return TRUE;
 }
 
-void CDSP::Stop( int nChannelID )
+BOOL CDSP::StopSimulation( int nChannelID )
 {
     ASSERT(nChannelID==m_SimulationChanID);
     int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
     if ( nDeviceID > m_nDeviceNum )
     {
-        return;
+        return FALSE;
     }
 
-    AutoLockAndUnlock(m_SimulationCS[nChannelID]);
+    /**
+    *@note 1. 清空模拟回调，通道，当前正在执行智能的通道
+    */
+    AutoLockAndUnlock(m_SimulationCS);
     m_pIVAlarmCallBack = NULL;
     m_SimulationChanID = Invaild_ChannelID;
-    int nUseChannel = m_szCurrentIVChannel[nDeviceID];
-    if ( nUseChannel == Device_Free_Flag ) // 还没使用智能
+    
+    /**
+    *@note 2. 将模拟前的正在跑到智能通道重新设回    
+    */
+    m_szCurrentIVChannel[nDeviceID] = m_LastRunChanID;
+    
+    /**
+    *@note 3. 根据不同情况处理
+    */
+    if ( m_LastRunChanID == Device_Free_Flag ) //
     {
+        /**
+        *@note 3.1. 如果开启模拟前，还没使用智能，就直接停止模拟的智能，
+        */
+        DWORD dwExitCode;
+        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
+        if ( !bRc)
+        {
+            ASSERT(FALSE);
+            return FALSE;
+        }
+        if ( dwExitCode != STILL_ACTIVE )
+        {
+            TRACE("StartSimulation Thread Dead!\n"); 
+            ASSERT(FALSE);
+            return FALSE;
+        }
+        
+        SuspendThread(m_hSmooth[nDeviceID]);
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 0);
     }
-    else if ( nUseChannel == nChannelID ) // 刚好正在使用智能
+    else if ( m_LastRunChanID == nChannelID ) // 
     {
-        Remove(nChannelID, m_RuleID);
+        /**
+        *@note 3.1. 如果开启模拟的通道是模拟前正在运行的智能的通道
+        *           就直接删除模拟的规则
+        */
+        //Remove(nChannelID, m_SimulationRuleID);
+        SimulationRemoveRule(nChannelID);
     }
     else //被其他的占用
     {
+        /**
+        *@note 3.1. 如果开启模拟的通道是占用模拟前正在运行的智能的通道
+        *           就停止模拟通道，开启模拟前的通道
+        *           最后添加所有模拟前的规则
+        */
+        DWORD dwExitCode;
+        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
+        if ( !bRc)
+        {
+            ASSERT(FALSE);
+            return FALSE;
+        }
+        if ( dwExitCode != STILL_ACTIVE )
+        {
+            TRACE("StartSimulation Thread Dead!\n"); 
+            ASSERT(FALSE);
+            return FALSE;
+        }
+
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 0);
-        SetParam(PT_PCI_SET_AI_ENABLE, nUseChannel, 0);
+        SetParam(PT_PCI_SET_AI_ENABLE, m_LastRunChanID, 0);
         RuleSettingMap& RuleSetting = m_RuleCfgMap[nDeviceID];
         RuleSettingMap::iterator iter;
         for ( iter = RuleSetting.begin();
@@ -518,9 +642,15 @@ void CDSP::Stop( int nChannelID )
               ++iter )
         {
             CurrentRuleSetting* pTmp = iter->second;
-            Add(nUseChannel, pTmp->Rule, pTmp->Sch, pTmp->Alarm);
+            Add(
+                m_LastRunChanID, 
+                pTmp->Rule,
+                pTmp->Sch,
+                pTmp->Alarm);
         }
     }
+
+    return TRUE;
 }
 
 // IIVSimulation
@@ -549,9 +679,10 @@ BOOL CDSP::Add(
     }
 
     RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID]; 
+    IV_RuleID* pRuleID = (IV_RuleID*)Rule.ruleId;
+    if ( pRuleID->RuleID.nType != IV_Statistic )
     {
         AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-        IV_RuleID* pRuleID = (IV_RuleID*)Rule.ruleId;
         RuleSettingMap::iterator iter = RuleSettings.find(*pRuleID);
         if ( iter != RuleSettings.end() )
         { 
@@ -565,11 +696,12 @@ BOOL CDSP::Add(
         {
             RuleSettings[*pRuleID] = new CurrentRuleSetting(Rule,Sch,Alarm);
         }
-        
-    }
 
-    return SetIVSpecialParam(
-        PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+        return SetIVSpecialParam(
+            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+    }
+    
+    return AddStatistic(nChannelID, nDeviceID, Rule);
 }
 
 BOOL CDSP::Remove(
@@ -588,7 +720,7 @@ BOOL CDSP::Remove(
     }
 
     RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    
+    if ( RuleID.RuleID.nType != IV_Statistic )
     {
         AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
         RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
@@ -597,14 +729,16 @@ BOOL CDSP::Remove(
             return TRUE;
         }
 
+        WPG_Rule& Rule = iter->second->Rule;
+        SetIVSpecialParam(
+            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
         delete iter->second;
         RuleSettings.erase(iter);
+        return TRUE;
     }
-
-    WPG_Rule Rule;
-    memcpy(Rule.ruleId, RuleID.szRuleId, 16);
-    return SetIVSpecialParam(
-        PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
+    
+    return RemoveStatistic(
+        nChannelID, nDeviceID, RuleID );
 }
 
 BOOL CDSP::EnableRule( 
@@ -763,40 +897,28 @@ void CDSP::ReleaseLiveBuf( FRAMEBUFSTRUCT* p )
 
 BOOL CDSP::IsHaveStatisticRule( int nChannelID )
 {
-    //int nDeviceID;
-    //try
-    //{
-    //    GetDeviceIDByChannel(nChannelID, nDeviceID);
-    //}
-    //catch (const char* e)
-    //{
-    //    // log
-    //    TRACE(e);
-    //    return FALSE;
-    //}
+    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
+    if ( nDeviceID > m_nDeviceNum )
+    {
+        return FALSE;
+    }
 
-    //return m_szHaveStatistic[nDeviceID];
-    return TRUE;
+    return m_pStatisticRule[nDeviceID]->IsEnable;
 }
 
-BOOL CDSP::ResetStatistic( int nChannelID )
-{
-    return TRUE;
-}
-
-BOOL CDSP::StartStatistic(
-    int nChannelID,
-    bool bFlag )
-{
-    return TRUE;
-}
-
-BOOL CDSP::GetStatisticState(
-    int nChannelID,
-    bool& bFlag )
-{
-    return TRUE;
-}
+//BOOL CDSP::StartStatistic(
+//    int nChannelID,
+//    bool bFlag )
+//{
+//    return TRUE;
+//}
+//
+//BOOL CDSP::GetStatisticState(
+//    int nChannelID,
+//    bool& bFlag )
+//{
+//    return TRUE;
+//}
 
 //
 // IIVDeviceSetter
@@ -812,8 +934,8 @@ void CDSP::SetIVAlarmOutCallBack(
 void CDSP::SetIVDataCallBack(
     IIVDataSender* pIVDataSender )
 {
-     m_pIVDataSender = pIVDataSender;
-     m_pIVDataSender->Init(m_nDeviceNum, CHANNEL_PER_DEVICE);
+    m_pIVDataSender = pIVDataSender;
+    m_pIVDataSender->Init(m_nDeviceNum, CHANNEL_PER_DEVICE);
 }
 
 void CDSP::SetSnapShotCallBack( ISnapShotSender* pSnapShotSender )
@@ -841,7 +963,6 @@ void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
     m_VideoSendCS[nChannel].Lock();
     if ( m_szVideoSend[nChannel] )
     {
-
         if ( !m_szVideoSend[nChannel]->OnVideoSend(p) )
         {
             ReleaseLiveBuf(p);
@@ -877,36 +998,30 @@ void CDSP::FreeLiveList(list<FRAMEBUFSTRUCT*>& LiveList)
     LiveList.clear();
 }
 
-void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList, FRAMEBUFSTRUCT* p)
-{
-
-}
-
-
-template<int nFrame>
-void AdjustPostMessage(
-    list<FRAMEBUFSTRUCT*>& LiveList,
-    volatile int& nPostMessage)
-{
-    size_t nQueueSize = LiveList.size();
-    if (nQueueSize < 2)
-    {
-        return;
-    }
-
-    FILETIME& Begin = (FILETIME&)(LiveList.front()->FrameTime);
-    FILETIME& End = (FILETIME&)(LiveList.back()->FrameTime);
-    __int64 nCompare = End - Begin;
-    if ( nCompare <= 0 )
-    {
-        ASSERT(FALSE);
-        return;
-    }
-
-    __int64 nTmp =25*nCompare;
-    int nTheoryValue = nTmp/1000;
-    nPostMessage = int(nTheoryValue) - int(nQueueSize);
-}
+//template<int nFrame>
+//void AdjustPostMessage(
+//    list<FRAMEBUFSTRUCT*>& LiveList,
+//    volatile int& nPostMessage)
+//{
+//    size_t nQueueSize = LiveList.size();
+//    if (nQueueSize < 2)
+//    {
+//        return;
+//    }
+//
+//    FILETIME& Begin = (FILETIME&)(LiveList.front()->FrameTime);
+//    FILETIME& End = (FILETIME&)(LiveList.back()->FrameTime);
+//    __int64 nCompare = End - Begin;
+//    if ( nCompare <= 0 )
+//    {
+//        ASSERT(FALSE);
+//        return;
+//    }
+//
+//    __int64 nTmp =25*nCompare;
+//    int nTheoryValue = nTmp/1000;
+//    nPostMessage = int(nTheoryValue) - int(nQueueSize);
+//}
 
 void AdjustLiveList(
     list<FRAMEBUFSTRUCT*>& LiveList,
@@ -989,10 +1104,8 @@ typedef void (*AdjustPostMessageFn)(list<FRAMEBUFSTRUCT*>&,volatile int&);
 // 先实现一版不带时间修正的（WM_TIMER）
 void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 {
-    TRACE("LoopLiveSmooth: Device=%d, Start Create Message Quque!\n", nDevice);
     MSG msg;
     PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
-    //BOOL bRc = PeekMessage(&msg, NULL, 0, WM_USER, PM_NOREMOVE);
     if(!SetEvent(h))
     {    
         TRACE("LoopLiveSmooth: Device=%d, Set event error,%d\n",
@@ -1000,8 +1113,6 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
         ASSERT(FALSE);
         return ;
     }
-
-    TRACE("LoopLiveSmooth: Device=%d, Create Message Quque Finish!\n", nDevice);
 
     // 这个几个变量的申明而不放在线程实际处理函数里面
     // 是为了提高运行效率
@@ -1012,8 +1123,8 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
     FILETIME fTime;
 
     static const int s_FrameRate[2] = {25, 30};
-    AdjustPostMessageFn AdjustFn =
-        m_dwVideoFormat==0 ? AdjustPostMessage<25>:AdjustPostMessage<33>;
+    //AdjustPostMessageFn AdjustFn =
+    //    m_dwVideoFormat==0 ? AdjustPostMessage<25>:AdjustPostMessage<33>;
 
     list<FRAMEBUFSTRUCT*> BufList;
     list<FRAMEBUFSTRUCT*> LiveList;
@@ -1022,34 +1133,26 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 
     int nFrame = s_FrameRate[m_dwVideoFormat];
 
-    UINT uResolution = 1000/nFrame;
-    //int nEventID = SetTimer(NULL, 0, 1000/nFrame, NULL);
+    //UINT uResolution = 1000/nFrame;
     LPTIMECALLBACK pSmoothTimer = GetSmoothTimer(nDevice);
     UINT nEventID= ::timeSetEvent(1000/nFrame, 1, pSmoothTimer,(DWORD)this,TIME_PERIODIC); 
-    
     while(1)
     {     
         BOOL bRc = GetMessage(&msg, HWND(-1),Suspend_Thread,End_Thead);
         if ( !bRc )
         {
             DWORD dwError = GetLastError();
+            TRACE(
+                _T("LoopLiveSmooth GetMessage Failed at %x, msg.lParam=%x, msg.wParam=%x!\n"),
+                dwError, msg.lParam, msg.wParam);
             if ( dwError != 0 )
             {
-                TRACE(
-                    _T("LoopLiveSmooth GetMessage Failed at %x, msg.lParam=%x, msg.wParam=%x!\n"),
-                    dwError, msg.lParam, msg.wParam);
                 //ASSERT(false);
                 continue;
             } 
             else
             {
-                TRACE(
-                    _T("LoopLiveSmooth GetMessage exit! msg.lParam=%x, msg.wParam=%x!\n"),
-                    msg.lParam, msg.wParam);
-                //if ( msg.message == WM_QUIT )
-                {
-                    goto end;
-                }
+                goto end; // 是发WM_QUIT
             }
         }
    
@@ -1058,11 +1161,11 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
         case Suspend_Thread:
             FreeLiveList(LiveList);
             bCanSendLive = false;
-            m_bFisrtIVDataFlag[nDevice] = FALSE;
+            //m_bFisrtIVDataFlag[nDevice] = FALSE;
             SuspendThread(m_hSmooth[nDevice]);
             break;
         case Push_Live_Data:
-            if ( msg.wParam != nDevice)
+            if ( msg.wParam != m_szCurrentIVChannel[nDevice] )
             {
                 TRACE(_T("Push_Live_Data Filter Some!\n"));
             }
@@ -1087,8 +1190,6 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
                     bCanSendLive = true;
                 }
             }
-            //AdjustFn(LiveList, BufList, fTime, nPostMessage);
-            //bCanSendLive =true;
             break;
         case Play_Again:
            /* {
@@ -1100,11 +1201,6 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
                 if ( p )
                 {
                     nChannel = p->ChannelIndex;
-
-                    /* SYSTEMTIME syt1;
-                    FileTimeToSystemTime(
-                    (FILETIME*)&p->FrameTime, &syt1);*/
-
                     VideoSend(nChannel, p);
                 }
 
@@ -1118,7 +1214,6 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 
 end:
     timeKillEvent(nEventID);
-    //KillTimer(NULL, nEventID);
 }
 
 

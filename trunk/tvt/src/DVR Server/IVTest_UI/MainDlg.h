@@ -29,19 +29,28 @@ class CMainDlg :
     public CIdleHandler
 {
 public:
+    CMainDlg();
+
 	enum { IDD = IDD_MAINDLG };
 
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual BOOL OnIdle(){return FALSE;}
+    // CUpdateUI
+public:
+    BEGIN_UPDATE_UI_MAP(CMainDlg)
+    END_UPDATE_UI_MAP()
 
-	BEGIN_UPDATE_UI_MAP(CMainDlg)
-	END_UPDATE_UI_MAP()
+    // CMessageFilter
+protected:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+    
+    // CIdleHandler
+protected:
+	virtual BOOL OnIdle(){return FALSE;}
 
 	BEGIN_MSG_MAP(CMainDlg)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
         MSG_WM_CLOSE(OnClose)
-        COMMAND_HANDLER(ID_Config_IV, BN_CLICKED, OnBnClickedConfigIv)
+        COMMAND_ID_HANDLER_EX(ID_CONFIG_IVCONFIG, OnConfigIvconfig)
     END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -52,9 +61,7 @@ public:
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnClose(void);
-
-public:
-    LRESULT OnBnClickedConfigIv(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnConfigIvconfig(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 
 protected:
     void Init();
@@ -78,6 +85,9 @@ private:
     CPlayerWnd m_PlayerWnd[Max_Channel];  
 
     CIVCfgDlg m_CIVCfgDlg;
+
+public:
+    
 };
 
 

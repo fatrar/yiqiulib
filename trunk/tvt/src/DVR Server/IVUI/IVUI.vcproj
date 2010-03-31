@@ -261,7 +261,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\StageChangeDlg.h"
+					RelativePath=".\StageChangeAdvDlg.h"
 					>
 				</File>
 				<File
@@ -301,7 +301,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\StageChangeDlg.cpp"
+					RelativePath=".\StageChangeAdvDlg.cpp"
 					>
 				</File>
 				<File
@@ -410,11 +410,11 @@
 			Name="RuleMainDlg"
 			>
 			<File
-				RelativePath=".\RuleAddMainDlg.cpp"
+				RelativePath=".\RuleFunctionDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\RuleAddMainDlg.h"
+				RelativePath=".\RuleFunctionDlg.h"
 				>
 			</File>
 			<File

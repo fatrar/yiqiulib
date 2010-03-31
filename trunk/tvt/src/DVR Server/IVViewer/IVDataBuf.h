@@ -48,6 +48,11 @@ public:
         const WPG_Target* pData,
         size_t nLen );
 
+    /**
+    *@note i=0  dir A, i=1 dir B
+    */
+    virtual void OnStatisticAdd(int i);
+
     virtual BOOL Init(
         int nDeviceCount,
         int nEveryDeviceChannelNum );
