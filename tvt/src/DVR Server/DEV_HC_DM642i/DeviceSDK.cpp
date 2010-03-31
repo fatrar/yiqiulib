@@ -1018,10 +1018,10 @@ namespace DeviceFactory
         return g_Dev_Object.m_pDSP;
     }
 
-    IIVStatistic* GetIVStatistic( void )
-    {
-        return g_Dev_Object.m_pDSP;
-    }
+    //IIVStatistic* GetIVStatistic( void )
+    //{
+    //    return g_Dev_Object.m_pDSP;
+    //}
 }
 
 

@@ -86,7 +86,8 @@ using namespace OCI;
 #include "IVSchuduleDlg.h"
 
 #include "IVFunctionSelDlg.h"
-#include "RuleAddMainDlg.h"
+#include "RuleMainBaseDlg.h"
+#include "RuleFunctionDlg.h"
 #include "LineAdvDlg.h"
 #include "ZoneAdvDlg.h"
 #include "FilterDlg.h"

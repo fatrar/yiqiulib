@@ -35,6 +35,11 @@ struct IIVDataSender
         const WPG_Target* pData,
         size_t nLen ) = 0;
 
+    /**
+    *@note i=0  dir A, i=1 dir B
+    */
+    virtual void OnStatisticAdd(int i)=0;
+
     virtual BOOL Init(
         int nDeviceCount,
         int nEveryDeviceChannelNum )=0;

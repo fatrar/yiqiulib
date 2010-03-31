@@ -205,7 +205,7 @@ void CIVRuleDlg::OnClickCameraTree(
         UpdateLiveChannel(nChannelID);
         break;
     case IV_Tree_Root:
-        if ( g_IIVDeviceBase2 )
+        if ( g_IIVDeviceBase2 && m_nCurrentChan!= Invaild_ChannelID )
         {
             g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
         }
@@ -234,10 +234,16 @@ BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
 
 void CIVRuleDlg::UpdateLiveChannel(int nChannelID)
 {
-    if ( m_nCurrentChan == Invaild_ChannelID ||
-         g_IIVDeviceBase2 == NULL )
+    if ( g_IIVDeviceBase2 == NULL )
     {
         m_nCurrentChan = nChannelID;
+        return;
+    }
+
+    if ( m_nCurrentChan == Invaild_ChannelID )
+    {
+        m_nCurrentChan = nChannelID;
+        g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
         return;
     }
 
@@ -388,7 +394,7 @@ void CIVRuleDlg::OnRuleNewrule()
         return;
     }
 
-    if ( g_IIVDeviceBase2 )
+    if ( g_IIVDeviceBase2 && m_nCurrentChan!= Invaild_ChannelID )
     {
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     }

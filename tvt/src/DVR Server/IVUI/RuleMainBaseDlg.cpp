@@ -231,18 +231,30 @@ void CRuleMainBaseDlg::OnBnClickedFilterBt()
 void CRuleMainBaseDlg::OnBnClickedSimulationBt()
 {
     // È¡Êý¾Ý
-    GatherUseSet();
-    m_bUse = !m_bUse;
+    GatherUseSet(); 
     if ( m_bUse )
     {
-        m_SimulationBT.SetWindowText(_T("Stop"));
-        g_IIVDeviceBase2->Start(m_nCurrentChan, this, *m_pRule);
+        BOOL bRc = g_IIVDeviceBase2->StartSimulation(
+            m_nCurrentChan, this, *m_pRule);
+        if ( bRc )
+        {
+            AfxMessageBox(_T("StartSimulation Failed!"));
+            return;
+        }
+
+         m_SimulationBT.SetWindowText(_T("Stop"));
     }
     else
     {
+        BOOL bRc = g_IIVDeviceBase2->StopSimulation(m_nCurrentChan);
+        if ( bRc )
+        {
+            AfxMessageBox(_T("StopSimulation Failed!"));
+            return;
+        }
         m_SimulationBT.SetWindowText(_T("Simulation"));
-        g_IIVDeviceBase2->Stop(m_nCurrentChan);
     }
+    m_bUse = !m_bUse;
 }
 
 void CRuleMainBaseDlg::DrawToolChange( Windows::IDrawer* pDrawer )
@@ -398,6 +410,8 @@ void CRuleMainBaseDlg::UseToolCtrlMode(ToolMode Mode)
         m_LineBothBT.EnableWindow(FALSE);
         m_ColourBT.EnableWindow(FALSE);
         m_SelectBT.EnableWindow(FALSE);
+        m_RectangleBT.ShowWindow(SW_HIDE);
+        m_PolygonBT.ShowWindow(SW_HIDE);
     	break;
     case Line_Mode:
         m_ZoneBT.EnableWindow(FALSE);

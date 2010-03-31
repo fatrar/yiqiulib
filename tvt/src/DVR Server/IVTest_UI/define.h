@@ -23,8 +23,8 @@
 
 enum 
 {
-    Window_X_Offset = 10,
-    Window_Y_Offset = 10,
+    Window_X_Offset = 1,
+    Window_Y_Offset = 1,
 
     PAL_SIF_Width = 352,
     PAL_SIF_Height = 288,

@@ -33,7 +33,7 @@ struct IVPACK
 
 class CDSP :
     public IIVDeviceBase2,
-    public IIVStatistic,
+    //public IIVStatistic,
     public IIVDeviceSetter
 {
 public:
@@ -210,13 +210,19 @@ public:
     virtual BOOL Use(int nChannelID, bool bState);
     virtual BOOL IsHaveFreeDevice(void);
 
+//    // IIVStatistic
+//public:
+    virtual BOOL IsHaveStatisticRule(int nChannelID);
+    //virtual BOOL StartStatistic(int nChannelID, bool bFlag);
+    //virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
+
     // IIVSimulation
 public:
-    virtual void Start(
+    virtual BOOL StartSimulation(
         int nChannelID, 
         IIVSimulationAlarmCallBack* p,
         const WPG_Rule& Rule);
-    virtual void Stop(int nChannelID);
+    virtual BOOL StopSimulation(int nChannelID);
 
     // IIVDeviceBase2
 public:
@@ -273,13 +279,6 @@ public:
 
     virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p);
 
-    // IIVStatistic
-public:
-    virtual BOOL IsHaveStatisticRule(int nChannelID);
-    virtual BOOL ResetStatistic(int nChannelID);
-    virtual BOOL StartStatistic(int nChannelID, bool bFlag);
-    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
-
     // IIVDeviceSetter
 public:
     virtual void SetIVAlarmOutCallBack(
@@ -315,7 +314,7 @@ private:
     IIVDataSender* m_pIVDataSender;
     ISnapShotSender* m_pSnapShotSender;
     int m_szCurrentIVChannel[MAX_DEVICE_NUM];
-    BOOL m_szHaveStatistic[MAX_DEVICE_NUM];
+    //BOOL m_ShowSnapShot;
 
     // 视频额外的预览
     IVideoSend* m_szVideoSend[MAX_CHANNEL_NUM];
@@ -327,12 +326,24 @@ private:
         Device_Free_Flag = -1,
     };
 
-    // 智能模拟
+    /**
+    *@note 智能模拟
+    */
     IIVSimulationAlarmCallBack* m_pIVAlarmCallBack;
     int m_SimulationChanID;
-    IV_RuleID m_RuleID;
-#define m_SimulationCS m_VideoSendCS
+    int m_LastRunChanID;
+    IV_RuleID m_SimulationRuleID;
+    WPG_LINE_CROSS_DIRECTION m_StatisticDir;
+    CCriticalSection m_SimulationCS;
+    void SimulationAddRule(
+        int nChannelID,
+        const WPG_Rule& Rule);
+    void SimulationRemoveRule(
+        int nChannelID);
 
+    /**
+    *@note Normal Rule
+    */
     struct CurrentRuleSetting
     {
         CurrentRuleSetting(
@@ -352,19 +363,40 @@ private:
 
     typedef map<IV_RuleID, CurrentRuleSetting*> RuleSettingMap;
     RuleSettingMap m_RuleCfgMap[MAX_DEVICE_NUM];
-    CCriticalSection m_CfgMapCS[MAX_DEVICE_NUM];	
+    CCriticalSection m_CfgMapCS[MAX_DEVICE_NUM];
 
-    BOOL m_ShowSnapShot;
-
+    /**
+    *@note Statistic Function
+    */
+    struct StatisticSetting
+    {
+        StatisticSetting():IsEnable(FALSE){}
+        WPG_Rule Rule;
+        BOOL IsEnable;
+    };
+    StatisticSetting* m_pStatisticRule[MAX_DEVICE_NUM];
+    //BOOL m_szHaveStatistic[MAX_DEVICE_NUM];
+    BOOL _AddStatistic(
+        int nChannelID,
+        const WPG_Rule& Rule);
+    BOOL _RemoveStatistic(
+        int nChannelID,
+        const WPG_Rule& Rule);
+    BOOL AddStatistic(
+        int nChannelID,
+        int nDeviceID,
+        const WPG_Rule& Rule);
+    BOOL RemoveStatistic(
+        int nChannelID,
+        int nDeviceID,
+        const IV_RuleID& RuleID);
 
     // just test
     SYSTIME  m_prevVideoTime;
 
-    // Smooth IV Live
-    HANDLE m_hSmooth[MAX_DEVICE_NUM];
-    DWORD m_dwSmoothTheadID[MAX_DEVICE_NUM];
-    BOOL m_bFisrtIVDataFlag[MAX_DEVICE_NUM];
-
+    /**
+    *@note Smooth IV Live
+    */
     enum SmoothDef
     {
         Suspend_Thread = WM_USER + 1,
@@ -373,6 +405,10 @@ private:
         Play_Again,
         End_Thead,
     };
+
+    HANDLE m_hSmooth[MAX_DEVICE_NUM];
+    DWORD m_dwSmoothTheadID[MAX_DEVICE_NUM];
+    //BOOL m_bFisrtIVDataFlag[MAX_DEVICE_NUM];
 
     static DWORD WINAPI OnThreadSmooth(PVOID pParam);
 
@@ -384,7 +420,6 @@ private:
     void LoopLiveSmooth(int nDevice, HANDLE h);
     inline void FreeLiveList(list<FRAMEBUFSTRUCT*>& LiveList);
     inline void VideoSend(int nChannel, FRAMEBUFSTRUCT* p);
-    void CDSP::TryPush(deque<FRAMEBUFSTRUCT*>& LiveList, FRAMEBUFSTRUCT* p);
 };
 
 

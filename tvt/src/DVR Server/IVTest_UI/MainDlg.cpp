@@ -23,6 +23,15 @@
 
 static CMainDlg* g_This;
 
+CMainDlg::CMainDlg()
+    : m_pDeviceManager(NULL)
+    , m_Hinstance(NULL)
+    , m_pSnapShotSender(NULL)
+    , m_dwVideoFormat(0)
+    , m_dwChannelCount(Max_Channel)
+{
+    g_This = this;
+}
 
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
 {
@@ -45,12 +54,12 @@ LRESULT CMainDlg::OnInitDialog(
     CenterWindow();
 
     // set icons
-    HICON hIcon = (HICON)::LoadImage(_Module.GetResourceInstance(), MAKEINTRESOURCE(IDR_MAINFRAME), 
-        IMAGE_ICON, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON), LR_DEFAULTCOLOR);
-    SetIcon(hIcon, TRUE);
-    HICON hIconSmall = (HICON)::LoadImage(_Module.GetResourceInstance(), MAKEINTRESOURCE(IDR_MAINFRAME), 
-        IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
-    SetIcon(hIconSmall, FALSE);
+    //HICON hIcon = (HICON)::LoadImage(_Module.GetResourceInstance(), MAKEINTRESOURCE(IDR_MAINFRAME), 
+    //    IMAGE_ICON, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON), LR_DEFAULTCOLOR);
+    //SetIcon(hIcon, TRUE);
+    //HICON hIconSmall = (HICON)::LoadImage(_Module.GetResourceInstance(), MAKEINTRESOURCE(IDR_MAINFRAME), 
+    //    IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
+    //SetIcon(hIconSmall, FALSE);
 
     // register object for message filtering and idle updates
     CMessageLoop* pLoop = _Module.GetMessageLoop();
@@ -92,17 +101,10 @@ LRESULT CMainDlg::OnClose(void)
     return 1;
 }
 
-LRESULT CMainDlg::OnBnClickedConfigIv(
-    WORD /*wNotifyCode*/, WORD /*wID*/,
-    HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-{
-    m_CIVCfgDlg.DoModal();
-    return 0;
-}
-
 BOOL CMainDlg::VideoComing( FRAMEBUFSTRUCT *bufs )
 {
-    if (g_This->m_pDeviceManager == NULL)
+    if ( g_This == NULL || 
+         g_This->m_pDeviceManager == NULL)
     {
         return FALSE;
     }
@@ -128,8 +130,6 @@ BOOL CMainDlg::AudioComing( FRAMEBUFSTRUCT *bufs )
 
 void CMainDlg::Init()
 {
-    g_This = this;
-
     CVideoStdDLg StdDlg;
     StdDlg.DoModal();
 
@@ -213,7 +213,13 @@ void CMainDlg::InitPlayer()
 }
 
 
-
+LRESULT CMainDlg::OnConfigIvconfig(WORD wNotifyCode, WORD wID, HWND hWndCtl)
+{
+    m_CIVCfgDlg.DoModal();
+    return 0;
+}
 
 
 // End of file
+
+

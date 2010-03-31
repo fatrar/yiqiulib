@@ -38,10 +38,10 @@ inline void TranslateToRect(
 {
     int nWidth = ClientRect.right-ClientRect.left;
     int nHeight = ClientRect.bottom-ClientRect.top;
-    left = nWidth*WPG_Rect.x + ClientRect.left;
-    top = nHeight*WPG_Rect.y + ClientRect.top;
-    right = nWidth*(WPG_Rect.x+WPG_Rect.width) + ClientRect.left;
-    bottom = nHeight*(WPG_Rect.y+WPG_Rect.height) + ClientRect.top;
+    left = int(nWidth*WPG_Rect.x) + ClientRect.left;
+    top = int(nHeight*WPG_Rect.y) + ClientRect.top;
+    right = int(nWidth*(WPG_Rect.x+WPG_Rect.width)) + ClientRect.left;
+    bottom = int(nHeight*(WPG_Rect.y+WPG_Rect.height)) + ClientRect.top;
 }
 
 /**
@@ -160,6 +160,20 @@ void CBaseIVViewer::GetDataShowState( int nChannelID, int& nState )
     nState = m_ShowState[nChannelID].nState;
 }
 
+BOOL CBaseIVViewer::ResetStatistic( int nChannelID )
+{
+    return TRUE;
+}
+
+BOOL CBaseIVViewer::StartStatistic( int nChannelID, bool bFlag )
+{
+    return TRUE;
+}
+
+BOOL CBaseIVViewer::GetStatisticState( int nChannelID, bool& bFlag )
+{
+    return TRUE;
+}
 
 // 好像这部分有内存泄漏，要具体查下。
 void CBaseIVViewer::RefrehPoint( 
@@ -231,18 +245,19 @@ void CBaseIVViewer::DrawTrace(
         }
 
         PointList::iterator listIter = pPointList->begin();
-        int x = listIter->x * (rect.right-rect.left) + rect.left;
-        int y = listIter->y * (rect.bottom-rect.top) + rect.top;
+        int x = int(listIter->x * (rect.right-rect.left)) + rect.left;
+        int y = int(listIter->y * (rect.bottom-rect.top)) + rect.top;
         MoveToEx(dc, x, y, &p);
         for ( ++listIter; listIter != pPointList->end();
               ++listIter )
         {
-            x = listIter->x * (rect.right-rect.left) + rect.left;
-            y = listIter->y * (rect.bottom-rect.top) + rect.top;
+            x = int(listIter->x * (rect.right-rect.left)) + rect.left;
+            y = int(listIter->y * (rect.bottom-rect.top)) + rect.top;
             LineTo(dc, x, y);
         }
     }
 }
+
 
 // End fo file
 

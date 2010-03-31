@@ -25,14 +25,18 @@
 LRESULT CIVCfgDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	CenterWindow(GetParent());
+
+    CRect rect;
+    GetClientRect(&rect);
+    IVUIFactory::CreateIVConfigDlg(this->m_hWnd, rect);
 	return TRUE;
 }
 
-LRESULT CIVCfgDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-{
-	EndDialog(wID);
-	return 0;
-}
+//LRESULT CIVCfgDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+//{
+//	EndDialog(wID);
+//	return 0;
+//}
 
 LRESULT CIVCfgDlg::OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
@@ -42,7 +46,5 @@ LRESULT CIVCfgDlg::OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BO
 
 
 
-
-
-
 // End of file
+

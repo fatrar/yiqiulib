@@ -52,6 +52,15 @@ public:
 
     virtual void GetDataShowState(int nChannelID, int& nState);
 
+    // 重置统计
+    virtual BOOL ResetStatistic(int nChannelID);
+
+    // bFlag=true开始统计，flase停止
+    virtual BOOL StartStatistic(int nChannelID, bool bFlag);
+
+    // 得到统计状态
+    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
+
 protected:
     typedef deque<WPG_PointF> PointList;
     typedef map<size_t, PointList*> ChannelPoint;
@@ -84,9 +93,9 @@ protected:
 protected:
     struct TShowState
     {
-        TShowState():nState(Show_Object_Trace),bShow(TRUE){}
+        TShowState():nState(Show_Object_Trace),bShow(true){}
         int nState;
-        BOOL bShow;
+        bool bShow;
     };
     
     //map<int, TShowState> m_ShowState;

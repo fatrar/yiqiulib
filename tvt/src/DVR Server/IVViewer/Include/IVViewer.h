@@ -77,6 +77,15 @@ struct IIVViewer
 
     // 设置显示哪些，是目标还是轨迹
     virtual void GetDataShowState(int nChannelID, int& nState)=0;
+
+    // 重置统计
+    virtual BOOL ResetStatistic(int nChannelID)=0;
+
+    // bFlag=true开始统计，flase停止
+    virtual BOOL StartStatistic(int nChannelID, bool bFlag)=0;
+
+    // 得到统计状态
+    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag)=0;
 };
 
 // 得到对应的对象指针

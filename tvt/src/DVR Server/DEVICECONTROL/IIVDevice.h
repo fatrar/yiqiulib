@@ -17,7 +17,8 @@
 ***************************************************************************H*/
 #ifndef _IIVDEVICE_H_2010_
 #define _IIVDEVICE_H_2010_
-
+#pragma once
+#pragma pack(push, 1)
 
 #ifdef IIVDEVICE_EXPORTS
     #define IIVDEVICE_API extern "C" __declspec(dllexport)
@@ -38,22 +39,15 @@ struct IIVDeviceBase
 
     // 是否还有空闲的智能设备
     virtual BOOL IsHaveFreeDevice(void)=0;
-};
 
-struct IIVStatistic
-{
     // 是否有统计规则,输入通道号（int nChannelID，下同）
     virtual BOOL IsHaveStatisticRule(int nChannelID)=0;
-
-    // 重置统计
-    virtual BOOL ResetStatistic(int nChannelID)=0;
-
-    // bFlag=true开始统计，flase停止
-    virtual BOOL StartStatistic(int nChannelID, bool bFlag)=0;
-
-    // 得到统计状态
-    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag)=0;
 };
+
+//struct IIVStatistic
+//{
+//   
+//};
 
 enum
 {
@@ -72,7 +66,7 @@ enum
     Max_Channel = 4,
 
     Max_SnapShot_Pic_Size = 128 * 1024,  // 一张JPG图的最大大小
-    Max_SnapShot_Pic_Count = 6,         // 一次最多几张图
+    Max_SnapShot_Pic_Count = 8,         // 一次最多几张图
     //#define	VIDEO_BUFFER_MAX_FRAME_LENGTH		IDEO_BUFFER_MAX_FRAME_LENGTH		(64 * 1024)
 };
 
@@ -158,12 +152,21 @@ enum IVDataShowState
 
 union IV_RuleID
 {
+    IV_RuleID( const unsigned char (&p)[16] )
+    {
+        memcpy(szRuleId, p, 16);
+    }
+    IV_RuleID(){}
     struct RULE_ID
     {
         void Init(IVRuleType type)
         {
             static DWORD s_dwID = 0;
             ID = s_dwID++;
+            if ( type == IV_Statistic )
+            {
+                s_dwID++;
+            }
             nType = type;
             SYSTEMTIME syt;
             GetLocalTime(&syt);
@@ -195,6 +198,35 @@ union IV_RuleID
     void operator=(const unsigned char (&p)[16])
     {
         memcpy(szRuleId, p, 16);
+    }
+
+    /**
+    *@note 判断两个RuleID是否是统计，且是否是统计分出来的两个规则之一
+    *@return 0 or 1 代表是分出来规则的第一个和第二个，-1 代表不是同一个规则
+    *@remarks 要将是统计的规则放在左边
+    * 假如a是统计规则，现在要判断b是否a出来传给底层的ID，
+    * int nRc = a ^ b;
+    */
+    int operator^(const unsigned char (&p)[16])
+    {
+        const IV_RuleID& left = (const IV_RuleID&)p;
+        if ( this->RuleID.nType != IV_Statistic ||
+             this->RuleID.nType != left.RuleID.nType ||
+             memcmp(&this->RuleID.SetTime, &left.RuleID.SetTime, sizeof(FILETIME))!=0 )
+        {
+            return -1;
+        }
+
+        if ( this->RuleID.ID == left.RuleID.ID )
+        {
+            return 0;
+        }
+        if ( this->RuleID.ID == left.RuleID.ID + 1 )
+        {
+            return 1;
+        }
+
+        return -1;
     }
 };
 
@@ -266,15 +298,20 @@ struct IIVSimulationAlarmCallBack
         IVRuleType type,
         int nChannelID,
         const FILETIME* pTime)=0;
+
+    ///**
+    //*@note i=0  dir A, i=1 dir B
+    //*/
+    //virtual void OnStatisticAdd(int i)=0;
 };
 
 struct IIVSimulation
 {
-    virtual void Start(
+    virtual BOOL StartSimulation(
         int nChannelID, 
         IIVSimulationAlarmCallBack* p,
         const WPG_Rule& Rule) = 0;
-    virtual void Stop(int nChannelID)=0;
+    virtual BOOL StopSimulation(int nChannelID)=0;
 };
 
 // 板卡这边只关心正在运行的规则
@@ -329,7 +366,7 @@ namespace DeviceFactory
     IIVDEVICE_API IIVDeviceBase* GetIVDeviceBase(void);
     IIVDEVICE_API IIVDeviceBase2* GetIVDeviceBase2(void);
     IIVDEVICE_API IIVDeviceSetter* GeIVDeviceSetter(void);
-    IIVDEVICE_API IIVStatistic* GetIVStatistic(void);
+    //IIVDEVICE_API IIVStatistic* GetIVStatistic(void);
 #else
     // 下面设计只是为调用者调用方便且尽量不依赖我这边的改动
     // 从而做到，我这边接口的变动，只需要调用者重新编译即可，而不需要改动代码
@@ -346,19 +383,19 @@ namespace DeviceFactory
         "GetIVDeviceBase",
         "GetIVDeviceBase2",
         "GeIVDeviceSetter",
-        "GetIVStatistic",
+        //"GetIVStatistic",
     };
 
     typedef IIVDeviceSetter* (*GetIVDeviceBaseFn)();
     typedef IIVDeviceBase2* (*GetIVDeviceBase2Fn)();
     typedef IIVDeviceSetter* (*GeIVDeviceSetterFn)();
-    typedef IIVStatistic* (*GetIVStatisticFn)();
+    //typedef IIVStatistic* (*GetIVStatisticFn)();
 #endif
     
 };
 
 
-
+#pragma pack(pop)
 
 #endif  // End of file
 

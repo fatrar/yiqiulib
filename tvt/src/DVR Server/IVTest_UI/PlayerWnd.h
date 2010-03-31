@@ -21,7 +21,7 @@
 #pragma once
 
 
-
+#define YUV_Play
 
 class CPlayerWnd :
     public CWindowImpl<CPlayerWnd, CWindow, CControlWinTraits>, 
@@ -69,7 +69,15 @@ protected:
         DWORD dwUserData );
 
 private:
+
+#ifdef YUV_Play
     CYUVSingleVideoPlayerEx m_Player;
+#else
+    CRGBSingleVideoPlayerEx m_Player;
+    BYTE* m_pRGBBuf;
+#endif // YUV_Play
+    
+    
 };
 
 

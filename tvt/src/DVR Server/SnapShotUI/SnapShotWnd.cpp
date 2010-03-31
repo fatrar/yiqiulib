@@ -122,11 +122,8 @@ void CSnapShotWnd::OnSnapShotSend(
     }
 
     ++m_nIndex;
-    //RedrawWindow();
-    //Invalidate();
-    //PostMessage(WM_PAINT);
-    //PostMessage(WM_REDRAWWINDOW);
-    RedrawWindow();
+
+    PostMessage(WM_REDRAWWINDOW);
 }
 
 HWND CSnapShotWnd::Create(
@@ -157,7 +154,7 @@ HWND CSnapShotWnd::Create(
     {
         m_MaxRect.MoveToY(nTop);
     }
-    __super::Create(hWndParent, _U_RECT(m_MaxRect));
+    __super::Create(hWndParent, m_MaxRect);
     ShowWindow(SW_SHOW);
     
     m_MinRect.SetRect(0, Parentrect.Height()-Bt_Height, nWidth, Parentrect.Height());
@@ -176,7 +173,7 @@ HWND CSnapShotWnd::Create(
     {
         Tmprect.left = PicCtrl_X_Start + i*(PicCtrl_X_Start+nPicCtrlWidth);   
         Tmprect.right = PicCtrl_X_Start + nPicCtrlWidth + i*(PicCtrl_X_Start+nPicCtrlWidth);       
-        m_PicCtrl[i].Create(*this, _U_RECT(Tmprect));
+        m_PicCtrl[i].Create(*this, Tmprect);
         m_PicCtrl[i].ShowWindow(SW_SHOW);
     }
 
@@ -186,7 +183,8 @@ HWND CSnapShotWnd::Create(
 LRESULT CSnapShotWnd::OnRedrawWindow(
     UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled )
 {
-    //RedrawWindow();
+    for (int i = 0; i< Max_SnapShot_Pic_Count; ++i)
+        m_PicCtrl[i].RedrawWindow();
     return TRUE;
 }
 
@@ -229,9 +227,3 @@ BOOL DestroySnapShotWnd()
 }
 
 // End of file
-
-LRESULT CSnapShotWnd::OnBnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl)
-{
-
-    return 0;
-}
