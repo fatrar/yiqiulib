@@ -38,9 +38,14 @@
 #endif
 
 
+/**
+*@note IV截图对口命名空间
+*/
 namespace SnapShotWnd
 {
-
+/**
+*@note 窗口的位置
+*/
 enum SnapShotPos
 {
     SnapShot_Top,
@@ -48,13 +53,18 @@ enum SnapShotPos
     SnapShot_Use_Spectify,
 };
 
-// hWndParent
+/**
+*@note 得到IV截图窗口
+*/
 SNAPSHOTUI_API ISnapShotSender* CreateSnapShotWnd(
     HWND hWnd,
     int nWidth = 0,
     SnapShotPos Pos = SnapShot_Bottom,
     int nTop = 0 );
 
+/**
+*@note 销毁IV截图窗口
+*/
 SNAPSHOTUI_API BOOL DestroySnapShotWnd();
 
 };
