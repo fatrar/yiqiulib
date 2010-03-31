@@ -25,10 +25,14 @@
     #define TARGET_MAX_NUM	50
 #endif
 
-
+/**
+*@note IV 数据回调接口
+*/
 struct IIVDataSender
 {
-    // 智能数据采集到后的回调
+    /**
+    *@note 智能数据采集到后的回调
+    */ 
     virtual BOOL OnIVDataSend(
         int nChannelID,
         const FILETIME& time,
@@ -36,7 +40,7 @@ struct IIVDataSender
         size_t nLen ) = 0;
 
     /**
-    *@note i=0  dir A, i=1 dir B
+    *@note 统计回调 i=0  dir A, i=1 dir B
     */
     virtual void OnStatisticAdd(int i)=0;
 

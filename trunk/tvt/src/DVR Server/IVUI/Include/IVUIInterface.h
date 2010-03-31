@@ -37,10 +37,27 @@
 
 //#include <afxwin.h>
 
+/**
+*@note IV配置窗口命名空间
+*/
 namespace IVUIFactory
 {
+    /**
+    *@note  得到IV配置窗口
+    *@param	 hWnd 父窗口 
+    *@param  IV配置窗口显示的区域
+    *@return IV配置窗口句柄
+    */
     IVUI_API HWND CreateIVConfigDlg(HWND hWnd, const RECT& rect);
+    
+    /**
+    *@note 销毁配置窗口
+    */
     IVUI_API void ReleaseIVConfigDlg();
+
+    /**
+    *@note 设置IV SDK设置的指针
+    */
     IVUI_API void SetIVOpeator(IIVDeviceBase2* p);
 };
 

@@ -35,20 +35,35 @@
     #endif
 #endif
 
+/**
+*@note IV数据保存接口
+*/
 struct IIVDataSaver
 {
-    // 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
+    /**
+    *@note 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
+    */
     virtual BOOL Open(int nChannelID,const char* pPath, const FILETIME& time)=0;
 
-    // 视频文件关闭时，回调
+    /**
+    *@note 视频文件关闭时，调用
+    */
     virtual BOOL Close(int nChannelID, const FILETIME& time)=0;
 
-    // 删除视频文件回调，从而通知智能这边删除智能文件。
+    /**
+    *@note 删除视频文件回调，从而通知智能这边删除智能文件。
+    */
     virtual BOOL DeleteIVFile(const char* pPath)=0;
 
+    /**
+    *@note 设置预录像时间
+    */
     virtual BOOL TellPreAlarmTime(int time)=0;
 };
-       
+
+/**
+*@note IV数据显示接口
+*/
 struct IIVViewer
 {
     enum
@@ -58,43 +73,55 @@ struct IIVViewer
         Show_Object_Trace = Show_Object|Show_Trace,
     };
 
-    // 显示目标矩形框和路径时的回调，
-    // 传入DC和正在播放的数据帧的时间
+    /**
+    *@note 显示目标矩形框和路径时的回调，
+    *      传入DC和正在播放的数据帧的时间
+    */
     virtual BOOL Paint(
         int nChannelID, 
         const HDC dc,
         const RECT& rect,
         const FILETIME& time)=0;
 
-    // bState=true显示目标和路径，否则隐藏
+    /**
+    *@note bState=true显示目标和路径，否则隐藏
+    */
     virtual void SetObjTraceShowState(int nChannelID, bool bShow)=0;
-
-    // 得到目标和路径是否正在显示
+    
+    /**
+    *@note 得到目标和路径是否正在显示
+    */
     virtual void GetObjTraceShowState(int nChannelID, bool& bShow)=0;
-
-    // 设置显示哪些，是目标还是轨迹
+    
+    /**
+    *@note 设置显示哪些，是目标还是轨迹
+    */
     virtual void SetDataShowState(int nChannelID, int nState)=0;
-
-    // 设置显示哪些，是目标还是轨迹
+   
+    /**
+    *@note 设置显示哪些，是目标还是轨迹
+    */
     virtual void GetDataShowState(int nChannelID, int& nState)=0;
 
-    // 重置统计
+    /**
+    *@note 重置统计
+    */
     virtual BOOL ResetStatistic(int nChannelID)=0;
-
-    // bFlag=true开始统计，flase停止
+    
+    /**
+    *@note bFlag=true开始统计，flase停止
+    */
     virtual BOOL StartStatistic(int nChannelID, bool bFlag)=0;
-
-    // 得到统计状态
+    
+    /**
+    *@note 得到统计状态
+    */ 
     virtual BOOL GetStatisticState(int nChannelID, bool& bFlag)=0;
 };
 
-// 得到对应的对象指针
-//namespace IVLiveFactory
-//{
-//    IVVIEWER_API /*static */IIVViewer* GetViewer(void);
-//    IVVIEWER_API /*static*/ IIVDataSaver* GetDataSaver(void);
-//    IVVIEWER_API /*static*/ IIVDataSender* GetDataSender(void);
-//};
+/**
+*@note 得到Live各接口对应的对象指针
+*/ 
 namespace IVLiveFactory
 {
     IVVIEWER_API IIVViewer* GetLiveViewer();
@@ -102,16 +129,25 @@ namespace IVLiveFactory
     IVVIEWER_API IIVDataSender* GetDataSender();
 };
 
+/**
+*@note IV数据回放接口
+*/
 struct IVDataFound
 {
-    // 视频文件打开时回调，输入通道，视频文件路径，和时间戳
+    /**
+    *@note 视频文件打开时回调，输入通道，视频文件路径，和时间戳
+    */
     virtual int Open(int nChannelID, const char* pPath, const FILETIME& time)=0;
 
-    // 视频文件关闭时回调
+    /**
+    *@note 视频文件关闭时回调
+    */
     virtual int Close(int nChannelID, const FILETIME& time)=0;
 };
 
-// 得到对应的对象指针
+/**
+*@note 得到PlayBack各接口对应的对象指针
+*/ 
 namespace IVPlaybackFactory
 {
     static IIVViewer* GetPlaybackViewer(void);

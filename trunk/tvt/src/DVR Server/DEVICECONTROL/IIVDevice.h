@@ -29,18 +29,29 @@
 //#include "DeviceControl.h"
 #include "IIVDataSender.h"
 
+/**
+*@note 智能SDK基本功能的调用接口
+*/
 struct IIVDeviceBase
 {
-    // 这个通道是否在用智能
+    /**
+    *@note 这个通道是否在用智能
+    */
     virtual BOOL IsUse(int nChannelID)=0;
 
-    // 对这个通道使用智能
+    /**
+    *@note 对这个通道使用智能
+    */ 
     virtual BOOL Use(int nChannelID, bool bState)=0;
 
-    // 是否还有空闲的智能设备
+    /**
+    *@note 是否还有空闲的智能设备
+    */ 
     virtual BOOL IsHaveFreeDevice(void)=0;
 
-    // 是否有统计规则,输入通道号（int nChannelID，下同）
+    /**
+    *@note 是否有统计规则,输入通道号（int nChannelID，下同）
+    */ 
     virtual BOOL IsHaveStatisticRule(int nChannelID)=0;
 };
 
@@ -235,6 +246,9 @@ union IV_RuleID
 // 第三个为通道，第四个为时间戳，第五个为回调传过来的用户参数
 typedef BOOL (*AlarmCallBackFn)(const AlarmOutTable&,IVRuleType,int,const FILETIME*,void* pParm);
 
+/**
+*@note 报警回调接口
+*/
 struct IIVAlarmCallBack
 {
     virtual void OnAlarmCallBack(
@@ -244,6 +258,9 @@ struct IIVAlarmCallBack
         const FILETIME* pTime)=0;
 };
 
+/**
+*@note 报警截图回调接口
+*/
 struct ISnapShotSender
 {
     virtual void OnSnapShotSend(
@@ -256,12 +273,19 @@ struct ISnapShotSender
 
 struct IIVDeviceSetter
 {
-    // 设置Alarm发生时的给上层的回调,pParm为用户输入的参数，回调会传出
+    /**
+    *@note 设置Alarm发生时的给上层的回调,pParm为用户输入的参数，回调会传出
+    */
     virtual void SetIVAlarmOutCallBack(AlarmCallBackFn pAlarmCallBackFn, void* pParm)=0;
 
-    // 设置智能数据发送的回调，由IVLiveFactory得到这个指针
+    /**
+    *@note 设置智能数据发送的回调，由IVLiveFactory得到这个指针
+    */
     virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender)=0;
 
+    /**
+    *@note 设置报警截图回调
+    */
     virtual void SetSnapShotCallBack(ISnapShotSender* pSnapShotSender)=0;
 };
 

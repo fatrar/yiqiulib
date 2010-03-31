@@ -181,6 +181,11 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
 
     FILETIME* pTime = (FILETIME*)&nTime;
 
+    PostThreadMessage(
+        m_dwSmoothTheadID[nDevice],
+        IV_Data_Coming,
+        pTime->dwLowDateTime, pTime->dwHighDateTime);
+
     int& nChannelID = m_szCurrentIVChannel[nDevice];
     // 1. Do Obj&Trace
     if ( m_pIVDataSender )
@@ -190,15 +195,6 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
             *pTime,
             (WPG_Target*)(pIVData+sizeof(TVT_AI_VBI)),
             dwNumberOfTargets );
-    }
-
-    //if ( !m_bFisrtIVDataFlag[nDevice] )
-    {
-        PostThreadMessage(
-            m_dwSmoothTheadID[nDevice],
-            IV_Data_Coming,
-            pTime->dwLowDateTime, pTime->dwHighDateTime);
-        //m_bFisrtIVDataFlag[nDevice] = TRUE;
     }
 
     // 2. Do IV Alarm & SnapShot
