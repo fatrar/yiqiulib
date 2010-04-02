@@ -20,9 +20,9 @@ Copyright (c) xx Tech Co.,Ltd.
 
 static int g_PointList = 0;
 
-
+template<typename TViewer>
 class CBaseIVViewer :
-    public IIVViewer
+    public TViewer
 {
 public:
     CBaseIVViewer(void);
@@ -51,15 +51,6 @@ public:
     virtual void SetDataShowState(int nChannelID, int nState);
 
     virtual void GetDataShowState(int nChannelID, int& nState);
-
-    // 重置统计
-    virtual BOOL ResetStatistic(int nChannelID);
-
-    // bFlag=true开始统计，flase停止
-    virtual BOOL StartStatistic(int nChannelID, bool bFlag);
-
-    // 得到统计状态
-    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
 
 protected:
     typedef deque<WPG_PointF> PointList;
@@ -102,11 +93,35 @@ protected:
     TShowState m_ShowState[MAX_IV_Channel];
 
     ViewerBuf* m_pViewerBuf;  
+
+
+    enum
+    {
+        Point_Default_Color = 0x00ff00,
+        Line_Default_Width = 2,
+    };
+
+    HPEN m_hPen;
+    HGDIOBJ m_hBrush;
 };
 
 
-
-
+//
+//template<typename TViewer>
+//CBaseIVViewer<TViewer>::CBaseIVViewer(void)
+//{
+//    m_pViewerBuf = new ViewerBuf[Max_Device_Num];
+//    m_hPen = ::CreatePen(PS_SOLID, Line_Default_Width, Point_Default_Color);
+//    m_hBrush = ::GetStockObject(NULL_BRUSH);
+//}
+//template<typename TViewer>
+//CBaseIVViewer<TViewer>::~CBaseIVViewer(void)
+//{
+//    safeDeleteArray(m_pViewerBuf);
+//
+//    DebugOut("g_PointList = %d\n", g_PointList);
+//    ::DeleteObject(m_hPen);
+//}
 
 
 #endif

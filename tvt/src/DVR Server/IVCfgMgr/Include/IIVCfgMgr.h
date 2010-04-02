@@ -18,9 +18,9 @@
 #ifndef _IIVCFGMGR_H_2010_
 #define _IIVCFGMGR_H_2010_
 
-
-#include "..\DEVICEControl\WPG_EventOccurrence.h"
-#include "..\DEVICEControl\IIVDevice.h"
+#include "..\..\DEVICEControl\WPG_EventOccurrence.h"
+#include "..\..\\DEVICEControl\IIVDevice.h"
+#include <Common.h>
 
 class TiXmlElement;
 

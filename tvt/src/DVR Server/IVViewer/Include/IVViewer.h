@@ -19,7 +19,7 @@
 #define _IIVVIEWER_H_2010_
 
 #include <Windows.h>
-#include "..\..\Base\Base\Include\Common.h"
+#include <Common.h>
 #include "..\DEVICEControl\IIVDataSender.h"
 
 #ifdef IVVIEWER_EXPORTS
@@ -86,45 +86,91 @@ struct IIVViewer
     /**
     *@note bState=true显示目标和路径，否则隐藏
     */
-    virtual void SetObjTraceShowState(int nChannelID, bool bShow)=0;
+    virtual void SetObjTraceShowState(
+        int nChannelID, bool bShow)=0;
     
     /**
     *@note 得到目标和路径是否正在显示
     */
-    virtual void GetObjTraceShowState(int nChannelID, bool& bShow)=0;
+    virtual void GetObjTraceShowState(
+        int nChannelID, bool& bShow)=0;
     
     /**
     *@note 设置显示哪些，是目标还是轨迹
     */
-    virtual void SetDataShowState(int nChannelID, int nState)=0;
+    virtual void SetDataShowState(
+        int nChannelID, int nState)=0;
    
     /**
-    *@note 设置显示哪些，是目标还是轨迹
+    *@note 得到显示的是目标还是轨迹
     */
-    virtual void GetDataShowState(int nChannelID, int& nState)=0;
+    virtual void GetDataShowState(
+        int nChannelID, int& nState)=0;
+};
 
+/**
+*@note IV数据显示接口
+*/
+struct IIVLiveViewer :
+    public IIVViewer
+{
     /**
     *@note 重置统计
     */
     virtual BOOL ResetStatistic(int nChannelID)=0;
-    
+
     /**
     *@note bFlag=true开始统计，flase停止
     */
     virtual BOOL StartStatistic(int nChannelID, bool bFlag)=0;
-    
+
     /**
     *@note 得到统计状态
     */ 
-    virtual BOOL GetStatisticState(int nChannelID, bool& bFlag)=0;
+    virtual BOOL GetStatisticState(
+        int nChannelID, bool& bFlag)=0;
+
+    /**
+    *@note 添加规则给live显示者
+    */
+    virtual void AddRule(
+        int nChannelID,
+        WPG_Rule& Rule)=0;
+
+    /**
+    *@note 删除规则
+    */
+    virtual void RemoveRule(
+        int nChannelID,
+        WPG_Rule& Rule)=0;
+
+    /**
+    *@note 更新规则
+    */
+    virtual void ModifyRule(
+        int nChannelID,
+        WPG_Rule& Rule)=0;
+
+    /**
+    *@note 清空该通道的所有规则
+    */
+    virtual void ClearAllRule(int nChannelID)=0;
+
+    /**
+    *@note 显示规则图形
+    */
+    virtual void PaintRule(
+        int nChannelID,
+        const HDC dc,
+        const RECT& rect)=0;
 };
 
 /**
 *@note 得到Live各接口对应的对象指针
-*/ 
+*/
 namespace IVLiveFactory
 {
-    IVVIEWER_API IIVViewer* GetLiveViewer();
+    IVVIEWER_API IIVLiveViewer* GetLiveViewer();
     IVVIEWER_API IIVDataSaver* GetDataSaver();
     IVVIEWER_API IIVDataSender* GetDataSender();
 };

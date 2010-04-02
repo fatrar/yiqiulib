@@ -339,7 +339,7 @@ void CDSP::DoSnapShot(
     {   
         const WPG_EventSlice& slices = pEvent->slices[i];
 
-        if( s_bSavePic )
+        //if( s_bSavePic )
         {
             static int j = 0;
             static char szBuf[MAX_PATH] = {0};

@@ -18,9 +18,7 @@
 #ifndef _ISNAPSHOT_H_2010_3
 #define _ISNAPSHOT_H_2010_3
 
-
-
-#include "..\..\..\Base\Base\Include\Common.h"
+#include <Common.h>
 #include "..\..\DEVICEControl\IIVDevice.h"
 
 

@@ -18,49 +18,27 @@ Copyright (c) xx Tech Co.,Ltd.
 #include "BaseIVViewer.h"
 
 
+template CBaseIVViewer<IIVLiveViewer>;
 
-CBaseIVViewer::CBaseIVViewer(void)
+template<typename TViewer>
+CBaseIVViewer<TViewer>::CBaseIVViewer(void)
 {
     m_pViewerBuf = new ViewerBuf[Max_Device_Num];
+    m_hPen = ::CreatePen(PS_SOLID, Line_Default_Width, Point_Default_Color);
+    m_hBrush = ::GetStockObject(NULL_BRUSH);
 }
 
-CBaseIVViewer::~CBaseIVViewer(void)
+template<typename TViewer>
+CBaseIVViewer<TViewer>::~CBaseIVViewer(void)
 {
     safeDeleteArray(m_pViewerBuf);
 
     DebugOut("g_PointList = %d\n", g_PointList);
+    ::DeleteObject(m_hPen);
 }
 
-inline void TranslateToRect(
-    const RECT ClientRect,
-    const WPG_RectangleF& WPG_Rect,
-    int& left, int& top, int& right, int& bottom)
-{
-    int nWidth = ClientRect.right-ClientRect.left;
-    int nHeight = ClientRect.bottom-ClientRect.top;
-    left = int(nWidth*WPG_Rect.x) + ClientRect.left;
-    top = int(nHeight*WPG_Rect.y) + ClientRect.top;
-    right = int(nWidth*(WPG_Rect.x+WPG_Rect.width)) + ClientRect.left;
-    bottom = int(nHeight*(WPG_Rect.y+WPG_Rect.height)) + ClientRect.top;
-}
-
-/**
-@note 将画出窗口的目标过滤
-*/
-bool IsVaildWPGTarget(const WPG_Target& Data)
-{
-    const WPG_RectangleF& Rect = Data.boundingBox;
-    if ( (Rect.height+Rect.y) > 1 ||
-         (Rect.width+Rect.x) > 1 ||
-         Rect.x > 1 ||
-         Rect.y > 1 )
-    {
-        return false;
-    }
-    return true;
-}
-
-BOOL CBaseIVViewer::Paint(
+template<typename TViewer>
+BOOL CBaseIVViewer<TViewer>::Paint(
     int nChannelID,
     const HDC dc, 
     const RECT& rect, 
@@ -96,11 +74,12 @@ BOOL CBaseIVViewer::Paint(
         bNeedFresh = TRUE;
     }
 
+    HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen);  
+
     TShowState& ShowState = m_ShowState[nChannelID];
     if ( ShowState.bShow && (ShowState.nState& Show_Object) )
     {
-        static HGDIOBJ hBrush = ::GetStockObject(NULL_BRUSH);
-        HGDIOBJ hOldObj = ::SelectObject(dc, hBrush);
+        HGDIOBJ hOldBrush = ::SelectObject(dc, m_hBrush);
         //RECT ObjRect;
         int left, top, right, bottom;
         for (int i =0; i<nTarCount;++i)
@@ -109,15 +88,15 @@ BOOL CBaseIVViewer::Paint(
 
             // 过滤超过视频窗口的目标，
             // 不能在SDK和Buf数据接收事过滤，不然会造成目标丢失
-            if ( !IsVaildWPGTarget(Tar) )
+            if ( !ViewHelper::IsVaildWPGTarget(Tar) )
             {
                 continue;
             }
 
-            TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
+            ViewHelper::TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
             ::Rectangle(dc, left, top, right, bottom);
         }
-        ::SelectObject(dc, hOldObj);
+        ::SelectObject(dc, hOldBrush);
     }
 
     if ( bNeedFresh )
@@ -137,46 +116,38 @@ BOOL CBaseIVViewer::Paint(
         DrawTrace(dc, m_pViewerBuf[nDeviceID].PointBuf, rect);
     }
     
+    ::SelectObject(dc, hOldPen);
     return TRUE;
 }
 
-void CBaseIVViewer::SetObjTraceShowState( int nChannelID, bool bShow )
+template<typename TViewer>
+void CBaseIVViewer<TViewer>::SetObjTraceShowState( int nChannelID, bool bShow )
 {
     m_ShowState[nChannelID].bShow = bShow;
 }
 
-void CBaseIVViewer::GetObjTraceShowState( int nChannelID, bool& bShow )
+template<typename TViewer>
+void CBaseIVViewer<TViewer>::GetObjTraceShowState( int nChannelID, bool& bShow )
 {
     bShow = m_ShowState[nChannelID].bShow;
 }
 
-void CBaseIVViewer::SetDataShowState( int nChannelID, int nState )
+template<typename TViewer>
+void CBaseIVViewer<TViewer>::SetDataShowState( int nChannelID, int nState )
 {
     m_ShowState[nChannelID].nState = nState;
 }
 
-void CBaseIVViewer::GetDataShowState( int nChannelID, int& nState )
+template<typename TViewer>
+void CBaseIVViewer<TViewer>::GetDataShowState( int nChannelID, int& nState )
 {
     nState = m_ShowState[nChannelID].nState;
 }
 
-BOOL CBaseIVViewer::ResetStatistic( int nChannelID )
-{
-    return TRUE;
-}
-
-BOOL CBaseIVViewer::StartStatistic( int nChannelID, bool bFlag )
-{
-    return TRUE;
-}
-
-BOOL CBaseIVViewer::GetStatisticState( int nChannelID, bool& bFlag )
-{
-    return TRUE;
-}
 
 // 好像这部分有内存泄漏，要具体查下。
-void CBaseIVViewer::RefrehPoint( 
+template<typename TViewer>
+void CBaseIVViewer<TViewer>::RefrehPoint( 
     ChannelPoint& PointBuf, 
     const TargetQueue* DataQueue,
     const FILETIME& time )
@@ -221,7 +192,8 @@ void CBaseIVViewer::RefrehPoint(
     PointBuf = PointTmpBuf;
 }
 
-void CBaseIVViewer::DrawTrace( 
+template<typename TViewer>
+void CBaseIVViewer<TViewer>::DrawTrace( 
     const HDC dc,
     const ChannelPoint& PointBuf,
     const RECT& rect  )
@@ -257,6 +229,7 @@ void CBaseIVViewer::DrawTrace(
         }
     }
 }
+
 
 
 // End fo file
