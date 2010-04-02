@@ -1477,25 +1477,26 @@ BOOL CDSP::SetParam(int nType, int nChannel, int nValue)
 	pack.value = nValue;
 
     BOOL bNew = TRUE;
-    AutoLockAndUnlock(m_pPack[nDevice].CS);
-	for ( deque<PARAMPACK>::iterator itParam = m_pPack[nDevice].param.begin();
-          itParam != m_pPack[nDevice].param.end();
-          itParam++)
-	{
-		if ( itParam->chanNum == pack.chanNum &&
-             itParam->paramType == pack.paramType)
-		{
-			itParam->value = pack.value;
-			bNew = FALSE;
-			break;
-		}
-	}
+    //{
+        AutoLockAndUnlock(m_pPack[nDevice].CS);
+	    for ( deque<PARAMPACK>::iterator itParam = m_pPack[nDevice].param.begin();
+              itParam != m_pPack[nDevice].param.end();
+              itParam++)
+	    {
+		    if ( itParam->chanNum == pack.chanNum &&
+                 itParam->paramType == pack.paramType)
+		    {
+			    itParam->value = pack.value;
+			    bNew = FALSE;
+			    break;
+		    }
+	    }
 
-	if (bNew)
-	{
-		m_pPack[nDevice].param.push_back(pack);
-	}
-
+	    if (bNew)
+	    {
+		    m_pPack[nDevice].param.push_back(pack);
+	    }
+   // }
 	return TRUE;
 }
 

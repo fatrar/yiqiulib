@@ -18,8 +18,9 @@
 #ifndef _IVUIINTERFACE_H_2010_2
 #define _IVUIINTERFACE_H_2010_2
 
-#include "..\..\..\Base\Base\Include\Common.h"
+#include <Common.h>
 #include "..\..\devicecontrol\IIVDevice.h"
+
 
 #ifdef IVUI_EXPORTS
     #define IVUI_CLASS CLASS_EXPORT
@@ -35,7 +36,6 @@
 #endif
 
 
-//#include <afxwin.h>
 
 /**
 *@note IV≈‰÷√¥∞ø⁄√¸√˚ø’º‰

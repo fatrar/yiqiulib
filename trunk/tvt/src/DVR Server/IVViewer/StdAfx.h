@@ -38,6 +38,9 @@
 #include <windows.h>
 #include <process.h>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include <deque>
 #include <map>
 //#include <set>
@@ -55,10 +58,12 @@ using namespace OCI;
 
 #include "..\DEVICEControl\WPG_EventOccurrence.h"
 #include "..\DEVICEControl\IIVDataSender.h"
+#include "..\DEVICEControl\IIVDevice.h"
 
 #include "..\..\DebugUtil\DebugUtil\MemCheck.h"
 #include "..\..\DebugUtil\DebugUtil\Trace.h"
 #include "IVViewerUtil.h"
+#include "ViewHelper.h"
 
 #include "DropIndexAlgorithm.h"
 #include "Include\IVViewer.h"

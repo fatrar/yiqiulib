@@ -28,11 +28,15 @@
 #include <windows.h>
 
 #pragma warning(disable: 4996)
+#include <Common.h>
 #include "..\..\Base\tinyxml\Include\tinyxml.h"
 #include "..\..\Base\tinyxml\Include\tinyxmlUtil.h"
-#include "..\..\Base\Base\Include\TransformUtil.h"
-#include "..\..\Base\Base\Include\Singleton.h"
-#include "..\..\Base\Base\Include\StringHelp.h"
+#include <TransformUtil.h>
+#include <Singleton.h>
+#include <StringHelp.h>
+//#include "..\..\Base\Base\Include\TransformUtil.h"
+//#include "..\..\Base\Base\Include\Singleton.h"
+//#include "..\..\Base\Base\Include\StringHelp.h"
 using namespace OCI;
 
 #include "..\DEVICEControl\WPG_EventOccurrence.h"
