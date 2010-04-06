@@ -131,6 +131,38 @@ struct IIVLiveViewer :
         int nChannelID, bool& bFlag)=0;
 
     /**
+    *@note 显示规则图形
+    */
+    virtual void PaintRule(
+        int nChannelID,
+        const HDC dc,
+        const RECT& rect)=0;
+
+    /**
+    *@note 显示规则统计
+    */
+    virtual void PaintStatistic(
+        int nChannelID,
+        const HDC dc,
+        const RECT& rect)=0;
+
+    /**
+    *@note 设置是否显示规则图形和统计
+    */
+    virtual void ShowRuleAndStatistic(
+        int nChannelID,
+        bool bShow)=0;
+};
+
+/**
+*@note IV数据显示接口,
+* 这个跟上一个区别在于配置者在更改设置和初始化时使用
+* IIVLiveViewer只是给上层提供接口用于显示
+*/
+struct IIVLiveViewerEx:
+    public IIVLiveViewer
+{
+    /**
     *@note 添加规则给live显示者
     */
     virtual void AddRule(
@@ -155,14 +187,6 @@ struct IIVLiveViewer :
     *@note 清空该通道的所有规则
     */
     virtual void ClearAllRule(int nChannelID)=0;
-
-    /**
-    *@note 显示规则图形
-    */
-    virtual void PaintRule(
-        int nChannelID,
-        const HDC dc,
-        const RECT& rect)=0;
 };
 
 /**
@@ -171,6 +195,7 @@ struct IIVLiveViewer :
 namespace IVLiveFactory
 {
     IVVIEWER_API IIVLiveViewer* GetLiveViewer();
+    IVVIEWER_API IIVLiveViewerEx* GetLiveViewerEx();
     IVVIEWER_API IIVDataSaver* GetDataSaver();
     IVVIEWER_API IIVDataSender* GetDataSender();
 };

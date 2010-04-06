@@ -225,6 +225,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IVLiveFactory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IVLiveViewer.cpp"
 				>
 			</File>

@@ -18,7 +18,7 @@ Copyright (c) xx Tech Co.,Ltd.
 #include "BaseIVViewer.h"
 
 
-template CBaseIVViewer<IIVLiveViewer>;
+template CBaseIVViewer<IIVLiveViewerEx>;
 
 template<typename TViewer>
 CBaseIVViewer<TViewer>::CBaseIVViewer(void)

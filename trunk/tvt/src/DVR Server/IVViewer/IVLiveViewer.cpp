@@ -22,12 +22,29 @@
 
 IIVDataBuf* CIVLiveViewer::s_pIVDataBuf = CIVDataBuf::getInstancePtr();
 
+//CFont
+//BOOL CreateFont(int nHeight, int nWidth, int nEscapement,
+//		int nOrientation, int nWeight, BYTE bItalic, BYTE bUnderline,
+//		BYTE cStrikeOut, BYTE nCharSet, BYTE nOutPrecision,
+//		BYTE nClipPrecision, BYTE nQuality, BYTE nPitchAndFamily,
+//		LPCTSTR lpszFacename);
+
 CIVLiveViewer::CIVLiveViewer(void)
 {
+    memset(m_IsShowRule, 1, sizeof(m_IsShowRule));
+    //m_hFont = ::CreateFont(
+    //    -13,0,0,0,
+    //    500,0,0,0,
+    //    ANSI_CHARSET,OUT_DEFAULT_PRECIS,
+    //    CLIP_DEFAULT_PRECIS,
+    //    PROOF_QUALITY,
+    //    DEFAULT_PITCH|FF_SWISS,
+    //    NULL);
 }
 
 CIVLiveViewer::~CIVLiveViewer(void)
 {
+    //::DeleteObject(m_hFont);
 }
 
 TargetQueue* CIVLiveViewer::GetIVData( 
@@ -43,6 +60,7 @@ TargetQueue* CIVLiveViewer::GetIVData(
 BOOL CIVLiveViewer::ResetStatistic(
     int nChannelID )
 {
+    m_StatisticData[nChannelID].dwCount = 0;
     return TRUE;
 }
 
@@ -50,6 +68,7 @@ BOOL CIVLiveViewer::StartStatistic(
     int nChannelID, 
     bool bFlag )
 {
+    m_StatisticData[nChannelID].IsOk = bFlag;
     return TRUE;
 }
 
@@ -57,9 +76,77 @@ BOOL CIVLiveViewer::GetStatisticState(
     int nChannelID,
     bool& bFlag )
 {
+    bFlag = m_StatisticData[nChannelID].IsOk == TRUE;
     return TRUE;
 }
 
+void CIVLiveViewer::ShowRuleAndStatistic(
+    int nChannelID, bool bShow )
+{
+    m_IsShowRule[nChannelID] = bShow;
+}
+
+void CIVLiveViewer::PaintRule(
+    int nChannelID,
+    const HDC dc,
+    const RECT& rect )
+{
+    if ( !m_IsShowRule[nChannelID] )
+    {
+        return;
+    }
+
+    RuleGraphMap& GraphMap = m_AllRuleGraph[nChannelID];
+    if ( GraphMap.size() == 0 )
+    {
+        return;
+    }
+
+    {
+        HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen);
+        HGDIOBJ hOldBrush = ::SelectObject(dc, m_hBrush);
+        AutoLockAndUnlock(m_cs[nChannelID]);
+        RuleGraphMap::iterator iter = GraphMap.begin();
+        for ( ; iter!=GraphMap.end(); ++iter )
+        {
+            GraphInfo* pGraphInfo = iter->second;
+            switch ( pGraphInfo->Type )
+            {
+            case IDrawer_Polygon:
+                PaintPolygon(dc, rect, pGraphInfo->PointInfo.PolygonInfo);
+            	break;
+            case IDrawer_ArrowLine:
+            {
+                DWORD dwShowCount = pGraphInfo->PointInfo.LineInfo.IsStatistic ? m_StatisticData[nChannelID].dwCount : MAXDWORD; 
+                PaintArrowLine(
+                    dc, rect, 
+                    pGraphInfo->PointInfo.LineInfo.Info,
+                    dwShowCount );
+                break;
+            }    
+            default:
+            	break;
+            }
+        }
+        ::SelectObject(dc, hOldPen);
+        ::SelectObject(dc, hOldBrush);
+    }
+}
+
+void CIVLiveViewer::PaintStatistic( 
+    int nChannelID, 
+    const HDC dc, 
+    const RECT& rect )
+{
+    
+}
+
+// }
+// IIVLiveViewer
+
+//
+// ******************* IIVLiveViewerEx **********************
+// {
 void CIVLiveViewer::AddRule( 
     int nChannelID,
     const WPG_Rule& Rule )
@@ -139,39 +226,9 @@ void CIVLiveViewer::ClearAllRule(
     StlHelper::STLDeleteAssociate(GraphMap);
 }
 
-void CIVLiveViewer::PaintRule(
-    int nChannelID,
-    const HDC dc,
-    const RECT& rect )
-{
-    RuleGraphMap& GraphMap = m_AllRuleGraph[nChannelID];
-    if ( GraphMap.size() == 0 )
-    {
-        return;
-    }
-
-    {
-        HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen); 
-        AutoLockAndUnlock(m_cs[nChannelID]);
-        RuleGraphMap::iterator iter = GraphMap.begin();
-        for ( ; iter!=GraphMap.end(); ++iter )
-        {
-            GraphInfo* pGraphInfo = iter->second;
-            switch ( pGraphInfo->Type )
-            {
-            case IDrawer_Polygon:
-                PaintPolygon(dc, rect, pGraphInfo->PointInfo.PolygonInfo);
-            	break;
-            case IDrawer_ArrowLine:
-                PaintArrowLine(dc, rect, pGraphInfo->PointInfo.LineInfo);
-                break;
-            default:
-            	break;
-            }
-        }
-        ::SelectObject(dc, hOldPen);
-    }
-}
+//
+// ******************* Other **********************
+// {
 
 bool CIVLiveViewer::TranslateRuleToGraphInfo(
     const WPG_Rule& Rule,
@@ -187,7 +244,7 @@ bool CIVLiveViewer::TranslateRuleToGraphInfo(
             Info = new GraphInfo;
         }
         Info->Type = IDrawer_ArrowLine;
-        Info->PointInfo.LineInfo = DirUnion.tripwireEventDescription;
+        Info->PointInfo.LineInfo.Info = DirUnion.tripwireEventDescription;
     	break;
     case AOI_EVENT: 
         if ( Info == NULL )
@@ -239,7 +296,8 @@ void DrawArrow(
     const POINT& p,
     size_t d,
     double o,
-    bool bUp = true)
+    bool bUp = true,
+    DWORD dwShowCount = MAXDWORD )
 {
     POINT p0, p1, p2;
     if ( bUp )
@@ -262,12 +320,24 @@ void DrawArrow(
     ::LineTo(dc, p1.x, p1.y);
     ::MoveToEx(dc, p0.x, p0.y, NULL);
     ::LineTo(dc, p2.x, p2.y);
+    
+    if ( dwShowCount != MAXDWORD )
+    {
+        char szBuf[16] = {0};
+        sprintf_s(szBuf, "%u", dwShowCount);
+        ::TextOutA(
+            dc, 
+            p1.x,
+            p1.y+CIVLiveViewer::Point_Radii, 
+            szBuf, strlen(szBuf));
+    }
 }
 
 void CIVLiveViewer::PaintArrowLine( 
     const HDC dc, 
     const RECT& rect, 
-    WPG_TripwireEventDescription& Line )
+    WPG_TripwireEventDescription& Line,
+    DWORD dwShowCount )
 {
     int x[2], y[2];
     ViewHelper::TranslateWPGPoint(rect, Line.startPoint, x[0], y[0]);
@@ -315,7 +385,10 @@ void CIVLiveViewer::PaintArrowLine(
         o = M_PI;
     }
 
-
+    int nOldMode = ::SetBkMode(dc, TRANSPARENT);
+    
+    COLORREF nOldCol = ::SetTextColor(dc, Font_Color);
+    //HGDIOBJ hOldFont = ::SelectObject(dc, m_hFont);
     bool bUp = (A[0].y > A[1].y);
     //bool bUp = (A[0].x > A[1].x) ^ (A[0].y < A[1].y);
     //bool bUp = GetPointRLineState(BeginPoint, EndPoint, A[1]) > 0; 
@@ -325,23 +398,21 @@ void CIVLiveViewer::PaintArrowLine(
     {
         ::MoveToEx(dc, MedPoint.x, MedPoint.y, NULL);  
         ::LineTo(dc, A[0].x, A[0].y);
-        DrawArrow(dc, A[0], ArrowHeadLen, o, bUp);
+        DrawArrow(dc, A[0], ArrowHeadLen, o, bUp, dwShowCount);
     }
     if (  Line.direction == ANY_DIRECTION || 
           Line.direction == LEFT_TO_RIGHT ) // Line_Show_Left
     {
         ::MoveToEx(dc, MedPoint.x, MedPoint.y, NULL);  
         ::LineTo(dc, A[1].x, A[1].y);
-        DrawArrow(dc, A[1], ArrowHeadLen, o, !bUp);
-    }  
+        DrawArrow(dc, A[1], ArrowHeadLen, o, !bUp, dwShowCount);
+    }
+    //SelectObject(dc, hOldFont);
+    ::SetTextColor(dc, nOldCol);
+    ::SetBkMode(dc, nOldMode);
 }
+
 
 // }
-
-
-IIVLiveViewer* IVLiveFactory::GetLiveViewer(void)
-{
-    return CIVLiveViewer::getInstancePtr();
-}
 
 // End of file

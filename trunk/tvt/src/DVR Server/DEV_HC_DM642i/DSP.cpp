@@ -48,12 +48,11 @@ BOOL FindTBuf(
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+static CCriticalSection	g_cs;
 void ReleaseDriverBuffer(PTVT_CAP_STATUS pST)
 {
 //	::InterlockedDecrement((PLONG)(&((pST)->dwReserve4)));
-	static CCriticalSection	cs;
-
-	cs.Lock();
+	g_cs.Lock();
 	pST->dwReserve4--;
 
 //<----cs作用:多线程重入；防多线程调用时(传入指针相同)，在此切换线程，两个线程分别执行减一操作后
@@ -63,7 +62,7 @@ void ReleaseDriverBuffer(PTVT_CAP_STATUS pST)
 	{
 		(pST)->byLock = 0;
 	}
-	cs.Unlock();
+	g_cs.Unlock();
 }
 #if 0
 /*
