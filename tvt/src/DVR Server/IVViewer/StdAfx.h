@@ -36,6 +36,7 @@
 //#endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <windows.h>
+#include <tchar.h>
 #include <process.h>
 
 #define _USE_MATH_DEFINES
@@ -69,6 +70,9 @@ using namespace OCI;
 #include "Include\IVViewer.h"
 #include "IVFileCommon.h"
 
+#include "IVDataBuf.h"
+#include "BaseIVViewer.h"
+#include "IVLiveViewer.h"
 
 #ifdef _UNICODE
     #if defined _M_IX86

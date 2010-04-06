@@ -18,11 +18,9 @@
 #ifndef _IVLIVEVIEWER_H_2010_
 #define _IVLIVEVIEWER_H_2010_
 
-#include "BaseIVViewer.h"
-
 
 class CIVLiveViewer :
-    public CBaseIVViewer<IIVLiveViewer>,
+    public CBaseIVViewer<IIVLiveViewerEx>,
     public Singleton<CIVLiveViewer>
 {
 public:
@@ -46,7 +44,22 @@ public:
     // 得到统计状态
     virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
 
+    virtual void PaintRule(
+        int nChannelID,
+        const HDC dc,
+        const RECT& rect);
 
+    virtual void PaintStatistic(
+        int nChannelID,
+        const HDC dc,
+        const RECT& rect);
+
+    virtual void ShowRuleAndStatistic(
+        int nChannelID,
+        bool bShow);
+
+    // IIVLiveViewer
+public:
     virtual void AddRule(
         int nChannelID,
         const WPG_Rule& Rule);
@@ -60,11 +73,6 @@ public:
         const WPG_Rule& Rule);
 
     virtual void ClearAllRule(int nChannelID);
-
-    virtual void PaintRule(
-        int nChannelID,
-        const HDC dc,
-        const RECT& rect);
 
 public:
     static IIVDataBuf* s_pIVDataBuf;
@@ -82,31 +90,51 @@ protected:
 
         union
         {
-            WPG_TripwireEventDescription LineInfo;
+            struct{
+                WPG_TripwireEventDescription Info;
+                BOOL IsStatistic;
+            } LineInfo;
             WPG_PolygonF PolygonInfo;
         } PointInfo;
     }; 
 
     typedef map<IV_RuleID, GraphInfo*> RuleGraphMap;
 
+public:
+    enum
+    {
+        Point_Radii = 5,
+        Font_Color = RGB(255,0,0),
+    };
+
 protected:
     static bool TranslateRuleToGraphInfo(
         const WPG_Rule& Rule,
         GraphInfo*& Info);
     
-    static void PaintPolygon(
+    void PaintPolygon(
         const HDC dc,
         const RECT& rect,
         WPG_PolygonF& Polygon);
     
-    static void PaintArrowLine(
+    void PaintArrowLine(
         const HDC dc,
         const RECT& rect,
-        WPG_TripwireEventDescription& Line);
+        WPG_TripwireEventDescription& Line,
+        DWORD dwShowCount );
 
+    struct StatisticData
+    {
+        StatisticData():dwCount(0),IsOk(TRUE){}
+        DWORD dwCount;
+        BOOL IsOk; 
+    };
 protected:
     RuleGraphMap m_AllRuleGraph[MAX_IV_Channel];
+    bool m_IsShowRule[MAX_IV_Channel];
+    StatisticData m_StatisticData[MAX_IV_Channel];
     CriticalSection m_cs[MAX_IV_Channel];
+    //HFONT m_hFont;
 };
 
 

@@ -394,15 +394,7 @@ DWORD CIVDataBuf::GetEventCount()
 
 
 
-IIVDataSaver* IVLiveFactory::GetDataSaver(void)
-{
-    return CIVDataBuf::getInstancePtr();
-}
 
-IIVDataSender* IVLiveFactory::GetDataSender(void)
-{
-    return CIVDataBuf::getInstancePtr();
-}
 
 
 // End of file

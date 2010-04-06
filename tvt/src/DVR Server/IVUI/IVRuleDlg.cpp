@@ -447,10 +447,12 @@ void CIVRuleDlg::OnRuleEditrule()
     }
 
     WPG_Rule* pRule = CIVRuleCfgDoc::GetRule(m_ClickItem);
-    IV_RuleID& RuleID = (IV_RuleID&)(pRule->ruleId);
+    WPG_Rule* pTmpRule = new WPG_Rule(*pRule);
+    
+    IV_RuleID& RuleID = (IV_RuleID&)(pTmpRule->ruleId);
     IVRuleType RuleType = RuleID.RuleID.nType;
     CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType, this);
-    pDlg->SetComomParm(m_nCurrentChan, pRule, RuleType, TRUE);
+    pDlg->SetComomParm(m_nCurrentChan, pTmpRule, RuleType, TRUE);
     if ( IDOK == pDlg->DoModal() )
     {
         /**
@@ -458,19 +460,20 @@ void CIVRuleDlg::OnRuleEditrule()
         */
         if ( g_IIVDeviceBase2->IsUse(m_nCurrentChan) )
         {
-            g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pRule);
-            IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
-            pIVLiveViewer->ModifyRule(m_nCurrentChan, *pRule);
+            g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pTmpRule);
+            IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
+            pIVLiveViewerEx->ModifyRule(m_nCurrentChan, *pRule);
         }
 
         /**
         *@note 2. Update To XML and Memory
         */
         CIVRuleCfgDoc::UpdateRule(
-            *pRule, m_ClickItem);    
+            *pRule, m_ClickItem, FALSE);    
     }
     else {}
     delete pDlg;
+    delete pTmpRule;
 
     if ( g_IIVDeviceBase2 )
     {

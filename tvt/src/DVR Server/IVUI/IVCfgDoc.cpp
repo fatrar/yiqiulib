@@ -41,7 +41,7 @@ CIVCfgDoc::RuleTriggerList CIVCfgDoc::m_RuleTrigger;
 void CIVCfgDoc::Init()
 {
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
-    IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
+    IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
 
     int szChannel[_MaxAutoChannel] = {0};
     size_t nCount;
@@ -100,7 +100,7 @@ void CIVCfgDoc::Init()
                     pRuleSettings->Rule,
                     pRuleSettings->Sch,
                     pRuleSettings->Alarm );
-                pIVLiveViewer->AddRule(i, pRuleSettings->Rule);
+                pIVLiveViewerEx->AddRule(i, pRuleSettings->Rule);
             }
         }
     }
@@ -336,8 +336,8 @@ void CIVRuleCfgDoc::AddRule(
     {
         g_IIVDeviceBase2->Add(nChannelID, Rule);
 
-        IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
-        pIVLiveViewer->AddRule(nChannelID, Rule);
+        IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
+        pIVLiveViewerEx->AddRule(nChannelID, Rule);
     }
 
     /**
@@ -384,8 +384,8 @@ void CIVRuleCfgDoc::RemoveRule(
             g_IIVDeviceBase2->Remove(
                 nChannelID,
                 (IV_RuleID&)(pRuleSettings->Rule.ruleId));
-            IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
-            pIVLiveViewer->RemoveRule(nChannelID, pRuleSettings->Rule.ruleId);
+            IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
+            pIVLiveViewerEx->RemoveRule(nChannelID, pRuleSettings->Rule.ruleId);
         }
         delete pRuleSettings;
         Map.erase(MapIter);
@@ -591,7 +591,7 @@ void CIVRuleCfgDoc::Use(
     /**
     *@note 2. Update Device and Live Viewer, m_UseChannel
     */
-    IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
+    IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
     if ( bEnable )
     {
         /**
@@ -610,7 +610,7 @@ void CIVRuleCfgDoc::Use(
                 pRuleSettings->Rule,
                 pRuleSettings->Sch,
                 pRuleSettings->Alarm );
-            pIVLiveViewer->AddRule(
+            pIVLiveViewerEx->AddRule(
                 nChannelID, 
                 pRuleSettings->Rule);
         }
@@ -621,7 +621,7 @@ void CIVRuleCfgDoc::Use(
         *@note if Disable, Clear All Rule To Live Viewer 
         *        and update m_UseChannel        
         */
-        pIVLiveViewer->ClearAllRule(nChannelID);
+        pIVLiveViewerEx->ClearAllRule(nChannelID);
 
         m_UseChannel.erase(nChannelID);
     }
