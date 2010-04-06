@@ -408,13 +408,7 @@ void CIVRuleDlg::OnRuleNewrule()
     if ( IDOK == pDlg->DoModal() )
     {
         /**
-        *@note  1. Operator Device
-        */
-        if ( g_IIVDeviceBase2->IsUse(m_nCurrentChan) )
-            g_IIVDeviceBase2->Add(m_nCurrentChan, *pRule);
-
-        /**
-        *@note 2. Save To XML and Memory, and update Tree
+        *@note Save To XML and Memory,  and update Tree, Device 
         */
         CIVRuleCfgDoc::AddRule(
             *pRule,
@@ -460,10 +454,14 @@ void CIVRuleDlg::OnRuleEditrule()
     if ( IDOK == pDlg->DoModal() )
     {
         /**
-        *@note  1. Operator Device
+        *@note  1. Operator Device and Live Viewer
         */
         if ( g_IIVDeviceBase2->IsUse(m_nCurrentChan) )
+        {
             g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pRule);
+            IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
+            pIVLiveViewer->ModifyRule(m_nCurrentChan, *pRule);
+        }
 
         /**
         *@note 2. Update To XML and Memory

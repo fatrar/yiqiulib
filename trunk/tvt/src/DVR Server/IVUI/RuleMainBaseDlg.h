@@ -72,6 +72,8 @@ protected:
 protected:
     virtual BOOL GatherUseSet(){return TRUE;};
 
+    virtual void SimulationEnable(BOOL bEnable);
+
 protected:
     enum ToolMode
     {
@@ -90,6 +92,8 @@ protected:
     virtual BOOL OnInitDialog();
     afx_msg void OnClose();
     afx_msg void OnPaint();
+    afx_msg void OnTimer(UINT_PTR nIDEvent);
+    afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
     DECLARE_MESSAGE_MAP()
 
     virtual afx_msg void OnBnClickedOk();
@@ -115,10 +119,14 @@ protected:
 protected:
     enum 
     {
+        Start_Simulation = 0x1,
+        Simulation_Wait_Time = 2000,
+
         PlayerWnd_ID = 0x8100,
         DrawWnd_ID = 0x8101,
     };
 
+protected:
     CButton m_LineBT;
     CButton m_ZoneBT;
     CButton m_SelectBT;
@@ -127,15 +135,18 @@ protected:
     CButton m_LineLeftBT;
     CButton m_LineBothBT;
 
+    CButton m_RectangleBT;
+    CButton m_PolygonBT;
+
+protected:
     CButton m_ColourBT;
     CButton m_AdvBT;
     CButton m_FilterBT;
     CButton m_SimulationBT;
+
+protected:   
     BOOL m_bUse;
-
-    CButton m_RectangleBT;
-    CButton m_PolygonBT;
-
+ 
     IVUtil::UserToolsChoose m_nToolsChoose;
 
     CWnd m_PlayerWnd;
@@ -151,9 +162,14 @@ protected:
     WPG_Rule* m_pRule;
     IVRuleType m_type;
     BOOL m_EditMode;
-private:
+protected:
     Windows::CAlarmTextStatic m_AlarmOccurStatic;
     //CStatic m_AlarmOccurStatic;
+protected:
+    CButton m_OKBt;
+    CButton m_CancelBt;
+
+    BOOL m_ChangeCursor;
 };
 
 

@@ -41,6 +41,7 @@ CIVCfgDoc::RuleTriggerList CIVCfgDoc::m_RuleTrigger;
 void CIVCfgDoc::Init()
 {
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
+    IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
 
     int szChannel[_MaxAutoChannel] = {0};
     size_t nCount;
@@ -49,12 +50,18 @@ void CIVCfgDoc::Init()
 
     for (int i=0; i<Max_Channel; ++i)
     {
+        BOOL bUse = m_UseChannel.find(i) != m_UseChannel.end();
+
         RuleSettingMap& Map = m_Doc[i];
         StlHelper::STLDeleteAssociate(Map); // ·ÀÖ¹µ÷¶à´Î
 
         int& nShowState = m_ShowState[i];
         pIVCfgMgr->GetDataShowState(i, nShowState);
         
+        if ( bUse )
+        {
+            g_IIVDeviceBase2->Use(i, true);
+        }
         for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(i);
               Iter != pIVCfgMgr->End();
               Iter = Iter.Next() )
@@ -85,6 +92,16 @@ void CIVCfgDoc::Init()
             }
 
             Map[pID] = pRuleSettings;
+
+            if ( bUse )
+            {
+                g_IIVDeviceBase2->Add(
+                    i, 
+                    pRuleSettings->Rule,
+                    pRuleSettings->Sch,
+                    pRuleSettings->Alarm );
+                pIVLiveViewer->AddRule(i, pRuleSettings->Rule);
+            }
         }
     }
 }
@@ -313,7 +330,18 @@ void CIVRuleCfgDoc::AddRule(
     Map[pID] = new RuleSettings(Rule);
 
     /**
-    @note  3. Insert Tree Item
+    @note  3. Update To Device
+    */
+    if ( IsIVChannel(nChannelID) )
+    {
+        g_IIVDeviceBase2->Add(nChannelID, Rule);
+
+        IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
+        pIVLiveViewer->AddRule(nChannelID, Rule);
+    }
+
+    /**
+    @note  4. Insert Tree Item
     */
     CString strRuleName(Rule.ruleName);
     HTREEITEM hTmp = m_CameraTree.InsertItem(strRuleName, Item);
@@ -356,6 +384,8 @@ void CIVRuleCfgDoc::RemoveRule(
             g_IIVDeviceBase2->Remove(
                 nChannelID,
                 (IV_RuleID&)(pRuleSettings->Rule.ruleId));
+            IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
+            pIVLiveViewer->RemoveRule(nChannelID, pRuleSettings->Rule.ruleId);
         }
         delete pRuleSettings;
         Map.erase(MapIter);
@@ -553,23 +583,58 @@ void CIVRuleCfgDoc::Use(
     int nChannelID, 
     bool bEnable )
 {
+    /**
+    *@note 1. Set is Enable to Device
+    */
+    g_IIVDeviceBase2->Use(nChannelID, bEnable);
+
+    /**
+    *@note 2. Update Device and Live Viewer, m_UseChannel
+    */
+    IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
     if ( bEnable )
     {
+        /**
+        *@note if Enable, Add That channel All Rule To Device and 
+        *           set to live Viewer and update m_UseChannel
+        */
         m_UseChannel.insert(nChannelID);
+
+        RuleSettingMap& Map = m_Doc[nChannelID];
+        RuleSettingMap::iterator iter = Map.begin();
+        for ( ; iter != Map.end(); ++iter)
+        {
+            RuleSettings* pRuleSettings = iter->second;
+            g_IIVDeviceBase2->Add(
+                nChannelID,
+                pRuleSettings->Rule,
+                pRuleSettings->Sch,
+                pRuleSettings->Alarm );
+            pIVLiveViewer->AddRule(
+                nChannelID, 
+                pRuleSettings->Rule);
+        }
     }
     else
     {
+        /**
+        *@note if Disable, Clear All Rule To Live Viewer 
+        *        and update m_UseChannel        
+        */
+        pIVLiveViewer->ClearAllRule(nChannelID);
+
         m_UseChannel.erase(nChannelID);
     }
 
+    /**
+    *@note 3. update To XML
+    */
     int szChannel[_MaxAutoChannel] = {0};
     StlHelper::STL2Array(m_UseChannel, szChannel);
 
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
     pIVCfgMgr->SetAutoRunChannel(szChannel, m_UseChannel.size());
     pIVCfgMgr->Apply();
-
-    g_IIVDeviceBase2->Use(nChannelID, bEnable);
 }
 
 bool CIVRuleCfgDoc::IsUse( int nChannelID )

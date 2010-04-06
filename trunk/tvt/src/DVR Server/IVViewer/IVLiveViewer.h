@@ -49,15 +49,15 @@ public:
 
     virtual void AddRule(
         int nChannelID,
-        WPG_Rule& Rule);
+        const WPG_Rule& Rule);
 
     virtual void RemoveRule(
         int nChannelID,
-        WPG_Rule& Rule);
+        BYTE (&ID)[16]);
 
     virtual void ModifyRule(
         int nChannelID,
-        WPG_Rule& Rule);
+        const WPG_Rule& Rule);
 
     virtual void ClearAllRule(int nChannelID);
 

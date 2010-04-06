@@ -201,7 +201,7 @@ BEGIN
 END
 
 IDD_Add_Edit_Rule_Main DIALOGEX 0, 0, 434, 300
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
@@ -219,7 +219,7 @@ BEGIN
     CONTROL         "Both",IDC_Both_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,137,39,19
     PUSHBUTTON      "Adv. ..",IDC_Adv_BT,21,201,50,14
     PUSHBUTTON      "Filter ..",IDC_Filter_BT,21,219,50,14
-    PUSHBUTTON      "Simulation",IDC_Simulation_BT,8,245,74,14
+    PUSHBUTTON      "Simulation",IDC_Simulation_BT,8,245,76,14
     CONTROL         "Rectangle",IDC_Rectangle_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,99,39,19
     PUSHBUTTON      "Colour",IDC_Colour_BT,23,165,43,18
     LTEXT           "Alarm Occur",IDC_Alarm_Occur_STATIC,19,268,150,12

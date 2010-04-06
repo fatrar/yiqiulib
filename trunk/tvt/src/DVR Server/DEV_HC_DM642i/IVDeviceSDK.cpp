@@ -1038,7 +1038,7 @@ void AdjustLiveList(
     }
     else if (Test == ftime)
     {
-        LiveList.splice(LiveList.end(), BufList, iter, iter);
+        LiveList.splice(LiveList.end(), BufList, iter, ++iter);
         return;
     }
 
@@ -1051,12 +1051,12 @@ void AdjustLiveList(
         }
         if ( Test > ftime )
         {
-            LiveList.splice(LiveList.end(), BufList, BufList.begin(), --iter);
+            LiveList.splice(LiveList.end(), BufList, BufList.begin(), iter);
             break;
         }
         if ( Test == ftime )
         {
-            LiveList.splice(LiveList.end(), BufList, BufList.begin(), iter);
+            LiveList.splice(LiveList.end(), BufList, BufList.begin(), ++iter);
             break;
         }
     }

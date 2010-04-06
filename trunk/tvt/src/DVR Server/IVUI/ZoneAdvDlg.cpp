@@ -55,6 +55,8 @@ BEGIN_MESSAGE_MAP(CZoneAdvDlg, CDialog)
     ON_BN_CLICKED(IDC_CHECK_PERSON, &CZoneAdvDlg::OnBnClickedCheckPerson)
     ON_BN_CLICKED(IDC_CHECK_VEHICLE, &CZoneAdvDlg::OnBnClickedCheckVehicle)
     ON_BN_CLICKED(IDC_CHECK_OTHER, &CZoneAdvDlg::OnBnClickedCheckOther)
+    ON_BN_CLICKED(IDC_V_VIEW, &CZoneAdvDlg::OnBnClickedVView)
+    ON_BN_CLICKED(IDC_P_VIEW, &CZoneAdvDlg::OnBnClickedPView)
 END_MESSAGE_MAP()
 
 
@@ -92,29 +94,28 @@ BOOL CZoneAdvDlg::OnInitDialog()
     m_strLoiters.LoadString(IDS_Loiters_Time);
     m_strLeftBehind.LoadString(IDS_LeftBehind_Time);
 
-    switch (m_type)
-    {
-    case IV_Invade:
-    case IV_Leave_Disappear:
-        HideAllTimeWindow();
-        break;
-    case IV_LeftBehind:
-        GetDlgItem(IDC_LOITERS)->ShowWindow(SW_HIDE);
-        GetDlgItem(IDC_IDC_LOITERS_EDIT)->ShowWindow(SW_HIDE);
-        break;
-    case IV_Loiters:
-        GetDlgItem(IDC_LEFTBEHIND_EDIT)->ShowWindow(SW_HIDE);
-        GetDlgItem(IDC_LEFTBEHIND)->ShowWindow(SW_HIDE);
-        break;
-    case IV_Stage_Change:
-        HideAllTimeWindow();
-        break;
-    default:
-        TRACE("CZoneAdvDlg::OnInitDialog() Type Error!\n");
-    }
+    //switch (m_type)
+    //{
+    //case IV_Invade:
+    //case IV_Leave_Disappear:
+    //    HideAllTimeWindow();
+    //    break;
+    //case IV_LeftBehind:
+    //    GetDlgItem(IDC_LOITERS)->ShowWindow(SW_HIDE);
+    //    GetDlgItem(IDC_IDC_LOITERS_EDIT)->ShowWindow(SW_HIDE);
+    //    break;
+    //case IV_Loiters:
+    //    GetDlgItem(IDC_LEFTBEHIND_EDIT)->ShowWindow(SW_HIDE);
+    //    GetDlgItem(IDC_LEFTBEHIND)->ShowWindow(SW_HIDE);
+    //    break;
+    //case IV_Stage_Change:
+    //    HideAllTimeWindow();
+    //    break;
+    //default:
+    //    TRACE("CZoneAdvDlg::OnInitDialog() Type Error!\n");
+    //}
 
-    // [] 看需要刷新不？
-    UpdateData(FALSE);
+    UpdateUIByRule();  
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -150,7 +151,7 @@ void CZoneAdvDlg::GetObjSet()
             throw 0;
         }
     }
-    nValue = TARGET_CLASSIFICATION_ANYTHING;
+    //nValue = TARGET_CLASSIFICATION_ANYTHING;
 }
 
 void CZoneAdvDlg::GetViewSet()
@@ -294,4 +295,98 @@ void CZoneAdvDlg::OnBnClickedCheckOther()
     {
         m_AllCheck.SetCheck(BST_UNCHECKED);
     }
+}
+
+void CZoneAdvDlg::UpdateUIByRule()
+{
+    WPG_AOIEventDescription& aoiDes = m_pRule->ruleDescription.description.aoiEventDescription;
+    switch (m_type)
+    {
+    case IV_Invade:
+    case IV_Leave_Disappear:
+        HideAllTimeWindow();
+        SetObjSet();
+        SetViewSet();
+        break;
+    case IV_LeftBehind:
+        GetDlgItem(IDC_LOITERS)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_IDC_LOITERS_EDIT)->ShowWindow(SW_HIDE);
+        SetObjSet();
+        SetViewSet();
+        m_nLeftBehindEdit = aoiDes.actionType.leftBehind.duration;
+        break;
+    case IV_Loiters:
+        GetDlgItem(IDC_LEFTBEHIND_EDIT)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_LEFTBEHIND)->ShowWindow(SW_HIDE);
+        SetObjSet();
+        SetViewSet();
+        m_nLoitersEdit = aoiDes.actionType.loiters.duration;
+        break;
+    case IV_Stage_Change:
+        HideAllTimeWindow();
+    default:
+        ASSERT(FALSE);
+        return;
+    }
+    UpdateData(FALSE);
+}
+
+void CZoneAdvDlg::SetObjSet()
+{
+    unsigned int& nValue = m_pRule->ruleDescription.targetClassification;
+    if ( TARGET_CLASSIFICATION_ANYTHING == nValue )
+    {
+        SetAllCheck();
+        return;
+    }
+
+    if ( nValue & TARGET_CLASSIFICATION_HUMAN )
+    {
+        m_PersonCheck.SetCheck(BST_CHECKED);
+    }
+    if ( nValue & TARGET_CLASSIFICATION_VEHICLE )
+    {
+        m_VehicleCheck.SetCheck(BST_CHECKED);
+    }
+    if ( nValue & TARGET_CLASSIFICATION_UNKNOWN )
+    {
+        m_OtherCheck.SetCheck(BST_CHECKED);
+    }
+}
+
+void CZoneAdvDlg::SetViewSet()
+{
+    WPG_AOIEventDescription& aoiDes = m_pRule->ruleDescription.description.aoiEventDescription;
+    if ( GROUND_PLANE == aoiDes.planeType ) 
+    {
+        m_VerticalBt.SetCheck(BST_CHECKED);
+        m_ParallelBt.SetCheck(BST_UNCHECKED);
+    }
+    else
+    {
+        m_VerticalBt.SetCheck(BST_UNCHECKED);
+        m_ParallelBt.SetCheck(BST_CHECKED);
+    }
+}
+
+void CZoneAdvDlg::OnBnClickedVView()
+{
+    if ( BST_UNCHECKED == m_VerticalBt.GetCheck() )
+    {
+        return;
+    }
+
+    m_VerticalBt.SetCheck(BST_CHECKED);
+    m_ParallelBt.SetCheck(BST_UNCHECKED);
+}
+
+void CZoneAdvDlg::OnBnClickedPView()
+{
+    if ( BST_UNCHECKED == m_ParallelBt.GetCheck() )
+    {
+        return;
+    }
+
+    m_VerticalBt.SetCheck(BST_UNCHECKED);
+    m_ParallelBt.SetCheck(BST_CHECKED);
 }

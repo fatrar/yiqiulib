@@ -135,21 +135,21 @@ struct IIVLiveViewer :
     */
     virtual void AddRule(
         int nChannelID,
-        WPG_Rule& Rule)=0;
+        const WPG_Rule& Rule)=0;
 
     /**
     *@note 删除规则
     */
     virtual void RemoveRule(
         int nChannelID,
-        WPG_Rule& Rule)=0;
+        BYTE (&ID)[16])=0;
 
     /**
     *@note 更新规则
     */
     virtual void ModifyRule(
         int nChannelID,
-        WPG_Rule& Rule)=0;
+        const WPG_Rule& Rule)=0;
 
     /**
     *@note 清空该通道的所有规则

@@ -167,8 +167,9 @@ BOOL CPlayerWnd::OnVideoPlay(
     HWND hwnd, int nFlag,
     DWORD dwUserData )
 {
-    static IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
-    pViewer->Paint(dwUserData, dc, *rect, *pTime);
+    static IIVLiveViewer* pIVLiveViewer = IVLiveFactory::GetLiveViewer();
+    pIVLiveViewer->Paint(dwUserData, dc, *rect, *pTime);
+    pIVLiveViewer->PaintRule(dwUserData, dc, *rect);
     return TRUE;
 }
 

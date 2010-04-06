@@ -47,8 +47,8 @@ namespace ViewHelper
    {
        int nWidth = ClientRect.right-ClientRect.left;
        int nHeight = ClientRect.bottom-ClientRect.top;
-       x = int(nWidth*p.x);
-       y = int(nHeight*p.y);
+       x = int(nWidth*p.x) + ClientRect.left;
+       y = int(nHeight*p.y) + ClientRect.top;
    }
 
     /**
