@@ -31,16 +31,11 @@ public:
 protected:
     virtual BOOL OnInitDialog();
     virtual BOOL GatherUseSet();
+    virtual void SimulationEnable(BOOL bEnable);
 };
 
 typedef CInvadeDlg CLeaveDisappearDlg;
-//class CLeaveDisappearAddDlg:
-//    public CRuleAddMainDlg
-//{
-//protected:
-//    virtual BOOL OnInitDialog();
-//    virtual BOOL GatherUseSet();
-//};
+
 
 class CLeftBehindDlg:
     public CRuleMainBaseDlg
@@ -50,16 +45,10 @@ public:
 protected:
     virtual BOOL OnInitDialog();
     virtual BOOL GatherUseSet();
+    virtual void SimulationEnable(BOOL bEnable);
 };
  
 typedef CLeftBehindDlg CLoitersAddDlg;
-//class CLoitersAddDlg:
-//    public CRuleAddMainDlg
-//{
-//protected:
-//    virtual BOOL OnInitDialog();
-//    virtual BOOL GatherUseSet();
-//};
 
 class CStatisticDlg:
     public CRuleMainBaseDlg
@@ -69,6 +58,7 @@ public:
 protected:
     virtual BOOL OnInitDialog();
    // virtual BOOL GatherUseSet();
+
 };
 
 class CVehicleRetrogradeDlg:

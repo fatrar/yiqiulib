@@ -30,7 +30,8 @@ CRuleMainBaseDlg::CRuleMainBaseDlg(CWnd* pParent)
     , m_RectangleDrawer(NULL)
     , m_PolygonDrawer(NULL)
     , m_EditMode(FALSE)
-    , m_bUse(FALSE)
+    , m_bUse(TRUE)
+    , m_ChangeCursor(FALSE)
 {
      m_pDrawContainer = Windows::CreateDrawContainer();
      m_LineDrawer = m_pDrawContainer->Add(Windows::IDrawer_ArrowLine);
@@ -59,6 +60,8 @@ void CRuleMainBaseDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Rectangle_Check, m_RectangleBT);
     DDX_Control(pDX, IDC_Polygon_Check, m_PolygonBT);
     DDX_Control(pDX, IDC_Alarm_Occur_STATIC, m_AlarmOccurStatic);
+    DDX_Control(pDX, IDOK, m_OKBt);
+    DDX_Control(pDX, IDCANCEL, m_CancelBt);
 }
 
 
@@ -79,6 +82,8 @@ BEGIN_MESSAGE_MAP(CRuleMainBaseDlg, CDialog)
     ON_BN_CLICKED(IDC_Rectangle_Check, &CRuleMainBaseDlg::OnBnClickedRectangleCheck)
     ON_WM_CLOSE()
     ON_WM_PAINT()
+    ON_WM_TIMER()
+    ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 
@@ -231,28 +236,45 @@ void CRuleMainBaseDlg::OnBnClickedFilterBt()
 void CRuleMainBaseDlg::OnBnClickedSimulationBt()
 {
     // È¡Êý¾Ý
-    GatherUseSet(); 
+    BOOL bRc = GatherUseSet();
+    if ( !bRc )
+    {
+        AfxMessageBox(_T("Please Input Rule!"));
+        return;
+    }
+
     if ( m_bUse )
     {
-        BOOL bRc = g_IIVDeviceBase2->StartSimulation(
+        bRc = g_IIVDeviceBase2->StartSimulation(
             m_nCurrentChan, this, *m_pRule);
-        if ( bRc )
+        if ( !bRc )
         {
             AfxMessageBox(_T("StartSimulation Failed!"));
             return;
         }
 
-         m_SimulationBT.SetWindowText(_T("Stop"));
+        SetTimer(Start_Simulation, Simulation_Wait_Time, NULL);
+        SimulationEnable(!m_bUse);
+        m_SimulationBT.SetWindowText(_T("Stop"));
+        m_ChangeCursor = TRUE;
+        BeginWaitCursor();
+        m_pDrawContainer->EnableWindow(FALSE);
     }
     else
     {
-        BOOL bRc = g_IIVDeviceBase2->StopSimulation(m_nCurrentChan);
-        if ( bRc )
+        bRc = g_IIVDeviceBase2->StopSimulation(m_nCurrentChan);
+        if ( !bRc )
         {
             AfxMessageBox(_T("StopSimulation Failed!"));
             return;
         }
+
+        SetTimer(Start_Simulation, Simulation_Wait_Time, NULL);
+        SimulationEnable(!m_bUse);
         m_SimulationBT.SetWindowText(_T("Simulation"));
+        m_ChangeCursor = TRUE;
+        BeginWaitCursor();
+        m_pDrawContainer->EnableWindow(TRUE);
     }
     m_bUse = !m_bUse;
 }
@@ -448,6 +470,34 @@ void CRuleMainBaseDlg::OnAlarmCallBack(
 
 }
 
+void CRuleMainBaseDlg::SimulationEnable( BOOL bEnable )
+{
+    m_OKBt.EnableWindow(bEnable);
+    m_CancelBt.EnableWindow(bEnable);
+}
+
+void CRuleMainBaseDlg::OnTimer(UINT_PTR nIDEvent)
+{
+    // TODO: Add your message handler code here and/or call default
+    if ( nIDEvent == Start_Simulation )
+    {
+        KillTimer(Start_Simulation);
+        m_ChangeCursor = FALSE;
+        EndWaitCursor();
+    }
+    __super::OnTimer(nIDEvent);
+}
 
 // End of file
 
+
+BOOL CRuleMainBaseDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+    if (m_ChangeCursor)
+    {
+        RestoreWaitCursor();
+        return TRUE;
+    }
+
+    return __super::OnSetCursor(pWnd, nHitTest, message);
+}

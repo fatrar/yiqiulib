@@ -36,7 +36,7 @@ public:
 
 public:
     void Init(IVRuleType type, WPG_Rule* pRule);
-
+    
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
@@ -46,10 +46,10 @@ protected:
     afx_msg void OnBnClickedCheckPerson();
     afx_msg void OnBnClickedCheckVehicle();
     afx_msg void OnBnClickedCheckOther();
+
+    afx_msg void OnBnClickedVView();
+    afx_msg void OnBnClickedPView();
 	DECLARE_MESSAGE_MAP()
-
-public:
-
 
 private:
     CString m_StrRuleName;
@@ -74,13 +74,18 @@ private:
    
     WPG_Rule* m_pRule;
     IVRuleType m_type;
-private:
+
+protected:
     void SetAllCheck();  
     void HideAllTimeWindow();
     void HideObjAndView();
 
     void GetObjSet();
     void GetViewSet();
+
+    void UpdateUIByRule();
+    void SetObjSet();
+    void SetViewSet(); 
 };
 
 

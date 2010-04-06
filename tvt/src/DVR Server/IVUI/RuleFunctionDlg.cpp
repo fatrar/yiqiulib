@@ -73,6 +73,32 @@ BOOL CInvadeDlg::GatherUseSet()
     return TRUE;
 }
 
+void CInvadeDlg::SimulationEnable( BOOL bEnable )
+{
+    m_LineBT.EnableWindow(bEnable);
+    m_ZoneBT.EnableWindow(bEnable);
+    m_SelectBT.EnableWindow(bEnable);
+
+    m_ColourBT.EnableWindow(bEnable);
+    m_AdvBT.EnableWindow(bEnable);
+    m_FilterBT.EnableWindow(bEnable);
+    m_OKBt.EnableWindow(bEnable);
+    m_CancelBt.EnableWindow(bEnable);
+
+    if ( m_nToolsChoose == IVUtil::Choose_Line )
+    {
+        m_LineRightBT.EnableWindow(bEnable);
+        m_LineLeftBT.EnableWindow(bEnable);
+        m_LineBothBT.EnableWindow(bEnable);
+    }
+    else if ( m_nToolsChoose == IVUtil::Choose_Rectangle ||
+              m_nToolsChoose == IVUtil::Choose_Polygon )
+    {
+        m_RectangleBT.EnableWindow(bEnable);
+        m_PolygonBT.EnableWindow(bEnable);
+    }
+}
+
 BOOL CLeftBehindDlg::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
@@ -112,6 +138,35 @@ BOOL CLeftBehindDlg::GatherUseSet()
         return FALSE;
     }
     return TRUE;
+}
+
+void CLeftBehindDlg::SimulationEnable( BOOL bEnable )
+{
+    if ( m_nToolsChoose == IVUtil::Choose_Rectangle ||
+         m_nToolsChoose == IVUtil::Choose_Polygon )
+    {
+        m_SelectBT.EnableWindow(bEnable);
+        m_ZoneBT.EnableWindow(bEnable);
+        m_LineBT.EnableWindow(bEnable);
+
+        m_RectangleBT.EnableWindow(bEnable);
+        m_PolygonBT.EnableWindow(bEnable);
+
+        m_ColourBT.EnableWindow(bEnable);
+        m_AdvBT.EnableWindow(bEnable);
+        m_FilterBT.EnableWindow(bEnable);
+        m_OKBt.EnableWindow(bEnable);
+        m_CancelBt.EnableWindow(bEnable);
+    }
+    //else if ()
+    //{
+    //    m_RectangleBT.EnableWindow(bEnable);
+    //    m_PolygonBT.EnableWindow(bEnable);
+    //}
+    else 
+    {
+        ASSERT(FALSE);
+    }
 }
 
 BOOL CStatisticDlg::OnInitDialog()

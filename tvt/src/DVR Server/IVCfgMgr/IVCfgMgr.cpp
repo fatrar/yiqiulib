@@ -64,16 +64,17 @@ IIVCfgMgr::IVVistor CIVCfgMgr::Add(
     TiXmlElement* pChannelEle = TinyXmlUtil::CreateChildEle(
         m_pRootEle, szBuf );
 
-    TiXmlElement* pRuleEle = TinyXmlUtil::CreateChildEle(
-        pChannelEle, _Rule);
+    TiXmlElement* pRuleEle = new TiXmlElement(_Rule);
     if ( !_AddRule(pRuleEle, Rule) )
     {
+        delete pRuleEle;
         return End();
     }
     
     assert(_AddSchedule(pRuleEle, Sch));
     //TinyXmlUtil::SetChildBinaryTextData(pRuleEle, _Schudule, Sch);
     TinyXmlUtil::SetChildBinaryTextData(pRuleEle, _AlarmOut, Alarm);
+    pChannelEle->LinkEndChild(pRuleEle);
     return IVVistor(pRuleEle);
 }
 

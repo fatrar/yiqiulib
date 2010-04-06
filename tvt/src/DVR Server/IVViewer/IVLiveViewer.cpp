@@ -62,10 +62,10 @@ BOOL CIVLiveViewer::GetStatisticState(
 
 void CIVLiveViewer::AddRule( 
     int nChannelID,
-    WPG_Rule& Rule )
+    const WPG_Rule& Rule )
 {
     RuleGraphMap& GraphMap = m_AllRuleGraph[nChannelID];
-    IV_RuleID& RuleID = (IV_RuleID&)Rule.ruleId;
+    const IV_RuleID& RuleID = (const IV_RuleID&)Rule.ruleId;
     {
         AutoLockAndUnlock(m_cs[nChannelID]);
         RuleGraphMap::iterator iter = GraphMap.find(RuleID);
@@ -89,10 +89,10 @@ void CIVLiveViewer::AddRule(
 
 void CIVLiveViewer::RemoveRule(
     int nChannelID,
-    WPG_Rule& Rule )
+    BYTE (&ID)[16] )
 {
     RuleGraphMap& GraphMap = m_AllRuleGraph[nChannelID];
-    IV_RuleID& RuleID = (IV_RuleID&)Rule.ruleId;
+    IV_RuleID& RuleID = (IV_RuleID&)ID;
     {
         AutoLockAndUnlock(m_cs[nChannelID]);
         RuleGraphMap::iterator iter = GraphMap.find(RuleID);
@@ -109,10 +109,10 @@ void CIVLiveViewer::RemoveRule(
 
 void CIVLiveViewer::ModifyRule(
     int nChannelID,
-    WPG_Rule& Rule )
+    const WPG_Rule& Rule )
 {
     RuleGraphMap& GraphMap = m_AllRuleGraph[nChannelID];
-    IV_RuleID& RuleID = (IV_RuleID&)Rule.ruleId;
+    const IV_RuleID& RuleID = (const IV_RuleID&)Rule.ruleId;
     {
         AutoLockAndUnlock(m_cs[nChannelID]);
         RuleGraphMap::iterator iter = GraphMap.find(RuleID);
@@ -151,6 +151,7 @@ void CIVLiveViewer::PaintRule(
     }
 
     {
+        HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen); 
         AutoLockAndUnlock(m_cs[nChannelID]);
         RuleGraphMap::iterator iter = GraphMap.begin();
         for ( ; iter!=GraphMap.end(); ++iter )
@@ -162,12 +163,13 @@ void CIVLiveViewer::PaintRule(
                 PaintPolygon(dc, rect, pGraphInfo->PointInfo.PolygonInfo);
             	break;
             case IDrawer_ArrowLine:
-            	break;
                 PaintArrowLine(dc, rect, pGraphInfo->PointInfo.LineInfo);
+                break;
             default:
             	break;
             }
         }
+        ::SelectObject(dc, hOldPen);
     }
 }
 
@@ -270,6 +272,9 @@ void CIVLiveViewer::PaintArrowLine(
     int x[2], y[2];
     ViewHelper::TranslateWPGPoint(rect, Line.startPoint, x[0], y[0]);
     ViewHelper::TranslateWPGPoint(rect, Line.endPoint, x[1], y[1]);
+
+    ::MoveToEx(dc, x[0], y[0], NULL);  
+    ::LineTo(dc, x[1], y[1]);
 
     // 利用垂直和两点的距离算出两个点的坐标
     POINT MedPoint;
