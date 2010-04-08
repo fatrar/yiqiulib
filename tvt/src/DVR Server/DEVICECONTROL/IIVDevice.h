@@ -281,12 +281,15 @@ struct IIVDeviceSetter
     /**
     *@note 设置智能数据发送的回调，由IVLiveFactory得到这个指针
     */
-    virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender)=0;
+    virtual void SetIVDataCallBack(
+        IIVDataSender* pIVDataSender,
+        IIVStatisticFresher* pIVStatisticFresher)=0;
 
     /**
     *@note 设置报警截图回调
     */
-    virtual void SetSnapShotCallBack(ISnapShotSender* pSnapShotSender)=0;
+    virtual void SetSnapShotCallBack(
+        ISnapShotSender* pSnapShotSender)=0;
 };
 
 
@@ -316,7 +319,8 @@ struct IVideoSend
     virtual BOOL OnVideoSend(FRAMEBUFSTRUCT *bufStruct) = 0;
 };
 
-struct IIVSimulationAlarmCallBack
+struct IIVSimulationAlarmCallBack :
+    public IIVStatisticFresher
 {
     virtual void OnAlarmCallBack(
         IVRuleType type,

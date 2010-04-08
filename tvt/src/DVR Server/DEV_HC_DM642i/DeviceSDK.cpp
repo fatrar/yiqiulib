@@ -222,6 +222,11 @@ BOOL CDeviceSDK::GetAllChannelStatus(DWORD StatusType,DWORD StatusLen,DWORD	pChS
 
 BOOL CDeviceSDK::SetChannelStatus(DWORD StatusType, DWORD index,long Status)
 {
+    //if ( IDNO == MessageBox(NULL, _T("Is SetChannelStatus?"), _T("Info"), MB_YESNO))
+    //{
+    //    return TRUE;
+    //}
+
 	ERROR_RETURN_FALSE(!m_bInitialized);
 
 	if (index >= 4 * m_pDSP->GetDevNum())
@@ -445,7 +450,7 @@ BOOL CDeviceSDK::GetVideoStreamInfo(DWORD nStreamtype, DWORD VideoSizeType, BITM
 		pBmpHdr->biClrUsed = 0;
 		pBmpHdr->biClrImportant = 0;	
 		pBmpHdr->biBitCount = 16;
-		pBmpHdr->biCompression = MAKEFOURCC('T', 'V', 'T', 'X');
+		pBmpHdr->biCompression = MAKEFOURCC('X', 'V', 'I', 'D');
 	}
 
 	if (nStreamtype == VIDEO_STREAM_NET)
@@ -457,7 +462,7 @@ BOOL CDeviceSDK::GetVideoStreamInfo(DWORD nStreamtype, DWORD VideoSizeType, BITM
 		pBmpHdr->biClrUsed = 0;
 		pBmpHdr->biClrImportant = 0;	
 		pBmpHdr->biBitCount = 16;
-		pBmpHdr->biCompression = MAKEFOURCC('T', 'V', 'T', 'X');
+		pBmpHdr->biCompression = MAKEFOURCC('X', 'V', 'I', 'D');
 	}
 	
 	if (nStreamtype == VIDEO_STREAM_MOBILE )
@@ -482,7 +487,7 @@ BOOL CDeviceSDK::GetVideoStreamInfo(DWORD nStreamtype, DWORD VideoSizeType, BITM
 		pBmpHdr->biClrUsed = 0;
 		pBmpHdr->biClrImportant = 0;	
 		pBmpHdr->biBitCount = 16;
-		pBmpHdr->biCompression = MAKEFOURCC('T', 'V', 'T', 'X');
+		pBmpHdr->biCompression = MAKEFOURCC('X', 'V', 'I', 'D');
 	}
 	
 	switch (VideoSizeType)

@@ -139,14 +139,6 @@ struct IIVLiveViewer :
         const RECT& rect)=0;
 
     /**
-    *@note 显示规则统计
-    */
-    virtual void PaintStatistic(
-        int nChannelID,
-        const HDC dc,
-        const RECT& rect)=0;
-
-    /**
     *@note 设置是否显示规则图形和统计
     */
     virtual void ShowRuleAndStatistic(

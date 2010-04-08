@@ -57,12 +57,19 @@ LRESULT CSnapShotWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& b
 LRESULT CSnapShotWnd::OnEraseBkgnd(HDC hdc)
 {
     //return FALSE;
+    CDCHandle dc(hdc);
+    //HBRUSH hOldBrush = dc.SelectStockBrush(BLACK_BRUSH);
+    RECT rect;
+    GetClientRect(&rect);
+    dc.FillSolidRect(&rect, RGB(0,0,0));
+    
+    //this->SetMsgHandled(FALSE);// SetHandle(FALSE)£»
     return TRUE; // background is erased
 }
 
 LRESULT CSnapShotWnd::OnPaint(HDC hdc)
 {
-    CPaintDC dc(m_hWnd);   
+    CPaintDC dc(m_hWnd);
     return 0;
 }
  
@@ -140,7 +147,7 @@ HWND CSnapShotWnd::Create(
     }
 
     int nPicCtrlWidth = int((nWidth-(Max_SnapShot_Pic_Count+1)*PicCtrl_X_Start)*1.0/Max_SnapShot_Pic_Count);
-    int nPicCtrlHeight = int(nPicCtrlWidth*288/352.0);
+    int nPicCtrlHeight = int(nPicCtrlWidth*1.0*PicCtrl_Height/PicCtrl_Width);
     int nAllHeight = nPicCtrlHeight + 2*PicCtrl_Y_Start + Bt_Height;
    
     m_MaxRect.SetRect(0,0,nWidth,nAllHeight);
@@ -161,7 +168,7 @@ HWND CSnapShotWnd::Create(
 
     CRect BTRect(0,0,nWidth,Bt_Height);
     m_ShowBt.Create(
-        *this, _U_RECT(BTRect),
+        *this, BTRect,
         _T("Close"), WS_CHILD|WS_VISIBLE,0,
         IDC_CLICKBT );
     m_ShowBt.ShowWindow(SW_SHOW);
