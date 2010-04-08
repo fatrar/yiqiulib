@@ -116,6 +116,11 @@ CDSP::CDSP()
     , m_SimulationChanID(Invaild_ChannelID)
     , m_dwVideoFormat(DVRVIDEO_STANDARD_PAL)
 {
+    //__asm
+    //{
+    //     int 3
+    //}
+   
     int i;
     for (i = 0; i < MAX_CHANNEL_NUM; i++)
     {
@@ -1059,7 +1064,8 @@ void CDSP::ProcessAud(INT nDevice)
 						m_pAudBuf[nDevice][nBufIndex].ChannelIndex = nChannel;
 						m_pAudBuf[nDevice][nBufIndex].BufLen = nLen;
 						m_pAudBuf[nDevice][nBufIndex].nStreamID = VIDEO_STREAM_PREVIEW;
-						m_pAudBuf[nDevice][nBufIndex].BufferPara = VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nBufIndex;
+						m_pAudBuf[nDevice][nBufIndex].BufferPara = BufPara(nBufIndex,nDevice,nChannel,VIDEO_STREAM_PREVIEW);
+                            //VIDEO_STREAM_PREVIEW << 16 | nDevice << 8 | nBufIndex;
 						
 						m_pAudioCallBack(&m_pAudBuf[nDevice][nBufIndex]);
 					}
@@ -1086,7 +1092,11 @@ void CDSP::ProcessAud(INT nDevice)
 		   pST[IN]--------指向该帧BUF区在DRIVER层所属的BUF头,以便释放DRIVER层的BUF
 返 回 值 : 0--失败(该帧没有生效，即没有上传到AP)	1--成功上传到AP
 */
-int CDSP::CmprssStreamProcessRcd(int nDeviceNo, const PTVT_REC_VBI& pVBI, const PBYTE pVideoData, const PTVT_CAP_STATUS& pST)
+int CDSP::CmprssStreamProcessRcd(
+    int nDeviceNo,
+    const PTVT_REC_VBI& pVBI,
+    const PBYTE pVideoData,
+    const PTVT_CAP_STATUS& pST)
 {
 	int nChl = nDeviceNo * CHANNEL_PER_DEVICE + pVBI->byChannel;	//通道号
 	int	nIndex = 0;	//选中缓冲区编号
@@ -1124,7 +1134,8 @@ int CDSP::CmprssStreamProcessRcd(int nDeviceNo, const PTVT_REC_VBI& pVBI, const 
 	m_pCapBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
 	m_pCapBuf[nDeviceNo][nIndex].BufLen = nLen;
 	m_pCapBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_CAPTURE;
-	m_pCapBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_CAPTURE << 16 | nDeviceNo << 8 | nIndex;
+	m_pCapBuf[nDeviceNo][nIndex].BufferPara = BufPara(nIndex,nDeviceNo,nChl,VIDEO_STREAM_CAPTURE);
+       // VIDEO_STREAM_CAPTURE << 16 | nDeviceNo << 8 | nIndex;
 	m_pCapBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
 	m_pCapBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
 	m_pCapBuf[nDeviceNo][nIndex].FrameTime = m_pCapBuf[nDeviceNo][nIndex].localTime;
@@ -1197,7 +1208,8 @@ int CDSP::CmprssStreamProcessNet(int nDeviceNo, const PTVT_REC_VBI& pVBI, const 
 	m_pNetBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
 	m_pNetBuf[nDeviceNo][nIndex].BufLen = nLen;
 	m_pNetBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_NET;
-	m_pNetBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_NET << 16 | nDeviceNo << 8 | nIndex;
+	m_pNetBuf[nDeviceNo][nIndex].BufferPara = BufPara(nIndex,nDeviceNo,nChl,VIDEO_STREAM_NET);
+        //VIDEO_STREAM_NET << 16 | nDeviceNo << 8 | nIndex;
 	m_pNetBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
 	m_pNetBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
 	m_pNetBuf[nDeviceNo][nIndex].FrameTime = m_pNetBuf[nDeviceNo][nIndex].localTime;
@@ -1273,7 +1285,8 @@ int CDSP::CmprssStreamProcessMobile(int nDeviceNo, const PTVT_REC_VBI& pVBI, con
 	m_pMobileBuf[nDeviceNo][nIndex].ChannelIndex = nChl;
 	m_pMobileBuf[nDeviceNo][nIndex].BufLen = nLen;
 	m_pMobileBuf[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_MOBILE;
-	m_pMobileBuf[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_MOBILE << 16 | nDeviceNo << 8 | nIndex;
+	m_pMobileBuf[nDeviceNo][nIndex].BufferPara = BufPara(nIndex,nDeviceNo,nChl,VIDEO_STREAM_MOBILE);
+       // VIDEO_STREAM_MOBILE << 16 | nDeviceNo << 8 | nIndex;
 	m_pMobileBuf[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
 	m_pMobileBuf[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
 	m_pMobileBuf[nDeviceNo][nIndex].FrameTime = m_pMobileBuf[nDeviceNo][nIndex].localTime;
@@ -1353,7 +1366,8 @@ int CDSP::CmprssStreamProcessNet_RT(int nDeviceNo, const PTVT_REC_VBI& pVBI, con
 	m_pNetBuf_RT[nDeviceNo][nIndex].ChannelIndex = nChl;
 	m_pNetBuf_RT[nDeviceNo][nIndex].BufLen = nLen;
 	m_pNetBuf_RT[nDeviceNo][nIndex].nStreamID = VIDEO_STREAM_NET_REALTIME;
-	m_pNetBuf_RT[nDeviceNo][nIndex].BufferPara = VIDEO_STREAM_NET_REALTIME << 16 | nDeviceNo << 8 | nIndex;
+	m_pNetBuf_RT[nDeviceNo][nIndex].BufferPara = BufPara(nIndex,nDeviceNo,nChl,VIDEO_STREAM_NET_REALTIME);
+        //VIDEO_STREAM_NET_REALTIME << 16 | nDeviceNo << 8 | nIndex;
 	m_pNetBuf_RT[nDeviceNo][nIndex].bIsKeyFrame = pVBI->byKeyFrame;
 
 	m_pNetBuf_RT[nDeviceNo][nIndex].localTime = ChangeTime(pVBI->recVideoTime);
@@ -1476,7 +1490,7 @@ BOOL CDSP::SetParam(int nType, int nChannel, int nValue)
 	pack.value = nValue;
 
     BOOL bNew = TRUE;
-    //{
+    {
         AutoLockAndUnlock(m_pPack[nDevice].CS);
 	    for ( deque<PARAMPACK>::iterator itParam = m_pPack[nDevice].param.begin();
               itParam != m_pPack[nDevice].param.end();
@@ -1495,7 +1509,7 @@ BOOL CDSP::SetParam(int nType, int nChannel, int nValue)
 	    {
 		    m_pPack[nDevice].param.push_back(pack);
 	    }
-   // }
+    }
 	return TRUE;
 }
 

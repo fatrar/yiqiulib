@@ -108,7 +108,7 @@
 			OutputDirectory="..\..\bin\$(ConfigurationName)\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			ATLMinimizesCRunTimeLibraryUsage="true"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
 			>
 			<Tool
@@ -139,11 +139,12 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\Base\Base\Include\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;STRICT;NDEBUG"
-				ExceptionHandling="0"
-				RuntimeLibrary="0"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -161,6 +162,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\DXSDK\Lib;..\..\lib\"
+				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
 			/>

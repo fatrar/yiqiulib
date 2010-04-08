@@ -49,16 +49,11 @@ public:
         const HDC dc,
         const RECT& rect);
 
-    virtual void PaintStatistic(
-        int nChannelID,
-        const HDC dc,
-        const RECT& rect);
-
     virtual void ShowRuleAndStatistic(
         int nChannelID,
         bool bShow);
 
-    // IIVLiveViewer
+    // IIVLiveViewerEx
 public:
     virtual void AddRule(
         int nChannelID,

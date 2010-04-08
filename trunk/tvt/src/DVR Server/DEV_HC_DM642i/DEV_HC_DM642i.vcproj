@@ -109,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy $(OutDir)\$(ProjectName).dll  &quot;D:\Program Files\SuperDVR\SuperDVR\&quot;&#x0D;&#x0A;copy $(OutDir)\$(ProjectName).pdb  &quot;D:\Program Files\SuperDVR\SuperDVR\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

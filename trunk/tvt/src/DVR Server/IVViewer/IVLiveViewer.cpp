@@ -102,9 +102,9 @@ void CIVLiveViewer::PaintRule(
         return;
     }
 
+    HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen);
+    HGDIOBJ hOldBrush = ::SelectObject(dc, m_hBrush);
     {
-        HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen);
-        HGDIOBJ hOldBrush = ::SelectObject(dc, m_hBrush);
         AutoLockAndUnlock(m_cs[nChannelID]);
         RuleGraphMap::iterator iter = GraphMap.begin();
         for ( ; iter!=GraphMap.end(); ++iter )
@@ -128,17 +128,9 @@ void CIVLiveViewer::PaintRule(
             	break;
             }
         }
-        ::SelectObject(dc, hOldPen);
-        ::SelectObject(dc, hOldBrush);
     }
-}
-
-void CIVLiveViewer::PaintStatistic( 
-    int nChannelID, 
-    const HDC dc, 
-    const RECT& rect )
-{
-    
+    ::SelectObject(dc, hOldPen);
+    ::SelectObject(dc, hOldBrush);
 }
 
 // }
@@ -236,6 +228,7 @@ bool CIVLiveViewer::TranslateRuleToGraphInfo(
 {
     const WPG_RuleDescription& Dir = Rule.ruleDescription;
     const WPG_EventDescriptionUnion& DirUnion = Dir.description;
+    IVRuleType t = ((IV_RuleID&)(Rule.ruleId)).RuleID.nType;
     switch (Dir.type)
     {
     case TRIPWIRE_EVENT:
@@ -245,6 +238,7 @@ bool CIVLiveViewer::TranslateRuleToGraphInfo(
         }
         Info->Type = IDrawer_ArrowLine;
         Info->PointInfo.LineInfo.Info = DirUnion.tripwireEventDescription;
+        Info->PointInfo.LineInfo.IsStatistic = false;
     	break;
     case AOI_EVENT: 
         if ( Info == NULL )
@@ -253,6 +247,7 @@ bool CIVLiveViewer::TranslateRuleToGraphInfo(
         }
         Info->Type = IDrawer_Polygon;
         Info->PointInfo.PolygonInfo = DirUnion.aoiEventDescription.polygon;
+        Info->PointInfo.LineInfo.IsStatistic = t==IV_Statistic ? true:false;
         break;
     case SCENE_CHANGE_EVENT:
     default:

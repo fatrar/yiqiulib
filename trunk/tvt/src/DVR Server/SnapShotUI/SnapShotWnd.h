@@ -22,9 +22,9 @@
 
 
 typedef CWinTraits<
-      WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN| 
-      WS_CLIPSIBLINGS|WS_BORDER|
-      WS_EX_DLGMODALFRAME, 0> CMyControlWinTraits;
+      WS_CHILD|WS_VISIBLE/*|WS_CLIPCHILDREN| WS_CLIPSIBLINGS*/,/*|WS_BORDER*/
+      //WS_CHILD|WS_VISIBLE|WS_POPUPWINDOW,
+      /*WS_EX_DLGMODALFRAME|WS_EX_TOPMOST*/WS_EX_TOOLWINDOW > CMyControlWinTraits;
 
 
 class CSnapShotWnd
@@ -38,13 +38,13 @@ public:
 protected:
     enum
     {
-        PicCtrl_X_Start = 10,
-        PicCtrl_Y_Start = 10,
-        PicCtrl_X_Offset = 20,
-        PicCtrl_Y_Offset = 20,
+        PicCtrl_X_Start = 5,
+        PicCtrl_Y_Start = 5,
+        PicCtrl_X_Offset = 10,
+        PicCtrl_Y_Offset = 10,
 
         PicCtrl_Width = 352,
-        PicCtrl_Height = 288,
+        PicCtrl_Height = 240,
 
         Bt_Height = 20,
 
