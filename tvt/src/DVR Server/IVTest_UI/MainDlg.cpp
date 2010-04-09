@@ -147,6 +147,9 @@ void CMainDlg::Init()
         RecBmpHeader.biHeight = 240;
     }
 
+    /**
+    *@note 1. Load Library
+    */
     m_Hinstance = ::LoadLibrary(_T("DEV_HC_DM642i.dll"));
     if ( m_Hinstance == NULL )
     {
@@ -154,7 +157,9 @@ void CMainDlg::Init()
         return;
     }
 
-    /*加载完Dll后的操作*/
+    /**
+    *@note 2. Get Device Object and Init Device
+    */
     m_pDeviceManager = (CDeviceManager*)::GetProcAddress(
         m_Hinstance, "g_Dev_Object");
     assert(m_pDeviceManager != NULL);
@@ -168,22 +173,46 @@ void CMainDlg::Init()
         return;
     }
 
-    m_pSnapShotSender = SnapShotWnd::CreateSnapShotWnd(m_hWnd);
-
+    /**
+    *@note 3.  Get IV operator Object and Init IV Device 
+    *      3.1 Get IV Device Setter
+    */
     GeIVDeviceSetterFn f1 = 
         (GeIVDeviceSetterFn)::GetProcAddress(
         m_Hinstance, g_szIVDeviceFuncName[GeIVDeviceSetter_Index] );
     IIVDeviceSetter* pIVDeviceSetter = f1();
-    pIVDeviceSetter->SetIVDataCallBack( IVLiveFactory::GetDataSender() );
+
+    /**
+    *@note 3.2 Use IV Device Setter, Init IV Alarm Callback and Statistic Callback
+    */
+    pIVDeviceSetter->SetIVDataCallBack(
+        IVLiveFactory::GetDataSender(),
+        IVLiveFactory::GetStatisticFresher() );
+
+    /**
+    *@note 3.3 Create SnapShot Window, And  Use IV Device Setter Set to IV Device
+    */
+    m_pSnapShotSender = SnapShotWnd::CreateSnapShotWnd(m_hWnd);
     pIVDeviceSetter->SetSnapShotCallBack(m_pSnapShotSender);
 
+    /**
+    *@note 4 Get IVDeviceBase2 Interface, And Set To IVUI
+    */
     GetIVDeviceBase2Fn f2 = 
         (GetIVDeviceBase2Fn)::GetProcAddress(
         m_Hinstance, g_szIVDeviceFuncName[GetIVDeviceBase2_Index]);
     IVUIFactory::SetIVOpeator(f2());
+    
+    /**
+    *@note 5 Load IV Config And Set To Device
+    */
+    IVUIFactory::InitIVConfig();
 
+
+    /**
+    *@note 6 General Device Init
+    */
     //m_card_infor.resPassWord = m_pDeviceManager->Password();
-
     m_dwChannelCount = m_pDeviceManager->GetCardOpt(DVRCARDOPT_CHANNEL_NUM);
     DWORD szSwitch[16] = {0};
     for (DWORD i = 0; i < m_dwChannelCount; i++)

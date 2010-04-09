@@ -34,7 +34,7 @@ BOOL CDSP::AddStatistic(
         return FALSE;
     }
 
-    if ( p->IsEnable )
+    if ( p->bIsEnable )
     {
         ASSERT(false);
         TRACE("CDSP::AddStatistic Is Already Start!\n");
@@ -46,7 +46,7 @@ BOOL CDSP::AddStatistic(
     {
         ASSERT(false);
         p->Rule = Rule;
-        p->IsEnable = TRUE;
+        p->bIsEnable = TRUE;
     }
 
     return bRc;
@@ -58,7 +58,7 @@ BOOL CDSP::RemoveStatistic(
     const IV_RuleID& RuleID )
 {
     StatisticSetting* p = m_pStatisticRule[nDeviceID];
-    if ( p == NULL && 
+    if ( p == NULL || 
          0 == memcmp(&RuleID, p->Rule.ruleId, 16) )
     {
         ASSERT(false);
@@ -66,10 +66,10 @@ BOOL CDSP::RemoveStatistic(
         return FALSE;
     }
 
-    if ( !p->IsEnable )
+    if ( !p->bIsEnable )
     {
         ASSERT(false);
-        TRACE("CDSP::AddStatistic Is Already Stop!\n");
+        TRACE("CDSP::RemoveStatistic Is Already Stop!\n");
         return FALSE;
     }
 
@@ -77,10 +77,108 @@ BOOL CDSP::RemoveStatistic(
     if ( bRc )
     {
         ASSERT(false);
-        p->IsEnable = FALSE;
+        p->bIsEnable = FALSE;
     }
     
     return bRc;
+}
+
+BOOL CDSP::EnableStatistic( 
+    int nChannelID,
+    int nDeviceID, 
+    const IV_RuleID& RuleID,
+    BOOL bEnable )
+{
+    StatisticSetting* p = m_pStatisticRule[nDeviceID];
+    if ( p == NULL || 
+         0 == memcmp(&RuleID, p->Rule.ruleId, 16) )
+    {
+        ASSERT(false);
+        TRACE("CDSP::EnableStatistic Failed!\n");
+        return FALSE;
+    }
+
+    if ( !p->bIsEnable )
+    {
+        ASSERT(false);
+        TRACE("CDSP::EnableStatistic Rule is Not Set!\n");
+        return FALSE;
+    }
+    
+    WPG_Rule& Rule = p->Rule;
+    Rule.isEnabled = bEnable;
+    WPG_LINE_CROSS_DIRECTION dir = 
+        Rule.ruleDescription.description.tripwireEventDescription.direction;
+    if ( dir == INVALID_DIRECTION )
+    {
+        TRACE("CDSP::EnableStatistic Invalid Rule!\n");
+        return FALSE;
+    }
+
+    if ( dir == ANY_DIRECTION ||
+         dir == LEFT_TO_RIGHT )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_UPDATE_RULE, nChannelID, 0, Rule);
+    }
+    if ( dir == ANY_DIRECTION ||
+         dir == RIGHT_TO_LEFT )
+    {
+        IV_RuleID& Sencond = (IV_RuleID&)Rule.ruleId;
+        ++Sencond.RuleID.ID;
+        SetIVSpecialParam(
+            PT_PCI_SET_UPDATE_RULE, nChannelID, 0, Rule);
+        --Sencond.RuleID.ID;
+    }
+    return TRUE;
+}
+
+BOOL CDSP::ModifyStatistic( 
+    int nChannelID,
+    int nDeviceID,
+    const WPG_Rule& Rule )
+{
+    StatisticSetting* p = m_pStatisticRule[nDeviceID];
+    if ( p == NULL || 
+         0 == memcmp(Rule.ruleId, p->Rule.ruleId, 16) )
+    {
+        ASSERT(false);
+        TRACE("CDSP::ModifyStatistic Failed!\n");
+        return FALSE;
+    }
+
+    if ( !p->bIsEnable )
+    {
+        ASSERT(false);
+        TRACE("CDSP::ModifyStatistic Rule is Not Set!\n");
+        return FALSE;
+    }
+
+    p->Rule = Rule;
+    WPG_LINE_CROSS_DIRECTION dir = 
+        Rule.ruleDescription.description.tripwireEventDescription.direction;
+    if ( dir == INVALID_DIRECTION )
+    {
+        TRACE("CDSP::ModifyStatistic Invalid Rule!\n");
+        return FALSE;
+    }
+
+    if ( dir == ANY_DIRECTION ||
+         dir == LEFT_TO_RIGHT )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_UPDATE_RULE, nChannelID, 0, Rule);
+    }
+    if ( dir == ANY_DIRECTION ||
+         dir == RIGHT_TO_LEFT )
+    {
+        IV_RuleID& Sencond = (IV_RuleID&)Rule.ruleId;
+        ++Sencond.RuleID.ID;
+        SetIVSpecialParam(
+            PT_PCI_SET_UPDATE_RULE, nChannelID, 0, Rule);
+        --Sencond.RuleID.ID;
+    }
+    return TRUE;
 }
 
 BOOL CDSP::_AddStatistic(

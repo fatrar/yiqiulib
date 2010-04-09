@@ -117,7 +117,7 @@ BOOL CDSP::IsHaveStatisticRule( int nChannelID )
 {
     _Rule_Conifg_Check(nDeviceID);
 
-    return m_pStatisticRule[nDeviceID]->IsEnable;
+    return m_pStatisticRule[nDeviceID]->bIsEnable;
 }
 
 // IIVDeviceBase
@@ -231,7 +231,8 @@ BOOL CDSP::EnableRule(
     CurrentRuleSetting* pCurrentSet = NULL;
     if ( RuleID.RuleID.nType == IV_Statistic )
     {
-        return TRUE;
+        return EnableStatistic(
+            nChannelID, nDeviceID, RuleID, bEnable);
     }
 
     /**
@@ -272,7 +273,8 @@ BOOL CDSP::ModifyRule(
     IV_RuleID& RuleID = (IV_RuleID&)Rule.ruleId;
     if ( RuleID.RuleID.nType == IV_Statistic )
     {
-        return TRUE;
+        return ModifyStatistic(
+            nChannelID, nDeviceID, Rule);
     }
 
     /**
@@ -300,10 +302,11 @@ BOOL CDSP::ModifyRule(
         PT_PCI_SET_UPDATE_RULE, nChannelID, 0, Rule);
 }
 
-BOOL CDSP::ModifySchedule( 
+template<typename T, T CDSP::CurrentRuleSetting::*t>
+BOOL CDSP::ModifyXX(
     int nChannelID, 
     const IV_RuleID& RuleID,
-    const ScheduleSettings& Sch )
+    const T& V )
 {
     _Rule_Conifg_Check(nDeviceID);
 
@@ -316,8 +319,18 @@ BOOL CDSP::ModifySchedule(
     }
 
     CurrentRuleSetting* pCurrentSet = iter->second;
-    pCurrentSet->Sch = Sch;
+    *pCurrentSet.*t = V;
     return TRUE;
+}
+
+BOOL CDSP::ModifySchedule( 
+    int nChannelID, 
+    const IV_RuleID& RuleID,
+    const ScheduleSettings& Sch )
+{
+    return ModifyXX<
+        ScheduleSettings, 
+        &CurrentRuleSetting::Sch>(nChannelID,RuleID,Sch);
 }
 
 BOOL CDSP::ModifyAlarmOut( 
@@ -325,19 +338,9 @@ BOOL CDSP::ModifyAlarmOut(
     const IV_RuleID& RuleID, 
     const AlarmOutSettings& Alarm )
 {
-    _Rule_Conifg_Check(nDeviceID);
-
-    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-    RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
-    if ( iter == RuleSettings.end() )
-    {
-        return FALSE;
-    }
-
-    CurrentRuleSetting* pCurrentSet = iter->second;
-    pCurrentSet->Alarm = Alarm;
-    return TRUE;
+    return ModifyXX<
+        AlarmOutSettings, 
+        &CurrentRuleSetting::Alarm>(nChannelID,RuleID,Alarm);
 }
 
 void CDSP::RegisterLiveDataCallBack(

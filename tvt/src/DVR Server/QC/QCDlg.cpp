@@ -144,7 +144,9 @@ BOOL CQCDlg::OnInitDialog()
         (GeIVDeviceSetterFn)::GetProcAddress(
         m_DSPDLL, g_szIVDeviceFuncName[GeIVDeviceSetter_Index] );
     IIVDeviceSetter* pIVDeviceSetter = f1();
-    pIVDeviceSetter->SetIVDataCallBack( IVLiveFactory::GetDataSender() );
+    pIVDeviceSetter->SetIVDataCallBack(
+        IVLiveFactory::GetDataSender(),
+        IVLiveFactory::GetStatisticFresher() );
     pIVDeviceSetter->SetSnapShotCallBack(m_pSnapShotSender);
 
     GetIVDeviceBase2Fn f2 = 

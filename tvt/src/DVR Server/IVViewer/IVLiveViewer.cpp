@@ -60,7 +60,8 @@ TargetQueue* CIVLiveViewer::GetIVData(
 BOOL CIVLiveViewer::ResetStatistic(
     int nChannelID )
 {
-    m_StatisticData[nChannelID].dwCount = 0;
+    m_StatisticData[nChannelID].dwCount[0] = 
+        m_StatisticData[nChannelID].dwCount[1] = 0;
     return TRUE;
 }
 
@@ -117,11 +118,17 @@ void CIVLiveViewer::PaintRule(
             	break;
             case IDrawer_ArrowLine:
             {
-                DWORD dwShowCount = pGraphInfo->PointInfo.LineInfo.IsStatistic ? m_StatisticData[nChannelID].dwCount : MAXDWORD; 
+                DWORD dwShowCount1(MAXDWORD), dwShowCount2(MAXDWORD);
+                if ( pGraphInfo->PointInfo.LineInfo.IsStatistic )
+                {
+                    dwShowCount1 = m_StatisticData[nChannelID].dwCount[0];
+                    dwShowCount2 = m_StatisticData[nChannelID].dwCount[1];
+                }
                 PaintArrowLine(
                     dc, rect, 
                     pGraphInfo->PointInfo.LineInfo.Info,
-                    dwShowCount );
+                    dwShowCount1,
+                    dwShowCount2 );
                 break;
             }    
             default:
@@ -217,6 +224,18 @@ void CIVLiveViewer::ClearAllRule(
     AutoLockAndUnlock(m_cs[nChannelID]);
     StlHelper::STLDeleteAssociate(GraphMap);
 }
+
+//
+// ******************* IIVStatisticFresher ***************
+// {
+void CIVLiveViewer::OnStatisticFresh(
+    int nChannelID,
+    StatisticDir Dir )
+{
+
+}
+// }
+// IIVStatisticFresher
 
 //
 // ******************* Other **********************
@@ -322,8 +341,8 @@ void DrawArrow(
         sprintf_s(szBuf, "%u", dwShowCount);
         ::TextOutA(
             dc, 
-            p1.x,
-            p1.y+CIVLiveViewer::Point_Radii, 
+            p.x,
+            p.y+CIVLiveViewer::Point_Radii, 
             szBuf, strlen(szBuf));
     }
 }
@@ -332,7 +351,8 @@ void CIVLiveViewer::PaintArrowLine(
     const HDC dc, 
     const RECT& rect, 
     WPG_TripwireEventDescription& Line,
-    DWORD dwShowCount )
+    DWORD dwShowCount1,
+    DWORD dwShowCount2 )
 {
     int x[2], y[2];
     ViewHelper::TranslateWPGPoint(rect, Line.startPoint, x[0], y[0]);
@@ -393,20 +413,19 @@ void CIVLiveViewer::PaintArrowLine(
     {
         ::MoveToEx(dc, MedPoint.x, MedPoint.y, NULL);  
         ::LineTo(dc, A[0].x, A[0].y);
-        DrawArrow(dc, A[0], ArrowHeadLen, o, bUp, dwShowCount);
+        DrawArrow(dc, A[0], ArrowHeadLen, o, bUp, dwShowCount1);
     }
     if (  Line.direction == ANY_DIRECTION || 
           Line.direction == LEFT_TO_RIGHT ) // Line_Show_Left
     {
         ::MoveToEx(dc, MedPoint.x, MedPoint.y, NULL);  
         ::LineTo(dc, A[1].x, A[1].y);
-        DrawArrow(dc, A[1], ArrowHeadLen, o, !bUp, dwShowCount);
+        DrawArrow(dc, A[1], ArrowHeadLen, o, !bUp, dwShowCount2);
     }
     //SelectObject(dc, hOldFont);
     ::SetTextColor(dc, nOldCol);
     ::SetBkMode(dc, nOldMode);
 }
-
 
 // }
 

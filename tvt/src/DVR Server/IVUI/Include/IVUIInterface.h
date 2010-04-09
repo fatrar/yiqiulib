@@ -43,6 +43,16 @@
 namespace IVUIFactory
 {
     /**
+    *@note 将IV设置从XML读出，并将默认运行智能的通道设置数据
+    */
+    IVUI_API void InitIVConfig();
+
+    /**
+    *@note 回收资源
+    */
+    IVUI_API void UnitIVConfig();
+
+    /**
     *@note  得到IV配置窗口
     *@param	 hWnd 父窗口 
     *@param  IV配置窗口显示的区域

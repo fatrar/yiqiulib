@@ -207,6 +207,7 @@ enum UserToolsChoose
 {
     Choose_Invaild = -1,
     Choose_Line,
+    Choose_LineEx,
     Choose_Rectangle,
     Choose_Polygon,
     Choose_Nothing,
@@ -255,7 +256,7 @@ static UserToolsChoose GetDrawToolsByRule(
         return JudgeUserChooseBySet(ruleDes.description.aoiEventDescription.polygon);
     
     case IV_Statistic:
-        return Choose_Line;
+        return Choose_LineEx;
     case IV_Vehicle_Retrograde:
     case IV_Illegal_Parking:
         assert(false);

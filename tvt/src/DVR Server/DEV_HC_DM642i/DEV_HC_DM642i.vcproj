@@ -321,7 +321,15 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\IIVDeviceBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IVDeviceSDK.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StatisticFunc.cpp"
 				>
 			</File>
 			<File

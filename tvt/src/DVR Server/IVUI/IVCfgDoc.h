@@ -146,7 +146,7 @@ private:
         typename T, T RuleSettings::*P,
         typename Tfn1, Tfn1 fn1,
         typename Tfn2, Tfn2 fn2>
-        void SetCfgToAllXX(const T& V);
+    void SetCfgToAllXX(const T& V);
 };
 
 class CIVRuleCfgDoc :

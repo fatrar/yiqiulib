@@ -54,6 +54,7 @@ using namespace std;
 #include "..\..\Base\System\Include\TimeUtil.h"
 using namespace OCI;
 
+#include "..\DEVICEControl\IIVDevice.h"
 #include "common.h"
 #include "Define.h"
 
@@ -88,7 +89,7 @@ union BufPara
 
 #include <math.h>
 
-#include "..\DEVICEControl\IIVDevice.h"
+
 //zhangzhen 2007/02/09
 //#define	OUT_FILE_VERSION	"081023"
 #define	OUT_FILE_VERSION	"100113"					//OUTÎÄ¼þ°æ±¾ºÅYYMMDD

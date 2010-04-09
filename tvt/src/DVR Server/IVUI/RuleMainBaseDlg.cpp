@@ -34,9 +34,10 @@ CRuleMainBaseDlg::CRuleMainBaseDlg(CWnd* pParent)
     , m_ChangeCursor(FALSE)
 {
      m_pDrawContainer = Windows::CreateDrawContainer();
-     m_LineDrawer = m_pDrawContainer->Add(Windows::IDrawer_ArrowLine);
-     m_RectangleDrawer = m_pDrawContainer->Add(Windows::IDrawer_Rectangle);
-     m_PolygonDrawer = m_pDrawContainer->Add(Windows::IDrawer_Polygon);
+     m_LineDrawer     = m_pDrawContainer->Add(Windows::IDrawer_ArrowLine);
+     m_LineDrawerEx   = m_pDrawContainer->Add(Windows::IDrawer_ArrowLineEx);
+     m_RectangleDrawer= m_pDrawContainer->Add(Windows::IDrawer_Rectangle);
+     m_PolygonDrawer  = m_pDrawContainer->Add(Windows::IDrawer_Polygon);
 }
 
 CRuleMainBaseDlg::~CRuleMainBaseDlg()
@@ -117,49 +118,22 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
         {
         case IVUtil::Choose_Line:
         {   
-            WPG_TripwireEventDescription& des = m_pRule->ruleDescription.description.tripwireEventDescription;
-            CPoint szPointBuf[2];
-            IVUtil::WPGTripwireToPointList(des, TmpRect, szPointBuf);
-            m_LineDrawer->SetDefault(szPointBuf, 2);
-            OnBnClickedLineCheck();
-            if ( des.direction == ANY_DIRECTION )
-            {
-                m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_All);
-                OnBnClickedBothCheck();
-            }
-            else if ( des.direction == LEFT_TO_RIGHT )
-            {
-                m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Left);
-                OnBnClickedLeftCheck();
-            }
-            else if ( des.direction == RIGHT_TO_LEFT )
-            {
-                m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Right);
-                OnBnClickedRightCheck();
-            }
-            else{}
+            LineEditMode(m_LineDrawer, TmpRect);
         	break;
+        }
+        case IVUtil::Choose_LineEx:
+        {   
+            LineEditMode(m_LineDrawerEx, TmpRect);
+            break;
         }
         case IVUtil::Choose_Rectangle:
         {
-            size_t nCount;
-            pPointList = IVUtil::WPGPolygonToPointList(
-                m_pRule->ruleDescription.description.aoiEventDescription.polygon,
-                TmpRect, nCount );
-            m_RectangleDrawer->SetDefault(pPointList, nCount);
-            OnBnClickedZoneCheck();
-            OnBnClickedRectangleCheck();
+            RectangleEditMode(TmpRect);
             break;
         }    
         case IVUtil::Choose_Polygon:
         {    
-            size_t nCount;
-            pPointList = IVUtil::WPGPolygonToPointList(
-            m_pRule->ruleDescription.description.aoiEventDescription.polygon,
-            TmpRect, nCount );
-            m_PolygonDrawer->SetDefault(pPointList, nCount);
-            OnBnClickedZoneCheck();
-            OnBnClickedPolygonCheck();
+            PolygonEditMode(TmpRect);
     	    break;
         }
         default:
@@ -204,7 +178,8 @@ void CRuleMainBaseDlg::OnBnClickedCancel()
 
 void CRuleMainBaseDlg::OnBnClickedAdvBt()
 {  
-    if ( m_nToolsChoose == IVUtil::Choose_Line )
+    if ( m_nToolsChoose == IVUtil::Choose_Line ||
+         m_nToolsChoose == IVUtil::Choose_LineEx )
     {
         CLineAdvDlg Dlg;
         Dlg.Init(m_pRule);
@@ -253,6 +228,7 @@ void CRuleMainBaseDlg::OnBnClickedSimulationBt()
             return;
         }
 
+        m_LineDrawerEx->SendCommond(Windows::IDrawer::Line_Reset_Add);
         SetTimer(Start_Simulation, Simulation_Wait_Time, NULL);
         SimulationEnable(!m_bUse);
         m_SimulationBT.SetWindowText(_T("Stop"));
@@ -269,6 +245,7 @@ void CRuleMainBaseDlg::OnBnClickedSimulationBt()
             return;
         }
 
+        m_LineDrawerEx->SendCommond(Windows::IDrawer::Line_Reset_Add);
         SetTimer(Start_Simulation, Simulation_Wait_Time, NULL);
         SimulationEnable(!m_bUse);
         m_SimulationBT.SetWindowText(_T("Simulation"));
@@ -362,6 +339,10 @@ void CRuleMainBaseDlg::OnBnClickedColourBt()
     if ( m_nToolsChoose == IVUtil::Choose_Line )
     {
         m_LineDrawer->SetLineColour(dwColour);
+    }
+    else if ( m_nToolsChoose == IVUtil::Choose_LineEx )
+    {
+        m_LineDrawerEx->SetLineColour(dwColour);
     }
     else if (m_nToolsChoose == IVUtil::Choose_Rectangle)
     {
@@ -467,7 +448,15 @@ void CRuleMainBaseDlg::OnAlarmCallBack(
     IVRuleType type, int nChannelID, const FILETIME* pTime )
 {
     m_AlarmOccurStatic.OnAlarmOccur();
+}
 
+void CRuleMainBaseDlg::OnStatisticFresh(
+    int nChannelID, StatisticDir Dir )
+{
+    using namespace Windows;
+    IDrawer::DrawCommond C =
+        Dir==Statistic_Left ? IDrawer::Line_Left_Add:IDrawer::Line_Right_Add;
+    m_LineDrawerEx->SendCommond(C);
 }
 
 void CRuleMainBaseDlg::SimulationEnable( BOOL bEnable )
@@ -488,8 +477,6 @@ void CRuleMainBaseDlg::OnTimer(UINT_PTR nIDEvent)
     __super::OnTimer(nIDEvent);
 }
 
-// End of file
-
 
 BOOL CRuleMainBaseDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
@@ -501,3 +488,55 @@ BOOL CRuleMainBaseDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 
     return __super::OnSetCursor(pWnd, nHitTest, message);
 }
+
+void CRuleMainBaseDlg::LineEditMode(
+    Windows::IDrawer* LineDrawer,
+    const CRect& TmpRect)
+{
+    WPG_TripwireEventDescription& des = m_pRule->ruleDescription.description.tripwireEventDescription;
+    CPoint szPointBuf[2];
+    IVUtil::WPGTripwireToPointList(des, TmpRect, szPointBuf);
+    LineDrawer->SetDefault(szPointBuf, 2);
+    OnBnClickedLineCheck();
+    if ( des.direction == ANY_DIRECTION )
+    {
+        LineDrawer->SendCommond(Windows::IDrawer::Line_Show_All);
+        OnBnClickedBothCheck();
+    }
+    else if ( des.direction == LEFT_TO_RIGHT )
+    {
+        LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Left);
+        OnBnClickedLeftCheck();
+    }
+    else if ( des.direction == RIGHT_TO_LEFT )
+    {
+        LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Right);
+        OnBnClickedRightCheck();
+    }
+    else{}
+}
+
+void CRuleMainBaseDlg::RectangleEditMode( 
+    const CRect& TmpRect )
+{
+    size_t nCount;
+    CPoint* pPointList = IVUtil::WPGPolygonToPointList(
+        m_pRule->ruleDescription.description.aoiEventDescription.polygon,
+        TmpRect, nCount );
+    m_RectangleDrawer->SetDefault(pPointList, nCount);
+    OnBnClickedZoneCheck();
+    OnBnClickedRectangleCheck();
+}
+
+void CRuleMainBaseDlg::PolygonEditMode(
+    const CRect& TmpRect )
+{
+    size_t nCount;
+    CPoint* pPointList = IVUtil::WPGPolygonToPointList(
+        m_pRule->ruleDescription.description.aoiEventDescription.polygon,
+        TmpRect, nCount );
+    m_PolygonDrawer->SetDefault(pPointList, nCount);
+    OnBnClickedZoneCheck();
+    OnBnClickedPolygonCheck();
+}
+// End of file
