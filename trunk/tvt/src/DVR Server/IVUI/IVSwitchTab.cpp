@@ -35,7 +35,7 @@ IMPLEMENT_DYNAMIC(CIVSwitchTab, CDialog)
 CIVSwitchTab::CIVSwitchTab(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVSwitchTab::IDD, pParent)
 {
-    CIVCfgDoc::Init();
+    
 }
 
 CIVSwitchTab::~CIVSwitchTab()
@@ -166,6 +166,15 @@ IIVDeviceBase2* g_IIVDeviceBase2 =NULL;
 
 namespace IVUIFactory
 {
+void InitIVConfig()
+{
+    CIVCfgDoc::Init();
+}
+
+void UnitIVConfig()
+{
+    CIVCfgDoc::Unit();
+}
 
 HWND CreateIVConfigDlg(HWND hWnd, const RECT& rect)
 {

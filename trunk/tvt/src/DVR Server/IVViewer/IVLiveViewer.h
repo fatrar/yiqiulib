@@ -21,6 +21,7 @@
 
 class CIVLiveViewer :
     public CBaseIVViewer<IIVLiveViewerEx>,
+    public IIVStatisticFresher,
     public Singleton<CIVLiveViewer>
 {
 public:
@@ -69,6 +70,12 @@ public:
 
     virtual void ClearAllRule(int nChannelID);
 
+    // IIVStatisticFresher
+public:
+    virtual void OnStatisticFresh(
+        int nChannelID, 
+        StatisticDir Dir);
+
 public:
     static IIVDataBuf* s_pIVDataBuf;
 
@@ -116,12 +123,16 @@ protected:
         const HDC dc,
         const RECT& rect,
         WPG_TripwireEventDescription& Line,
-        DWORD dwShowCount );
+        DWORD dwShowCount1,
+        DWORD dwShowCount2 );
 
     struct StatisticData
     {
-        StatisticData():dwCount(0),IsOk(TRUE){}
-        DWORD dwCount;
+        StatisticData():IsOk(TRUE)
+        {
+            dwCount[0] = dwCount[1] = 0;
+        }
+        DWORD dwCount[2];
         BOOL IsOk; 
     };
 protected:

@@ -1,22 +1,30 @@
-﻿// DSP.h: interface for the CDSP class.
-//
-//////////////////////////////////////////////////////////////////////
+﻿/**H**************************************************************************
+ File            : DSP.h
+ Subsystem       : 
+ Function Name(s): CDSP
+ Author          : YiQiu
+ Date            : 2010-4-8  
+ Time            : 16:24
+ Description     : 
 
-#if !defined(AFX_DSP_H__C706B57D_C9A0_4A6C_A74E_FE16F5B26E14__INCLUDED_)
-#define AFX_DSP_H__C706B57D_C9A0_4A6C_A74E_FE16F5B26E14__INCLUDED_
+ Revision        : 
 
-#if _MSC_VER > 1000
+ History
+ -------
+
+
+ Copyright (c) xxxx Ltd.
+***************************************************************************H*/
+#ifndef _DSP_H_2010_4
+#define _DSP_H_2010_4
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 class CTiCoffFile;
 #include "CounterTime.h"
 
 //Add By zhangzhen 2007/02/09
-extern inline	void ReleaseDriverBuffer(PTVT_CAP_STATUS pST);
-#define NET_FRAME_RATE_TOTAL 32
-
-#define MAX_IV_Parm_Buf_Size (sizeof(DWORD) + sizeof(PARAMPACK) + sizeof(WPG_Rule))
+extern void ReleaseDriverBuffer(PTVT_CAP_STATUS pST);
 
 struct IVParmData
 {
@@ -209,12 +217,7 @@ public:
     virtual BOOL IsUse(int nChannelID);
     virtual BOOL Use(int nChannelID, bool bState);
     virtual BOOL IsHaveFreeDevice(void);
-
-//    // IIVStatistic
-//public:
     virtual BOOL IsHaveStatisticRule(int nChannelID);
-    //virtual BOOL StartStatistic(int nChannelID, bool bFlag);
-    //virtual BOOL GetStatisticState(int nChannelID, bool& bFlag);
 
     // IIVSimulation
 public:
@@ -283,7 +286,9 @@ public:
 public:
     virtual void SetIVAlarmOutCallBack(
         AlarmCallBackFn pAlarmCallBackFn, void* pParm);
-    virtual void SetIVDataCallBack(IIVDataSender* pIVDataSender);
+    virtual void SetIVDataCallBack(
+        IIVDataSender* pIVDataSender,
+        IIVStatisticFresher* pIVStatisticFresher);
     virtual void SetSnapShotCallBack(ISnapShotSender* pSnapShotSender);
 
     // Do IV Data
@@ -295,13 +300,16 @@ private:
         const WPG_EventOccurrence* pEvent, 
         BYTE*& pFirstPic);
 
+    void PassSnapShot(
+        const WPG_EventOccurrence* pEvent, 
+        BYTE*& pFirstPic);
+
     void DoIVAlarm(
         int nChannelID,
         const WPG_EventOccurrence* pEvent, 
         FILETIME* pTime,
         const AlarmOutTable* pTable);
 
-private:
     bool IsNeedAlarmOut(
         int nDevice,
         const IV_RuleID& RuleID,
@@ -309,23 +317,25 @@ private:
         const AlarmOutTable*& pTable );
 
 private:
+    /**
+    *@note 智能报警
+    */
     AlarmCallBackFn m_AlarmCallBackFn;
     void* m_pAlarmCallBackParm;
     IIVDataSender* m_pIVDataSender;
+    IIVStatisticFresher* m_pIVStatisticFresher;
     ISnapShotSender* m_pSnapShotSender;
     int m_szCurrentIVChannel[MAX_DEVICE_NUM];
     //BOOL m_ShowSnapShot;
 
-    // 视频额外的预览
+private:
+    /**
+    *@note 视频额外的预览，比如当用户点击到规则配置主界面，
+    */
     IVideoSend* m_szVideoSend[MAX_CHANNEL_NUM];
     CCriticalSection m_VideoSendCS[MAX_CHANNEL_NUM];
 
-    enum 
-    {
-        Invaild_ChannelID= -1,
-        Device_Free_Flag = -1,
-    };
-
+private:
     /**
     *@note 智能模拟
     */
@@ -335,14 +345,21 @@ private:
     IV_RuleID m_SimulationRuleID;
     WPG_LINE_CROSS_DIRECTION m_StatisticDir;
     CCriticalSection m_SimulationCS;
+
     void SimulationAddRule(
         int nChannelID,
         const WPG_Rule& Rule);
     void SimulationRemoveRule(
         int nChannelID);
 
+private:
     /**
-    *@note Normal Rule
+    *@note Normal Rule Buf
+    *@details 这个数据结构只会保存正在运行的IV的通道的数据
+    * 主程序起来后，应该调数据配置模块读取上一次用户设置的数据，
+    * 然后将默认运行的智能的通道的所有规则设置给本模块,
+    * 当有智能切换时，应该首先清空正在运行智能的通道保存的数据，
+    * 然后将新通道的所有规则设置到本模块
     */
     struct CurrentRuleSetting
     {
@@ -365,35 +382,57 @@ private:
     RuleSettingMap m_RuleCfgMap[MAX_DEVICE_NUM];
     CCriticalSection m_CfgMapCS[MAX_DEVICE_NUM];
 
+    template<typename T, T CurrentRuleSetting::*t>
+    inline BOOL ModifyXX(
+        int nChannelID,
+        const IV_RuleID& RuleID,
+        const T& V );
+
+private:
     /**
     *@note Statistic Function
     */
     struct StatisticSetting
     {
-        StatisticSetting():IsEnable(FALSE){}
+        StatisticSetting():bIsEnable(FALSE){}
         WPG_Rule Rule;
-        BOOL IsEnable;
+        BOOL bIsEnable;
     };
     StatisticSetting* m_pStatisticRule[MAX_DEVICE_NUM];
-    //BOOL m_szHaveStatistic[MAX_DEVICE_NUM];
+
     BOOL _AddStatistic(
         int nChannelID,
         const WPG_Rule& Rule);
+
     BOOL _RemoveStatistic(
         int nChannelID,
         const WPG_Rule& Rule);
+
     BOOL AddStatistic(
         int nChannelID,
         int nDeviceID,
         const WPG_Rule& Rule);
+
     BOOL RemoveStatistic(
         int nChannelID,
         int nDeviceID,
         const IV_RuleID& RuleID);
 
+    BOOL EnableStatistic(
+        int nChannelID,
+        int nDeviceID,
+        const IV_RuleID& RuleID,
+        BOOL bEnable);
+
+    BOOL ModifyStatistic(
+        int nChannelID,
+        int nDeviceID,
+        const WPG_Rule& Rule);
+
     // just test
     SYSTIME  m_prevVideoTime;
-
+    
+private:
     /**
     *@note Smooth IV Live
     */
@@ -425,4 +464,13 @@ private:
 
 
 
-#endif // !defined(AFX_DSP_H__C706B57D_C9A0_4A6C_A74E_FE16F5B26E14__INCLUDED_)
+
+
+
+
+
+#endif  // _DSP_H_2010_
+
+
+// End of file
+

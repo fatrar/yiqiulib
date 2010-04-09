@@ -57,6 +57,7 @@ public:
     CStatisticDlg(CWnd* pParent = NULL):CRuleMainBaseDlg(pParent){}
 protected:
     virtual BOOL OnInitDialog();
+    virtual afx_msg void OnBnClickedLineCheck();
    // virtual BOOL GatherUseSet();
 
 };

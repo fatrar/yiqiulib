@@ -38,7 +38,8 @@ BOOL CInvadeDlg::GatherUseSet()
     CRect rect;
     m_pDrawContainer->GetClientRect(&rect);
     WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
-    if ( m_nToolsChoose == IVUtil::Choose_Line )
+    if ( m_nToolsChoose == IVUtil::Choose_Line ||
+         m_nToolsChoose == IVUtil::Choose_LineEx )
     {
         if ( !GetUseInputLineInfor(m_LineDrawer, rect, des.tripwireEventDescription))
         {
@@ -85,7 +86,8 @@ void CInvadeDlg::SimulationEnable( BOOL bEnable )
     m_OKBt.EnableWindow(bEnable);
     m_CancelBt.EnableWindow(bEnable);
 
-    if ( m_nToolsChoose == IVUtil::Choose_Line )
+    if ( m_nToolsChoose == IVUtil::Choose_Line ||
+         m_nToolsChoose == IVUtil::Choose_LineEx )
     {
         m_LineRightBT.EnableWindow(bEnable);
         m_LineLeftBT.EnableWindow(bEnable);
@@ -178,6 +180,23 @@ BOOL CStatisticDlg::OnInitDialog()
         OnBnClickedLineCheck();
     }
     return TRUE;
+}
+
+void CStatisticDlg::OnBnClickedLineCheck()
+{
+    m_nToolsChoose = IVUtil::Choose_LineEx;
+    m_LineBT.SetCheck(BST_CHECKED);
+    m_ZoneBT.SetCheck(BST_UNCHECKED);
+    m_SelectBT.SetCheck(BST_UNCHECKED);
+
+    m_RectangleBT.ShowWindow(SW_HIDE);
+    m_PolygonBT.ShowWindow(SW_HIDE);
+    m_LineBothBT.SetCheck(BST_CHECKED);
+    m_LineRightBT.ShowWindow(SW_SHOW);
+    m_LineLeftBT.ShowWindow(SW_SHOW);
+    m_LineBothBT.ShowWindow(SW_SHOW);
+
+    DrawToolChange(m_LineDrawerEx);
 }
 
 BOOL CVehicleRetrogradeDlg::OnInitDialog()

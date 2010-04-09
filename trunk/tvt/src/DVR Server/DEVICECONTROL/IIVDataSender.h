@@ -59,8 +59,7 @@ struct IIVStatisticFresher
     };
 
     /**
-    *@note 统计回调 i=0  
-    *@param dir A, i=1 dir B
+    *@note 统计回调  
     */
     virtual void OnStatisticFresh(
         int nChannelID, 

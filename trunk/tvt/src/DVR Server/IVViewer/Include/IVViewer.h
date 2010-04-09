@@ -188,6 +188,7 @@ namespace IVLiveFactory
 {
     IVVIEWER_API IIVLiveViewer* GetLiveViewer();
     IVVIEWER_API IIVLiveViewerEx* GetLiveViewerEx();
+    IVVIEWER_API IIVStatisticFresher* GetStatisticFresher();
     IVVIEWER_API IIVDataSaver* GetDataSaver();
     IVVIEWER_API IIVDataSender* GetDataSender();
 };

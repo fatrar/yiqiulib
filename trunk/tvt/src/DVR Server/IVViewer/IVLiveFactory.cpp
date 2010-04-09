@@ -34,6 +34,11 @@ IIVLiveViewerEx* GetLiveViewerEx(void)
     return CIVLiveViewer::getInstancePtr();
 }
 
+IIVStatisticFresher* GetStatisticFresher()
+{
+    return CIVLiveViewer::getInstancePtr();
+}
+
 IIVDataSaver* GetDataSaver(void)
 {
     return CIVDataBuf::getInstancePtr();

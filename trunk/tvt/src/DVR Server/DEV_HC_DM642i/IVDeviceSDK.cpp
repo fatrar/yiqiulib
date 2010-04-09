@@ -18,6 +18,8 @@
 #include "stdafx.h"
 #include "DSP.h"
 
+
+
 bool IsInScheduleSettings(
     const FILETIME& test,
     const ScheduleSettings& Sch )
@@ -138,28 +140,6 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     {
     //CStopWatchCallTest aa;
     }
-    //static ULONGLONG s_MaxBt = 0;
-    //static ULONGLONG s_PreTime = 0;
-    //ULONGLONG nTestTmp = nTime-s_PreTime;
-    //
-    //if ( (nTestTmp > s_MaxBt || nTestTmp >125*10000 ) && s_PreTime!=0 )
-    //{
-    //    if ( nTestTmp > s_MaxBt )
-    //    {
-    //         s_MaxBt = nTestTmp;
-    //    }
-    //   
-    //    long nValue = nTestTmp/10000;
-    //    //SYSTEMTIME syt;
-    //    //FileTimeToSystemTime((FILETIME*)&nTestTmp, &syt);
-    //    static char szbuf[128] = {0};
-    //    sprintf_s(
-    //        szbuf, "Max Data Time=%dms\n", 
-    //        nValue);
-    //    //OutputDebugString(szbuf);
-    //    TRACE(szbuf);
-    //}
-    //s_PreTime = nTime;
 
     static int s_nNum = 0;
     if ( s_nNum )
@@ -211,10 +191,21 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
                   ++i, ++pFirstEvent )
             {
                 const AlarmOutTable* pTable = NULL;
-                IV_RuleID* RuleID = (IV_RuleID*)pFirstEvent->ruleId;
-                m_pIVAlarmCallBack->OnAlarmCallBack(
-                    (IVRuleType)RuleID->RuleID.nType,
-                    nChannelID, pTime );
+                IV_RuleID& RuleID = (IV_RuleID&)pFirstEvent->ruleId;
+                if ( RuleID.RuleID.nType == IV_Statistic )
+                {
+                    IIVStatisticFresher::StatisticDir Dir = 
+                        m_SimulationRuleID == RuleID ? IIVStatisticFresher::Statistic_Left:IIVStatisticFresher::Statistic_Right;
+                    m_pIVAlarmCallBack->OnStatisticFresh(
+                        nChannelID,
+                        Dir );
+                }
+                else
+                {
+                    m_pIVAlarmCallBack->OnAlarmCallBack(
+                        RuleID.RuleID.nType,
+                        nChannelID, pTime );
+                }
             }
 
             return;
@@ -226,12 +217,32 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
           ++i, ++pFirstEvent )
     {
         const AlarmOutTable* pTable = NULL;
-        IV_RuleID* RuleID = (IV_RuleID*)pFirstEvent->ruleId;
-        if ( !IsNeedAlarmOut(nDevice, *RuleID, *pTime, pTable) )
+        IV_RuleID& RuleID = (IV_RuleID&)pFirstEvent->ruleId;
+        if ( RuleID.RuleID.nType == IV_Statistic &&
+             m_pIVStatisticFresher )
         {
+            WPG_Rule& StatisticRule = m_pStatisticRule[nDevice]->Rule;
+            IV_RuleID& StatisticRuleID = (IV_RuleID&)StatisticRule.ruleId;
+            IIVStatisticFresher::StatisticDir Dir = 
+                m_SimulationRuleID == RuleID ? IIVStatisticFresher::Statistic_Left:IIVStatisticFresher::Statistic_Right;
+            m_pIVStatisticFresher->OnStatisticFresh(nChannelID, Dir);
+           
+            /**
+            *@note 过滤统计的截图，并且偏移截图位置
+            */
+            PassSnapShot(pFirstEvent, pFirstPic);
             continue;
         }
 
+        if ( !IsNeedAlarmOut(nDevice, RuleID, *pTime, pTable) )
+        {
+            /**
+            *@note 偏移截图位置
+            */
+            PassSnapShot(pFirstEvent, pFirstPic);
+            continue;
+        }
+ 
         DoIVAlarm(
             nChannelID,
             pFirstEvent,
@@ -288,38 +299,22 @@ void CDSP::DoIVAlarm(
     FILETIME* pTime,
     const AlarmOutTable* pTable )
 {
-    IV_RuleID* RuleID = (IV_RuleID*)(pEvent->ruleId);
-    if ( m_AlarmCallBackFn && pTable )
+    if ( NULL == pTable )
+    {
+        return;
+    }
+
+    IV_RuleID& RuleID = (IV_RuleID&)(pEvent->ruleId);
+    IVRuleType t = RuleID.RuleID.nType;
+    if ( m_AlarmCallBackFn )
     {
         m_AlarmCallBackFn(
             *pTable,
-            (IVRuleType)RuleID->RuleID.nType,
+            t,
             nChannelID,
             pTime,
             m_pAlarmCallBackParm );
     }
-    //WPG_EventDescriptionUnion& des = eventDescription.description;
-    //switch (eventDescription.type)
-    //{
-    //case TRIPWIRE_EVENT:     // 絆线
-    //    WPG_TripwireEventDescription& tripwireDes = des.tripwireEventDescription;
-    //    break;
-    //case AOI_EVENT:          // AOI
-    //    WPG_AOIEventDescription& AOIDes = des.aoiEventDescription;
-    //    break;
-    //case SCENE_CHANGE_EVENT: // 场景变化
-    //    WPG_SceneChangeEventDescription& SceneChangeDes = des.sceneChangeEventDescription;
-    //    break;
-    //
-    //// 下面两个还不知道具体干啥的，先写出来
-    //case OCCUPANCY_EVENT:
-    //    WPG_OccupancyEventDescription& OccDes = des.occupancyEventDescription;
-    //    break;
-    //case DWELLTIME_EVENT: 
-    //    WPG_DwellTimeEventDescription& DwellDes = des.dwellTimeEventDescription;
-    //    break;
-    //default:
-    //}
 }
 
 static bool s_bSavePic = false;
@@ -339,7 +334,7 @@ void CDSP::DoSnapShot(
     {   
         const WPG_EventSlice& slices = pEvent->slices[i];
 
-        //if( s_bSavePic )
+        if( s_bSavePic )
         {
             static int j = 0;
             static char szBuf[MAX_PATH] = {0};
@@ -363,91 +358,21 @@ void CDSP::DoSnapShot(
     }
 }
 
-// {
-// ******************** IIVDeviceBase *********************
-//
 
-BOOL CDSP::IsUse( int nChannelID )
+void CDSP::PassSnapShot(
+    const WPG_EventOccurrence* pEvent,
+    BYTE*& pFirstPic )
 {
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        // log
-        return FALSE;
-    }   
-
-    return nChannelID==m_szCurrentIVChannel[nDeviceID];
+    /**
+    *@note 偏移截图位置
+    */
+    for (int i = 0; i<pEvent->numOfSlices; ++i)
+    {   
+        const WPG_EventSlice& slices = pEvent->slices[i];
+        pFirstPic += slices.snapshotLength;      
+    }
 }
 
-BOOL CDSP::Use( int nChannelID, bool bState )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }   
-    
-    // when is running and Set Run --> pass
-    // when is stop and Set Stop --> pass
-    do 
-    {
-        // 如果这个卡，有剩余的智能的通道，只能调用开始智能
-        if ( m_szCurrentIVChannel[nDeviceID] == Device_Free_Flag )
-        {
-            if (bState)
-            {
-                m_szCurrentIVChannel[nDeviceID] = nChannelID;
-                break;
-            }
-            
-            return FALSE;
-        }
-
-        if (m_szCurrentIVChannel[nDeviceID]==nChannelID)
-        {
-            // 如果这个卡使用的通道与传入参数一样
-            // 命令为启用，就pass，停止就调用板卡
-            if (bState){ return TRUE;}
-            
-            m_szCurrentIVChannel[nDeviceID] = Device_Free_Flag;
-            break;
-        }
-        else
-        {
-            // 这里的意思为正在有其他通道使用智能，
-            // 如果函数调用非对应通道的停止，那么返回TRUE
-            // 如果开始智能那必须先停止正在跑的，所以返回FALSE
-            return !bState;
-        }
-    }
-    while (0);
-   
-    if ( bState )
-    {
-        ResumeThread(m_hSmooth[nDeviceID]);
-    }
-    else
-    {
-        SuspendThread(m_hSmooth[nDeviceID]);
-    }
-    return SetParam(
-        PT_PCI_SET_AI_ENABLE, nChannelID, int(bState) );
-}
-
-BOOL CDSP::IsHaveFreeDevice( void )
-{
-    for (int i =0; i< m_nDeviceNum; ++i)
-    {
-        if ( m_szCurrentIVChannel[i] != Device_Free_Flag )
-        {
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-// IIVDeviceBase
-// }
 
 // {
 // ********************* IIVSimulation *******************
@@ -648,273 +573,55 @@ BOOL CDSP::StopSimulation( int nChannelID )
 
     return TRUE;
 }
+void CDSP::SimulationAddRule(
+    int nChannelID,
+    const WPG_Rule& Rule)
+{
+    /**
+    *@note 如果不是统计就直接发送添加命令
+    */
+    m_SimulationRuleID = Rule.ruleId;
+    if ( IV_Statistic != m_SimulationRuleID.RuleID.nType )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+        return;
+    }
+
+    /**
+    *@note 如果是统计就需要特殊处理，添加两个规则
+    */
+    m_StatisticDir = 
+        Rule.ruleDescription.description.tripwireEventDescription.direction;
+     ASSERT(m_StatisticDir!=INVALID_DIRECTION);
+    _AddStatistic(nChannelID, Rule);
+}
+
+void CDSP::SimulationRemoveRule(
+    int nChannelID)
+{
+    /**
+    *@note 如果不是统计就直接发送删除命令
+    */
+    static WPG_Rule Rule;
+    memcpy(Rule.ruleId, &m_SimulationRuleID, 16);
+    if ( IV_Statistic != m_SimulationRuleID.RuleID.nType )
+    {
+        SetIVSpecialParam(
+            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
+        return;
+    }
+
+    /**
+    *@note 如果是统计就需要特殊处理，删除两个规则
+    */
+    ASSERT(m_StatisticDir!=INVALID_DIRECTION);   
+    _RemoveStatistic(nChannelID, Rule);
+}
 
 // IIVSimulation
 // }
 
-
-// {
-// ********************* IIVDeviceBase2 *******************
-//
-
-BOOL CDSP::Add(
-    int nChannelID,
-    const WPG_Rule& Rule,
-    const ScheduleSettings& Sch /*= g_DefaultScheduleSettings*/, 
-    const AlarmOutSettings& Alarm /*= g_DefaultAlarmOutSettings*/ )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }
-
-    if ( nChannelID!=m_szCurrentIVChannel[nDeviceID] )
-    {
-        return FALSE;
-    }
-
-    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID]; 
-    IV_RuleID* pRuleID = (IV_RuleID*)Rule.ruleId;
-    if ( pRuleID->RuleID.nType != IV_Statistic )
-    {
-        AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-        RuleSettingMap::iterator iter = RuleSettings.find(*pRuleID);
-        if ( iter != RuleSettings.end() )
-        { 
-            // log...
-            CurrentRuleSetting* pCurrentSet = iter->second;
-            pCurrentSet->Rule = Rule;
-            pCurrentSet->Sch = Sch;
-            pCurrentSet->Alarm = Alarm;
-        }
-        else
-        {
-            RuleSettings[*pRuleID] = new CurrentRuleSetting(Rule,Sch,Alarm);
-        }
-
-        return SetIVSpecialParam(
-            PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
-    }
-    
-    return AddStatistic(nChannelID, nDeviceID, Rule);
-}
-
-BOOL CDSP::Remove(
-    int nChannelID,
-    const IV_RuleID& RuleID )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }
-
-    if ( nChannelID!=m_szCurrentIVChannel[nDeviceID] )
-    {
-        return FALSE;
-    }
-
-    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    if ( RuleID.RuleID.nType != IV_Statistic )
-    {
-        AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-        RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
-        if ( iter == RuleSettings.end() )
-        {
-            return TRUE;
-        }
-
-        WPG_Rule& Rule = iter->second->Rule;
-        SetIVSpecialParam(
-            PT_PCI_SET_DEL_RULE, nChannelID, 0, Rule);
-        delete iter->second;
-        RuleSettings.erase(iter);
-        return TRUE;
-    }
-    
-    return RemoveStatistic(
-        nChannelID, nDeviceID, RuleID );
-}
-
-BOOL CDSP::EnableRule( 
-    int nChannelID,
-    const IV_RuleID& RuleID,
-    BOOL bEnable /*=TRUE*/ )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }
-
-    if ( nChannelID!=m_szCurrentIVChannel[nDeviceID] )
-    {
-        return FALSE;
-    }
-
-    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    CurrentRuleSetting* pCurrentSet = NULL;
-    {
-        AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-        RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
-        if ( iter == RuleSettings.end() )
-        {
-            return FALSE;
-        }
-
-        pCurrentSet = iter->second;
-        pCurrentSet->Rule.isEnabled = bEnable;
-    }
-
-    return SetIVSpecialParam(
-        PT_PCI_SET_UPDATE_RULE, nChannelID, 0, pCurrentSet->Rule);
-}
-
-BOOL CDSP::ModifyRule( 
-    int nChannelID,
-    const WPG_Rule& Rule )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }
-
-    if ( nChannelID!=m_szCurrentIVChannel[nDeviceID] )
-    {
-        return FALSE;
-    }
-
-    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    {
-	    AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-	    IV_RuleID* pRuleID = (IV_RuleID*)Rule.ruleId;
-	    RuleSettingMap::iterator iter = RuleSettings.find(*pRuleID);
-	    if ( iter == RuleSettings.end() )
-	    {
-	        return FALSE;
-	    }
-	
-	    CurrentRuleSetting* pCurrentSet = iter->second;
-	    pCurrentSet->Rule = Rule;
-    }
-
-    return SetIVSpecialParam(
-        PT_PCI_SET_UPDATE_RULE, nChannelID, 0, Rule);
-}
-
-BOOL CDSP::ModifySchedule( 
-    int nChannelID, 
-    const IV_RuleID& RuleID,
-    const ScheduleSettings& Sch )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }
-
-    if ( nChannelID!=m_szCurrentIVChannel[nDeviceID] )
-    {
-        return FALSE;
-    }
-
-    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-    RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
-    if ( iter == RuleSettings.end() )
-    {
-        return FALSE;
-    }
-
-    CurrentRuleSetting* pCurrentSet = iter->second;
-    pCurrentSet->Sch = Sch;
-    return TRUE;
-}
-
-BOOL CDSP::ModifyAlarmOut( 
-    int nChannelID,
-    const IV_RuleID& RuleID, 
-    const AlarmOutSettings& Alarm )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }
-
-    if ( nChannelID!=m_szCurrentIVChannel[nDeviceID] )
-    {
-        return FALSE;
-    }
-
-    RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-    RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
-    if ( iter == RuleSettings.end() )
-    {
-        return FALSE;
-    }
-
-    CurrentRuleSetting* pCurrentSet = iter->second;
-    pCurrentSet->Alarm = Alarm;
-    return TRUE;
-}
-
-void CDSP::RegisterLiveDataCallBack(
-    int nChannelID,
-    IVideoSend* pVideoSend )
-{
-    AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
-    m_szVideoSend[nChannelID] = pVideoSend;
-}
-
-void CDSP::UnRegisterLiveDataCallBack(
-    int nChannelID,
-    IVideoSend* pVideoSend )
-{
-    AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
-    ASSERT(pVideoSend == m_szVideoSend[nChannelID]);
-    m_szVideoSend[nChannelID] = NULL;
-}
-
-void CDSP::ReleaseLiveBuf( FRAMEBUFSTRUCT* p )
-{
-    BufPara Para(p->BufferPara);
-    int nIndex = Para.Para.nBufIndex;
-    int nChannelID = Para.Para.nChannelID;
-    int nDeviceID = Para.Para.nDeviceID;
-    ReleasePrvBuf(nDeviceID, nChannelID, nIndex);
-}
-//
-// ******************* IIVStatistic *********************
-//
-
-BOOL CDSP::IsHaveStatisticRule( int nChannelID )
-{
-    int nDeviceID = nChannelID/CHANNEL_PER_DEVICE;
-    if ( nDeviceID > m_nDeviceNum )
-    {
-        return FALSE;
-    }
-
-    return m_pStatisticRule[nDeviceID]->IsEnable;
-}
-
-//BOOL CDSP::StartStatistic(
-//    int nChannelID,
-//    bool bFlag )
-//{
-//    return TRUE;
-//}
-//
-//BOOL CDSP::GetStatisticState(
-//    int nChannelID,
-//    bool& bFlag )
-//{
-//    return TRUE;
-//}
 
 //
 // IIVDeviceSetter
@@ -928,9 +635,11 @@ void CDSP::SetIVAlarmOutCallBack(
 }
 
 void CDSP::SetIVDataCallBack(
-    IIVDataSender* pIVDataSender )
+    IIVDataSender* pIVDataSender,
+    IIVStatisticFresher* pIVStatisticFresher )
 {
     m_pIVDataSender = pIVDataSender;
+    m_pIVStatisticFresher = pIVStatisticFresher;
     m_pIVDataSender->Init(m_nDeviceNum, CHANNEL_PER_DEVICE);
 }
 
@@ -969,12 +678,6 @@ void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
 
     if ( bflag )
     {
-        //if ( nChannel == 0 )
-        //{
-        //    SYSTEMTIME syt;
-        //    GetLocalTime(&syt);
-        //    xTrace("%d-%d:%d\n", syt.wMinute, syt.wSecond, syt.wMilliseconds);
-        //}
         if ( !m_pVideoCallBack(p) )
         {
             ReleaseLiveBuf(p);
@@ -1124,8 +827,6 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 
     list<FRAMEBUFSTRUCT*> BufList;
     list<FRAMEBUFSTRUCT*> LiveList;
-
-    volatile int nPostMessage = 0;
 
     int nFrame = s_FrameRate[m_dwVideoFormat];
 

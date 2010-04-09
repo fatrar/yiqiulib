@@ -59,6 +59,10 @@ protected:
         int nChannelID,
         const FILETIME* pTime);
 
+    virtual void OnStatisticFresh(
+        int nChannelID, 
+        StatisticDir Dir);
+
     // IVideoPlayCallBack
 protected:
     virtual BOOL OnVideoPlay(
@@ -86,6 +90,17 @@ protected:
     void UseToolCtrlMode(ToolMode Mode);
 
     void DrawToolChange(Windows::IDrawer* pDrawer);
+
+private:
+    void LineEditMode(
+        Windows::IDrawer* LineDrawer,
+        const CRect& TmpRect );
+
+    void RectangleEditMode(
+        const CRect& TmpRect );
+
+    void PolygonEditMode(
+        const CRect& TmpRect );   
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -157,6 +172,7 @@ protected:
     Windows::IDrawer* m_LineDrawer;
     Windows::IDrawer* m_RectangleDrawer;
     Windows::IDrawer* m_PolygonDrawer;
+    Windows::IDrawer* m_LineDrawerEx;
     Windows::IDrawContainer* m_pDrawContainer;
 
     WPG_Rule* m_pRule;
