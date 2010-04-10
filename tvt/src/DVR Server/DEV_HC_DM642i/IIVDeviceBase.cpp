@@ -91,11 +91,13 @@ BOOL CDSP::Use( int nChannelID, bool bState )
 
     if ( bState )
     {
-        ResumeThread(m_hSmooth[nDeviceID]);
+        //ResumeThread(m_hSmooth[nDeviceID]);
     }
     else
     {
-        SuspendThread(m_hSmooth[nDeviceID]);
+        AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
+        m_RuleCfgMap[nDeviceID].clear();
+        //SuspendThread(m_hSmooth[nDeviceID]);
     }
     return SetParam(
         PT_PCI_SET_AI_ENABLE, nChannelID, int(bState) );
@@ -105,7 +107,7 @@ BOOL CDSP::IsHaveFreeDevice( void )
 {
     for (int i =0; i< m_nDeviceNum; ++i)
     {
-        if ( m_szCurrentIVChannel[i] != Device_Free_Flag )
+        if ( m_szCurrentIVChannel[i] == Device_Free_Flag )
         {
             return TRUE;
         }
@@ -188,7 +190,7 @@ BOOL CDSP::Remove(
     *@note 1. 判断是否统计，是统计则调用统计规则删除函数
     */
     RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    if ( RuleID.RuleID.nType != IV_Statistic )
+    if ( RuleID.RuleID.nType == IV_Statistic )
     {
         return RemoveStatistic(
             nChannelID, nDeviceID, RuleID );

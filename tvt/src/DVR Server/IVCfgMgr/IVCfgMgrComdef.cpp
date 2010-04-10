@@ -22,7 +22,7 @@
 template<>
 void MyRule<WPG_TripwireEventDescription>::Init(
     const WPG_Rule& Rule)
-{
+{   
     description = Rule.ruleDescription.description.tripwireEventDescription;
 }
 
@@ -78,6 +78,8 @@ void MyRule<T>::ToWPGRule(WPG_Rule& Rule )
     Rule.maximumFilter.useFilter     = useMaxFilter;
     Rule.maximumFilter.nearRectangle = nearRectangle[1];
     Rule.maximumFilter.farRectangle  = farRectangle[1];
+
+    Rule.ruleDescription.targetClassification = targetClassification;
 }
 
 
@@ -226,9 +228,15 @@ bool _GetRule(
     size_t nIDLen = 16;
     TinyXmlUtil::GetBinaryAttributeData(pRuleEle, _IdentityID, Rule.ruleId, nIDLen);
     TinyXmlUtil::GetAttributeData(pRuleEle, _RuleName, Rule.ruleName, "Error");
-    TinyXmlUtil::GetAttributeData(pRuleEle, _RuleEnable, (bool&)Rule.isEnabled);
+
+    bool isEnbale = true;
+    TinyXmlUtil::GetAttributeData(pRuleEle, _RuleEnable, isEnbale);
+    Rule.isEnabled = isEnbale;
+
+    int nType = 0;
     TinyXmlUtil::GetAttributeData(
-        pRuleEle, _RuleType, (int&)Rule.ruleDescription.type, INVALID_EVENT_TYPE);
+        pRuleEle, _RuleType, nType, INVALID_EVENT_TYPE);
+    Rule.ruleDescription.type = (WPG_EVENT_TYPE)nType;
 
     /*
     *@note 2. Get Rule Other Info 

@@ -44,7 +44,7 @@ IIVCfgMgr::IVVistor CIVCfgMgr::Begin( int nChannelID )
     assert(m_pRootEle);
     GetChannelName(nChannelID, szBuf);
     return IVVistor( 
-        TinyXmlUtil::CreateChildChildEle(
+        TinyXmlUtil::GetChildChildEle(
         m_pRootEle, 2, szBuf, _Rule) );
 }
 

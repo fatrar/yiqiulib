@@ -122,11 +122,23 @@ BOOL CDSP::SetIVParamToDSP( int nDevice )
 //
 void CDSP::DoIVData(int nDevice, PBYTE pData)
 {
+    int nChannelID = m_szCurrentIVChannel[nDevice];
+    if ( nChannelID == Device_Free_Flag )
+    {
+        TRACE("That Device Is Not Run IV!\n");
+        return;
+    }
+
     BYTE* pIVData = pData + EACH_TRAN_BUFF_SIZE;
     PTVT_AI_VBI pIVVBI = (PTVT_AI_VBI)pIVData;
     unsigned int& dwNumberOfTargets = pIVVBI->dwNumberOfTargets;
     unsigned int& dwNumberOfEvents = pIVVBI->dwNumberOfEvents;
     
+    if ( pIVVBI->byViewStates == WPG_GOOD_VIEW )
+    {
+        SetIVParamToDSP(nDevice);
+    }
+
     if ( dwNumberOfEvents != 0 )
     {
         TRACE("NO Zero.........\n");
@@ -166,7 +178,6 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
         IV_Data_Coming,
         pTime->dwLowDateTime, pTime->dwHighDateTime);
 
-    int& nChannelID = m_szCurrentIVChannel[nDevice];
     // 1. Do Obj&Trace
     if ( m_pIVDataSender )
     {
@@ -317,7 +328,7 @@ void CDSP::DoIVAlarm(
     }
 }
 
-static bool s_bSavePic = false;
+static bool s_bSavePic = true;
 #include <fstream>
 
 void CDSP::DoSnapShot(
@@ -434,7 +445,7 @@ BOOL CDSP::StartSimulation(
         }
         else
         {
-            ResumeThread(m_hSmooth[nDeviceID]);
+            //ResumeThread(m_hSmooth[nDeviceID]);
         }
         
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 1);
@@ -521,7 +532,7 @@ BOOL CDSP::StopSimulation( int nChannelID )
             return FALSE;
         }
         
-        SuspendThread(m_hSmooth[nDeviceID]);
+        //SuspendThread(m_hSmooth[nDeviceID]);
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 0);
     }
     else if ( m_LastRunChanID == nChannelID ) // 
@@ -859,7 +870,7 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
             FreeLiveList(LiveList);
             bCanSendLive = false;
             //m_bFisrtIVDataFlag[nDevice] = FALSE;
-            SuspendThread(m_hSmooth[nDevice]);
+            //SuspendThread(m_hSmooth[nDevice]);
             break;
         case Push_Live_Data:
             if ( msg.wParam != m_szCurrentIVChannel[nDevice] )

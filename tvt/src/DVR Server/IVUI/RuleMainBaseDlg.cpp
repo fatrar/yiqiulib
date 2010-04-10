@@ -163,8 +163,8 @@ void CRuleMainBaseDlg::OnBnClickedOk()
     {
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     }
-    GatherUseSet();
-    OnOK();
+    if ( GatherUseSet() )
+        OnOK();
 }
 
 void CRuleMainBaseDlg::OnBnClickedCancel()
