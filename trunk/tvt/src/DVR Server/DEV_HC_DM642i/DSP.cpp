@@ -430,7 +430,7 @@ BOOL CDSP::CreateWorkerThread()
     for ( int j=0; j<m_nDeviceNum; ++j)
     {
         // 默认休眠
-        SuspendThread(m_hSmooth[j]);
+        //SuspendThread(m_hSmooth[j]);
         CloseHandle(TempEvent[j]);
     }
 	return TRUE;
@@ -629,10 +629,10 @@ void CDSP::ProcessPrv(INT nDevice)
 		//确保终止线程前，把所有参数设置到DSP
 		if(m_bQuit == TRUE)	//若该卡没有等待设置的参数，结束线程
 		{
-			if(m_pPack[nDevice].param.size() == 0)
-			{
+			//if(m_pPack[nDevice].param.size() == 0)
+			//{
 				break; 
-			}
+			//}
 		}
 
 		switch(dwWait)
@@ -664,9 +664,6 @@ void CDSP::GetPrvData(int nDevice)
     DWORD dwReturn;
     while (TRUE)	//取出Driver层所有BUF，避免BUF阻塞
     {
-        SetParamToDSP(nDevice);
-        SetIVParamToDSP(nDevice);
-
         BOOL bRc = ControlDriver(
             nDevice,
             IOCTL_VIDEO_GET_DATA_INFO,
@@ -680,11 +677,15 @@ void CDSP::GetPrvData(int nDevice)
             break;
         }
 
+        SetParamToDSP(nDevice);
 
-        PTVT_PREV_VBI pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE );        // 先处理智能的数据，因为live数据模式如果是copy模式，马上会释放所有引用
+        // 先处理智能的数据，因为live数据模式如果是copy模式，马上会释放所有引用
+        PTVT_PREV_VBI pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE );      
         if ( pVBI->byAIProcess )
         {
+#ifdef _UseLiveTime
              m_prevVideoTime = pVBI->prevVideoTime;
+#endif
              DoIVData(nDevice, pData);
         }
        
@@ -1453,8 +1454,6 @@ BOOL CDSP::CaptureStart()
 		//现场压缩流
 		SetParam(PT_PCI_SET_ENCODE_IINTERVAL, i, 100);
 	}
-
-    Use(0, true);
 
 	return TRUE;
 }

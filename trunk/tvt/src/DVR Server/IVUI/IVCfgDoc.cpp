@@ -46,7 +46,7 @@ void CIVCfgDoc::Init()
     int szChannel[_MaxAutoChannel] = {0};
     size_t nCount;
     pIVCfgMgr->GetAutoRunChannel(szChannel, nCount);
-    StlHelper::Array2STL(szChannel, m_UseChannel);
+    StlHelper::Array2STL(szChannel, nCount, m_UseChannel);
 
     for (int i=0; i<Max_Channel; ++i)
     {

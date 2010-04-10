@@ -93,7 +93,7 @@ protected:
     TShowState m_ShowState[MAX_IV_Channel];
 
     ViewerBuf* m_pViewerBuf;  
-
+    DWORD m_dwRecord[MAX_IV_Channel];
 
     enum
     {

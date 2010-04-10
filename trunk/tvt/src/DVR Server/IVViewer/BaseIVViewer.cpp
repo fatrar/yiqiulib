@@ -26,6 +26,7 @@ CBaseIVViewer<TViewer>::CBaseIVViewer(void)
     m_pViewerBuf = new ViewerBuf[Max_Device_Num];
     m_hPen = ::CreatePen(PS_SOLID, Line_Default_Width, Point_Default_Color);
     m_hBrush = ::GetStockObject(NULL_BRUSH);
+    ZeroMemory(m_dwRecord, sizeof(m_dwRecord));
 }
 
 template<typename TViewer>
@@ -63,11 +64,18 @@ BOOL CBaseIVViewer<TViewer>::Paint(
             return FALSE;
         }
         
+        DWORD dwNow = GetTickCount();
+        if ( dwNow - m_dwRecord[nChannelID] > 500 )
+        {
+            return FALSE;
+        }
+
         pTarBuf = m_pViewerBuf[nDeviceID].TarBuf;
         nTarCount = m_pViewerBuf[nDeviceID].nTarCount;
     }
     else
     {
+        m_dwRecord[nChannelID] = GetTickCount();
         m_pViewerBuf[nDeviceID].ChannelID = nChannelID;
         pTarBuf = DataQueue->Tar;
         nTarCount = DataQueue->nCount;

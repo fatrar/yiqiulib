@@ -112,7 +112,9 @@ struct MyRule
     bool useMinFilter:1;
     bool useMaxFilter:1;
     bool useSizeChangeFilter:1;
-
+    
+    unsigned int targetClassification:4;
+    
     T description;
 };
 
@@ -133,6 +135,9 @@ MyRule<T>::MyRule(const WPG_Rule& Rule)
     useMaxFilter = Rule.maximumFilter.useFilter != 0;
     nearRectangle[1] = Rule.maximumFilter.nearRectangle;
     farRectangle[1] = Rule.maximumFilter.farRectangle;
+
+    targetClassification = Rule.ruleDescription.targetClassification;
+    //type = Rule.ruleDescription.type;
     Init(Rule);
 }
 

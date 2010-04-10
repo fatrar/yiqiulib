@@ -257,7 +257,8 @@ bool CIVLiveViewer::TranslateRuleToGraphInfo(
         }
         Info->Type = IDrawer_ArrowLine;
         Info->PointInfo.LineInfo.Info = DirUnion.tripwireEventDescription;
-        Info->PointInfo.LineInfo.IsStatistic = false;
+        Info->PointInfo.LineInfo.IsStatistic = t==IV_Statistic ? true:false;
+        
     	break;
     case AOI_EVENT: 
         if ( Info == NULL )
@@ -266,7 +267,6 @@ bool CIVLiveViewer::TranslateRuleToGraphInfo(
         }
         Info->Type = IDrawer_Polygon;
         Info->PointInfo.PolygonInfo = DirUnion.aoiEventDescription.polygon;
-        Info->PointInfo.LineInfo.IsStatistic = t==IV_Statistic ? true:false;
         break;
     case SCENE_CHANGE_EVENT:
     default:

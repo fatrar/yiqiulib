@@ -112,6 +112,7 @@ BOOL CLineAdvDlg::OnInitDialog()
 
 void CLineAdvDlg::OnBnClickedOk()
 {
+    UpdateData(TRUE);
     CString strTmp;
     if ( m_strRuleNameEdit.GetLength() == 0 )
     {

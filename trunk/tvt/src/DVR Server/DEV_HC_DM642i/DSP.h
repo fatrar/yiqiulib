@@ -430,7 +430,9 @@ private:
         const WPG_Rule& Rule);
 
     // just test
+#ifdef _UseLiveTime
     SYSTIME  m_prevVideoTime;
+#endif
     
 private:
     /**
