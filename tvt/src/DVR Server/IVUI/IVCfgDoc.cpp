@@ -18,6 +18,7 @@
 #include "StdAfx.h"
 #include "IVCfgDoc.h"
 
+
 using namespace CameraTreeUtil;
 
 typedef bool (IIVCfgMgr::IVVistor::*ModifyRuleFn)(const WPG_Rule&);
@@ -694,7 +695,7 @@ void CIVRuleCfgDoc::EnableAllRule( int nChannelID, bool bEnable )
               ++MapIter )
         {
             WPG_Rule& Rule = MapIter->second->Rule; 
-            if ( bool(Rule.isEnabled) == bEnable )
+            if ( Rule.isEnabled == WPG_Bool(bEnable) )
             {
                 continue;
             }
@@ -726,6 +727,11 @@ void CIVRuleCfgDoc::EnableAllRule( int nChannelID, bool bEnable )
         Iter.EnableRule(bEnable);
     }
     pIVCfgMgr->Apply();
+}
+
+BOOL CIVRuleCfgDoc::IsHaveFreeRule( int nChannelID )
+{
+    return AI_MAX_RULE_COUNT > m_Doc[nChannelID].size();
 }
 
 //

@@ -226,6 +226,8 @@ typedef struct _TVT_AI_VBI
 #define TARGET_MAX_NUM			50
 
 #define AI_STREAM_BUF_SIZE	(1024*1024)              ///////new length
+#define AI_MAX_RULE_COUNT   5
+
 /*
 +------------------+
 |CAP_STATUS_SIZE   |

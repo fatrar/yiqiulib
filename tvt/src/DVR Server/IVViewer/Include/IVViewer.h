@@ -42,16 +42,23 @@ struct IIVDataSaver
 {
     /**
     *@note 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
+    *@param nChannelID Channel ID
+    *@pPath Video File Path
+    *@time Video File First Frame Time
     */
-    virtual BOOL Open(int nChannelID,const char* pPath, const FILETIME& time)=0;
+    virtual BOOL Open(
+        int nChannelID,const char* pPath, const FILETIME& time)=0;
 
     /**
     *@note 视频文件关闭时，调用
+    *@param nChannelID Channel ID
+    *@time Video File last Frame Time
     */
     virtual BOOL Close(int nChannelID, const FILETIME& time)=0;
 
     /**
     *@note 删除视频文件回调，从而通知智能这边删除智能文件。
+    *@pPath Video File Path
     */
     virtual BOOL DeleteIVFile(const char* pPath)=0;
 
@@ -76,6 +83,10 @@ struct IIVViewer
     /**
     *@note 显示目标矩形框和路径时的回调，
     *      传入DC和正在播放的数据帧的时间
+    *@param nChannelID Channel ID
+    *@dc Graph Draw Handle
+    *@rect Paint rect
+    *@time Current Video Frame Time
     */
     virtual BOOL Paint(
         int nChannelID, 
@@ -200,11 +211,16 @@ struct IVDataFound
 {
     /**
     *@note 视频文件打开时回调，输入通道，视频文件路径，和时间戳
+    *@param nChannelID Channel ID
+    *@pPath Video File Path
+    *@time Video File First Frame Time
     */
     virtual int Open(int nChannelID, const char* pPath, const FILETIME& time)=0;
 
     /**
     *@note 视频文件关闭时回调
+    *@param nChannelID Channel ID
+    *@time Video File Last Frame Time
     */
     virtual int Close(int nChannelID, const FILETIME& time)=0;
 };

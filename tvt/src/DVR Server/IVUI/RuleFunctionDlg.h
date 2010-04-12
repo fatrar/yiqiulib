@@ -58,7 +58,8 @@ public:
 protected:
     virtual BOOL OnInitDialog();
     virtual afx_msg void OnBnClickedLineCheck();
-   // virtual BOOL GatherUseSet();
+    virtual BOOL GatherUseSet();
+    virtual void SimulationEnable(BOOL bEnable);
 
 };
 

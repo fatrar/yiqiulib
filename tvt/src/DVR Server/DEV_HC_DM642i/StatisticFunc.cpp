@@ -42,13 +42,13 @@ BOOL CDSP::AddStatistic(
     }
 
     BOOL bRc = _AddStatistic(nChannelID, Rule);
-    if ( bRc )
+    if ( !bRc )
     {
-        ASSERT(false);
-        p->Rule = Rule;
-        p->bIsEnable = TRUE;
+        // INVALID_DIRECTION
+        ASSERT(INVALID_DIRECTION!=INVALID_DIRECTION);
     }
 
+    p->Rule = Rule;
     return bRc;
 }
 
@@ -74,12 +74,12 @@ BOOL CDSP::RemoveStatistic(
     }
 
     BOOL bRc = _RemoveStatistic(nChannelID, p->Rule);
-    if ( bRc )
+    if ( !bRc )
     {
-        ASSERT(false);
-        p->bIsEnable = FALSE;
+        ASSERT(INVALID_DIRECTION!=INVALID_DIRECTION);
     }
     
+    p->bIsEnable = FALSE;
     return bRc;
 }
 
@@ -185,28 +185,33 @@ BOOL CDSP::_AddStatistic(
     int nChannelID,
     const WPG_Rule& Rule )
 {
-    WPG_LINE_CROSS_DIRECTION dir = 
-        Rule.ruleDescription.description.tripwireEventDescription.direction;
+    WPG_LINE_CROSS_DIRECTION& dir = 
+        (WPG_LINE_CROSS_DIRECTION&)Rule.ruleDescription.description.tripwireEventDescription.direction;
     if ( dir == INVALID_DIRECTION )
     {
         TRACE("CDSP::_AddStatistic Invalid Rule!\n");
         return FALSE;
     }
 
+    WPG_LINE_CROSS_DIRECTION tmp = dir;
     if ( dir == ANY_DIRECTION ||
          dir == LEFT_TO_RIGHT )
     {
+        dir = LEFT_TO_RIGHT;
         SetIVSpecialParam(
             PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
+        dir = tmp;
     }
     if ( dir == ANY_DIRECTION ||
          dir == RIGHT_TO_LEFT )
     {
+       dir = RIGHT_TO_LEFT;
         IV_RuleID& Sencond = (IV_RuleID&)Rule.ruleId;
         ++Sencond.RuleID.ID;
         SetIVSpecialParam(
             PT_PCI_SET_ADD_RULE, nChannelID, 0, Rule);
         --Sencond.RuleID.ID;
+        dir = tmp;
     }
     return TRUE;
 }
