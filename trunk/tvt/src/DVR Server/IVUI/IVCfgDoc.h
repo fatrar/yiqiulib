@@ -172,7 +172,7 @@ protected:
         HTREEITEM Item);
 
     /**
-    *@brief Remove Rule To Doc(memory And XML), And Add Tree Item, 
+    *@brief Remove Rule To Doc(memory And XML), And Remove Tree Item, 
     *          if Set Trigger, Do Trigger Function
     *@param Rule        WPG Rule 
     *@param Item        Rule TreeCtrl Item HANDLE
@@ -181,7 +181,8 @@ protected:
         HTREEITEM Item);
 
     /**
-    *@brief Update Rule To Doc(memory And XML), And Add Tree Item
+    *@brief Update Rule To Doc(memory And XML), 
+    *       And Update Device ,if That channel Is Run IV
     *@param Rule        WPG Rule 
     *@param Item        Rule TreeCtrl Item HANDLE
     *@param IsRef       Rule point is pass to GetRule
@@ -191,9 +192,24 @@ protected:
         HTREEITEM Item,
         BOOL IsRef = TRUE);
 
+    /**
+    *@brief Enable Rule To Doc(memory And XML)
+    *       And Update Device ,if That channel Is Run IV
+    *@param Item        Rule TreeCtrl Item HANDLE
+    */
     void EnableRule(HTREEITEM Item, BOOL bEnable =TRUE);
 
+    /**
+    *@brief XX channel Run or Stop IV
+    *@param nChannelID Channel ID
+    *@param bEnable    Run or Stop
+    */
     void Use(int nChannelID, bool bEnable);
+
+    /**
+    *@brief Test XX channel is Run or Stop IV
+    *@param nChannelID Channel ID
+    */
     bool IsUse(int nChannelID); 
 
     int GetShowState(int nChannelID);
@@ -201,7 +217,19 @@ protected:
 
     BOOL IsRuleEnbale(HTREEITEM Item);
 
+    /**
+    *@brief Enable All Rule To Doc(memory And XML)
+    *       And Update Device, if That channel Is Run IV
+    *@param Item        Rule TreeCtrl Item HANDLE
+    */
     void EnableAllRule(int nChannelID, bool bEnable);
+
+    /**
+    *@brief Test XX channel is Have Free Rule(Max 5 Rule by every Channel)
+    *@param nChannelID Channel ID
+    */
+    BOOL IsHaveFreeRule(int nChannelID);
+
 
 private: 
     template<OnRuleXXFn T>

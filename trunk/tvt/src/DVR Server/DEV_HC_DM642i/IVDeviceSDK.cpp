@@ -235,7 +235,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
             WPG_Rule& StatisticRule = m_pStatisticRule[nDevice]->Rule;
             IV_RuleID& StatisticRuleID = (IV_RuleID&)StatisticRule.ruleId;
             IIVStatisticFresher::StatisticDir Dir = 
-                m_SimulationRuleID == RuleID ? IIVStatisticFresher::Statistic_Left:IIVStatisticFresher::Statistic_Right;
+                StatisticRuleID == RuleID ? IIVStatisticFresher::Statistic_Left:IIVStatisticFresher::Statistic_Right;
             m_pIVStatisticFresher->OnStatisticFresh(nChannelID, Dir);
            
             /**

@@ -232,7 +232,14 @@ void CIVLiveViewer::OnStatisticFresh(
     int nChannelID,
     StatisticDir Dir )
 {
-
+    if ( Dir == Statistic_Left )
+    {
+        ++m_StatisticData[nChannelID].dwCount[0];
+    }
+    else
+    {
+        ++m_StatisticData[nChannelID].dwCount[1];
+    }
 }
 // }
 // IIVStatisticFresher

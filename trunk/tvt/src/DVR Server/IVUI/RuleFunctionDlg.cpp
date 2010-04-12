@@ -20,7 +20,9 @@
 #include "RuleFunctionDlg.h"
 
 
-
+// 
+// **************************** CInvadeDlg **************************
+//
 BOOL CInvadeDlg::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
@@ -101,6 +103,12 @@ void CInvadeDlg::SimulationEnable( BOOL bEnable )
     }
 }
 
+// } 
+// CInvadeDlg
+
+// 
+// **************************** CLeftBehindDlg **************************
+//
 BOOL CLeftBehindDlg::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
@@ -170,7 +178,12 @@ void CLeftBehindDlg::SimulationEnable( BOOL bEnable )
         ASSERT(FALSE);
     }
 }
+// } 
+// CLeftBehindDlg
 
+// 
+// **************************** CStatisticDlg **************************
+//
 BOOL CStatisticDlg::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
@@ -199,6 +212,48 @@ void CStatisticDlg::OnBnClickedLineCheck()
     DrawToolChange(m_LineDrawerEx);
 }
 
+BOOL CStatisticDlg::GatherUseSet()
+{
+    CRect rect;
+    m_pDrawContainer->GetClientRect(&rect);
+    WPG_EventDescriptionUnion& des = m_pRule->ruleDescription.description;
+    if ( m_nToolsChoose != IVUtil::Choose_LineEx )
+    {
+        ASSERT(FALSE);
+        return FALSE;
+    }
+
+    if ( !GetUseInputLineInfor(m_LineDrawerEx, rect, des.tripwireEventDescription))
+    {
+        AfxMessageBox(_T("Please Input line!"));
+        return FALSE;
+    }
+    m_pRule->ruleDescription.type = TRIPWIRE_EVENT;
+    return TRUE;
+}
+
+void CStatisticDlg::SimulationEnable( BOOL bEnable )
+{
+    m_LineBT.EnableWindow(bEnable);
+    m_SelectBT.EnableWindow(bEnable);
+
+    m_ColourBT.EnableWindow(bEnable);
+    m_AdvBT.EnableWindow(bEnable);
+    m_FilterBT.EnableWindow(bEnable);
+    m_OKBt.EnableWindow(bEnable);
+    m_CancelBt.EnableWindow(bEnable);
+
+    m_LineRightBT.EnableWindow(bEnable);
+    m_LineLeftBT.EnableWindow(bEnable);
+    m_LineBothBT.EnableWindow(bEnable);
+}
+
+// } 
+// CStatisticDlg
+
+// 
+// **************************** CVehicleRetrogradeDlg **************************
+//
 BOOL CVehicleRetrogradeDlg::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
@@ -209,7 +264,12 @@ BOOL CVehicleRetrogradeDlg::OnInitDialog()
     }
     return TRUE;
 }
+// } 
+// CVehicleRetrogradeDlg
 
+// 
+// **************************** CIllegalParkingDlg **************************
+//
 BOOL CIllegalParkingDlg::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
@@ -220,7 +280,12 @@ BOOL CIllegalParkingDlg::OnInitDialog()
     }
     return TRUE;
 }
+// } 
+// CIllegalParkingDlg
 
+// 
+// **************************** CStageChangeDlg **************************
+//
 BOOL CStageChangeDlg::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
@@ -229,7 +294,8 @@ BOOL CStageChangeDlg::OnInitDialog()
     m_FilterBT.EnableWindow(FALSE);
     return TRUE;
 }
-
+// } 
+// CStageChangeDlg
 
 
 CRuleMainBaseDlg* CreateRuleCfgDlgByRule(IVRuleType type,  CWnd* pParentWnd)
@@ -241,8 +307,8 @@ CRuleMainBaseDlg* CreateRuleCfgDlgByRule(IVRuleType type,  CWnd* pParentWnd)
     case IV_LeftBehind: return new CLeftBehindDlg(pParentWnd);
     case IV_Loiters: return new CLoitersAddDlg(pParentWnd);
     case IV_Statistic: return new CStatisticDlg(pParentWnd);
-    case IV_Vehicle_Retrograde: return new CVehicleRetrogradeDlg(pParentWnd);
-    case IV_Illegal_Parking: return new CIllegalParkingDlg(pParentWnd);
+    case IV_Vehicle_Retrograde: return NULL;// new CVehicleRetrogradeDlg(pParentWnd);
+    case IV_Illegal_Parking: return NULL;//new CIllegalParkingDlg(pParentWnd);
     case IV_Stage_Change: return new CStageChangeDlg(pParentWnd);
     default:
         assert(false);
