@@ -424,6 +424,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\WPG_Status.h"
+				>
+			</File>
+			<File
 				RelativePath=".\XTrace.h"
 				>
 			</File>

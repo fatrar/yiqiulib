@@ -156,7 +156,10 @@ typedef struct _TVT_PREV_VBI
 	unsigned char  byReserve1;//for 8 bytes algian
 	unsigned char  byAIProcess;//for 8 bytes algian
 	unsigned char  byReserve2;//for 8 bytes algian
-}TVT_PREV_VBI,*PTVT_PREV_VBI;  
+    unsigned int   dwRetCode;
+    unsigned int   dwReserve3;
+}TVT_PREV_VBI,*PTVT_PREV_VBI;
+
 typedef struct _TVT_REC_VBI
 {  
 	unsigned char byChannel;//channel id

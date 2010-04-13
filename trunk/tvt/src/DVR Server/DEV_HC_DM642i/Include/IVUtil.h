@@ -102,6 +102,8 @@ static void InitWPGRuleByType(WPG_Rule* pRule, IVRuleType t)
         break;
     case IV_Stage_Change:
         des.type = SCENE_CHANGE_EVENT;
+        des.targetClassification = TARGET_CLASSIFICATION_ANYTHING;
+        des.description.sceneChangeEventDescription.sceneChangeType = TARGET_CLASSIFICATION_ANYTHING;
         break;
     default:
         assert(false);

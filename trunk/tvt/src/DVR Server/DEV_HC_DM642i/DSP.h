@@ -461,6 +461,9 @@ private:
     void LoopLiveSmooth(int nDevice, HANDLE h);
     inline void FreeLiveList(list<FRAMEBUFSTRUCT*>& LiveList);
     inline void VideoSend(int nChannel, FRAMEBUFSTRUCT* p);
+
+    // just Test
+    BOOL m_bIsOperatorDevice[MAX_DEVICE_NUM];
 };
 
 

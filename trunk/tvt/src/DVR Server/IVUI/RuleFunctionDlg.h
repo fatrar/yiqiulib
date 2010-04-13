@@ -17,24 +17,27 @@
 ***************************************************************************H*/
 #ifndef _RULEADDMAINDLG_H_2010_2
 #define _RULEADDMAINDLG_H_2010_2
-//#include "afxwin.h"
-//#include "RuleMainBaseDlg.h"
 
 
-// CRuleAddMainDlg dialog
+typedef void (*UpdateAIODataFn)(WPG_AOI_ACTION_TYPE&);
 
-class CInvadeDlg:
+void InvadeUpdateAIOData(WPG_AOI_ACTION_TYPE& actionType);
+void LeftBehindUpdateAIOData(WPG_AOI_ACTION_TYPE& actionType);
+
+template<UpdateAIODataFn Fn>
+class CLineAndRectDlg:
     public CRuleMainBaseDlg
 {
 public:
-    CInvadeDlg(CWnd* pParent = NULL):CRuleMainBaseDlg(pParent){}
+    CLineAndRectDlg(CWnd* pParent = NULL):CRuleMainBaseDlg(pParent){}
 protected:
     virtual BOOL OnInitDialog();
     virtual BOOL GatherUseSet();
     virtual void SimulationEnable(BOOL bEnable);
 };
 
-typedef CInvadeDlg CLeaveDisappearDlg;
+typedef CLineAndRectDlg<InvadeUpdateAIOData> CInvadeDlg;
+typedef CLineAndRectDlg<LeftBehindUpdateAIOData> CLeaveDisappearDlg;
 
 
 class CLeftBehindDlg:
