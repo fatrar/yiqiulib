@@ -21,8 +21,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Player", "..\Base\Player\Pl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Windows", "..\Base\Windows\Windows.vcproj", "{B10AE6F7-26E1-4C24-A89C-F6761F728F99}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "..\Base\tinyxml\tinyxml.vcproj", "{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -69,10 +67,6 @@ Global
 		{B10AE6F7-26E1-4C24-A89C-F6761F728F99}.Debug|Win32.Build.0 = Debug|Win32
 		{B10AE6F7-26E1-4C24-A89C-F6761F728F99}.Release|Win32.ActiveCfg = Release|Win32
 		{B10AE6F7-26E1-4C24-A89C-F6761F728F99}.Release|Win32.Build.0 = Release|Win32
-		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Debug|Win32.Build.0 = Debug|Win32
-		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Release|Win32.ActiveCfg = Release|Win32
-		{ECA5CCDA-A48C-4079-B34C-0CCEA442D2D4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

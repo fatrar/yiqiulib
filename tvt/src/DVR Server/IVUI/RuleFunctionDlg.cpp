@@ -19,11 +19,24 @@
 #include "IVUI.h"
 #include "RuleFunctionDlg.h"
 
+void InvadeUpdateAIOData( WPG_AOI_ACTION_TYPE& actionType )
+{
+    actionType.enters = true;
+    actionType.inside = true;
+    actionType.appears = true;
+}
+
+void LeftBehindUpdateAIOData( WPG_AOI_ACTION_TYPE& actionType )
+{
+    actionType.disappears = true;
+    actionType.exits = true;
+}
 
 // 
-// **************************** CInvadeDlg **************************
+// **************************** CLineAndRectDlg **************************
 //
-BOOL CInvadeDlg::OnInitDialog()
+template<UpdateAIODataFn Fn>
+BOOL CLineAndRectDlg<Fn>::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
     UseToolCtrlMode(Use_All_Mode);
@@ -35,7 +48,8 @@ BOOL CInvadeDlg::OnInitDialog()
     return TRUE;
 }
 
-BOOL CInvadeDlg::GatherUseSet()
+template<UpdateAIODataFn Fn>
+BOOL CLineAndRectDlg<Fn>::GatherUseSet()
 {
     CRect rect;
     m_pDrawContainer->GetClientRect(&rect);
@@ -58,6 +72,8 @@ BOOL CInvadeDlg::GatherUseSet()
             return FALSE;
         }
         m_pRule->ruleDescription.type = AOI_EVENT;
+        des.aoiEventDescription.viewType = PARTIAL_VIEW;
+        Fn(des.aoiEventDescription.actionType);
     }
     else if (m_nToolsChoose == IVUtil::Choose_Polygon)
     {
@@ -67,6 +83,9 @@ BOOL CInvadeDlg::GatherUseSet()
             return FALSE;
         }
         m_pRule->ruleDescription.type = AOI_EVENT;
+        des.aoiEventDescription.viewType = PARTIAL_VIEW;
+        Fn(des.aoiEventDescription.actionType);
+   
     }
     else 
     {
@@ -76,7 +95,8 @@ BOOL CInvadeDlg::GatherUseSet()
     return TRUE;
 }
 
-void CInvadeDlg::SimulationEnable( BOOL bEnable )
+template<UpdateAIODataFn Fn>
+void CLineAndRectDlg<Fn>::SimulationEnable( BOOL bEnable )
 {
     m_LineBT.EnableWindow(bEnable);
     m_ZoneBT.EnableWindow(bEnable);
@@ -104,7 +124,7 @@ void CInvadeDlg::SimulationEnable( BOOL bEnable )
 }
 
 // } 
-// CInvadeDlg
+// CLineAndRectDlg
 
 // 
 // **************************** CLeftBehindDlg **************************
@@ -315,3 +335,4 @@ CRuleMainBaseDlg* CreateRuleCfgDlgByRule(IVRuleType type,  CWnd* pParentWnd)
         return NULL;
     }
 }
+

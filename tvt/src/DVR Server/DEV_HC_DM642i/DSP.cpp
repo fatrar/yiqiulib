@@ -181,6 +181,8 @@ CDSP::CDSP()
     //ZeroMemory(m_bFisrtIVDataFlag, sizeof(m_bFisrtIVDataFlag));
 
     ZeroMemory(m_pStatisticRule, sizeof(m_pStatisticRule));
+
+    ZeroMemory(m_bIsOperatorDevice, sizeof(m_bIsOperatorDevice));
 }
 
 CDSP::~CDSP()
@@ -680,7 +682,15 @@ void CDSP::GetPrvData(int nDevice)
         SetParamToDSP(nDevice);
 
         // 先处理智能的数据，因为live数据模式如果是copy模式，马上会释放所有引用
-        PTVT_PREV_VBI pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE );      
+        PTVT_PREV_VBI pVBI = (PTVT_PREV_VBI)(pData + CAP_STATUS_SIZE );
+        WPG_STATUS WPGStatus = (WPG_STATUS)pVBI->dwRetCode;
+        //BOOL bCanSetParam = WPGStatus == RULE_INIT_CODE;
+        if ( WPGStatus != RULE_INIT_CODE )
+            // m_bIsOperatorDevice[nDevice] && bCanSetParam )
+        {
+            m_bIsOperatorDevice[nDevice] = FALSE;
+            TRACE(" WPG Code = %d\n", WPGStatus);
+        }
         if ( pVBI->byAIProcess )
         {
 #ifdef _UseLiveTime

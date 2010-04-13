@@ -76,6 +76,11 @@ BOOL CDSP::SetIVParamToDSP( int nDevice )
         return TRUE;
     }
 
+    if ( m_bIsOperatorDevice[nDevice] )
+    {
+        return FALSE;
+    }
+
     DWORD dwRtn;
     TVT_AP_SET stApSet; //heliang fix
 
@@ -95,15 +100,25 @@ BOOL CDSP::SetIVParamToDSP( int nDevice )
     PDWORD pNum = (PDWORD)pBuf;
     *pNum = 1;
     {
+        static char* g_RuleOperatorInfo[3] = 
+        {
+            "Rule Add",
+            "Rule Del",
+            "Rule Update"
+        };
+
         AutoLockAndUnlock(m_pIVPack[nDevice].CS);
         
         PPARAMPACK pPack = (PPARAMPACK)(pBuf + sizeof(DWORD));    
         IVParmData& IVData = m_pIVPack[nDevice].param.front();
 
+        size_t nCommandOffset = IVData.Commadparm.paramType-PT_PCI_SET_ADD_RULE;
+        ASSERT(nCommandOffset < 3);
         TRACE(
-            "ChannelID=%d, Command=%d\n", 
+            "IV Command --> ChID=%d, %s\n", 
             IVData.Commadparm.chanNum,
-            IVData.Commadparm.paramType);
+            g_RuleOperatorInfo[nCommandOffset]);
+        m_bIsOperatorDevice[nDevice] = TRUE;
 
         *pPack = IVData.Commadparm;
         memcpy(pPack+1, &IVData.Rule, sizeof(WPG_Rule));
@@ -328,7 +343,7 @@ void CDSP::DoIVAlarm(
     }
 }
 
-static bool s_bSavePic = true;
+static bool s_bSavePic = false;
 #include <fstream>
 
 void CDSP::DoSnapShot(

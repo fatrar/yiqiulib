@@ -63,7 +63,6 @@ void MyRule<WPG_SceneChangeEventDescription>::Init(
 }
 
 
-
 template<typename T>
 void MyRule<T>::ToWPGRule(WPG_Rule& Rule )
 {
@@ -222,6 +221,7 @@ bool _GetRule(
     TiXmlElement* pRuleEle,
     WPG_Rule& Rule )
 {
+    ZeroMemory(&Rule, sizeof(WPG_Rule));
     /*
     *@note 1. Get Rule Base Info(common Info) 
     */
