@@ -18,9 +18,8 @@
 #include "stdafx.h"
 #include "BaseIVViewer.h"
 #include "IVLiveViewer.h"
-#include "IVDataBuf.h"
 
-IIVDataBuf* CIVLiveViewer::s_pIVDataBuf = CIVDataBuf::getInstancePtr();
+IIVDataBuf* CIVLiveViewer::s_pIVDataBuf = CIVLiveDataBuf::getInstancePtr();
 
 //CFont
 //BOOL CreateFont(int nHeight, int nWidth, int nEscapement,
@@ -179,6 +178,10 @@ void CIVLiveViewer::RemoveRule(
 {
     RuleGraphMap& GraphMap = m_AllRuleGraph[nChannelID];
     IV_RuleID& RuleID = (IV_RuleID&)ID;
+    if ( RuleID.RuleID.nType == IV_Stage_Change )
+    {
+        return;
+    }
     {
         AutoLockAndUnlock(m_cs[nChannelID]);
         RuleGraphMap::iterator iter = GraphMap.find(RuleID);

@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\Base\Base\Include\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;IVVIEWER_EXPORTS"
@@ -221,7 +221,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\IVDataBuf.cpp"
+				RelativePath=".\IVLiveDataBuf.cpp"
 				>
 			</File>
 			<File
@@ -280,11 +280,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\IVDataBuf.h"
+				RelativePath=".\IVFileCommon.h"
 				>
 			</File>
 			<File
-				RelativePath=".\IVFileCommon.h"
+				RelativePath=".\IVLiveDataBuf.h"
 				>
 			</File>
 			<File

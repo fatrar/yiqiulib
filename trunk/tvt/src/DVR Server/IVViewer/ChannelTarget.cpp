@@ -16,12 +16,12 @@
  Copyright (c) xxxx Ltd.
 **************************************************************************cpp**/
 #include "StdAfx.h"
-#include "IVDataBuf.h"
+#include "IVLiveDataBuf.h"
 #include "ChannelTarget.h"
 
 
 
-GroupTarget* CIVDataBuf::ChannelTarget::Find(
+GroupTarget* CIVLiveDataBuf::ChannelTarget::Find(
     const FILETIME& time)
 {
     if ( 0 == TargetList.size() )
@@ -79,7 +79,7 @@ GroupTarget* CIVDataBuf::ChannelTarget::Find(
     return pGroupTarget;
 }
 
-bool CIVDataBuf::ChannelTarget::FileClose(
+bool CIVLiveDataBuf::ChannelTarget::FileClose(
     const FILETIME& time )
 {
     FileInfoList::iterator iter;
@@ -99,7 +99,7 @@ bool CIVDataBuf::ChannelTarget::FileClose(
     return false;
 }
 
-void CIVDataBuf::ChannelTarget::DropSomeData(int nPreAlarmTime)
+void CIVLiveDataBuf::ChannelTarget::DropSomeData(int nPreAlarmTime)
 {
     SYSTEMTIME syt;
     GetLocalTime(&syt);
@@ -136,7 +136,7 @@ void CIVDataBuf::ChannelTarget::DropSomeData(int nPreAlarmTime)
     }
 }
 
-void CIVDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
+void CIVLiveDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
 {
     /**
     *@note 1. 判断文件是否打开，
@@ -179,7 +179,7 @@ void CIVDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
     SaveData(nPreAlarmTime, &Info);
 }
 
-void CIVDataBuf::ChannelTarget::SaveData(
+void CIVLiveDataBuf::ChannelTarget::SaveData(
     int nPreAlarmTime,
     FileInfo* Info)
 {
@@ -306,7 +306,7 @@ void CIVDataBuf::ChannelTarget::SaveData(
     } 
 }
 
-void CIVDataBuf::ChannelTarget::SaveDataHeadToFile( 
+void CIVLiveDataBuf::ChannelTarget::SaveDataHeadToFile( 
     IVFileDataHead& DataHead,
     WORD nTargetCount,
     const FILETIME& t )
@@ -323,7 +323,7 @@ void CIVDataBuf::ChannelTarget::SaveDataHeadToFile(
     dwCurPos = DataHead.dwNextPos;
 }
 
-void CIVDataBuf::ChannelTarget::UpdateDataIndex(
+void CIVLiveDataBuf::ChannelTarget::UpdateDataIndex(
     const FILETIME& t,
     DWORD DataOffset)
 {
@@ -358,7 +358,7 @@ typedef QueueDropTableMgr::c_DropTable QueueDropTable;
 /**
 *@note 这个函数算法比较复杂，需要验证
 */
-void CIVDataBuf::ChannelTarget::UpdateDataIndexToFile(
+void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
     const FILETIME& EndTime)
 {
     /**

@@ -1,7 +1,7 @@
 /*H***************************************************************************
- File            : IVDataBuf.h
+ File            : IVLiveDataBuf.h
  Subsystem       : 
- Function Name(s): CIVDataBuf
+ Function Name(s): CIVLiveDataBuf
  Author          : YiQiu
  Date            : 2010-1-13  
  Time            : 13:57
@@ -15,8 +15,8 @@
 
  Copyright (c) xxxx Ltd.
 ***************************************************************************H*/
-#ifndef _IVDATABUF_H_2010_
-#define _IVDATABUF_H_2010_
+#ifndef _IVLIVEDATABUF_H_2010_
+#define _IVLIVEDATABUF_H_2010_
 
 
 // 模型采用发线程消息模式，
@@ -24,15 +24,15 @@
 // 发线程消息由于可能会失败，所以要写一份采用锁的方式就实现的代码
 // 数据队列使用deque，然后去记录访问的索引，当有队列pop或push时，记录偏移
 // 实际操作数据采用索引+offset，当某些特殊的情况然后清零offset。
-class CIVDataBuf :
-    public Singleton<CIVDataBuf>,
+class CIVLiveDataBuf :
+    public Singleton<CIVLiveDataBuf>,
     public IIVDataBuf, 
     public IIVDataSender,
     public IIVDataSaver
 {
 public:
-    CIVDataBuf(void);
-    virtual ~CIVDataBuf(void);
+    CIVLiveDataBuf(void);
+    virtual ~CIVLiveDataBuf(void);
 
     // IIVDataBuf
 public:
@@ -47,11 +47,6 @@ public:
         const FILETIME& time,
         const WPG_Target* pData,
         size_t nLen );
-
-    /**
-    *@note i=0  dir A, i=1 dir B
-    */
-    virtual void OnStatisticAdd(int i);
 
     virtual BOOL Init(
         int nDeviceCount,

@@ -19,7 +19,7 @@
 #define _CHANNELTARGET_H_2010_3
 
 
-struct CIVDataBuf::FileInfo
+struct CIVLiveDataBuf::FileInfo
 {
     FileInfo(
         const char* pPath, 
@@ -41,7 +41,7 @@ struct CIVDataBuf::FileInfo
 };
 
 
-class CIVDataBuf::ChannelTarget
+class CIVLiveDataBuf::ChannelTarget
 {
 public:
     ChannelTarget()
