@@ -225,11 +225,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\IVLiveFactory.cpp"
+				RelativePath=".\IVLiveViewer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\IVLiveViewer.cpp"
+				RelativePath=".\IVPlaybackDataBuf.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IVPlaybackViewer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IVViewerFactory.cpp"
 				>
 			</File>
 			<File
@@ -289,6 +297,14 @@
 			</File>
 			<File
 				RelativePath=".\IVLiveViewer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVPlaybackDataBuf.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IVPlaybackViewer.h"
 				>
 			</File>
 			<File

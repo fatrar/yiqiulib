@@ -207,22 +207,22 @@ namespace IVLiveFactory
 /**
 *@note IV数据回放接口
 */
-struct IVDataFound
+struct IIVDataFound
 {
     /**
     *@note 视频文件打开时回调，输入通道，视频文件路径，和时间戳
     *@param nChannelID Channel ID
     *@pPath Video File Path
-    *@time Video File First Frame Time
+    *@time Video File First Play Frame Time
     */
-    virtual int Open(int nChannelID, const char* pPath, const FILETIME& time)=0;
+    virtual BOOL Open(int nChannelID, const char* pPath, const FILETIME& time)=0;
 
     /**
     *@note 视频文件关闭时回调
     *@param nChannelID Channel ID
     *@time Video File Last Frame Time
     */
-    virtual int Close(int nChannelID, const FILETIME& time)=0;
+    virtual BOOL Close(int nChannelID, const FILETIME& time)=0;
 };
 
 /**
@@ -230,8 +230,8 @@ struct IVDataFound
 */ 
 namespace IVPlaybackFactory
 {
-    static IIVViewer* GetPlaybackViewer(void);
-    static IVDataFound* GetDataFound(void);
+    IVVIEWER_API IIVViewer* GetPlaybackViewer();
+    IVVIEWER_API IIVDataFound* GetDataFound();
 };
 
 

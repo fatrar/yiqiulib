@@ -71,8 +71,12 @@ using namespace OCI;
 #include "IVFileCommon.h"
 
 #include "IVLiveDataBuf.h"
+#include "IVPlaybackDataBuf.h"
 #include "BaseIVViewer.h"
 #include "IVLiveViewer.h"
+#include "IVPlaybackViewer.h"
+
+
 
 #ifdef _UNICODE
     #if defined _M_IX86

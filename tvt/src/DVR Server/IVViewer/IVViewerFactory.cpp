@@ -1,7 +1,7 @@
 /**CPP*************************************************************************
- File            : IVLiveFactory.cpp
+ File            : IVViewerFactory.cpp
  Subsystem       : 
- Function Name(s): CIVLiveFactory
+ Function Name(s): IVViewerFactory
  Author          : YiQiu
  Date            : 2010-4-6  
  Time            : 16:00
@@ -47,6 +47,21 @@ IIVDataSaver* GetDataSaver(void)
 IIVDataSender* GetDataSender(void)
 {
     return CIVLiveDataBuf::getInstancePtr();
+}
+
+}
+
+namespace IVPlaybackFactory
+{
+
+IIVViewer* GetPlaybackViewer(void)
+{
+    return CIVPlaybackViewer::getInstancePtr();
+}
+
+IIVDataFound* GetDataFound(void)
+{
+    return CIVPlaybackDataBuf::getInstancePtr();
 }
 
 }
