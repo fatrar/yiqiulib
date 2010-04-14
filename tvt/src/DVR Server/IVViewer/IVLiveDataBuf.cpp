@@ -1,7 +1,7 @@
 /*H***************************************************************************
- File            : IVDataBuf.cpp
+ File            : IVLiveDataBuf.cpp
  Subsystem       : 
- Function Name(s): CIVDataBuf
+ Function Name(s): CIVLiveDataBuf
  Author          : YiQiu
  Date            : 2010-1-13  
  Time            : 14:25
@@ -16,11 +16,11 @@
  Copyright (c) xxxx Ltd.
 ***************************************************************************H*/
 #include "stdafx.h"
-#include "IVDataBuf.h"
+#include "IVLiveDataBuf.h"
 #include "ChannelTarget.h"
 
 
-CIVDataBuf::CIVDataBuf(void)
+CIVLiveDataBuf::CIVLiveDataBuf(void)
     : m_nLastPos(0)
     , m_IsInit(FALSE)
     , m_pTargetBuf(NULL)
@@ -28,13 +28,13 @@ CIVDataBuf::CIVDataBuf(void)
     , m_Thread(NULL)
     , m_nPreAlarmTime()
 {
-    DebugOut("CIVDataBuf() \n");
+    DebugOut("CIVLiveDataBuf() \n");
     memory_check.Init("IV Viewer");
 }
 
-CIVDataBuf::~CIVDataBuf(void)
+CIVLiveDataBuf::~CIVLiveDataBuf(void)
 {
-    DebugOut("~CIVDataBuf() \n");
+    DebugOut("~CIVLiveDataBuf() \n");
     if ( m_IsInit )
     {
         Unit();
@@ -44,7 +44,7 @@ CIVDataBuf::~CIVDataBuf(void)
 //
 // IIVDataBuf
 //
-TargetQueue* CIVDataBuf::GetData(
+TargetQueue* CIVLiveDataBuf::GetData(
     int nChannelID,
     const FILETIME& time )
 { 
@@ -83,7 +83,7 @@ TargetQueue* CIVDataBuf::GetData(
 //
 // IIVDataSender
 //
-BOOL CIVDataBuf::OnIVDataSend( 
+BOOL CIVLiveDataBuf::OnIVDataSend( 
     int nChannelID,
     const FILETIME& time,
     const WPG_Target* pData,
@@ -127,15 +127,7 @@ BOOL CIVDataBuf::OnIVDataSend(
     return TRUE;
 }
 
-/**
-*@note i=0  dir A, i=1 dir B
-*/
-void CIVDataBuf::OnStatisticAdd( int i )
-{
-
-}
-
-BOOL CIVDataBuf::Init(
+BOOL CIVLiveDataBuf::Init(
     int nDeviceCount,
     int nEveryDeviceChannelNum)
 {
@@ -163,14 +155,14 @@ BOOL CIVDataBuf::Init(
 
     m_Thread = (HANDLE)_beginthreadex(
         NULL, 0, 
-        CIVDataBuf::SaveFileThread,
+        CIVLiveDataBuf::SaveFileThread,
         this,
         0,
         &m_nThreadID);
     return m_IsInit=TRUE;
 }
 
-BOOL CIVDataBuf::Unit()
+BOOL CIVLiveDataBuf::Unit()
 {
     if ( !m_IsInit )
     {
@@ -200,7 +192,7 @@ BOOL CIVDataBuf::Unit()
 //
 // IIVDataSaver
 //
-BOOL CIVDataBuf::Open(
+BOOL CIVLiveDataBuf::Open(
     int nChannelID,
     const char* pPath,
     const FILETIME& time )
@@ -217,7 +209,7 @@ BOOL CIVDataBuf::Open(
         GetMyWantEvent(OpenFile_Event,nChannelID) );
 }
 
-BOOL CIVDataBuf::Close(
+BOOL CIVLiveDataBuf::Close(
     int nChannelID, 
     const FILETIME& time )
 {
@@ -236,7 +228,7 @@ BOOL CIVDataBuf::Close(
         GetMyWantEvent(CloseFile_Evnet,nChannelID) );
 }
 
-BOOL CIVDataBuf::DeleteIVFile( 
+BOOL CIVLiveDataBuf::DeleteIVFile( 
     const char* pPath )
 {
     if ( !m_IsInit ||
@@ -252,18 +244,18 @@ BOOL CIVDataBuf::DeleteIVFile(
     return DeleteFile(strPath.c_str());
 }
 
-BOOL CIVDataBuf::TellPreAlarmTime( int time )
+BOOL CIVLiveDataBuf::TellPreAlarmTime( int time )
 {
     m_nPreAlarmTime = time;
     return TRUE;
 }
 
-size_t WINAPI CIVDataBuf::SaveFileThread( void* pParm )
+size_t WINAPI CIVLiveDataBuf::SaveFileThread( void* pParm )
 {
-    return ((CIVDataBuf*)pParm)->SaveFileLoopFun();
+    return ((CIVLiveDataBuf*)pParm)->SaveFileLoopFun();
 }
 
-size_t CIVDataBuf::SaveFileLoopFun()
+size_t CIVLiveDataBuf::SaveFileLoopFun()
 {
     DWORD dwEventCount = GetEventCount();
     while (1)
@@ -334,7 +326,7 @@ size_t CIVDataBuf::SaveFileLoopFun()
     return 0;
 }
 
-int CIVDataBuf::FindBuf()
+int CIVLiveDataBuf::FindBuf()
 {
     // 算法需要检验是否正确
     for (WORD i=m_nLastPos; i<m_dwMaxBufCount; ++i)
@@ -360,7 +352,7 @@ int CIVDataBuf::FindBuf()
     return NO_BUF_Ramain;
 }
 
-void CIVDataBuf::DoSaveFileEvent(DWORD dwChannel)
+void CIVLiveDataBuf::DoSaveFileEvent(DWORD dwChannel)
 {
     ChannelTarget& ChanTarget = m_TargetMap[dwChannel];
     if ( ChanTarget.TargetSaveList.size() == 0 )
@@ -371,22 +363,22 @@ void CIVDataBuf::DoSaveFileEvent(DWORD dwChannel)
     ChanTarget.TrySaveData(m_nPreAlarmTime);
 }
 
-void CIVDataBuf::DoOpenFileEvevt( DWORD dwChannel )
+void CIVLiveDataBuf::DoOpenFileEvevt( DWORD dwChannel )
 {
 
 }
 
-void CIVDataBuf::DoCloseFileEvent( DWORD dwChannel )
+void CIVLiveDataBuf::DoCloseFileEvent( DWORD dwChannel )
 {
 
 }
 
-HANDLE CIVDataBuf::GetMyWantEvent( IVBufEvent e, int nChannelID )
+HANDLE CIVLiveDataBuf::GetMyWantEvent( IVBufEvent e, int nChannelID )
 {
     return m_Event[1+Event_Count*nChannelID + e];
 }
 
-DWORD CIVDataBuf::GetEventCount()
+DWORD CIVLiveDataBuf::GetEventCount()
 {
     static DWORD s_nEventCount = 1+m_nDeviceCount*m_nEveryDeviceChannelNum*Event_Count;
     return s_nEventCount; 

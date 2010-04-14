@@ -41,12 +41,12 @@ IIVStatisticFresher* GetStatisticFresher()
 
 IIVDataSaver* GetDataSaver(void)
 {
-    return CIVDataBuf::getInstancePtr();
+    return CIVLiveDataBuf::getInstancePtr();
 }
 
 IIVDataSender* GetDataSender(void)
 {
-    return CIVDataBuf::getInstancePtr();
+    return CIVLiveDataBuf::getInstancePtr();
 }
 
 }

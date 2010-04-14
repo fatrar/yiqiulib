@@ -70,7 +70,7 @@ using namespace OCI;
 #include "Include\IVViewer.h"
 #include "IVFileCommon.h"
 
-#include "IVDataBuf.h"
+#include "IVLiveDataBuf.h"
 #include "BaseIVViewer.h"
 #include "IVLiveViewer.h"
 
