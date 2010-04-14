@@ -19,6 +19,7 @@ Copyright (c) xx Tech Co.,Ltd.
 
 
 template CBaseIVViewer<IIVLiveViewerEx>;
+template CBaseIVViewer<IIVViewer>;
 
 template<typename TViewer>
 CBaseIVViewer<TViewer>::CBaseIVViewer(void)
