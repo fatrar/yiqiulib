@@ -405,18 +405,40 @@ template<typename T> class a{}
 
 template a<int>;
 
-这种方法的仅限与你知道要模板实例化那些
-
-3. 使用export 关键字， 貌似最简单，最好，但是现在主流的编译器不支持
+这种方法的仅限与你知道要模板实例化那些lianxport 关键字， 貌似最简单，最好，但是现在主流的编译器不支持
 
 
+-----------------------------------------------------------
+15:50 2010-4-2
+联合体的使用规则
+
+union AA
+{
+    vector<int> aa;
+    int b;
+}; 
+编译报错： 如下
+error C2621: member 'AA::aa' of union 'AA' has copy constructor
 
 
 
+-----------------------------------------------------------
+14:24 2010-4-14
+&&&&&&&&
+今天遇到一个问题，
+在live里显示规则。在debug版，显示是好好的，但是到了Release版就显示不出了
+开始以为是数据读取不到，但是后来才知道解析XML数据是读到了，但是调式Viewer里面的数据，明显数据不对？
+后来才知道是在 --  >  数据读入有问题，
+     MyRule<MyAOIEventDes> MyRuleTmp(Rule);
+     assert(TinyXmlUtil::GetChildBinaryTextData(pRuleEle, _Rule, MyRuleTmp));
+     Rule << MyRuleTmp;
 
+后来在release调式，发现assert这个地方代码不会跑到那去，
+开始还以为是release编译优化的缘故，于是把release优化取消，发现还是不行。
 
-
-
+于是我在release调式，看汇编代码，发现根本就没有调assert里面的代码，
+于是突然恍然大悟，应该是release版assert被优化掉了。。相当于define代替成一个空的东西
+所以以后宏这些情况，还是小心。。。。
 
 
 
