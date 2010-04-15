@@ -86,7 +86,7 @@ HTREEITEM InitCameraTree(
     CameraTree.SetItemData(Root, (DWORD_PTR)pInfo);
 
     CString strCameraName;
-    for ( DWORD i = 0; i< Max_Channel; ++i )
+    for ( DWORD i = 0; i< CIVCfgDoc::s_nMaxChannel; ++i )
     {
         strCameraName.Format(Channel_Name, i);
         HTREEITEM CurrentItem = CameraTree.InsertItem(strCameraName, Root);

@@ -371,6 +371,34 @@ void CDSP::ReleaseLiveBuf( FRAMEBUFSTRUCT* p )
     ReleasePrvBuf(nDeviceID, nChannelID, nIndex);
 }
 
+void CDSP::GetDeviceInfo(
+    int* pnDeviceNum,
+    int* pnChannelNumByDevice )
+{
+    if ( pnDeviceNum )
+    {
+        *pnDeviceNum = m_nDeviceNum;
+    }
+    if ( pnChannelNumByDevice )
+    {
+        *pnChannelNumByDevice = CHANNEL_PER_DEVICE;
+    }
+}
+
+void CDSP::GetIVDeviceInfo(
+    int* pnIVChannelNumByDevice,
+    int* pnMaxRuleNumByIVChannel )
+{
+    if ( pnIVChannelNumByDevice )
+    {
+        *pnIVChannelNumByDevice = IV_Num_PER_Device;
+    }
+    if ( pnMaxRuleNumByIVChannel )
+    {
+        *pnMaxRuleNumByIVChannel = AI_MAX_RULE_COUNT;
+    }
+}
+
 // IIVDeviceBase2
 // }
 

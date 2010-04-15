@@ -55,8 +55,8 @@ void CIVSwitchTab::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CIVSwitchTab, CDialog)
     ON_COMMAND_RANGE(IDC_RULE, IDC_RULE+TAB_BT_NUM, &CIVSwitchTab::ClickTabBt)
-    //ON_BN_CLICKED(IDC_RULE, &CIVSwitchTab::OnBnClickedRule)
     ON_WM_CLOSE()
+    ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 // CIVSwitchTab message handlers
 
@@ -145,16 +145,17 @@ BOOL CIVSwitchTab::OnInitDialog()
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
-void CIVSwitchTab::OnBnClickedRule()
-{
-    // TODO: Add your control notification handler code here
-}
 
 void CIVSwitchTab::OnClose()
 {
     // TODO: Add your message handler code here and/or call default
 
     CDialog::OnClose();
+}
+
+void CIVSwitchTab::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+    CDialog::OnShowWindow(bShow, nStatus);
 }
 
 
@@ -184,7 +185,7 @@ HWND CreateIVConfigDlg(HWND hWnd, const RECT& rect)
     {
         g_pIVSwitchTab = new CIVSwitchTab();
     }
-    
+
     g_pIVSwitchTab->Init(hWnd, rect);
     return g_pIVSwitchTab->m_hWnd;
 }
@@ -199,7 +200,17 @@ void ReleaseIVConfigDlg()
 void SetIVOpeator( IIVDeviceBase2* p )
 {
     g_IIVDeviceBase2 = p;
+
+    int nChannelNumByDevice;
+    p->GetDeviceInfo(
+        &CIVCfgDoc::s_nDeviceNum,
+        &nChannelNumByDevice);
+    CIVCfgDoc::s_nMaxChannel = CIVCfgDoc::s_nDeviceNum*nChannelNumByDevice;
+    p->GetIVDeviceInfo(
+        &CIVCfgDoc::s_nIVChannelNumByDevice, 
+        &CIVCfgDoc::s_nMaxRuleNumByIVChannel);
 }
 
 }
+
 

@@ -16,7 +16,7 @@
  Copyright (c) xxxx Ltd.
 **************************************************************************cpp**/
 #include "StdAfx.h"
-#include "IVLiveDataBuf.h"
+//#include "IVLiveDataBuf.h"
 #include "ChannelTarget.h"
 
 
@@ -138,6 +138,11 @@ void CIVLiveDataBuf::ChannelTarget::DropSomeData(int nPreAlarmTime)
 
 void CIVLiveDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
 {
+    if ( TargetSaveList.size() == 0 )
+    {
+        return;
+    }
+
     /**
     *@note 1. 判断文件是否打开，
     *   NO , 是否有新的Path过来，没有则丢弃一些超过PreAlarm的数据，
@@ -201,7 +206,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveData(
             */
             GroupTarget* pGroupTarget = *iter;
             if ( pGroupTarget->m_TargetQueue->nRef != 0 &&
-                pGroupTarget->m_TargetQueue->nUse != Buf_No_Use )
+                 pGroupTarget->m_TargetQueue->nUse != Buf_No_Use )
             {
                 break;
             }
@@ -212,8 +217,8 @@ void CIVLiveDataBuf::ChannelTarget::SaveData(
             *  if =  保存当前的这组数据，然后关闭文件
             *  if <  保存数据，继续循环
             */
-            long nState = Info->CloseTime ^ pGroupTarget->m_time;
-            if ( nState < 0 )
+            long nState = pGroupTarget->m_time ^ Info->CloseTime;
+            if ( nState > 0 )
             {
                 UpdateDataIndexToFile(Info->CloseTime);
                 Writer.close();
@@ -313,7 +318,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveDataHeadToFile(
 {
     DataHead.dwPrePos = dwPrePos;
     DataHead.dwNextPos = dwCurPos + sizeof(IVFileDataHead) + nTargetCount*sizeof(WPG_Target);
-    DataHead.dwTargetNum = nTargetCount;
+    DataHead.wTargetNum = nTargetCount;
     DataHead.t = t;
     Writer.write((char*)&DataHead, sizeof(IVFileDataHead));
 
@@ -368,7 +373,8 @@ void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
     *    然后将调整后的时候放在FileHead中
     *    MoreDataIndex没数据，那么直接写FileHead就好
     */
-    FileHead.EndTime =EndTime;
+    FileHead.EndTime = EndTime;
+    FileHead.dwLastFramePos = dwPrePos;
     Writer.seekp(0);
     size_t nQueueSize = MoreDataIndex.size();
     if ( nQueueSize != 0 )
@@ -453,6 +459,141 @@ void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
 }
 
 
+//
+// ************************* 
+//
+HANDLE CIVPlaybackDataBuf::ChannelTarget::s_hFixFileThread = NULL;
+DWORD CIVPlaybackDataBuf::ChannelTarget::s_dwFixFileThread = -1;
+
+template<>
+BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
+    const IVFileHead& Head)
+{
+    DataIndex.clear();
+    if ( Head.FileFlag != g_dwIVFileOK )
+    {
+        return FALSE;
+    }
+
+    StlHelper::Array2STL(
+        Head.DataIndex, 
+        Head.dwIndexNum, 
+        DataIndex );
+
+    IVFileDataIndex TmpDataIndex; 
+    if ( DataIndex.size()==0 ||
+         DataIndex.front().TimeOffset != 0 )
+    {
+        TmpDataIndex.TimeOffset = 0;
+        TmpDataIndex.DataOffset = sizeof(IVFileHead);
+        DataIndex.push_front(TmpDataIndex);
+    }
+
+    DWORD EndTimeOffset = (DWORD)(Head.EndTime - Head.BeginTime);
+    if ( DataIndex.size()==0 || 
+         DataIndex.back().TimeOffset != EndTimeOffset )
+    {
+        TmpDataIndex.TimeOffset = EndTimeOffset;
+        TmpDataIndex.DataOffset = Head.dwLastFramePos;
+        DataIndex.push_front(TmpDataIndex);
+    }
+
+    return TRUE;
+}
+
+void CIVPlaybackDataBuf::ChannelTarget::Init()
+{
+    if ( s_hFixFileThread )
+    {
+        s_hFixFileThread = CreateThread(
+            NULL,
+            0,
+            OnFixFileThread,
+            NULL,
+            0,
+            &s_dwFixFileThread);
+    }
+}
+
+void CIVPlaybackDataBuf::ChannelTarget::Unit()
+{
+    if ( s_hFixFileThread != NULL )
+    {
+        return;
+    }
+
+    PostThreadMessage(s_dwFixFileThread, WM_QUIT, 0, 0);
+    WaitForSingleObject(s_hFixFileThread, 500);
+}
+
+BOOL CIVPlaybackDataBuf::ChannelTarget::Open(
+    const char* pPath,
+    const FILETIME& time)
+{
+    if ( isValidString(pPath) )
+    {
+        return FALSE;
+    }
+
+    if ( Reader.is_open() )
+    {
+        Reader.close();
+    }
+
+    Reader.open(pPath, ios::binary|ios::in);
+    if ( Reader.is_open() )
+    {
+        return FALSE;
+    }
+
+    IVFileHead Head;
+    Reader.read((char*)&Head, sizeof(IVFileHead));
+    switch ( Head.Version )
+    {
+    case IVFile_Version_1_0:
+        PraseHeadToMap<IVFile_Version_1_0>(Head);
+        break;
+    default:
+        return FALSE;
+    }
+    return MoveTo(time);
+}
+
+BOOL CIVPlaybackDataBuf::ChannelTarget::Close(
+    const FILETIME& time)
+{
+    if (Reader.is_open())
+    {
+        Reader.close();
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+BOOL CIVPlaybackDataBuf::ChannelTarget::MoveTo(
+    const FILETIME& time)
+{
+    if ( Reader.is_open() )
+    {
+        return FALSE;
+    }
+
+    if ( time < BeginTime ||
+        time > EndTime )
+    {
+        Reader.close();
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+
+DWORD WINAPI CIVPlaybackDataBuf::ChannelTarget::OnFixFileThread( void* p )
+{
+    return 0;
+}
 
 
 

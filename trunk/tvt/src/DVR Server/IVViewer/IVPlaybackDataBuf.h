@@ -46,6 +46,17 @@ public:
     virtual BOOL Close(
         int nChannelID,
         const FILETIME& time);
+
+protected:
+    enum
+    {
+        IV_Playback_Max_Channel = 64,
+    };
+
+    class ChannelTarget;
+
+private:
+    ChannelTarget* m_TargetMap;
 };
 
 

@@ -282,6 +282,14 @@ public:
 
     virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p);
 
+    virtual void GetDeviceInfo(
+        int* pnDeviceNum,
+        int* pnChannelNumByDevice );
+
+    virtual void GetIVDeviceInfo(
+        int* pnIVChannelNumByDevice,
+        int* pnMaxRuleNumByIVChannel );
+
     // IIVDeviceSetter
 public:
     virtual void SetIVAlarmOutCallBack(

@@ -50,7 +50,6 @@ LRESULT CPicCtrl::OnEraseBkgnd(HDC hdc)
 LRESULT CPicCtrl::OnPaint(HDC hdc)
 {
     CPaintDC dc2(m_hWnd);
-    return 0;
     if ( m_pImage )
     {
         CDC dc(GetDC());

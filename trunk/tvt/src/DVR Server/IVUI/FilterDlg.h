@@ -19,7 +19,7 @@ public:
 // Dialog Data
 	enum { IDD = IDD_FILTER };
 
-    void SetComomParm(int nChannelID, WPG_Rule* pRule);
+    void SetCommonParm(int nChannelID, WPG_Rule* pRule);
 
     // IVideoSend
 protected:

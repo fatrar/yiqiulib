@@ -40,40 +40,18 @@ enum
     ApplyBT_Height = 35,
     ApplyBT_X_ROffset = ApplyBT_Width + 20,
     ApplyBT_Y_ROffset = ApplyBT_Height + 20,
+
+
+    Default_Max_Channel    = 4,
+    Default_Device_Num     = 1,
+    Default_IVChannelNum_By_Device   = 1,
+    Default_Max_RuleNum_By_IVChannel = 5,
 };
 
 // 采用全局模块句柄，改句柄在App构造，初始化，每个去资源使用它
 // 这样1可以提高效率，2减少错误（切换资源的问题）。
 extern HMODULE g_hmodule;
 
-//// 现有智能的八种类型
-//enum IVRuleType
-//{
-//    IV_Invade,              // 入侵
-//    IV_Leave_Disappear,     // 消失/离开
-//    IV_LeftBehind,          // 遗留
-//    IV_Loiters,             // 徘徊
-//    IV_Statistic,           // 流量统计
-//    IV_Vehicle_Retrograde,  // 车辆逆行
-//    IV_Illegal_Parking,     // 非法停车
-//    IV_Stage_Change,        // 场景变换
-//};
-
-// Person 1, vehicle=2, unknown=4,anything=7  WPG_TARGET_CLASSIFICATION
-// GROUND_PLANE=Parallel=地面场景, IMAGE_PLANE=垂直场景=Vertical WPG_PLANE_TYPE
-
-
-//struct ILineAdvSet
-//{
-//    virtual void SetRuleName(const CString& strRuleName)=0;
-//    virtual void SetTargetObj(DWORD nTargetObj)=0;
-//};
-//
-//struct IZoneAdvSet : public ILineAdvSet
-//{
-//    virtual void SetViewType(bool bView)=0; // true is Parallel, otherwise,Vertical
-//    virtual void SetTime(DWORD nTime){};
-//};
 
 
 

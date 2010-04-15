@@ -70,7 +70,6 @@ using namespace std;
 using namespace OCI;
 //#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
-#include "..\DEV_HC_DM642i\common.h"
 #include "OtherUtil.h"
 
 #include "IVUICommon.h"

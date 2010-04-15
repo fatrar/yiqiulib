@@ -1468,7 +1468,14 @@ BOOL CDSP::CaptureStart()
 	return TRUE;
 }
 
-BOOL CDSP::ControlDriver(INT nIndex, DWORD dwIoControlCode, LPVOID lpInBuffer, DWORD nInBufferSize, LPVOID lpOutBuffer, DWORD nOutBufferSize, LPDWORD lpBytesReturned)
+BOOL inline CDSP::ControlDriver(
+    INT nIndex,
+    DWORD dwIoControlCode,
+    LPVOID lpInBuffer, 
+    DWORD nInBufferSize, 
+    LPVOID lpOutBuffer,
+    DWORD nOutBufferSize,
+    LPDWORD lpBytesReturned)
 {
 	if (m_hDevice[nIndex] != NULL)
 	{
@@ -1893,7 +1900,6 @@ DWORD CDSP::NetFrameRateInc(int inc)
 
 	return RefreshNetFrameRate();
 }
-
 
 
 // end of file  old -> 2114

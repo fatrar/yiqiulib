@@ -74,8 +74,6 @@ enum
 
     AlarmOutTable_Count = 10,
 
-    Max_Channel = 4,
-
     Max_SnapShot_Pic_Size = 128 * 1024,  // 一张JPG图的最大大小
     Max_SnapShot_Pic_Count = 8,         // 一次最多几张图
     //#define	VIDEO_BUFFER_MAX_FRAME_LENGTH		IDEO_BUFFER_MAX_FRAME_LENGTH		(64 * 1024)
@@ -385,6 +383,14 @@ struct IIVDeviceBase2 :
         IVideoSend* pVideoSend)=0;
 
     virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p)=0;
+
+    virtual void GetDeviceInfo(
+        int* pnDeviceNum,
+        int* pnChannelNumByDevice )=0;
+
+    virtual void GetIVDeviceInfo(
+        int* pnIVChannelNumByDevice,
+        int* pnMaxRuleNumByIVChannel )=0;
 };
 
 

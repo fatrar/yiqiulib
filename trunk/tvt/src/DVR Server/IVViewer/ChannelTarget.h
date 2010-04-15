@@ -18,6 +18,7 @@
 #ifndef _CHANNELTARGET_H_2010_3
 #define _CHANNELTARGET_H_2010_3
 
+class CIVLiveDataBuf;
 
 struct CIVLiveDataBuf::FileInfo
 {
@@ -139,7 +140,7 @@ protected:
     typedef list<GroupTarget*> TTargetList;
     typedef deque<FileInfo> FileInfoList;
 
-public:
+private:
 
     TTargetList TargetList;      // 智能的还没有显示的数据队列
     TTargetList TargetSaveList;  // 已经播放或者数据已不可能显示智能数据队列
@@ -168,18 +169,42 @@ public:
 };
 
 
+class CIVPlaybackDataBuf;
 
 
+class CIVPlaybackDataBuf::ChannelTarget
+{
+public:
+    static void Init();
+    static void Unit();
 
+    BOOL Open(
+        const char* pPath,
+        const FILETIME& time);
 
-/**
-*@note  
-*@param	  
-*@param   
-*@param  
-*@param  
-*@return 
-*/
+    BOOL Close(const FILETIME& time);
+
+    BOOL MoveTo(const FILETIME& time);
+
+protected:
+    template<IVFileVersionDefine Version>
+    BOOL PraseHeadToMap(const IVFileHead& Head);
+
+protected:
+    static DWORD WINAPI OnFixFileThread(void* p);
+
+private:
+    ifstream Reader;
+    //BOOL IsFoundFile;
+    DWORD dwCurrentPos;
+    FILETIME BeginTime;
+    FILETIME EndTime;
+    deque<IVFileDataIndex> DataIndex;
+
+private:
+    static HANDLE s_hFixFileThread;
+    static DWORD s_dwFixFileThread;
+};
 
 
 #endif  // _CHANNELTARGET_H_2010_

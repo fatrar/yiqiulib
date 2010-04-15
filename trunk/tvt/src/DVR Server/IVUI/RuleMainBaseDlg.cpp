@@ -200,7 +200,7 @@ void CRuleMainBaseDlg::OnBnClickedFilterBt()
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     }
     CFilterDlg Dlg;
-    Dlg.SetComomParm(m_nCurrentChan, m_pRule);
+    Dlg.SetCommonParm(m_nCurrentChan, m_pRule);
     Dlg.DoModal();
     if ( g_IIVDeviceBase2 )
     {
@@ -415,6 +415,7 @@ void CRuleMainBaseDlg::UseToolCtrlMode(ToolMode Mode)
         m_SelectBT.EnableWindow(FALSE);
         m_RectangleBT.ShowWindow(SW_HIDE);
         m_PolygonBT.ShowWindow(SW_HIDE);
+        m_pDrawContainer->EnableWindow(FALSE);
     	break;
     case Line_Mode:
         m_ZoneBT.EnableWindow(FALSE);

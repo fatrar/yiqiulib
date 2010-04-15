@@ -418,7 +418,7 @@ BOOL CFilterDlg::OnVideoPlay(
     return TRUE;
 }
 
-void CFilterDlg::SetComomParm( int nChannelID, WPG_Rule* pRule )
+void CFilterDlg::SetCommonParm( int nChannelID, WPG_Rule* pRule )
 {
     m_pRule = pRule;
     m_nCurrentChan = nChannelID;

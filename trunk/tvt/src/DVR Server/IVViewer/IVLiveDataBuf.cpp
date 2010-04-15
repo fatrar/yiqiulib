@@ -354,12 +354,7 @@ int CIVLiveDataBuf::FindBuf()
 
 void CIVLiveDataBuf::DoSaveFileEvent(DWORD dwChannel)
 {
-    ChannelTarget& ChanTarget = m_TargetMap[dwChannel];
-    if ( ChanTarget.TargetSaveList.size() == 0 )
-    {
-        return;
-    }
-   
+    ChannelTarget& ChanTarget = m_TargetMap[dwChannel];   
     ChanTarget.TrySaveData(m_nPreAlarmTime);
 }
 

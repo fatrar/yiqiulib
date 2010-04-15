@@ -19,12 +19,16 @@
 #include "IVPlaybackDataBuf.h"
 
 
+
+
 CIVPlaybackDataBuf::CIVPlaybackDataBuf(void)
 {
+    m_TargetMap = new ChannelTarget[IV_Playback_Max_Channel];
 }
 
 CIVPlaybackDataBuf::~CIVPlaybackDataBuf(void)
 {
+    delete[] m_TargetMap;
 }
 
 //

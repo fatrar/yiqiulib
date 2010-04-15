@@ -48,6 +48,7 @@
 #include <string>
 #include <list>
 #include <fstream>
+#include <hash_map>
 using namespace std;
 
 
@@ -66,9 +67,9 @@ using namespace OCI;
 #include "IVViewerUtil.h"
 #include "ViewHelper.h"
 
-#include "DropIndexAlgorithm.h"
 #include "Include\IVViewer.h"
 #include "IVFileCommon.h"
+#include "DropIndexAlgorithm.h"
 
 #include "IVLiveDataBuf.h"
 #include "IVPlaybackDataBuf.h"
@@ -76,6 +77,7 @@ using namespace OCI;
 #include "IVLiveViewer.h"
 #include "IVPlaybackViewer.h"
 
+#include "ChannelTarget.h"
 
 
 #ifdef _UNICODE

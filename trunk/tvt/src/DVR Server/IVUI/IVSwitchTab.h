@@ -21,6 +21,8 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
+    afx_msg void OnClose();
+    afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
     afx_msg void ClickTabBt(UINT ID/*, WPARAM w, LPARAM l*/);
 	DECLARE_MESSAGE_MAP()
 
@@ -42,6 +44,5 @@ private:
     
 private:
     CStatic m_IVTabGroup;
-    afx_msg void OnBnClickedRule();
-    afx_msg void OnClose();
+
 };

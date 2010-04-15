@@ -26,8 +26,9 @@ IMPLEMENT_DYNAMIC(CIVRuleDlg, CDialog)
 
 CIVRuleDlg::CIVRuleDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIVRuleDlg::IDD, pParent)
-    , m_nCurrentChan(0)
+    , m_nCurrentChan(Invaild_ChannelID)
     , m_ClickItem(NULL)
+    , m_IsShow(FALSE)
 {
 }
 
@@ -42,10 +43,37 @@ void CIVRuleDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Rule_Group, m_TreeGroup);
 }
 
+void CIVRuleDlg::OnShowWindow( BOOL bShow, UINT nStatus )
+{
+    if ( bShow )
+    {
+        if ( !m_IsShow )
+        {
+            if ( g_IIVDeviceBase2 && m_nCurrentChan!= Invaild_ChannelID )
+            {
+                g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
+            }
+            m_IsShow = TRUE;
+        }
+    }
+    else
+    {
+        if ( m_IsShow )
+        {
+            if ( g_IIVDeviceBase2 && m_nCurrentChan!= Invaild_ChannelID )
+            {
+                g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
+            }
+            m_IsShow = FALSE;
+        }
+    }
+    TRACE("bShow=%d, nStatus=%d\n", bShow, nStatus);
+}
+
 void CIVRuleDlg::OnDestroy()
 {
     if ( m_nCurrentChan != Invaild_ChannelID &&
-        g_IIVDeviceBase2 )
+        g_IIVDeviceBase2 && m_IsShow )
     {
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     }
@@ -88,6 +116,7 @@ BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
     ON_COMMAND(ID_RULE_SHOWOBJTRACE, &CIVRuleDlg::OnRuleShowobjtrace)   
     ON_WM_DESTROY()
     ON_WM_PAINT()
+    ON_WM_SHOWWINDOW()
     ON_NOTIFY(NM_CLICK, IDC_RULE_CAMERA_TREE, &CIVRuleDlg::OnNMClickRuleCameraTree)
     ON_COMMAND(ID_RULE_DELETERULE, &CIVRuleDlg::OnRuleDeleterule)
     ON_COMMAND(ID_RULE_EDITRULE, &CIVRuleDlg::OnRuleEditrule)
@@ -219,6 +248,11 @@ void CIVRuleDlg::OnClickCameraTree(
 
 BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
 {
+    if ( !::IsWindow(m_hWnd) )
+    {
+        return FALSE;
+    }
+
     CRect Rect;
     FILETIME* time = (FILETIME*)&bufStruct->localTime;
     m_PlayerWnd.GetClientRect(&Rect);
@@ -394,13 +428,18 @@ void CIVRuleDlg::OnRuleNewrule()
         return;
     }
 
+    IVRuleType RuleType = FunctionSelDlg.GetUserSelect();
+    if ( !IsCanAddRule(m_nCurrentChan, RuleType) )
+    {
+        AfxMessageBox(_T("Max 5 Rule, Statistic occupied 2 Rule! And Statistic Rule Only Can Add One!"));
+        return;
+    }
+
     if ( g_IIVDeviceBase2 && m_nCurrentChan!= Invaild_ChannelID )
     {
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     }
-
     WPG_Rule* pRule = new WPG_Rule;
-    IVRuleType RuleType = FunctionSelDlg.GetUserSelect();
     IVUtil::InitWPGRuleByType(pRule, RuleType);
 
     CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType, this);

@@ -29,6 +29,9 @@ public:
     CIVPlaybackViewer(void);
     ~CIVPlaybackViewer(void);
 
+public:
+    static IIVDataBuf* s_pIVDataBuf;
+
     // CBaseIVViewer
 public:
     virtual TargetQueue* GetIVData(
