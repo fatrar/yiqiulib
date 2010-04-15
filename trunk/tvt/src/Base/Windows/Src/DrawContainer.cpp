@@ -61,6 +61,9 @@ IDrawer* CDrawContainer::Add( IDrawerGraphType t )
     case IDrawer_ArrowLine: 
         pDrawerEx = new CArrowLineDrawer(this);
         break;
+    case IDrawer_ArrowLineEx:
+        pDrawerEx = new CArrowLineDrawerEx(this);
+        break;
     default:
         return NULL;
     }
@@ -80,6 +83,7 @@ BOOL CDrawContainer::Remove( IDrawer* pDrawer )
         {
             m_pSelect = NULL;
         }
+        delete pDrawer;
         return TRUE;
     }
     assert(false);

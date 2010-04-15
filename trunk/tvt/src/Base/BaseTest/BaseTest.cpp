@@ -130,9 +130,12 @@ struct IVFileDataHead
     FILETIME t;
 };
 
-
+#include <math.h>
 int _tmain(int argc, _TCHAR* argv[])
 {
+    printf("%u", -1);
+    int x=pow(2.0f, 3);
+
     const char pPath[] = "C:\\1234.txt";
     ofstream Writer(pPath, ios::binary);
     DWORD a = 1;

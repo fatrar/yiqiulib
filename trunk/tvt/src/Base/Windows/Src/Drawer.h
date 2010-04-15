@@ -157,12 +157,6 @@ protected:
     BOOL m_bEnbale;
 };
 
-//namespace DrawerFactory
-//{
-//    IDrawerEx* CreateDrawer(IDrawerGraphType t);
-//    void DestoryDrawer(IDrawerEx* p);
-//}
-
 
 #endif  // _DRAWER_H_2010_
 

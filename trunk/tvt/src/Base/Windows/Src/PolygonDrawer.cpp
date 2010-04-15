@@ -81,14 +81,14 @@ BOOL CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint& point)
         ParentInvalidateEx();
         return TRUE;
     }
-    return FALSE;
+    return TRUE;
 }
 
 BOOL CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
 {
     if ( m_bDrawing ) 
     {
-        return FALSE;
+        return TRUE;
     }
 
     if ( m_bDragging )
@@ -161,6 +161,8 @@ BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
 
     m_PointQueue.back() = point;
     m_PointQueue.push_back(point);
+    m_bDrawing = true;
+    m_bDragging = false;
     ParentInvalidateEx();
     return TRUE;
 }

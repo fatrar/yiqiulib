@@ -137,7 +137,7 @@ template<const char cDelimiter = ';'>
 class CMakeString
 {
 public:
-    CMakeString(){ m_buf<< std::setw(4);}
+    CMakeString(){ m_buf<< std::setw(1);}
     typedef CMakeString<cDelimiter> _Myt;
 
     template<typename T>

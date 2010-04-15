@@ -104,7 +104,7 @@ protected :
 
 protected:
     BOOL InitYUVBack(DWORD dwWidth, DWORD dwHeight);
-    BOOL InitRGBBack(DWORD dwWidth, DWORD dwHeight);
+    BOOL InitRGBBack(DWORD dwWidth, DWORD dwHeight, DWORD BitDepth=24);
 
     BOOL ReInitYUVBack(DWORD dwWidth, DWORD dwHeight);
     BOOL ReInitRGBBack(DWORD dwWidth, DWORD dwHeight);
