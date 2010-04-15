@@ -28,18 +28,6 @@ CLineDrawer::CLineDrawer(CWnd* pWnd)
     m_PointQueue.resize(2);
 }
 
-CLineDrawer::~CLineDrawer(void)
-{
-}
-
-//BEGIN_MESSAGE_MAP(CLineDrawer, CWnd)
-//    ON_WM_MOUSEMOVE()
-//    ON_WM_LBUTTONUP()
-//    ON_WM_LBUTTONDOWN()
-//    ON_WM_PAINT()
-//END_MESSAGE_MAP()
-
-
 BOOL CLineDrawer::OnMouseMove(UINT nFlags, CPoint& point)
 {
     if ( !(nFlags&MK_LBUTTON) )
@@ -186,18 +174,16 @@ void CLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
                                                
 //
 // ************* CArrowLineDrawer *****************
-//
-//IMPLEMENT_DYNAMIC(CArrowLineDrawer, CWnd)
-//
-//BEGIN_MESSAGE_MAP(CArrowLineDrawer, CWnd)
-//    ON_WM_MOUSEMOVE()
-//    ON_WM_LBUTTONUP()
-//    ON_WM_LBUTTONDOWN()
-//    ON_WM_PAINT()
-//    ON_WM_ERASEBKGND()
-//END_MESSAGE_MAP()
+// {
 
-void DrawArrow(CDC* pdc, const CPoint& p, size_t d, double o, bool bUp = true)
+
+void CArrowLineDrawer::DrawArrow(
+    CDC* pdc,
+    const CPoint& p,
+    size_t d, 
+    double o,
+    bool bUp,
+    DWORD dwCount )
 {
     CPoint p0, p1, p2;
     if ( bUp )
@@ -222,9 +208,13 @@ void DrawArrow(CDC* pdc, const CPoint& p, size_t d, double o, bool bUp = true)
     pdc->LineTo(p2);
 }
 
+
 CArrowLineDrawer::CArrowLineDrawer(CWnd* pWnd) 
     : m_dwDrawCommond(Line_Show_All)
-    , CLineDrawer(pWnd) {}
+    , CLineDrawer(pWnd) 
+{
+    m_szdwNumber[0] = m_szdwNumber[1] = 0;
+}
 
 void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
 {
@@ -246,8 +236,11 @@ void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
     CPoint& EndPoint = m_PointQueue[1];
     dc.MoveTo(BeginPoint);  
     dc.LineTo(EndPoint);
+
+    int nOldMode = SetBkMode(dc, TRANSPARENT);
     dc.TextOut(BeginPoint.x, BeginPoint.y+Point_Radii, _T("A"), 1);
     dc.TextOut(EndPoint.x, EndPoint.y+Point_Radii, _T("B"), 1);
+    SetBkMode(dc, nOldMode);
 
     if ( bSelect )
     {
@@ -264,8 +257,6 @@ void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
     A[0].y = MedPoint.y - long(ArrowLineLen/m*(BeginPoint.x-MedPoint.x));
     A[1].x = MedPoint.x - long(ArrowLineLen/m*(BeginPoint.y-MedPoint.y));
     A[1].y = MedPoint.y + long(ArrowLineLen/m*(BeginPoint.x-MedPoint.x));
-   
-   // dc.p
 
     double o;
     long nXoffset = A[0].x-A[1].x;
@@ -300,13 +291,13 @@ void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
     {
         dc.MoveTo(MedPoint);  
         dc.LineTo(A[0]);
-        DrawArrow(&dc, A[0], ArrowHeadLen, o, bUp);
+        DrawArrow(&dc, A[0], ArrowHeadLen, o, bUp, m_szdwNumber[0]);
     }
     if ( m_dwDrawCommond & Line_Show_Left )
     {
         dc.MoveTo(MedPoint);  
         dc.LineTo(A[1]);
-        DrawArrow(&dc, A[1], ArrowHeadLen, o, !bUp);
+        DrawArrow(&dc, A[1], ArrowHeadLen, o, !bUp, m_szdwNumber[1]);
     }  
 
     dc.SelectObject(pOldPen);
@@ -333,7 +324,59 @@ void CArrowLineDrawer::SendCommond(
     }
 }
 
+//
+// ************* CArrowLineDrawerEx *****************
+// {
+void CArrowLineDrawerEx::SendCommond(
+    DrawCommond c, void* p1, void* p2)
+{ 
+    switch ( c )
+    {
+    case Line_Show_Left:
+    case Line_Show_Right:
+    case Line_Show_All:
+        m_dwDrawCommond=c;
+        m_pWnd->ShowWindow(SW_HIDE);
+        m_pWnd->ShowWindow(SW_SHOW);
+    	break;
+    case Get_Line_Dir:
+        *(long*)p1 = m_dwDrawCommond;
+    	break;
+    case Line_Left_Add:
+        ++m_szdwNumber[0];
+        break;
+    case Line_Right_Add:
+        ++m_szdwNumber[1];
+        break;
+    case Line_Reset_Add:
+        m_szdwNumber[0] = 0;
+        m_szdwNumber[1] = 1;
+        break;
+    default:
+    	break;
+    }
+}
 
+void CArrowLineDrawerEx::DrawArrow(
+    CDC* pdc,
+    const CPoint& p,
+    size_t d, 
+    double o,
+    bool bUp,
+    DWORD dwCount )
+{
+    CArrowLineDrawer::DrawArrow(
+        pdc, p, d, o, bUp, dwCount );
+    char szBuf[16] = {0};
+    sprintf_s(szBuf, "%u", dwCount);
+    ::TextOutA(
+        pdc->m_hDC, 
+        p.x,
+        p.y+Point_Radii, 
+        szBuf, strlen(szBuf));
+}
+// }
+// CArrowLineDrawerEx
 
 
 // End of file

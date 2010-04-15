@@ -51,6 +51,7 @@ enum IDrawerGraphType
     IDrawer_Polygon,
     IDrawer_Line,
     IDrawer_ArrowLine,
+    IDrawer_ArrowLineEx,
 };
 
 
@@ -75,11 +76,16 @@ struct IDrawer
     virtual BOOL IsEnable()=0;
     enum DrawCommond
     {
-        // Only ArrowLine
+        // Only ArrowLine & ArrowLineEx
         Line_Show_Left  = 0x1,
         Line_Show_Right = 0x2,
         Line_Show_All   = Line_Show_Left | Line_Show_Right,
         Get_Line_Dir,
+
+        // Only ArrowLineEx
+        Line_Left_Add,
+        Line_Right_Add,
+        Line_Reset_Add,
 
         // Only Polygon 
         Set_Max_Point   = 0x10,  

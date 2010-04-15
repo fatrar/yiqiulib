@@ -46,8 +46,12 @@ void CSingleVideoPlayer::OnVideoPlay(
 {
     if ( p || m_pIVideoPlayCallBack )
     {
+        //HDC dc = GetDC(m_hWnd);
+        //HDC hDc = GetDC(m_hWnd);
         HDC dc;
         m_pddsPrimary->GetDC(&dc);
+        //CDC
+        //GetDC()
         if ( m_pIVideoPlayCallBack )
         {
             m_pIVideoPlayCallBack->OnVideoPlay(
@@ -59,6 +63,7 @@ void CSingleVideoPlayer::OnVideoPlay(
                 dc, rect, pTime, m_hWnd, 0, dwUserData);
         }
         m_pddsPrimary->ReleaseDC(dc);
+        //ReleaseDC(m_hWnd, dc);
     } 
 }
 #define OVERLAY_KEYCOLOR (RGB(0, 0, 0))
@@ -139,6 +144,11 @@ void CSingleVideoPlayer::ShowBack()
 
 BOOL CSingleVideoPlayer::InitYUVBack(DWORD dwWidth, DWORD dwHeight)
 {
+    if ( m_pDD7 == NULL )
+    {
+        return FALSE;
+    }
+
     m_dwWidth = dwWidth;
     m_dwHeight = dwHeight;
 
@@ -162,17 +172,18 @@ BOOL CSingleVideoPlayer::InitYUVBack(DWORD dwWidth, DWORD dwHeight)
     return TRUE;
 }
 
-BOOL CSingleVideoPlayer::InitRGBBack(DWORD dwWidth, DWORD dwHeight)
+BOOL CSingleVideoPlayer::InitRGBBack(
+    DWORD dwWidth, DWORD dwHeight, DWORD BitDepth)
 {
     m_dwWidth = dwWidth;
     m_dwHeight = dwHeight;
 
     DDSURFACEDESC2 ddsd = {sizeof(DDSURFACEDESC2)};
-    DDPIXELFORMAT pixelFormat =	
-        {sizeof(DDPIXELFORMAT), DDPF_RGB, 0, 32,  0xFF0000, 0xFF00, 0xFF, 0}; //modify 
-    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH| DDSD_PIXELFORMAT;
+    //DDPIXELFORMAT pixelFormat =	
+    //    {sizeof(DDPIXELFORMAT), DDPF_RGB, 0, BitDepth,  0xFF0000, 0xFF00, 0xFF, 0}; //modify 
+    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH/*| DDSD_PIXELFORMAT*/;
     ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_VIDEOMEMORY;
-    ddsd.ddpfPixelFormat = pixelFormat;
+    //ddsd.ddpfPixelFormat = pixelFormat;
     ddsd.dwWidth = dwWidth;
     ddsd.dwHeight = dwHeight;
 
@@ -216,6 +227,13 @@ void CYUVSingleVideoPlayer::Show(
     IVideoPlayCallBack* p,
     DWORD dwUserData )
 {
+    if ( m_pDD7 == NULL ||
+         m_pddsPrimary == NULL ||
+         m_pDDSBack == NULL)
+    {
+        return;
+    }
+
     if (m_pDDSBack->IsLost() == DDERR_SURFACELOST)
         m_pDDSBack->Restore();
 
@@ -276,6 +294,12 @@ void CYUVSingleVideoPlayerEx::Show(
     IVideoPlayCallBack* p,
     DWORD dwUserData )
 {
+    if ( m_pDD7 == NULL ||
+         m_pddsPrimary == NULL )
+    {
+        return;
+    }
+
     if ( dwWidth!= m_dwWidth || dwHeight != m_dwHeight )
     {
         ReInitYUVBack(dwWidth, dwHeight);
@@ -303,6 +327,12 @@ void CRGBSingleVideoPlayer::Show(
     IVideoPlayCallBack* p,
     DWORD dwUserData )
 {
+    if ( m_pDD7 == NULL ||
+        m_pddsPrimary == NULL )
+    {
+        return;
+    }
+
     if (m_pDDSBack->IsLost() == DDERR_SURFACELOST) 
         m_pDDSBack->Restore();
 
@@ -317,24 +347,26 @@ void CRGBSingleVideoPlayer::Show(
     }
 
     PBYTE pRGB = (PBYTE)ddsd.lpSurface;
+    //memcpy(pRGB, pBuf, 352*288*3);
     for (DWORD i = 0; i < ddsd.dwHeight; i++)
     {
         memcpy(
             pRGB+ddsd.lPitch*(ddsd.dwHeight-i-1),
-            pBuf+ddsd.dwWidth*4*i, 
-            ddsd.dwWidth*4);
+            pBuf+ddsd.dwWidth*3*i, 
+            ddsd.dwWidth*3);
     }
 
     hr = m_pDDSBack->Unlock(NULL);
     if (FAILED(hr))
         return;
 
+    OnVideoPlay(rect, pTime, p, dwUserData); 
     if (m_pddsPrimary->IsLost() == DDERR_SURFACELOST) 
         m_pddsPrimary->Restore();
 
-    m_pddsPrimary->Blt((tagRECT*)rect, m_pDDSBack, NULL, DDBLT_ASYNC, NULL);
+    hr= m_pddsPrimary->Blt((tagRECT*)rect, m_pDDSBack, NULL, DDBLT_ASYNC, NULL);
 
-    OnVideoPlay(rect, pTime, p, dwUserData); 
+    
 }
 // CRGBSingleVideoPlayer
 // }
@@ -352,6 +384,12 @@ void CRGBSingleVideoPlayerEx::Show(
     IVideoPlayCallBack* p /*= NULL*/,
     DWORD dwUserData )
 {
+    if ( m_pDD7 == NULL ||
+        m_pddsPrimary == NULL )
+    {
+        return;
+    }
+
     if ( dwWidth!= m_dwWidth || dwHeight != m_dwHeight )
     {
         ReInitRGBBack(dwWidth, dwHeight);
