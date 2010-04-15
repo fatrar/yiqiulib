@@ -25,6 +25,7 @@ enum
     Invaild_ChannelID= -1,
     Device_Free_Flag = -1,
 
+    IV_Num_PER_Device   =   1,
     MAX_DEVICE_NUM		=	4,
     CHANNEL_PER_DEVICE	=	4,
     MAX_CHANNEL_NUM		=	16,

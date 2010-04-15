@@ -28,6 +28,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
+    afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
     afx_msg void OnDestroy();
     afx_msg void OnPaint();
     afx_msg void OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
@@ -98,4 +99,6 @@ private:
     CYUVSingleVideoPlayerEx m_Player;
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;  
+
+    BOOL m_IsShow;
 };

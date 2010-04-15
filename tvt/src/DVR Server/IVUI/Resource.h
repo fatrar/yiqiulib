@@ -101,6 +101,7 @@
 #define IDC_Alarm_Occur_STATIC          1063
 #define IDC_Apply_BT                    1064
 #define IDS_Finish                      2005
+#define IDS_Finish                      2005
 #define IDS_Apply                       2006
 #define IDS_Rule_Tree_Group             3005
 #define IDS_Invade                      3006

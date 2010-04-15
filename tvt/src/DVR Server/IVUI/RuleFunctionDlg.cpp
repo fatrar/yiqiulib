@@ -35,8 +35,8 @@ void LeftBehindUpdateAIOData( WPG_AOI_ACTION_TYPE& actionType )
 // 
 // **************************** CLineAndRectDlg **************************
 //
-template<UpdateAIODataFn Fn>
-BOOL CLineAndRectDlg<Fn>::OnInitDialog()
+template<UpdateAIODataFn Fn, UINT nNameID>
+BOOL CLineAndRectDlg<Fn,nNameID>::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
     UseToolCtrlMode(Use_All_Mode);
@@ -44,12 +44,15 @@ BOOL CLineAndRectDlg<Fn>::OnInitDialog()
     {
         OnBnClickedLineCheck();
     }
-    //
+
+    CString strTmp;
+    strTmp.LoadString(g_hmodule, nNameID);
+    SetWindowText(strTmp);
     return TRUE;
 }
 
-template<UpdateAIODataFn Fn>
-BOOL CLineAndRectDlg<Fn>::GatherUseSet()
+template<UpdateAIODataFn Fn, UINT nNameID>
+BOOL CLineAndRectDlg<Fn,nNameID>::GatherUseSet()
 {
     CRect rect;
     m_pDrawContainer->GetClientRect(&rect);
@@ -95,8 +98,8 @@ BOOL CLineAndRectDlg<Fn>::GatherUseSet()
     return TRUE;
 }
 
-template<UpdateAIODataFn Fn>
-void CLineAndRectDlg<Fn>::SimulationEnable( BOOL bEnable )
+template<UpdateAIODataFn Fn, UINT nNameID>
+void CLineAndRectDlg<Fn,nNameID>::SimulationEnable( BOOL bEnable )
 {
     m_LineBT.EnableWindow(bEnable);
     m_ZoneBT.EnableWindow(bEnable);
@@ -129,7 +132,8 @@ void CLineAndRectDlg<Fn>::SimulationEnable( BOOL bEnable )
 // 
 // **************************** CLeftBehindDlg **************************
 //
-BOOL CLeftBehindDlg::OnInitDialog()
+template<UINT nNameID>
+BOOL CZoneDlg<nNameID>::OnInitDialog()
 {
     CRuleMainBaseDlg::OnInitDialog();
     UseToolCtrlMode(Zone_Mode);
@@ -138,10 +142,14 @@ BOOL CLeftBehindDlg::OnInitDialog()
         OnBnClickedZoneCheck();
     }
     
+    CString strTmp;
+    strTmp.LoadString(g_hmodule, nNameID);
+    SetWindowText(strTmp);
     return TRUE;
 }
 
-BOOL CLeftBehindDlg::GatherUseSet()
+template<UINT nNameID>
+BOOL CZoneDlg<nNameID>::GatherUseSet()
 {
     CRect rect;
     m_pDrawContainer->GetClientRect(&rect);
@@ -170,7 +178,9 @@ BOOL CLeftBehindDlg::GatherUseSet()
     return TRUE;
 }
 
-void CLeftBehindDlg::SimulationEnable( BOOL bEnable )
+
+template<UINT nNameID>
+void CZoneDlg<nNameID>::SimulationEnable( BOOL bEnable )
 {
     if ( m_nToolsChoose == IVUtil::Choose_Rectangle ||
          m_nToolsChoose == IVUtil::Choose_Polygon )
@@ -212,6 +222,10 @@ BOOL CStatisticDlg::OnInitDialog()
     {
         OnBnClickedLineCheck();
     }
+
+    CString strTmp;
+    strTmp.LoadString(g_hmodule, IDS_Statistic);
+    SetWindowText(strTmp);
     return TRUE;
 }
 
@@ -282,6 +296,10 @@ BOOL CVehicleRetrogradeDlg::OnInitDialog()
     {
         OnBnClickedZoneCheck();
     }
+
+    CString strTmp;
+    strTmp.LoadString(g_hmodule, IDS_Vehicle_Retrograde);
+    SetWindowText(strTmp);
     return TRUE;
 }
 // } 
@@ -298,6 +316,10 @@ BOOL CIllegalParkingDlg::OnInitDialog()
     {
         OnBnClickedZoneCheck();
     }
+
+    CString strTmp;
+    strTmp.LoadString(g_hmodule, IDS_Illegal_Parking);
+    SetWindowText(strTmp);
     return TRUE;
 }
 // } 
@@ -312,6 +334,10 @@ BOOL CStageChangeDlg::OnInitDialog()
     UseToolCtrlMode(Nothing_Mode);
     m_AdvBT.EnableWindow(FALSE);
     m_FilterBT.EnableWindow(FALSE);
+
+    CString strTmp;
+    strTmp.LoadString(g_hmodule, IDS_Stage_Change);
+    SetWindowText(strTmp);
     return TRUE;
 }
 // } 

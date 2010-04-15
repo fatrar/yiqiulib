@@ -78,19 +78,25 @@ LRESULT CMainDlg::OnDestroy(
     UINT /*uMsg*/, WPARAM /*wParam*/,
     LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    // unregister message filtering and idle updates
-    CMessageLoop* pLoop = _Module.GetMessageLoop();
-    ATLASSERT(pLoop != NULL);
-    pLoop->RemoveMessageFilter(this);
-    pLoop->RemoveIdleHandler(this);
-
     if ( m_pDeviceManager )
     {
         m_pDeviceManager->VideoCaptureStop();
         m_pDeviceManager->DeviceFree();
         m_pDeviceManager = NULL;
         ::FreeLibrary(m_Hinstance);
+
+        IVUIFactory::ReleaseIVConfigDlg();
+        IVUIFactory::UnitIVConfig();
+
     }
+    // unregister message filtering and idle updates
+    CMessageLoop* pLoop = _Module.GetMessageLoop();
+    ATLASSERT(pLoop != NULL);
+    pLoop->RemoveMessageFilter(this);
+    pLoop->RemoveIdleHandler(this);
+
+
+
     return 0;
 }
 

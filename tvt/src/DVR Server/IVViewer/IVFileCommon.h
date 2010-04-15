@@ -17,7 +17,7 @@
 ***************************************************************************H*/
 #ifndef _IVFILECOMMON_H_2010_3
 #define _IVFILECOMMON_H_2010_3
-
+#pragma pack(push, 1)
 
 #define _MakeDWORD(a,b,c,d) ((a<<24)|(b<<16)|(c<<8)|(d))
 
@@ -32,7 +32,10 @@ union IVFileFlag
         BYTE f[4];
     } TFlag;
 
-    bool operator == (const IVFileFlag& a){return dwFileFlag == a.dwFileFlag;}
+    bool operator == (const IVFileFlag& a)const{return dwFileFlag == a.dwFileFlag;}
+    bool operator == (const DWORD& a)const{return dwFileFlag == a;}
+    bool operator != (const IVFileFlag& a)const{return dwFileFlag != a.dwFileFlag;}
+    bool operator != (const DWORD& a)const{return dwFileFlag != a;}
     void operator = (const DWORD a){ dwFileFlag = a; }
 };
 
@@ -54,14 +57,16 @@ union IVFileVersion
         BYTE nDay;
     } TVersion;
 
-    bool operator == (const IVFileVersion& a){return dwFileVersion == a.dwFileVersion;}
+    bool operator == (const IVFileVersion& a)const{return dwFileVersion == a.dwFileVersion;}
+    bool operator == (const IVFileVersionDefine& a)const{return dwFileVersion == a;}
     void operator = (const DWORD a){ dwFileVersion = a; }
+    operator DWORD(){return dwFileVersion;}
 };
 
 struct IVFileDataIndex
 {
-    DWORD TimeOffset;
-    DWORD DataOffset;
+    DWORD TimeOffset; // 与IVFileHead.BeginTime的时间差
+    DWORD DataOffset; // 数据在文件的位置
 };
 
 enum
@@ -69,25 +74,32 @@ enum
     Max_IVData_Index  = 200,  
 };
 
+/**
+*@note IV File Head Data
+*/
 struct IVFileHead
 {
     IVFileHead():dwIndexNum(0){}
-    IVFileFlag FileFlag;
-    IVFileVersion Version;
-    DWORD dwReserve[2];
-    FILETIME BeginTime;
-    FILETIME EndTime;
-    DWORD dwIndexNum;
-    IVFileDataIndex DataIndex[Max_IVData_Index];
+    IVFileFlag FileFlag;     // 文件标志，用于判断文件是否正常关闭
+    IVFileVersion Version;   // 文件版本
+    DWORD dwReserve;         // 对齐预留
+    DWORD dwLastFramePos;    // 最后一帧数据的位置
+    FILETIME BeginTime;      // 第一帧数据的时间
+    FILETIME EndTime;        // 最后一帧数据的时间
+    DWORD dwIndexNum;        // 索引的个数
+    IVFileDataIndex DataIndex[Max_IVData_Index]; // 索引数据
 };
 
+/**
+*@note IV File Data Head
+*/
 struct IVFileDataHead
 {
-    DWORD dwPrePos;
-    DWORD dwNextPos;
-    WORD dwTargetNum;
-    WORD dwReserve;
-    FILETIME t;
+    DWORD dwPrePos;  // 上一帧的位置，如果当前是第一帧，该值为0
+    DWORD dwNextPos; // 下一帧的位置，如果当前是最后一帧，该值为文件的长度
+    WORD wTargetNum; // 目标的个数
+    WORD wReserve;   // 对齐预留
+    FILETIME t;      // 当前帧的时间
 };
 
 
@@ -95,10 +107,25 @@ struct IVFileDataHead
 static const char c_szIVFileExt[] = ".iv";
 
 
+/*
++------------------+
+| IVFileHead       |
++------------------+
+| IVFileDataHead   | 
++------------------+
+| IV Data          |
++------------------+
+| IVFileDataHead   | 
++------------------+
+| IV Data          |
++------------------+
+|  ..........      |
++------------------+
+*/
 
 
 
-
+#pragma pack(pop)
 
 
 #endif  // _IVFILECOMMON_H_2010_

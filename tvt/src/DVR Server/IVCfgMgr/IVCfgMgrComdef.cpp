@@ -245,19 +245,22 @@ bool _GetRule(
     if ( type == TRIPWIRE_EVENT )
     {
         MyRule<WPG_TripwireEventDescription> MyRuleTmp;
-        assert(TinyXmlUtil::GetChildBinaryTextData(pRuleEle, _Rule, MyRuleTmp));
+        bool bRc = TinyXmlUtil::GetChildBinaryTextData(pRuleEle, _Rule, MyRuleTmp);
+        assert(bRc);
         Rule << MyRuleTmp;
     }
     else if ( type == AOI_EVENT )
     {
         MyRule<MyAOIEventDes> MyRuleTmp(Rule);
-        assert(TinyXmlUtil::GetChildBinaryTextData(pRuleEle, _Rule, MyRuleTmp));
+        bool bRc = TinyXmlUtil::GetChildBinaryTextData(pRuleEle, _Rule, MyRuleTmp);
+        assert(bRc);
         Rule << MyRuleTmp;
     }
     else if ( type == SCENE_CHANGE_EVENT )
     {
         MyRule<WPG_SceneChangeEventDescription> MyRuleTmp(Rule);
-        assert(TinyXmlUtil::GetChildBinaryTextData(pRuleEle, _Rule, MyRuleTmp));
+        bool bRc = TinyXmlUtil::GetChildBinaryTextData(pRuleEle, _Rule, MyRuleTmp);
+        assert(bRc);
         Rule << MyRuleTmp;
     }
     else 

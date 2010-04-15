@@ -24,7 +24,7 @@ typedef void (*UpdateAIODataFn)(WPG_AOI_ACTION_TYPE&);
 void InvadeUpdateAIOData(WPG_AOI_ACTION_TYPE& actionType);
 void LeftBehindUpdateAIOData(WPG_AOI_ACTION_TYPE& actionType);
 
-template<UpdateAIODataFn Fn>
+template<UpdateAIODataFn Fn, UINT nNameID>
 class CLineAndRectDlg:
     public CRuleMainBaseDlg
 {
@@ -36,22 +36,26 @@ protected:
     virtual void SimulationEnable(BOOL bEnable);
 };
 
-typedef CLineAndRectDlg<InvadeUpdateAIOData> CInvadeDlg;
-typedef CLineAndRectDlg<LeftBehindUpdateAIOData> CLeaveDisappearDlg;
+typedef CLineAndRectDlg<
+    InvadeUpdateAIOData,IDS_Invade> CInvadeDlg;
+typedef CLineAndRectDlg<
+    LeftBehindUpdateAIOData,IDS_Leave_Disappear> CLeaveDisappearDlg;
 
 
-class CLeftBehindDlg:
+template<UINT nNameID>
+class CZoneDlg:
     public CRuleMainBaseDlg
 {
 public:
-    CLeftBehindDlg(CWnd* pParent = NULL):CRuleMainBaseDlg(pParent){}
+    CZoneDlg(CWnd* pParent = NULL):CRuleMainBaseDlg(pParent){}
 protected:
     virtual BOOL OnInitDialog();
     virtual BOOL GatherUseSet();
     virtual void SimulationEnable(BOOL bEnable);
 };
  
-typedef CLeftBehindDlg CLoitersAddDlg;
+typedef CZoneDlg<IDS_LeftBehind> CLeftBehindDlg;
+typedef CZoneDlg<IDS_Loiters> CLoitersAddDlg;
 
 class CStatisticDlg:
     public CRuleMainBaseDlg

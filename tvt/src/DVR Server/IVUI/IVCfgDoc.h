@@ -34,7 +34,6 @@ struct IRuleTrigger
 
 typedef void (IRuleTrigger::*OnRuleXXFn)(int,const char*);
 
-#define IVCfgDoc_Use_Map
 
 /**
 *@brief 暂时不考虑，Camera Tree使用智能的通道 采用不同标记
@@ -52,6 +51,12 @@ public:
     *@brief Unload data from Memory
     */
     static void Unit();
+
+public:
+    static int s_nDeviceNum;
+    static int s_nMaxChannel;
+    static int s_nIVChannelNumByDevice;
+    static int s_nMaxRuleNumByIVChannel;
 
 protected:
     /**
@@ -93,19 +98,15 @@ protected:
 
 private:
     typedef map<const char*, RuleSettings*> RuleSettingMap;
-
-#ifdef IVCfgDoc_Use_Map
-    typedef map<int, RuleSettingMap> AllRuleSettingMap;
-    static AllRuleSettingMap m_Doc;
-    static map<int, int> m_ShowState;
-#else
-    static RuleSettingMap m_Doc[Max_Channel]; 
-    static int m_ShowState[Max_Channel];
-#endif
+    static RuleSettingMap* m_pDoc; 
+    static int* m_pShowState;
+    static BOOL* m_pIsHaveStatistic;
 
     typedef deque<IRuleTrigger*> RuleTriggerList;
     static RuleTriggerList m_RuleTrigger;
     static set<int> m_UseChannel;
+
+    
 
 protected:
     CTreeCtrl m_CameraTree;
@@ -228,7 +229,9 @@ protected:
     *@brief Test XX channel is Have Free Rule(Max 5 Rule by every Channel)
     *@param nChannelID Channel ID
     */
-    BOOL IsHaveFreeRule(int nChannelID);
+    BOOL IsCanAddRule(
+        int nChannelID,
+        IVRuleType RuleType);
 
 
 private: 

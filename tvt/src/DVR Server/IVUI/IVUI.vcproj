@@ -129,6 +129,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Base\Base\Include\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;IVUI_EXPORTS"
 				RuntimeLibrary="2"

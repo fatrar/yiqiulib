@@ -18,6 +18,8 @@
 #include "stdafx.h"
 #include "IVPlaybackViewer.h"
 
+IIVDataBuf* CIVPlaybackViewer::s_pIVDataBuf = CIVPlaybackDataBuf::getInstancePtr();
+
 
 CIVPlaybackViewer::CIVPlaybackViewer(void)
 {
@@ -31,7 +33,7 @@ TargetQueue* CIVPlaybackViewer::GetIVData(
     int nChannelID,
     const FILETIME& time )
 {
-    return NULL;
+    return s_pIVDataBuf->GetData(nChannelID,time);
 }
 
 

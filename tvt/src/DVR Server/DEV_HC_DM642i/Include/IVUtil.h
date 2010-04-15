@@ -272,6 +272,13 @@ static UserToolsChoose GetDrawToolsByRule(
     return Choose_Invaild;
 };
 
+
+static BOOL IsStatisticRule(const WPG_Rule& Rule)
+{
+    const IV_RuleID& RuleID = (const IV_RuleID&)Rule.ruleId;
+    return RuleID.RuleID.nType == IV_Statistic;
+}
+
 };
 
 #endif  // _IVUTIL_H_2010_

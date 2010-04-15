@@ -85,6 +85,8 @@ void CSnapShotWnd::OnSnapShotSend(
     BYTE* pData,
     size_t nLen )
 {
+    return;
+
     bool bOver = m_nIndex >= Max_SnapShot_Pic_Count;
     size_t nIndex = m_nIndex%Max_SnapShot_Pic_Count;
     if ( bOver )
