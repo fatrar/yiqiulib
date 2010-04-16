@@ -34,6 +34,9 @@
     #endif
 #endif
 
+#ifndef StopWatch_Trace
+#define StopWatch_Trace
+#endif
 
 class CStopWatchBase
 {
@@ -57,7 +60,7 @@ public:
         LARGE_INTEGER nLeaveTime;
         QueryPerformanceCounter(&nLeaveTime);
         double nTime = double(nLeaveTime.QuadPart-m_nEnterTime.QuadPart)/s_nCpuClcok.QuadPart;
-        TRACE("%s time is %f\n", m_strFunName, nTime);
+        StopWatch_Trace("%s time is %f\n", m_strFunName, nTime);
     }
 private:
     string m_strFunName;
@@ -87,7 +90,7 @@ public:
             double nTime = long double(nEnterTime.QuadPart-s_nPreClcok.QuadPart)/s_nCpuClcok.QuadPart;
             //if ( nTime > 0.15 )
             {
-                TRACE("time is %lf\n", nTime);
+                StopWatch_Trace("time is %lf\n", nTime);
             }
             s_nPreClcok = nEnterTime;
         }
@@ -114,14 +117,14 @@ public:
         {
             s_nStartClcok = nEnterTime;
             s_nPreClcok = nEnterTime;
-            TRACE("Frame Test Start!\n");
+            StopWatch_Trace("Frame Test Start!\n");
         }
         else
         {
             double nTwoFrameTime = double(nEnterTime.QuadPart-s_nPreClcok.QuadPart)/s_nCpuClcok.QuadPart;
             s_nPreClcok = nEnterTime;
             double nTatalFrameTime = double(nEnterTime.QuadPart-s_nStartClcok.QuadPart)/s_nCpuClcok.QuadPart;
-            TRACE(
+            StopWatch_Trace(
                 "last Two Frame Between is %f\nTatal Average Frame Ratio Time is %f\n",
                 nTwoFrameTime, s_dwFrameCount/nTatalFrameTime);
         }
