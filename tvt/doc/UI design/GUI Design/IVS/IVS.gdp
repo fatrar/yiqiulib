@@ -13,14 +13,6 @@
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
-			RelativePathname = "Add Rule Main.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
-			RelativePathname = "Invade.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
 			RelativePathname = "Statistics.gui"
 			ViewSettings = ""/>
 		<File
@@ -37,10 +29,6 @@
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
-			RelativePathname = "Adv Filter.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
 			RelativePathname = "Stage Change.gui"
 			ViewSettings = ""/>
 		<File
@@ -53,7 +41,19 @@
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
+			RelativePathname = "Adv Filter.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
 			RelativePathname = "Alarm Out Config.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "Invade.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "Add Rule Main.gui"
 			ViewSettings = ""/>
 	</OpenFiles>
 </Project>

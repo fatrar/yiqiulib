@@ -441,7 +441,61 @@ error C2621: member 'AA::aa' of union 'AA' has copy constructor
 所以以后宏这些情况，还是小心。。。。
 
 
+-----------------------------------------------------------
+14:38 2010-4-15
+&&&&&&&&
+关于虚继承，这主要用于多继承，当多继承出现派生类有同样的基类时
+class base
+{
+public:     
+    base(int i= 0 )  
+    {
+        cout << "base class init: "<<i<<endl;
+    }
+
+    virtual void Print(){}
+};  // sizeof(base) = 4 虚表大小
+
+class derivedone
+    : virtual public base
+{
+public:
+    derivedone(int   i=   1,int   j=2):base(i) 
+    {
+        cout << "derivedone class init: "<<j<<endl;
+    }
+    virtual void Print(){}
+}; 
+// sizeof(derivedone) = 12  2个虚函数虚表大小+指向基类(base)的指针
+// 这里注意当没有虚继承时，虚函数表只有一个，也就是sizeof(derivedone) = 4
+
+class derivedtwo
+    : virtual public base
+{
+public:
+    derivedtwo(int i= 2,int k=3):base(i)
+    {
+        cout<<"derivedtwo class init: "<<k<<endl;
+    }
+    virtual void Print(){}
+};  // sizeof(derivedtwo) = 8  2个虚函数虚表大小+虚继承虚表
+
+class derivedlast
+    : public derivedone
+    , public derivedtwo
+{
+public:
+    derivedlast(int i=3, int j=4,  int k=5, int l=6)
+        : derivedone(i,j)
+        , derivedtwo(i,k)
+    {
+        cout<<"derivedlast class init: "<<l<<endl;
+    }
+    virtual void Print(){}
+};  // sizeof(derivedtwo) = 8  3个虚函数虚表大小+指向基类(base)的指针
 
 
+现在加了虚继承，derivedlast的结构是1个base，不然有两个base，
+而且构造也只能derivedlast去调用，derivedone和derivedtwo不会调base的构造
 
 
