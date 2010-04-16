@@ -93,7 +93,7 @@ BOOL CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
 
     if ( m_bDragging )
     {
-        UnLockCursor();
+        //UnLockCursor();
         m_bDragging = false;
         m_nDragIndex = -1;
         return TRUE;
@@ -101,7 +101,7 @@ BOOL CPolygonDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
 
     if ( m_bDragCenter )
     {
-        UnLockCursor();
+        //UnLockCursor();
         CenterPointMoveTo(point);
         m_bDragCenter = false;
         return TRUE;
@@ -120,14 +120,14 @@ BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     {
         if ( IsDargPoint(point) )
         {
-            LockCursor(Rect);
+            //LockCursor(Rect);
             m_bDragging = true;
             return TRUE;
         }
         else if ( IsDargCenterPoint(point) )
         {
             m_bDragging = false;
-            LockCursor(Rect);
+            //LockCursor(Rect);
             m_bDragCenter = true;
             return TRUE;
         }
@@ -139,7 +139,7 @@ BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     {
         if ( m_bFirst )
         {
-            LockCursor(Rect);
+            //LockCursor(Rect);
             m_bFirst = false;
         }
 
@@ -148,7 +148,7 @@ BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
         if ( nPointCount >= m_nMaxPoint ||
              (nPointCount >= 3 && Distance(point, m_PointQueue.front()) <= Point_Radii) )
         {
-            UnLockCursor();
+            //UnLockCursor();
             m_PointQueue.pop_back();
             //ReFreshPoint(m_PointQueue.size()-1, point);
             m_bDrawing = false;
