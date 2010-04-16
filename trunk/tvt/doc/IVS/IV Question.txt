@@ -1,0 +1,91 @@
+
+11-3
+
+1. 时间设置有效， 规定哪些时间段，事件触发有效，以我现在看的结果，可以设置每周的时间段设定。
+   这个功能是上层做的，还是板卡内部，或驱动做
+answer：me
+
+2. 一般事件触发要考虑连续触发是否有效的问题，连续触发的控制 上层做还是底层已经有了
+answer：me
+
+3. 规则的精确度和时间间隔（也就是事件发生存在多久就触发）设定到底有没有？
+answer：no need
+
+4. 在卓扬的产品中选区域，可以分场景类型。-- 地面和垂直
+answer：can
+
+5. 在卓扬的产品有个过滤设置， 这个是为了提高识别率。
+  最小尺寸，最大尺寸，尺寸变化，形状和方向,
+  光线 ？？ 这个卓扬没有， 估计是默认都设定
+answer：can
+
+
+6. 物体识别后可否做触发多个规则的结合。
+   比如： 设定一个人跨过警戒线后又进入某个区域就报警。如果只触发一个不报警
+answer：hold
+
+7. 人数统计，车流统计
+answer：hold
+
+
+12-7
+
+8. 怎么区分线的左边右边，因为这个会因为旋转而变的相反
+answer： by begin to end
+
+9. WPG_SCENE_CHANGE_TYPE具体解释下 SCENE_CHANGE_CAMERA_MOTION，SCENE_CHANGE_UNKNOWN
+answer：SCENE_CHANGE_CAMERA_MOTION behalf of camera is change potion
+SCENE_CHANGE_UNKNOWN is unknown
+
+10 WPG_EVENT_TYPE --> MULTISEGMENT_MULTILINE_TRIPWIRE_EVENT ,MULTISEGMENT_TRIPWIRE_EVENT ?
+    最好把这个WPG_EVENT_TYPE 的全部解释下
+answer：MULTISEGMENT_MULTILINE_TRIPWIRE_EVENT ,,MULTISEGMENT_TRIPWIRE_EVENT 
+polyline 一个折线一个直线  两个折线 
+ 
+11 WPG_PLANE_TYPE 这个是不是指水平平面和垂直平面
+answer：Yes
+
+
+12 WPG_DOUBLE_TRIPWIRE_ORDER ?
+answer：先从哪条线进去，然后从哪条出来有效
+
+
+13 WPG_Target ?
+answer：返回的目标路径数据
+
+
+
+12-8
+
+14 about filter, object size and object size change filter.
+   a. 在卓扬的产品中， object size是作为最大最小设置，而在WPG_EventOccurrence.h中的WPG_MIN_MAX_FILTER 明显说明 这最大最小是一起设置的，是不可能只设置一个的。
+   b. 这个两个filter，有什么具体用例没？ 我感觉用处不大。
+   c. object size change filter的结构体（WPG_MAXIMUM_SIZE_CHANGE_FILTER）要设置一个倍率，这个倍率有没有最大最小值? 貌似设置负数都可以。
+
+
+
+12-9
+
+15  WPG_PLANE_TYPE 似乎不能设置到 絆线和双絆线，这个对识别很有效。
+answer：Yes
+
+16  filter对所有的功能（絆线等）都有效
+answer：Yes
+
+
+12-10
+17 typedef struct WPG_MultiLineTripWireEventDescription 
+{
+	WPG_DOUBLE_TRIPWIRE_ORDER     crossingDirection;    
+	WPG_TripwireEventDescription  tripwireEventDescription[ 2 ];	
+	unsigned int                 duration;				
+} WPG_MultiLineTripWireEventDescription;
+
+tripwireEventDescription 存放顺序有没有关系？
+
+
+------------
+
+Axure tool 
+
+
