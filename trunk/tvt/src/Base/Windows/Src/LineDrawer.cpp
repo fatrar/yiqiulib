@@ -66,6 +66,13 @@ BOOL CLineDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
 {
     if ( m_bDrawing ) 
     {
+        double m = Distance(m_PointQueue[0], m_PointQueue[1]);
+        if ( m <= 5.0 )
+        {
+            UnLockCursor();
+            return TRUE;
+        }
+
         m_bDrawing = false;
         UnLockCursor();
         return TRUE;
@@ -252,6 +259,13 @@ void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
     // 利用垂直和两点的距离算出两个点的坐标
     CPoint MedPoint((BeginPoint.x + EndPoint.x)/2, (BeginPoint.y + EndPoint.y)/2);
     double m = Distance(MedPoint, BeginPoint);
+    if ( m < 0.0001 )
+    {
+        assert(false);
+        OutputDebugString(_T("CArrowLineDrawer::OnPaint m too Small!\n"));
+        return;
+    }
+
     CPoint A[2];
     A[0].x = MedPoint.x + long(ArrowLineLen/m*(BeginPoint.y-MedPoint.y));
     A[0].y = MedPoint.y - long(ArrowLineLen/m*(BeginPoint.x-MedPoint.x));
