@@ -80,7 +80,7 @@ void CIVCfgDoc::Init()
             if ( pID == NULL )
             {
                 // log ..
-                TRACE("Iter.GetIdentityID() == NULL\n");
+                TRACE(_T("Iter.GetIdentityID() == NULL\n"));
                 continue;
             }
 
@@ -379,7 +379,7 @@ void CIVRuleCfgDoc::AddRule(
     /**
     @note  4. Do Trigger
     */
-    DoTriggerTFun<&IRuleTrigger::OnRuleAdd>(nChannelID, pID);
+    DoTriggerTFun<&IRuleTrigger::OnRuleAdd>(nChannelID, pID, strRuleName);
 }
 
 void CIVRuleCfgDoc::RemoveRule(
@@ -451,7 +451,8 @@ void CIVRuleCfgDoc::RemoveRule(
     /**
     @note  4. Do Trigger
     */
-    DoTriggerTFun<&IRuleTrigger::OnRuleRemove>(nChannelID, pID);
+    CString strTmp;
+    DoTriggerTFun<&IRuleTrigger::OnRuleRemove>(nChannelID, pID, strTmp);
 }
 
 void CIVRuleCfgDoc::EnableRule(
@@ -601,14 +602,15 @@ void CIVRuleCfgDoc::UpdateRule(
 template<OnRuleXXFn T>
 void CIVRuleCfgDoc::DoTriggerTFun(
     int nChannelID,
-    const char* pIdentityID)
+    const char* pIdentityID,
+    CString& strRuleName )
 {
     CIVCfgDoc::RuleTriggerList::iterator iter;
     for ( iter = m_RuleTrigger.begin();
          iter!= m_RuleTrigger.end();
          ++iter )
     {
-        (*iter->*T)(nChannelID, pIdentityID);
+        (*iter->*T)(nChannelID, pIdentityID, strRuleName);
     }
 }
 

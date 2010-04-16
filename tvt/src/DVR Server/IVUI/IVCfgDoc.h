@@ -27,12 +27,18 @@ class CIVScheduleCfgDoc;
 
 struct IRuleTrigger
 {
-    virtual void OnRuleRemove(int nChannelID, const char* pIdentityID)=0;
-    virtual void OnRuleAdd(int nChannelID, const char* pIdentityID)=0;
+    virtual void OnRuleRemove(
+        int nChannelID,
+        const char* pIdentityID,
+        CString& strRuleName )=0;
+    virtual void OnRuleAdd(
+        int nChannelID,
+        const char* pIdentityID,
+        CString& strRuleName)=0;
     virtual void OnUseIV(int nChannelID, BOOL bEnbale) =0;
 };
 
-typedef void (IRuleTrigger::*OnRuleXXFn)(int,const char*);
+typedef void (IRuleTrigger::*OnRuleXXFn)(int,const char*,CString&);
 
 
 /**
@@ -236,7 +242,10 @@ protected:
 
 private: 
     template<OnRuleXXFn T>
-    inline void DoTriggerTFun(int nChannelID, const char* pIdentityID);
+    inline void DoTriggerTFun(
+        int nChannelID,
+        const char* pIdentityID,
+        CString& strRuleName );
 };
 
 class CIVAlarmOutCfgDoc :

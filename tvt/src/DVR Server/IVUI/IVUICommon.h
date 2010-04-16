@@ -123,7 +123,8 @@ HTREEITEM OnDeleteCameraTreeItem(
 HTREEITEM OnAddCameraTreeItem(
     CTreeCtrl& CameraTree,
     int nChannelID, 
-    const void* pUseData );
+    const void* pUseData,
+    CString& strRuleName);
 
 
 }

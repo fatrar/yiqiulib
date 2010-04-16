@@ -55,11 +55,13 @@ protected:
 protected:
     virtual void OnRuleRemove(
         int nChannelID,
-        const char* pIdentityID);
+        const char* pIdentityID,
+        CString& strRuleName );
 
     virtual void OnRuleAdd(
         int nChannelID,
-        const char* pIdentityID);
+        const char* pIdentityID,
+        CString& strRuleName);
 
     virtual void OnUseIV(
         int nChannelID,

@@ -70,6 +70,10 @@ using namespace std;
 using namespace OCI;
 //#include "..\..\DebugUtil\DebugUtil\DebugUtil.h"
 
+#undef TRACE
+#define TRACE XTRACE
+#include "XTrace.h"
+
 #include "OtherUtil.h"
 
 #include "IVUICommon.h"

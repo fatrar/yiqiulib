@@ -346,7 +346,10 @@ void CIVSchuduleDlg::CollectUserSet(ScheduleSettings& TmpSchedule)
     }
 }
 
-void CIVSchuduleDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
+void CIVSchuduleDlg::OnRuleRemove( 
+    int nChannelID,
+    const char* pIdentityID,
+    CString& strRuleName )
 {
     if ( m_ClickItem == CameraTreeUtil::OnDeleteCameraTreeItem(
         m_CameraTree,nChannelID,(const void*)pIdentityID))
@@ -355,12 +358,16 @@ void CIVSchuduleDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
     }
 }
 
-void CIVSchuduleDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
+void CIVSchuduleDlg::OnRuleAdd( 
+    int nChannelID,
+    const char* pIdentityID,
+    CString& strRuleName )
 {
     CameraTreeUtil::OnAddCameraTreeItem(
         m_CameraTree,
         nChannelID,
-        (const void*)pIdentityID);
+        (const void*)pIdentityID,
+        strRuleName );
 }
 
 void CIVSchuduleDlg::OnUseIV( int nChannelID, BOOL bEnbale )
