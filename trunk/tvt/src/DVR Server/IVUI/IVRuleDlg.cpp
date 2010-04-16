@@ -45,6 +45,8 @@ void CIVRuleDlg::DoDataExchange(CDataExchange* pDX)
 
 void CIVRuleDlg::OnShowWindow( BOOL bShow, UINT nStatus )
 {
+    CDialog::OnShowWindow(bShow, nStatus);
+
     if ( bShow )
     {
         if ( !m_IsShow )
@@ -67,7 +69,8 @@ void CIVRuleDlg::OnShowWindow( BOOL bShow, UINT nStatus )
             m_IsShow = FALSE;
         }
     }
-    TRACE("bShow=%d, nStatus=%d\n", bShow, nStatus);
+    
+    TRACE(_T("bShow=%d, nStatus=%d\n"), bShow, nStatus);
 }
 
 void CIVRuleDlg::OnDestroy()
@@ -178,10 +181,10 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
     m_Player.InitDirectDraw(
         m_PlayerWnd.m_hWnd, 352, 288);
 
-    if ( g_IIVDeviceBase2 )
-    {
-        g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
-    }
+    //if ( g_IIVDeviceBase2 )
+    //{
+    //    g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
+    //}
     
     return TRUE;
 }

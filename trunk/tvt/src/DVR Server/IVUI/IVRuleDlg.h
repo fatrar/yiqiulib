@@ -100,5 +100,6 @@ private:
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;  
 
+    // 这个是为了防止上层重复调用ShowWindow，我用这个做记录
     BOOL m_IsShow;
 };

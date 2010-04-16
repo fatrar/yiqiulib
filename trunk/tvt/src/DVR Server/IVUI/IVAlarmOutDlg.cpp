@@ -411,18 +411,21 @@ void CIVAlarmOutDlg::UpdateUI( const AlarmOutSettings& Alarm )
     /**
     *@note 2. Update Alarm check Group
     */
-    TRACE("Start Alarm Table \n");
+    //TRACE("Start Alarm Table \n");
     WORD nTable = Alarm.table.nTable;
     for (int i = 0; i < Alarm_Check_Num; ++i)
     {
         register WORD nVlaue = ( nTable & (1<<i) ) >> i;
-        TRACE("%d", nVlaue);
+        //TRACE("%d", nVlaue);
         m_AlarmCheck[i].SetCheck( nVlaue );
     }
-    TRACE("\nEnd Alarm Table \n");
+    //TRACE("\nEnd Alarm Table \n");
 }
 
-void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
+void CIVAlarmOutDlg::OnRuleRemove(
+    int nChannelID,
+    const char* pIdentityID,
+    CString& strRuleName )
 {
     if ( m_ClickItem == CameraTreeUtil::OnDeleteCameraTreeItem(
              m_CameraTree,nChannelID,(const void*)pIdentityID) )
@@ -431,12 +434,16 @@ void CIVAlarmOutDlg::OnRuleRemove( int nChannelID, const char* pIdentityID )
     }
 }
 
-void CIVAlarmOutDlg::OnRuleAdd( int nChannelID, const char* pIdentityID )
+void CIVAlarmOutDlg::OnRuleAdd( 
+    int nChannelID,
+    const char* pIdentityID,
+    CString& strRuleName )
 {
     CameraTreeUtil::OnAddCameraTreeItem(
         m_CameraTree,
         nChannelID,
-        (const void*)pIdentityID);
+        (const void*)pIdentityID,
+        strRuleName );
 }
 
 void CIVAlarmOutDlg::OnUseIV( int nChannelID, BOOL bEnbale )

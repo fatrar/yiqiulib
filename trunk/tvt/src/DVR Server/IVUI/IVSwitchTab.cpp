@@ -56,7 +56,6 @@ void CIVSwitchTab::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CIVSwitchTab, CDialog)
     ON_COMMAND_RANGE(IDC_RULE, IDC_RULE+TAB_BT_NUM, &CIVSwitchTab::ClickTabBt)
     ON_WM_CLOSE()
-    ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 // CIVSwitchTab message handlers
 
@@ -111,7 +110,7 @@ void CIVSwitchTab::ClickTabBt( UINT ID/*, WPARAM w, LPARAM l*/ )
              m_TabBt[i].SetCheck(BST_UNCHECKED);
         }
     }
-    TRACE("%d", ID);	
+    TRACE(_T("%d"), ID);	
     m_TabBt[j].SetCheck(BST_CHECKED);
     switch (j)
     {
@@ -151,11 +150,6 @@ void CIVSwitchTab::OnClose()
     // TODO: Add your message handler code here and/or call default
 
     CDialog::OnClose();
-}
-
-void CIVSwitchTab::OnShowWindow(BOOL bShow, UINT nStatus)
-{
-    CDialog::OnShowWindow(bShow, nStatus);
 }
 
 
@@ -212,5 +206,4 @@ void SetIVOpeator( IIVDeviceBase2* p )
 }
 
 }
-
 

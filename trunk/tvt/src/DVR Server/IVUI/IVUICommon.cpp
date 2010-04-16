@@ -284,7 +284,8 @@ HTREEITEM OnDeleteCameraTreeItem(
 HTREEITEM OnAddCameraTreeItem( 
     CTreeCtrl& CameraTree,
     int nChannelID, 
-    const void* pUseData )
+    const void* pUseData,
+    CString& strRuleName )
 {
     HTREEITEM Root = CameraTree.GetRootItem();
     if ( !CameraTree.ItemHasChildren(Root) )       
@@ -304,7 +305,7 @@ HTREEITEM OnAddCameraTreeItem(
         }
 
         const char* pID = (const char*)pUseData;
-        HTREEITEM RuleItem = CameraTree.InsertItem(CString(pID),ChannelItem);
+        HTREEITEM RuleItem = CameraTree.InsertItem(strRuleName,ChannelItem);
         ItemAttribute* pTmp = new ItemAttribute(IV_Tree_Rule, nChannelID, pUseData);
         CameraTree.SetItemData(RuleItem, (DWORD_PTR)pTmp);
         TRACE(_T("OnAddCameraTreeItem Found"));
