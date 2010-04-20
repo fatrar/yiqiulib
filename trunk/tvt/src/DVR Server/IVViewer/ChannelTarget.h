@@ -77,14 +77,7 @@ public:
 
     void TrySaveData(int nPreAlarmTime);
 protected:
-    enum
-    {
-        /**
-        *@note 5秒保存一个索引，在最坏的情况(文件保存0.5Hour)，有360个索引，
-        *  那么在200的情况下，有160做丢弃
-        */
-        Head_Index_Interval = 10*5,
-    };
+
 
 protected:
     void FillHeadToFile(
@@ -171,12 +164,15 @@ private:
 
 class CIVPlaybackDataBuf;
 
+//#define _FixIVFile
 
 class CIVPlaybackDataBuf::ChannelTarget
 {
 public:
+#ifdef _FixIVFile
     static void Init();
     static void Unit();
+#endif // _FixIVFile
 
     BOOL Open(
         const char* pPath,
@@ -190,9 +186,8 @@ protected:
     template<IVFileVersionDefine Version>
     BOOL PraseHeadToMap(const IVFileHead& Head);
 
-protected:
-    static DWORD WINAPI OnFixFileThread(void* p);
-
+    size_t GetPos(const FILETIME& time);
+    //size_t GuessPos(const FILETIME& time);
 private:
     ifstream Reader;
     //BOOL IsFoundFile;
@@ -201,9 +196,16 @@ private:
     FILETIME EndTime;
     deque<IVFileDataIndex> DataIndex;
 
+    BYTE* m_pDataBuf;
+#ifdef _FixIVFile
+protected:
+    static DWORD WINAPI OnFixFileThread(void* p);
+
 private:
     static HANDLE s_hFixFileThread;
     static DWORD s_dwFixFileThread;
+#endif // _FixIVFile
+
 };
 
 

@@ -56,6 +56,7 @@ void CIVSwitchTab::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CIVSwitchTab, CDialog)
     ON_COMMAND_RANGE(IDC_RULE, IDC_RULE+TAB_BT_NUM, &CIVSwitchTab::ClickTabBt)
     ON_WM_CLOSE()
+    ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 // CIVSwitchTab message handlers
 
@@ -65,6 +66,8 @@ BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
     //AFX_MANAGE_STATE(AfxGetStaticModuleState());
     CWnd* pWnd = CWnd::FromHandle(hWnd);
     Create(CIVSwitchTab::IDD, pWnd);
+    ShowWindow(SW_HIDE);
+    MoveWindow(rect);
 
     m_IVTabGroup.MoveWindow(
         IV_TAB_Group_X,
@@ -81,22 +84,24 @@ BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
             CRect(BT_Start_X+nOffset, BT_Start_Y, BT_Start_X+BT_Width+nOffset,BT_Start_Y+BT_Height));
     }
 
-    CRect FuncRect(FunDlg_Start_X, FunDlg_Start_Y, rect.right-FunDlg_Start_X, rect.bottom-FunDlg_Start_X);
+    CRect FuncRect(
+        FunDlg_Start_X, 
+        FunDlg_Start_Y, 
+        rect.right-FunDlg_Start_X,
+        rect.bottom-FunDlg_Start_X);
     m_IVSchuduleDlg.Init(this, FuncRect);
     m_IVSchuduleDlg.ShowWindow(SW_HIDE);
 
     m_IVAlarmOutDlg.Init(this, FuncRect);
     m_IVAlarmOutDlg.ShowWindow(SW_HIDE);
 
-    m_IVSchuduleDlg.MoveWindow(&FuncRect, FALSE);
+    //m_IVSchuduleDlg.MoveWindow(&FuncRect, FALSE);
     //m_IVAlarmOutDlg.MoveWindow(&FuncRect, FALSE);
 
     m_IVRuleDlg.Init(this, FuncRect);
     m_IVRuleDlg.ShowWindow(SW_SHOW);
     //m_IVRuleDlg.MoveWindow(&FuncRect);
 
-    MoveWindow(rect);
-    ShowWindow(SW_SHOW);
     return TRUE;
 }
 
@@ -110,7 +115,7 @@ void CIVSwitchTab::ClickTabBt( UINT ID/*, WPARAM w, LPARAM l*/ )
              m_TabBt[i].SetCheck(BST_UNCHECKED);
         }
     }
-    TRACE(_T("%d"), ID);	
+    //TRACE(_T("%d"), ID);	
     m_TabBt[j].SetCheck(BST_CHECKED);
     switch (j)
     {
@@ -207,3 +212,9 @@ void SetIVOpeator( IIVDeviceBase2* p )
 
 }
 
+
+void CIVSwitchTab::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+    CDialog::OnShowWindow(bShow, nStatus);
+    m_IVRuleDlg.OnShowWindow(bShow);
+}

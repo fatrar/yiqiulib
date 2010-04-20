@@ -403,7 +403,7 @@ void CIVAlarmOutDlg::UpdateUI( const AlarmOutSettings& Alarm )
         else
         {
             // [] heliang err +
-            TRACE(_T("UpdateUI Error Not Found Combox Index!"));
+            TRACE("UpdateUI Error Not Found Combox Index!");
             m_AlarmOutHoldTimeComb.SetCurSel(0);
         }
     }
@@ -481,7 +481,7 @@ void CIVAlarmOutDlg::OnAlarmPaste()
 {
     if ( !m_bIsCopy )
     {
-        TRACE(_T("CIVAlarmOutDlg::OnAlarmPaste\n"));
+        TRACE("CIVAlarmOutDlg::OnAlarmPaste\n");
         ASSERT(FALSE);
         return;
     }
@@ -524,7 +524,7 @@ void CIVAlarmOutDlg::OnAlarmUsetoall()
 {
     if ( !m_bIsCopy )
     {
-        TRACE(_T("CIVAlarmOutDlg::OnAlarmUsetoall\n"));
+        TRACE("CIVAlarmOutDlg::OnAlarmUsetoall\n");
         ASSERT(FALSE);
         return;
     }

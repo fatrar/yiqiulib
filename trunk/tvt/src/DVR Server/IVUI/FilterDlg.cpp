@@ -272,7 +272,7 @@ void CFilterDlg::DoClickOne(int nItem)
             ShowMultiplier(SW_HIDE);
             break;
         default:
-            TRACE(_T("CFilterDlg::OnNMClickList1 nitem=%d"), nItem);
+            TRACE("CFilterDlg::OnNMClickList1 nitem=%d", nItem);
             return;
         }
     }

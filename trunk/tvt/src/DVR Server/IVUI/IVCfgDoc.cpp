@@ -80,7 +80,7 @@ void CIVCfgDoc::Init()
             if ( pID == NULL )
             {
                 // log ..
-                TRACE(_T("Iter.GetIdentityID() == NULL\n"));
+                TRACE("Iter.GetIdentityID() == NULL\n");
                 continue;
             }
 
@@ -223,7 +223,7 @@ T* CIVCfgDoc::GetIVRuleCfgXX(
     RuleSettingMap::iterator MapIter = Map.find(pID);
     if ( MapIter == Map.end() )
     {
-        TRACE(_T("GetIVRuleCfgXX No Found Iter!\n"));
+        TRACE("GetIVRuleCfgXX No Found Iter!\n");
         return NULL;
     }
   
@@ -341,7 +341,7 @@ void CIVRuleCfgDoc::AddRule(
     if ( pID == NULL )
     {
         // log
-        TRACE(_T("***** CIVRuleCfgDoc::AddRule Failed!\n"));
+        TRACE("***** CIVRuleCfgDoc::AddRule Failed!\n");
         pIVCfgMgr->Remove(nChannelID, Iter);
         return;
     }
@@ -402,7 +402,7 @@ void CIVRuleCfgDoc::RemoveRule(
     if ( MapIter == Map.end() )
     {
         // log
-        TRACE(_T("CIVRuleCfgDoc::RemoveRule No Found Iter!\n"));
+        TRACE("CIVRuleCfgDoc::RemoveRule No Found Iter!\n");
     }
     else
     {
@@ -445,7 +445,7 @@ void CIVRuleCfgDoc::RemoveRule(
     if ( !bFound )
     {
         // log
-        TRACE(_T("CIVRuleCfgDoc::RemoveRule XML No Found Iter!\n"));
+        TRACE("CIVRuleCfgDoc::RemoveRule XML No Found Iter!\n");
     }
 
     /**
@@ -475,7 +475,7 @@ void CIVRuleCfgDoc::EnableRule(
     if ( MapIter == Map.end() )
     {
         // log
-        TRACE(_T("CIVRuleCfgDoc::RemoveRule No Found Iter!\n"));
+        TRACE("CIVRuleCfgDoc::RemoveRule No Found Iter!\n");
         ASSERT(FALSE);
     }
     else
@@ -518,7 +518,7 @@ void CIVRuleCfgDoc::EnableRule(
     if ( !bFound )
     {
         // log
-        TRACE(_T("CIVRuleCfgDoc::RemoveRule XML No Found Iter!\n"));
+        TRACE("CIVRuleCfgDoc::RemoveRule XML No Found Iter!\n");
     }
 }
 
@@ -555,7 +555,7 @@ void CIVCfgDoc::UpdateRuleCfgXX(
         if ( MapIter == Map.end() )
         {
             // log
-            TRACE(_T("CIVRuleCfgDoc::RemoveRule No Found Iter!\n"));
+            TRACE("CIVRuleCfgDoc::RemoveRule No Found Iter!\n");
         }
         else
         {
@@ -584,7 +584,7 @@ void CIVCfgDoc::UpdateRuleCfgXX(
     if ( !bFound )
     {
         // log
-        TRACE(_T("CIVRuleCfgDoc::UpdateRuleCfgXX XML No Found Iter!\n"));
+        TRACE("CIVRuleCfgDoc::UpdateRuleCfgXX XML No Found Iter!\n");
     }
 }
 
@@ -706,7 +706,7 @@ BOOL CIVRuleCfgDoc::IsRuleEnbale( HTREEITEM Item )
     RuleSettingMap::iterator MapIter = Map.find(pID);
     if ( MapIter == Map.end() )
     {
-        TRACE(_T("GetIVRuleCfgXX No Found Iter!\n"));
+        TRACE("GetIVRuleCfgXX No Found Iter!\n");
         return NULL;
     }
 

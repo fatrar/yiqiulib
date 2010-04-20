@@ -74,7 +74,7 @@ HTREEITEM InitCameraTree(
         nHeight - 2*TreeGroup_Start_Y );
     CameraTree.MoveWindow(
         Tree_Start_X, Tree_Start_Y, Tree_Width,
-        nHeight-Tree_Start_Y-Tree_Between_Group_Y);
+        nHeight-Tree_Start_Y-2*Tree_Between_Group_Y);
 
     CameraTree.DeleteAllItems();
     CameraTree.SetItemHeight(30);
@@ -147,7 +147,7 @@ void PopUpCameraMemu(
     CMenu* pPopup = menu.GetSubMenu(nIndex);
     if ( pPopup == NULL || 0 == pPopup->GetMenuItemCount() )
     {
-        TRACE(_T("Popup Menu Pass!"));
+        TRACE("Popup Menu Pass!");
         return;
     }
 
@@ -247,7 +247,7 @@ HTREEITEM OnDeleteCameraTreeItem(
     HTREEITEM Root = CameraTree.GetRootItem();
     if ( !CameraTree.ItemHasChildren(Root) )       
     {
-        TRACE(_T("OnDeleteCameraTreeItem Not Found"));
+        TRACE("OnDeleteCameraTreeItem Not Found");
         return NULL;   
     }
 
@@ -272,12 +272,12 @@ HTREEITEM OnDeleteCameraTreeItem(
             }
 
             CameraTree.DeleteItem(RuleItem);
-            TRACE(_T("OnDeleteCameraTreeItem Found"));
+            TRACE("OnDeleteCameraTreeItem Found");
             return RuleItem;
         }
     }
 
-    TRACE(_T("OnDeleteCameraTreeItem Not Found"));
+    TRACE("OnDeleteCameraTreeItem Not Found");
     return NULL;
 }
 
@@ -290,7 +290,7 @@ HTREEITEM OnAddCameraTreeItem(
     HTREEITEM Root = CameraTree.GetRootItem();
     if ( !CameraTree.ItemHasChildren(Root) )       
     {
-        TRACE(_T("OnAddCameraTreeItem Not Found"));
+        TRACE("OnAddCameraTreeItem Not Found");
         return NULL;   
     }
 
@@ -308,11 +308,11 @@ HTREEITEM OnAddCameraTreeItem(
         HTREEITEM RuleItem = CameraTree.InsertItem(strRuleName,ChannelItem);
         ItemAttribute* pTmp = new ItemAttribute(IV_Tree_Rule, nChannelID, pUseData);
         CameraTree.SetItemData(RuleItem, (DWORD_PTR)pTmp);
-        TRACE(_T("OnAddCameraTreeItem Found"));
+        TRACE("OnAddCameraTreeItem Found");
         return RuleItem;
     }
 
-    TRACE(_T("OnAddCameraTreeItem Not Found"));
+    TRACE("OnAddCameraTreeItem Not Found");
     return NULL;
 }
 

@@ -42,7 +42,13 @@ enum
 *      以后在每次有数据来，都是CIVDataBuf中的缓存区找没有使用的，找到后调用AddRef()，表示有数据引用
 *      当数据用完后调用Release()，
 */
-struct TargetQueue
+struct BaseTargetQueue
+{
+
+};
+
+struct TargetQueue :
+    public BaseTargetQueue
 {
     TargetQueue()
         :nCount(0),
