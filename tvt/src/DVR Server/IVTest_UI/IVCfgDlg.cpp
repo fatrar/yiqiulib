@@ -28,7 +28,8 @@ LRESULT CIVCfgDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 
     CRect rect;
     GetClientRect(&rect);
-    IVUIFactory::CreateIVConfigDlg(this->m_hWnd, rect);
+    HWND hwnd = IVUIFactory::CreateIVConfigDlg(this->m_hWnd, rect);
+    ::ShowWindow(hwnd, SW_SHOW);
 	return TRUE;
 }
 

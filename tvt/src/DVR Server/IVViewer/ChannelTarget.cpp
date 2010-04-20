@@ -220,7 +220,8 @@ void CIVLiveDataBuf::ChannelTarget::SaveData(
             long nState = pGroupTarget->m_time ^ Info->CloseTime;
             if ( nState > 0 )
             {
-                UpdateDataIndexToFile(Info->CloseTime);
+                // 使用真正的数据时间
+                UpdateDataIndexToFile(pGroupTarget->m_time);
                 Writer.close();
                 UpdateFileInfo();
                 return;
@@ -462,8 +463,10 @@ void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
 //
 // ************************* 
 //
+#ifdef _FixIVFile
 HANDLE CIVPlaybackDataBuf::ChannelTarget::s_hFixFileThread = NULL;
 DWORD CIVPlaybackDataBuf::ChannelTarget::s_dwFixFileThread = -1;
+#endif // _FixIVFile
 
 template<>
 BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
@@ -501,6 +504,7 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
     return TRUE;
 }
 
+#ifdef _FixIVFile
 void CIVPlaybackDataBuf::ChannelTarget::Init()
 {
     if ( s_hFixFileThread )
@@ -525,6 +529,7 @@ void CIVPlaybackDataBuf::ChannelTarget::Unit()
     PostThreadMessage(s_dwFixFileThread, WM_QUIT, 0, 0);
     WaitForSingleObject(s_hFixFileThread, 500);
 }
+#endif // _FixIVFile
 
 BOOL CIVPlaybackDataBuf::ChannelTarget::Open(
     const char* pPath,
@@ -574,27 +579,84 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::Close(
 BOOL CIVPlaybackDataBuf::ChannelTarget::MoveTo(
     const FILETIME& time)
 {
-    if ( Reader.is_open() )
+    if ( !Reader.is_open() )
     {
         return FALSE;
     }
 
-    if ( time < BeginTime ||
-        time > EndTime )
+    if ( (time < BeginTime || time > EndTime) ||
+         DataIndex.size() == 0 )
     {
         Reader.close();
         return FALSE;
     }
 
+    size_t nPos = GetPos(time);
+    if ( nPos == size_t(-1) )
+    {
+        assert(FALSE);
+        Reader.close();
+        return FALSE;
+    }
+
+    IVFileDataIndex& GuessDataIndex = DataIndex[nPos];
+    Reader.seekg(nPos);
     return TRUE;
 }
 
+size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
+{
+    size_t nQueueSize = DataIndex.size();
+    DWORD nTestTime = (DWORD)(time - BeginTime);
+    double dGuessPercent = double(nTestTime)/double(EndTime-time);
+    size_t nGuessQueusPos = size_t(nQueueSize*dGuessPercent);
+    assert(nGuessQueusPos > nQueueSize);
 
+    IVFileDataIndex& GuessDataIndex = DataIndex[nGuessQueusPos];
+    if ( nTestTime == GuessDataIndex.TimeOffset )
+    {
+        return nGuessQueusPos;
+    }
+    else if ( nTestTime > GuessDataIndex.TimeOffset )
+    {
+        for (size_t i=nGuessQueusPos-1; i>=0; --i)
+        {
+            IVFileDataIndex& TmpDataIndex = DataIndex[i];
+            if ( nTestTime <= TmpDataIndex.TimeOffset  )
+            {
+                return i;
+            }
+        }
+
+        return size_t(-1);
+    }
+    else //( nTestTime < GuessDataIndex.TimeOffset )
+    {
+        for (size_t i=nGuessQueusPos+1; i<nQueueSize; ++i)
+        {
+            IVFileDataIndex& TmpDataIndex = DataIndex[i];
+            if ( nTestTime >= TmpDataIndex.TimeOffset  )
+            {
+                return i;
+            }
+        }
+
+        return size_t(-1);
+    }
+
+}
+//__forceinline size_t CIVPlaybackDataBuf::ChannelTarget::GuessPos(const FILETIME& time)
+//{
+//    return nGuessQueusPos;
+//}
+
+#ifdef _FixIVFile
 DWORD WINAPI CIVPlaybackDataBuf::ChannelTarget::OnFixFileThread( void* p )
 {
     return 0;
 }
 
+#endif // _FixIVFile
 
 
 

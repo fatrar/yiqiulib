@@ -54,12 +54,12 @@ enum MAGIC_TRACE_MESSAGE
 };
 
 
-inline void TraceTV(LPCTSTR lpszFormat, ...);
-inline void xTrace(LPCTSTR lpszFormat, ...);
-inline void xTrace(COLORREF textCr, LPCTSTR lpszFormat, ...);
+inline void TraceTV(LPCSTR lpszFormat, ...);
+inline void xTrace(LPCSTR lpszFormat, ...);
+inline void xTrace(COLORREF textCr, LPCSTR lpszFormat, ...);
 inline void xTrace(LPBITMAPINFO lpbi, LPVOID lpBits);
-inline void xCounter(int nItem, LPCTSTR lpszLabel, COLORREF crText = XTRACE_TEXT_COLOR);
-inline void xCounter(int nItem, COLORREF crText, LPCTSTR lpszFormat, ...);
+inline void xCounter(int nItem, LPCSTR lpszLabel, COLORREF crText = XTRACE_TEXT_COLOR);
+inline void xCounter(int nItem, COLORREF crText, LPCSTR lpszFormat, ...);
 
 class DllLoad
 {
@@ -93,13 +93,13 @@ inline MAGIC_TRACE_PROC GetMagicTraceProc()
 	return fnMagicTraceProc;
 }
 
-#ifdef _UNICODE
-    #define vsTprintf vswprintf
-#else
+//#ifdef _UNICODE
+//    #define vsTprintf vswprintf
+//#else
     #define vsTprintf vsprintf 
-#endif
+//#endif
 
-inline void xTrace(LPCTSTR lpszFormat, ...)
+inline void xTrace(LPCSTR lpszFormat, ...)
 {
 	MAGIC_TRACE_PROC pMTrace = GetMagicTraceProc();
 	if (pMTrace)
@@ -107,7 +107,7 @@ inline void xTrace(LPCTSTR lpszFormat, ...)
 		va_list args;
 		va_start(args, lpszFormat);
 		int nBuf;
-		TCHAR szBuffer[512];
+		char szBuffer[512];
 		nBuf = vsTprintf(szBuffer, lpszFormat, args);
 		if (nBuf) 
 			pMTrace(MTM_NORMAL, XTRACE_TEXT_COLOR, (LPARAM)szBuffer, 0, 0);
@@ -116,7 +116,7 @@ inline void xTrace(LPCTSTR lpszFormat, ...)
 
 }
 
-inline void xTrace(COLORREF textCr, LPCTSTR lpszFormat, ...)
+inline void xTrace(COLORREF textCr, LPCSTR lpszFormat, ...)
 {
 	MAGIC_TRACE_PROC pMTrace = GetMagicTraceProc();
 	if (pMTrace)
@@ -124,7 +124,7 @@ inline void xTrace(COLORREF textCr, LPCTSTR lpszFormat, ...)
 		va_list args;
 		va_start(args, lpszFormat);
 		int nBuf;
-		TCHAR szBuffer[512];
+		char szBuffer[512];
 		nBuf = vsTprintf(szBuffer, lpszFormat, args);
 		if (nBuf) 
 			pMTrace(MTM_NORMAL, textCr, (LPARAM)szBuffer, 0, 0);
@@ -143,7 +143,7 @@ inline void xTrace(LPBITMAPINFO lpbi, LPVOID lpBits)
 	}
 }
 
-inline void xCounter(int nItem, LPCTSTR lpszLabel, COLORREF crText)
+inline void xCounter(int nItem, LPCSTR lpszLabel, COLORREF crText)
 {
 	MAGIC_TRACE_PROC pMTrace = GetMagicTraceProc();
 	if (pMTrace)
@@ -153,7 +153,7 @@ inline void xCounter(int nItem, LPCTSTR lpszLabel, COLORREF crText)
 	}
 }
 
-inline void xCounter(int nItem, COLORREF crText, LPCTSTR lpszFormat, ...)
+inline void xCounter(int nItem, COLORREF crText, LPCSTR lpszFormat, ...)
 {
 
 	MAGIC_TRACE_PROC pMTrace = GetMagicTraceProc();
@@ -162,7 +162,7 @@ inline void xCounter(int nItem, COLORREF crText, LPCTSTR lpszFormat, ...)
 		va_list args;
 		va_start(args, lpszFormat);
 		int nBuf;
-		TCHAR szBuffer[512];
+		char szBuffer[512];
 		nBuf = vsTprintf(szBuffer, lpszFormat, args);
 		if (nBuf) 
 			pMTrace(MTM_COUNTER, (WPARAM)nItem, (LPARAM)szBuffer, (WPARAM)crText, 0);
@@ -171,15 +171,15 @@ inline void xCounter(int nItem, COLORREF crText, LPCTSTR lpszFormat, ...)
 
 }
 
-inline void TraceTV(LPCTSTR lpszFormat, ...)
+inline void TraceTV(LPCSTR lpszFormat, ...)
 {
 	va_list args;
 	va_start(args, lpszFormat);
 	int nBuf;
-	TCHAR szBuffer[512];
+	char szBuffer[512];
     nBuf = vsTprintf(szBuffer, lpszFormat, args);
 	if (nBuf) 
-		OutputDebugString(szBuffer);
+		OutputDebugStringA(szBuffer);
 	va_end(args);
 }
 

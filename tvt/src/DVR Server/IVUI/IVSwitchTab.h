@@ -43,4 +43,5 @@ private:
     
 private:
     CStatic m_IVTabGroup;
+    afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };

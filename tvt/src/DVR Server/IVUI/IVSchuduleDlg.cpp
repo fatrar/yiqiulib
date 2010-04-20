@@ -407,7 +407,7 @@ void CIVSchuduleDlg::OnSchudulePaste()
 {
     if ( !m_bIsCopy )
     {
-        TRACE(_T("CIVSchuduleDlg::OnAlarmPaste\n"));
+        TRACE("CIVSchuduleDlg::OnAlarmPaste\n");
         ASSERT(FALSE);
         return;
     }
@@ -456,7 +456,7 @@ void CIVSchuduleDlg::OnSchuduleUsetoall()
 {
     if ( !m_bIsCopy )
     {
-        TRACE(_T("CIVAlarmOutDlg::OnSchuduleUsetoall\n"));
+        TRACE("CIVAlarmOutDlg::OnSchuduleUsetoall\n");
         ASSERT(FALSE);
         return;
     }

@@ -43,9 +43,10 @@ void CIVRuleDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Rule_Group, m_TreeGroup);
 }
 
-void CIVRuleDlg::OnShowWindow( BOOL bShow, UINT nStatus )
+//void CIVRuleDlg::OnShowWindow( BOOL bShow, UINT nStatus )
+void CIVRuleDlg::OnShowWindow( BOOL bShow )
 {
-    CDialog::OnShowWindow(bShow, nStatus);
+    //__super::OnShowWindow(bShow, nStatus);
 
     if ( bShow )
     {
@@ -70,7 +71,7 @@ void CIVRuleDlg::OnShowWindow( BOOL bShow, UINT nStatus )
         }
     }
     
-    TRACE(_T("bShow=%d, nStatus=%d\n"), bShow, nStatus);
+    TRACE("CIVRuleDlg::OnShowWindow bShow=%d\n", bShow);
 }
 
 void CIVRuleDlg::OnDestroy()
@@ -119,7 +120,7 @@ BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
     ON_COMMAND(ID_RULE_SHOWOBJTRACE, &CIVRuleDlg::OnRuleShowobjtrace)   
     ON_WM_DESTROY()
     ON_WM_PAINT()
-    ON_WM_SHOWWINDOW()
+    //ON_WM_SHOWWINDOW()
     ON_NOTIFY(NM_CLICK, IDC_RULE_CAMERA_TREE, &CIVRuleDlg::OnNMClickRuleCameraTree)
     ON_COMMAND(ID_RULE_DELETERULE, &CIVRuleDlg::OnRuleDeleterule)
     ON_COMMAND(ID_RULE_EDITRULE, &CIVRuleDlg::OnRuleEditrule)

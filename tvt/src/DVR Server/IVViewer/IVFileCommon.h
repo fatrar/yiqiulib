@@ -1,7 +1,7 @@
 /**H**************************************************************************
  File            : IVFileCommon.h
  Subsystem       : 
- Function Name(s): CIVFileCommon
+ Function Name(s): 
  Author          : YiQiu(heliang)
  Date            : 2010-3-23  
  Time            : 14:14
@@ -106,6 +106,15 @@ struct IVFileDataHead
 
 static const char c_szIVFileExt[] = ".iv";
 
+
+enum
+{
+    /**
+    *@note 5秒保存一个索引，在最坏的情况(文件保存0.5Hour)，有360个索引，
+    *  那么在200的情况下，有160做丢弃
+    */
+    Head_Index_Interval = 10*5,
+};
 
 /*
 +------------------+

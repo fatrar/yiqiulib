@@ -226,6 +226,20 @@ struct IIVDataFound
 };
 
 /**
+*@note IV数据显示接口
+*/
+struct IIVPlayBackViewer :
+    public IIVViewer
+{
+    enum PlayBack_Mode
+    {
+        __Dir,   // Left
+        Dir__    // Right
+    };
+    virtual void SetPlayBackMode(PlayBack_Mode Mode)=0;
+};
+
+/**
 *@note 得到PlayBack各接口对应的对象指针
 */ 
 namespace IVPlaybackFactory
