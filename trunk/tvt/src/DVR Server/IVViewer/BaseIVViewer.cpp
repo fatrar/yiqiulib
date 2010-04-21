@@ -56,7 +56,7 @@ BOOL CBaseIVViewer<TViewer>::Paint(
     BOOL bNeedFresh = FALSE;
     int nDeviceID = nChannelID/Every_Device_Channel;
 
-    TargetQueue* DataQueue = GetIVData(nChannelID, time);
+    BaseTargetQueue* DataQueue = GetIVData(nChannelID, time);
     if ( DataQueue == NULL )
     {  
         if ( nChannelID != m_pViewerBuf[nDeviceID].ChannelID )
@@ -158,7 +158,7 @@ void CBaseIVViewer<TViewer>::GetDataShowState( int nChannelID, int& nState )
 template<typename TViewer>
 void CBaseIVViewer<TViewer>::RefrehPoint( 
     ChannelPoint& PointBuf, 
-    const TargetQueue* DataQueue,
+    const BaseTargetQueue* DataQueue,
     const FILETIME& time )
 {
     ChannelPoint PointTmpBuf;

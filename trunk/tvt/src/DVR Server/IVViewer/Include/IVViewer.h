@@ -226,7 +226,7 @@ struct IIVDataFound
 };
 
 /**
-*@note IV数据显示接口
+*@note 这个是为了在倒着播视频时，不显示轨迹，暂时未实现
 */
 struct IIVPlayBackViewer :
     public IIVViewer

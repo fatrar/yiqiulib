@@ -990,12 +990,14 @@ void CScheduleCtrl::Full()
     TimeSect.endTimeSec=1440*60;
     TimeSectToRect(TimeSect, rcConvert);
     m_cRectList.AddTail(rcConvert);
+    m_bModified = TRUE;
 }
 
 void CScheduleCtrl::Empty()
 {
     m_cRectList.RemoveAll();
     RedrawWindow();
+    m_bModified = TRUE;
 }
 
 ///(1010 add)///////

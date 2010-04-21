@@ -11,6 +11,7 @@ class CIVRuleDlg :
     public IInitCameraTree,
     public IClickCameraTree,
     public IVideoSend,
+    public IVideoPlayCallBack,
     public CIVRuleCfgDoc
 {
 	DECLARE_DYNAMIC(CIVRuleDlg)
@@ -78,6 +79,15 @@ protected:
 protected:
     virtual BOOL OnVideoSend(FRAMEBUFSTRUCT *bufStruct);
 
+    // IVideoPlayCallBack
+protected:
+    virtual BOOL OnVideoPlay(
+        HDC dc,
+        const tagRECT* rect,    // Õë¶ÔÆÁÄ»×ø±ê
+        const FILETIME* pTime,
+        HWND hwnd,
+        int nFlag,
+        DWORD dwUserData );
 protected:
     enum
     {

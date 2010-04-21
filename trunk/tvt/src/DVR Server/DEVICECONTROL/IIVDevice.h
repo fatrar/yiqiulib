@@ -420,7 +420,7 @@ namespace DeviceFactory
         //"GetIVStatistic",
     };
 
-    typedef IIVDeviceSetter* (*GetIVDeviceBaseFn)();
+    typedef IIVDeviceBase* (*GetIVDeviceBaseFn)();
     typedef IIVDeviceBase2* (*GetIVDeviceBase2Fn)();
     typedef IIVDeviceSetter* (*GeIVDeviceSetterFn)();
     //typedef IIVStatistic* (*GetIVStatisticFn)();

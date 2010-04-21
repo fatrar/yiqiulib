@@ -31,12 +31,15 @@ class CIVLiveDataBuf :
     public IIVDataSaver
 {
 public:
+    typedef LiveGroupTarget TGroupTarget;
+
+public:
     CIVLiveDataBuf(void);
     virtual ~CIVLiveDataBuf(void);
 
     // IIVDataBuf
 public:
-    virtual TargetQueue* GetData(
+    virtual BaseTargetQueue* GetData(
         int nChannelID,
         const FILETIME& time );
 
@@ -91,7 +94,7 @@ protected:
     void DoOpenFileEvevt(DWORD dwChannel);
     void DoCloseFileEvent(DWORD dwChannel);
 
-    int FindBuf();
+    size_t FindBuf();
 
 protected:
     struct FileInfo;
@@ -122,8 +125,8 @@ protected:
     DWORD m_dwMaxBufCount;
 
 protected:
-    TargetQueue* m_pTargetBuf;
-    WORD m_nLastPos;
+    LiveTargetQueue* m_pTargetBuf;
+    size_t m_nLastPos;
 };
 
 

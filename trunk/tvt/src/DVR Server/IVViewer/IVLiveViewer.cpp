@@ -46,7 +46,7 @@ CIVLiveViewer::~CIVLiveViewer(void)
     //::DeleteObject(m_hFont);
 }
 
-TargetQueue* CIVLiveViewer::GetIVData( 
+BaseTargetQueue* CIVLiveViewer::GetIVData( 
     int nChannelID,
     const FILETIME& time )
 {

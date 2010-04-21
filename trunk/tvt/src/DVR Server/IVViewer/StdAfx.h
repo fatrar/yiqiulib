@@ -47,6 +47,7 @@
 //#include <set>
 #include <string>
 #include <list>
+#include <set>
 #include <fstream>
 #include <hash_map>
 using namespace std;

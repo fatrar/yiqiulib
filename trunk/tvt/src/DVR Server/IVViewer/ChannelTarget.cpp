@@ -19,9 +19,9 @@
 //#include "IVLiveDataBuf.h"
 #include "ChannelTarget.h"
 
+static const FILETIME s_ErrFileTime = {0, 0}; 
 
-
-GroupTarget* CIVLiveDataBuf::ChannelTarget::Find(
+CIVLiveDataBuf::TGroupTarget* CIVLiveDataBuf::ChannelTarget::Find(
     const FILETIME& time)
 {
     if ( 0 == TargetList.size() )
@@ -36,8 +36,8 @@ GroupTarget* CIVLiveDataBuf::ChannelTarget::Find(
     *@note use **iter ^ time(A) and not use **iter > time and **iter == time(B),
     * the reason is A compare once, B compare twice
     */
-    GroupTarget* pGroupTarget = NULL;
-    list<GroupTarget*>::iterator iter = TargetList.begin();
+    TGroupTarget* pGroupTarget = NULL;
+    TargetListIter iter = TargetList.begin();
     long nState = **iter ^ time;
     if ( nState > 0 )
     {
@@ -51,6 +51,12 @@ GroupTarget* CIVLiveDataBuf::ChannelTarget::Find(
         return pGroupTarget;
     }
 
+    /**
+    *@note 下面理论上按我的引用模型，
+    * 凡是被剪贴到TargetSaveList的数据都要调用Release
+    * 但是为了效率考虑 数据保存线程做特殊处理
+    * 因为没有被上层使用的数据肯定是没有调用Use，从而nUse标志为Buf_No_Use
+    */
     for ( ++iter; ; ++iter)
     {
         if ( iter == TargetList.end() )
@@ -112,7 +118,7 @@ void CIVLiveDataBuf::ChannelTarget::DropSomeData(int nPreAlarmTime)
         /**
         *@note 1. 判断数据是否还被引用
         */
-        GroupTarget* pGroupTarget = *iter;
+        TGroupTarget* pGroupTarget = *iter;
         if ( pGroupTarget->m_TargetQueue->nRef != 0 &&
             pGroupTarget->m_TargetQueue->nUse != Buf_No_Use )
         {
@@ -204,7 +210,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveData(
             /**
             *@note 1.1. 判断数据是否还被引用
             */
-            GroupTarget* pGroupTarget = *iter;
+            TGroupTarget* pGroupTarget = *iter;
             if ( pGroupTarget->m_TargetQueue->nRef != 0 &&
                  pGroupTarget->m_TargetQueue->nUse != Buf_No_Use )
             {
@@ -267,7 +273,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveData(
             /**
             *@note 2.1. 判断数据是否还被引用
             */
-            GroupTarget* pGroupTarget = *iter;
+            TGroupTarget* pGroupTarget = *iter;
             if ( pGroupTarget->m_TargetQueue->nRef != 0 &&
                 pGroupTarget->m_TargetQueue->nUse != Buf_No_Use )
             {
@@ -458,21 +464,35 @@ void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
         (char*)&FileHead,
         sizeof(IVFileHead) );
 }
-
+// }
+// CIVLiveDataBuf::ChannelTarget
 
 //
-// ************************* 
-//
+// ************ CIVPlaybackDataBuf::ChannelTarget ************
+// {
+
+    // __forceinline
 #ifdef _FixIVFile
 HANDLE CIVPlaybackDataBuf::ChannelTarget::s_hFixFileThread = NULL;
 DWORD CIVPlaybackDataBuf::ChannelTarget::s_dwFixFileThread = -1;
 #endif // _FixIVFile
 
+CIVPlaybackDataBuf::ChannelTarget::ChannelTarget()
+    : m_nBufLastPos(0)
+{
+    m_pTargetBuf = new PlayBackTargetQueue[Head_Index_Interval];
+};
+
+CIVPlaybackDataBuf::ChannelTarget::~ChannelTarget()
+{
+    safeDeleteArray(m_pTargetBuf);
+};
+
 template<>
 BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
     const IVFileHead& Head)
 {
-    DataIndex.clear();
+    m_DataIndex.clear();
     if ( Head.FileFlag != g_dwIVFileOK )
     {
         return FALSE;
@@ -481,24 +501,24 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
     StlHelper::Array2STL(
         Head.DataIndex, 
         Head.dwIndexNum, 
-        DataIndex );
+        m_DataIndex );
 
     IVFileDataIndex TmpDataIndex; 
-    if ( DataIndex.size()==0 ||
-         DataIndex.front().TimeOffset != 0 )
+    if ( m_DataIndex.size()==0 ||
+         m_DataIndex.front().TimeOffset != 0 )
     {
         TmpDataIndex.TimeOffset = 0;
         TmpDataIndex.DataOffset = sizeof(IVFileHead);
-        DataIndex.push_front(TmpDataIndex);
+        m_DataIndex.push_front(TmpDataIndex);
     }
 
     DWORD EndTimeOffset = (DWORD)(Head.EndTime - Head.BeginTime);
-    if ( DataIndex.size()==0 || 
-         DataIndex.back().TimeOffset != EndTimeOffset )
+    if ( m_DataIndex.size()==0 || 
+         m_DataIndex.back().TimeOffset != EndTimeOffset )
     {
         TmpDataIndex.TimeOffset = EndTimeOffset;
         TmpDataIndex.DataOffset = Head.dwLastFramePos;
-        DataIndex.push_front(TmpDataIndex);
+        m_DataIndex.push_front(TmpDataIndex);
     }
 
     return TRUE;
@@ -529,65 +549,79 @@ void CIVPlaybackDataBuf::ChannelTarget::Unit()
     PostThreadMessage(s_dwFixFileThread, WM_QUIT, 0, 0);
     WaitForSingleObject(s_hFixFileThread, 500);
 }
+
+DWORD WINAPI CIVPlaybackDataBuf::ChannelTarget::OnFixFileThread( void* p )
+{
+    return 0;
+}
+
 #endif // _FixIVFile
 
 BOOL CIVPlaybackDataBuf::ChannelTarget::Open(
     const char* pPath,
     const FILETIME& time)
 {
-    if ( isValidString(pPath) )
+    if ( !isValidString(pPath) )
     {
         return FALSE;
     }
 
-    if ( Reader.is_open() )
+    if ( m_Reader.is_open() )
     {
-        Reader.close();
+        m_Reader.close();
     }
 
-    Reader.open(pPath, ios::binary|ios::in);
-    if ( Reader.is_open() )
+    m_Reader.open(pPath, ios::binary|ios::in);
+    if ( m_Reader.is_open() )
     {
         return FALSE;
     }
 
+    BOOL bRc = FALSE;
     IVFileHead Head;
-    Reader.read((char*)&Head, sizeof(IVFileHead));
+    m_Reader.read((char*)&Head, sizeof(IVFileHead));
     switch ( Head.Version )
     {
     case IVFile_Version_1_0:
-        PraseHeadToMap<IVFile_Version_1_0>(Head);
+        bRc = PraseHeadToMap<IVFile_Version_1_0>(Head);
         break;
     default:
         return FALSE;
     }
-    return MoveTo(time);
+
+    if ( !bRc )
+    {
+        return bRc;
+    }
+
+    return MoveToAndReadSome(time);
 }
 
 BOOL CIVPlaybackDataBuf::ChannelTarget::Close(
     const FILETIME& time)
 {
-    if (Reader.is_open())
+    if (m_Reader.is_open())
     {
-        Reader.close();
+        m_Reader.close();
         return TRUE;
     }
 
     return FALSE;
 }
 
-BOOL CIVPlaybackDataBuf::ChannelTarget::MoveTo(
+BOOL CIVPlaybackDataBuf::ChannelTarget::MoveToAndReadSome(
     const FILETIME& time)
 {
-    if ( !Reader.is_open() )
+    if ( !m_Reader.is_open() )
     {
         return FALSE;
     }
 
-    if ( (time < BeginTime || time > EndTime) ||
-         DataIndex.size() == 0 )
+    size_t nQueueSize = m_DataIndex.size();
+    if ( (time < m_BeginTime || time > m_EndTime) ||
+         nQueueSize == 0 )
     {
-        Reader.close();
+        m_Reader.close();
         return FALSE;
     }
 
@@ -595,24 +629,62 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::MoveTo(
     if ( nPos == size_t(-1) )
     {
         assert(FALSE);
-        Reader.close();
+        m_Reader.close();
         return FALSE;
     }
 
-    IVFileDataIndex& GuessDataIndex = DataIndex[nPos];
-    Reader.seekg(nPos);
+    FILETIME CurrentFrameTime;
+    m_IVSomeData.clear();
+    IVFileDataIndex& TmpDataIndex = m_DataIndex[nPos];
+    m_Reader.seekg(TmpDataIndex.DataOffset);
+    if ( nPos == nQueueSize - 1 )
+    {    
+        if ( ReadSome(CurrentFrameTime) )
+        {
+             m_BufStartTime = m_BufEndTime = CurrentFrameTime;
+             assert(CurrentFrameTime==m_EndTime);
+        }
+     
+        m_BufStartTime = m_BufEndTime = s_ErrFileTime;
+        return FALSE;
+    }
+
+    BOOL bFirstFrame = TRUE;
+    IVFileDataIndex& TmpDataIndex2 = m_DataIndex[nPos+1];
+    while ( m_Reader.tellg() < TmpDataIndex2.DataOffset )
+    {
+        if ( !ReadSome(CurrentFrameTime) )
+        {
+            if ( bFirstFrame )
+            {
+                m_BufStartTime = m_BufEndTime = s_ErrFileTime;
+            }
+            
+            return FALSE;
+        }
+
+        if ( bFirstFrame )
+        {
+            m_BufStartTime = CurrentFrameTime ;
+        }
+        else
+        {
+            m_BufEndTime = CurrentFrameTime;
+        }
+    }  
+
     return TRUE;
 }
 
 size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
 {
-    size_t nQueueSize = DataIndex.size();
-    DWORD nTestTime = (DWORD)(time - BeginTime);
-    double dGuessPercent = double(nTestTime)/double(EndTime-time);
+    size_t nQueueSize = m_DataIndex.size();
+    DWORD nTestTime = (DWORD)(time - m_BeginTime);
+    double dGuessPercent = double(nTestTime)/double(m_EndTime-time);
     size_t nGuessQueusPos = size_t(nQueueSize*dGuessPercent);
     assert(nGuessQueusPos > nQueueSize);
 
-    IVFileDataIndex& GuessDataIndex = DataIndex[nGuessQueusPos];
+    IVFileDataIndex& GuessDataIndex = m_DataIndex[nGuessQueusPos];
     if ( nTestTime == GuessDataIndex.TimeOffset )
     {
         return nGuessQueusPos;
@@ -621,7 +693,7 @@ size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
     {
         for (size_t i=nGuessQueusPos-1; i>=0; --i)
         {
-            IVFileDataIndex& TmpDataIndex = DataIndex[i];
+            IVFileDataIndex& TmpDataIndex = m_DataIndex[i];
             if ( nTestTime <= TmpDataIndex.TimeOffset  )
             {
                 return i;
@@ -634,7 +706,7 @@ size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
     {
         for (size_t i=nGuessQueusPos+1; i<nQueueSize; ++i)
         {
-            IVFileDataIndex& TmpDataIndex = DataIndex[i];
+            IVFileDataIndex& TmpDataIndex = m_DataIndex[i];
             if ( nTestTime >= TmpDataIndex.TimeOffset  )
             {
                 return i;
@@ -645,19 +717,70 @@ size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
     }
 
 }
-//__forceinline size_t CIVPlaybackDataBuf::ChannelTarget::GuessPos(const FILETIME& time)
-//{
-//    return nGuessQueusPos;
-//}
 
-#ifdef _FixIVFile
-DWORD WINAPI CIVPlaybackDataBuf::ChannelTarget::OnFixFileThread( void* p )
+size_t CIVPlaybackDataBuf::ChannelTarget::FindBuf()
 {
-    return 0;
+    return IVViewerFindBuf(m_nBufLastPos, m_pTargetBuf, Head_Index_Interval);
 }
 
-#endif // _FixIVFile
+BOOL CIVPlaybackDataBuf::ChannelTarget::ReadSome(FILETIME& CurrentFrameTime)
+{
+    IVFileDataHead DataHead;
+    PlayBackTargetQueue* pTemp = NULL;
+    m_Reader.read(
+        (char*)&DataHead, 
+        sizeof(IVFileDataHead));
+    
+    //
+    // [] 这里需要校验IVFileDataHead
+    //
+    /**
+    *@note 1. 找是否有目标数据缓冲(TargetQueue)
+    */
+    int nBufPos = FindBuf();
+    if ( nBufPos == NO_BUF_Ramain )
+    {
+        DebugOut("CIVDataBuf::OnIVDataSend No Find Buf!\n");
+        assert(false);
+        return FALSE;
+    }
 
+    CurrentFrameTime = DataHead.t;
+    pTemp = &m_pTargetBuf[nBufPos];
+    pTemp->AddRef();
+    pTemp->nCount = DataHead.wTargetNum;
+    assert(pTemp->nCount<=TARGET_MAX_NUM);
+    m_Reader.read(
+        (char*)pTemp->Tar,
+        sizeof(WPG_Target)*DataHead.wTargetNum);
+    m_IVSomeData.insert( PlayBackGroupTarget(DataHead.t, pTemp) );
+    return TRUE;
+}
+
+CIVPlaybackDataBuf::TGroupTarget* CIVPlaybackDataBuf::ChannelTarget::Find(
+    const FILETIME& time )
+{
+    if ( time < m_BufStartTime ||
+         time > m_BufEndTime )
+    {
+        if ( !MoveToAndReadSome(time) )
+        {
+            return NULL;
+        }
+    }
+
+    set<PlayBackGroupTarget>::iterator iter = m_IVSomeData.find(
+        PlayBackGroupTarget(time,NULL) );
+    if ( iter == m_IVSomeData.end() )
+    {
+        return NULL;
+    }
+
+    return &(*iter);
+}
+
+// }
+// CIVPlaybackDataBuf::ChannelTarget
 
 
 // End of file

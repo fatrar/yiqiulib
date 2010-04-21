@@ -27,12 +27,15 @@ class CIVPlaybackDataBuf :
     public Singleton<CIVPlaybackDataBuf>
 {
 public:
+    typedef PlayBackGroupTarget TGroupTarget;
+    
+public:
     CIVPlaybackDataBuf(void);
     ~CIVPlaybackDataBuf(void);
 
     // IIVDataBuf
 public:
-    virtual TargetQueue* GetData(
+    virtual BaseTargetQueue* GetData(
         int nChannelID,
         const FILETIME& time );
     

@@ -44,7 +44,7 @@ CIVLiveDataBuf::~CIVLiveDataBuf(void)
 //
 // IIVDataBuf
 //
-TargetQueue* CIVLiveDataBuf::GetData(
+BaseTargetQueue* CIVLiveDataBuf::GetData(
     int nChannelID,
     const FILETIME& time )
 { 
@@ -65,7 +65,7 @@ TargetQueue* CIVLiveDataBuf::GetData(
     }
 
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
-    GroupTarget* pGroupTarget = NULL;
+    TGroupTarget* pGroupTarget = NULL;
    
     {
         AutoLockAndUnlock(m_cs);
@@ -73,7 +73,7 @@ TargetQueue* CIVLiveDataBuf::GetData(
     }
     if ( NULL == pGroupTarget )
     {
-        return FALSE;
+        return NULL;
     }
 
     pGroupTarget->m_TargetQueue->AddRef();
@@ -100,7 +100,7 @@ BOOL CIVLiveDataBuf::OnIVDataSend(
     }
     
     /**
-    *@note 1. 找是否有目标数据缓存(TargetQueue)
+    *@note 1. 找是否有目标数据缓冲(TargetQueue)
     */
     int nBufPos = FindBuf();
     if ( nBufPos == NO_BUF_Ramain )
@@ -113,9 +113,9 @@ BOOL CIVLiveDataBuf::OnIVDataSend(
     *@note 2. 对TargetQueue设置使用标志，然后将数据指针传给GroupTarget，
     * 由他去加载新的数据到TargetQueue
     */
-    TargetQueue* pTemp = &m_pTargetBuf[nBufPos];
+    LiveTargetQueue* pTemp = &m_pTargetBuf[nBufPos];
     pTemp->Use(GetMyWantEvent(SaveFile_Event,nChannelID));
-    GroupTarget* pGroupTarget = new GroupTarget(
+    TGroupTarget* pGroupTarget = new TGroupTarget(
         time, pData, nLen, pTemp);
    
     /**
@@ -139,7 +139,7 @@ BOOL CIVLiveDataBuf::Init(
     m_TargetMap = new ChannelTarget[nDeviceCount*nEveryDeviceChannelNum];
 
     m_dwMaxBufCount = Single_Device_Buf_Size*nDeviceCount;
-    m_pTargetBuf = new TargetQueue[m_dwMaxBufCount];
+    m_pTargetBuf = new LiveTargetQueue[m_dwMaxBufCount];
 
     m_nDeviceCount = nDeviceCount;
     m_nEveryDeviceChannelNum = nEveryDeviceChannelNum;
@@ -326,30 +326,9 @@ size_t CIVLiveDataBuf::SaveFileLoopFun()
     return 0;
 }
 
-int CIVLiveDataBuf::FindBuf()
+size_t CIVLiveDataBuf::FindBuf()
 {
-    // 算法需要检验是否正确
-    for (WORD i=m_nLastPos; i<m_dwMaxBufCount; ++i)
-    {
-        if ( m_pTargetBuf[i].nUse == Buf_No_Use )
-        {
-            // 好像m_nLastPos为MAX_IV_BUF_Size也没问题
-            m_nLastPos = i + 1;
-            return i;
-        }
-    }
-
-    for (WORD j=0; j<m_nLastPos; ++j)
-    {
-        if ( m_pTargetBuf[j].nUse == Buf_No_Use )
-        {
-            m_nLastPos = j + 1;
-            return j;
-        }
-    }
-
-    // log
-    return NO_BUF_Ramain;
+    return IVViewerFindBuf(m_nLastPos, m_pTargetBuf, m_dwMaxBufCount);
 }
 
 void CIVLiveDataBuf::DoSaveFileEvent(DWORD dwChannel)

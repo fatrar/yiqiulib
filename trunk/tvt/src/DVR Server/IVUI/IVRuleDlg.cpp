@@ -141,7 +141,7 @@ BOOL CIVRuleDlg::OnInitDialog()
     CString strTmp;
     strTmp.LoadString(g_hmodule, IDS_Rule_Tree_Group);
     m_TreeGroup.SetWindowText(strTmp);
- 
+    m_nCurrentChan = Invaild_ChannelID;
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -181,6 +181,7 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
         this, PlayerWnd_ID );
     m_Player.InitDirectDraw(
         m_PlayerWnd.m_hWnd, 352, 288);
+    //m_Player.SetVideoPlayCallback(this, m_nCurrentChan);
 
     //if ( g_IIVDeviceBase2 )
     //{
@@ -243,6 +244,7 @@ void CIVRuleDlg::OnClickCameraTree(
             g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
         }
         m_nCurrentChan = Invaild_ChannelID;
+        m_PlayerWnd.RedrawWindow();
         break;
     default:
         ASSERT(FALSE);
@@ -264,9 +266,30 @@ BOOL CIVRuleDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
     m_Player.Show(
         &Rect, bufStruct->pBuf,
         bufStruct->width, bufStruct->height,
-        CSingleVideoPlayer::YUV422, 0, time);
+        CSingleVideoPlayer::YUV422, 0, time,
+        this, m_nCurrentChan );
 
     g_IIVDeviceBase2->ReleaseLiveBuf(bufStruct);
+    return TRUE;
+}
+
+BOOL CIVRuleDlg::OnVideoPlay(
+    HDC dc,
+    const tagRECT* rect,
+    const FILETIME* pTime, 
+    HWND hwnd,
+    int nFlag,
+    DWORD dwUserData )
+{
+    //m_Drawer->ShowWindow(SW_HIDE);
+    //m_Drawer->ShowWindow(SW_SHOW);
+    static  IIVLiveViewerEx* pViewerEx = IVLiveFactory::GetLiveViewerEx();
+
+    if ( dwUserData != Invaild_ChannelID )
+    {
+        pViewerEx->Paint(dwUserData, dc, *rect, *pTime);
+        pViewerEx->PaintRule(dwUserData, dc, *rect);
+    }
     return TRUE;
 }
 
@@ -427,7 +450,7 @@ void CIVRuleDlg::OnRuleNewrule()
     CIVFunctionSelDlg FunctionSelDlg;
     if ( m_nCurrentChan == Invaild_ChannelID || 
          m_ClickItem == NULL || 
-         IDCANCEL== FunctionSelDlg.DoModal() )
+         IDCANCEL == FunctionSelDlg.DoModal() )
     {
         return;
     }
@@ -439,14 +462,20 @@ void CIVRuleDlg::OnRuleNewrule()
         return;
     }
 
+    CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType, this);
+    if ( pDlg == NULL )
+    {
+        AfxMessageBox(_T("That Rule not Impl!"));
+        return;
+    }
+
     if ( g_IIVDeviceBase2 && m_nCurrentChan!= Invaild_ChannelID )
     {
         g_IIVDeviceBase2->UnRegisterLiveDataCallBack(m_nCurrentChan, this);
     }
+
     WPG_Rule* pRule = new WPG_Rule;
     IVUtil::InitWPGRuleByType(pRule, RuleType);
-
-    CRuleMainBaseDlg* pDlg = CreateRuleCfgDlgByRule(RuleType, this);
     pDlg->SetComomParm(m_nCurrentChan, pRule, RuleType);
     if ( IDOK == pDlg->DoModal() )
     {

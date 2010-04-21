@@ -370,11 +370,6 @@ void CIVSchuduleDlg::OnRuleAdd(
         strRuleName );
 }
 
-void CIVSchuduleDlg::OnUseIV( int nChannelID, BOOL bEnbale )
-{
-
-}
-
 //
 // ************************ Menu *****************************
 // {

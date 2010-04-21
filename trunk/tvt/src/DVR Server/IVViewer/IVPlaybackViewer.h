@@ -34,7 +34,7 @@ public:
 
     // CBaseIVViewer
 public:
-    virtual TargetQueue* GetIVData(
+    virtual BaseTargetQueue* GetIVData(
         int nChannelID,
         const FILETIME& time);
 
