@@ -436,9 +436,10 @@ void CIVRuleCfgDoc::RemoveRule(
         const char* pTmpID = Iter.GetIdentityID();
         if ( pTmpID == pID )
         {
+            bFound = TRUE;
             pIVCfgMgr->Remove(nChannelID, Iter);
             pIVCfgMgr->Apply();
-            return;
+            break;
         }
     }
 

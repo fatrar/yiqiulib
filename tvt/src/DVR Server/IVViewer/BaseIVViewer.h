@@ -29,7 +29,7 @@ public:
     virtual ~CBaseIVViewer(void);
 
 public:
-    virtual TargetQueue* GetIVData(
+    virtual BaseTargetQueue* GetIVData(
         int nChannelID,
         const FILETIME& time) = 0;
 
@@ -73,7 +73,7 @@ protected:
 
     void RefrehPoint(
         ChannelPoint& PointBuf,
-        const TargetQueue* DataQueue,
+        const BaseTargetQueue* DataQueue,
         const FILETIME& time );
 
     void DrawTrace(

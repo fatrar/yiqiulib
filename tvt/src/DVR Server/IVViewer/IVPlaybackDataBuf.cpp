@@ -34,9 +34,18 @@ CIVPlaybackDataBuf::~CIVPlaybackDataBuf(void)
 //
 // ****************** IIVDataBuf ******************
 // {
-TargetQueue* CIVPlaybackDataBuf::GetData( int nChannelID, const FILETIME& time )
+BaseTargetQueue* CIVPlaybackDataBuf::GetData( 
+    int nChannelID,
+    const FILETIME& time )
 {
-    return NULL;
+    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    TGroupTarget* pGroupTarget = ChanTarget.Find(time);
+    if ( pGroupTarget == NULL )
+    {
+        return NULL;
+    }
+
+    return pGroupTarget->m_TargetQueue;
 }
 
 // }
@@ -50,14 +59,16 @@ BOOL CIVPlaybackDataBuf::Open(
     const char* pPath, 
     const FILETIME& time )
 {
-    return FALSE;
+    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    return ChanTarget.Open(pPath, time);
 }
 
 BOOL CIVPlaybackDataBuf::Close(
     int nChannelID,
     const FILETIME& time )
 {
-    return FALSE;
+    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    return ChanTarget.Close(time);
 }
 // }
 // IVDataFound

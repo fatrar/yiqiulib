@@ -44,6 +44,8 @@ struct CIVLiveDataBuf::FileInfo
 
 class CIVLiveDataBuf::ChannelTarget
 {
+//public:
+//    typedef LiveGroupTarget TGroupTarget;
 public:
     ChannelTarget()
         : dwPrePos(0)
@@ -60,8 +62,8 @@ public:
     *@note 下面两个函数的功能是将数据放查询队列和根据查询队列查询数据
     *      查询队列的线程锁由上层做 
     */
-    GroupTarget* Find(const FILETIME& time);
-    void PushBack(GroupTarget* pGroupTarget){TargetList.push_back(pGroupTarget);}
+    TGroupTarget* Find(const FILETIME& time);
+    void PushBack(TGroupTarget* pGroupTarget){TargetList.push_back(pGroupTarget);}
 
     /**
     *@note 下面两个函数的功能是上层发现有文件打开或关闭，将信息传到这边
@@ -100,7 +102,7 @@ protected:
         const FILETIME& t);
 
     void SaveTargetToFile(
-        const TargetQueue* m_TargetQueue )
+        const LiveTargetQueue* m_TargetQueue )
     {
         size_t nSize = m_TargetQueue->nCount*sizeof(WPG_Target);
         Writer.write((char*)&m_TargetQueue->Tar, nSize);
@@ -130,7 +132,8 @@ protected:
     void UpdateDataIndexToFile(const FILETIME& EndTime);
 
 protected:
-    typedef list<GroupTarget*> TTargetList;
+    typedef list<TGroupTarget*> TTargetList;
+    typedef TTargetList::iterator TargetListIter;
     typedef deque<FileInfo> FileInfoList;
 
 private:
@@ -169,6 +172,9 @@ class CIVPlaybackDataBuf;
 class CIVPlaybackDataBuf::ChannelTarget
 {
 public:
+    ChannelTarget();
+    ~ChannelTarget();
+
 #ifdef _FixIVFile
     static void Init();
     static void Unit();
@@ -180,23 +186,38 @@ public:
 
     BOOL Close(const FILETIME& time);
 
-    BOOL MoveTo(const FILETIME& time);
+    BOOL MoveToAndReadSome(const FILETIME& time);
+
+    TGroupTarget* Find(const FILETIME& time);
 
 protected:
     template<IVFileVersionDefine Version>
     BOOL PraseHeadToMap(const IVFileHead& Head);
 
     size_t GetPos(const FILETIME& time);
-    //size_t GuessPos(const FILETIME& time);
-private:
-    ifstream Reader;
-    //BOOL IsFoundFile;
-    DWORD dwCurrentPos;
-    FILETIME BeginTime;
-    FILETIME EndTime;
-    deque<IVFileDataIndex> DataIndex;
 
-    BYTE* m_pDataBuf;
+    size_t FindBuf();
+
+    BOOL ReadSome(FILETIME& CurrentFrameTime);
+private:
+    ifstream m_Reader;
+    //BOOL IsFoundFile;
+    DWORD m_dwCurrentPos;
+    FILETIME m_BeginTime;
+    FILETIME m_EndTime;
+
+    // 第一个位置放第一帧的信息，
+    // 队列最后放最后一针的信息
+    deque<IVFileDataIndex> m_DataIndex;
+    size_t m_CurrentIndexPos;
+    
+    PlayBackTargetQueue* m_pTargetBuf;
+    size_t m_nBufLastPos;
+
+    set<PlayBackGroupTarget> m_IVSomeData;
+    FILETIME m_BufStartTime;
+    FILETIME m_BufEndTime;
+
 #ifdef _FixIVFile
 protected:
     static DWORD WINAPI OnFixFileThread(void* p);

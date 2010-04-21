@@ -29,7 +29,7 @@ CIVPlaybackViewer::~CIVPlaybackViewer(void)
 {
 }
 
-TargetQueue* CIVPlaybackViewer::GetIVData(
+BaseTargetQueue* CIVPlaybackViewer::GetIVData(
     int nChannelID,
     const FILETIME& time )
 {
