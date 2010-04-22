@@ -71,14 +71,36 @@ protected:
         ChannelPoint PointBuf;
     };
 
-    void RefrehPoint(
+    /**
+    *@note 下面两个函数应该作为ViewerBuf的函数，
+    * 但是为了方便给派生类重载(覆盖)实现一些特殊的需要，
+    * 采用CBaseIVViewer虚函数的形式存在
+    */
+    /**
+    *@note  刷新目标及增加轨迹数据
+    *@param	PointBuf 需要更新的数据  
+    *@param DataQueue 新数据
+    *@return 
+    */
+    virtual void RefrehPoint(
         ChannelPoint& PointBuf,
-        const BaseTargetQueue* DataQueue,
-        const FILETIME& time );
+        const BaseTargetQueue* DataQueue );
 
-    void DrawTrace(
+    /**
+    *@note 画轨迹
+    */
+    virtual void DrawTrace(
         const HDC dc,
         const ChannelPoint& PointBuf,
+        const RECT& rect );
+
+    /**
+    *@note 画目标
+    */
+    virtual void DrawObject(
+        const HDC dc,
+        WPG_Target* pTarBuf,
+        size_t nTarCount,
         const RECT& rect );
 
 protected:
@@ -99,12 +121,13 @@ protected:
     {
         Point_Default_Color = 0x00ff00,
         Line_Default_Width = 2,
+
+        Draw_Invaild_Time = 500,
     };
 
     HPEN m_hPen;
     HGDIOBJ m_hBrush;
 };
-
 
 //
 //template<typename TViewer>

@@ -54,7 +54,7 @@ IIVDataSender* GetDataSender(void)
 namespace IVPlaybackFactory
 {
 
-IIVViewer* GetPlaybackViewer(void)
+IIVPlayBackViewer* GetPlaybackViewer(void)
 {
     return CIVPlaybackViewer::getInstancePtr();
 }

@@ -19,7 +19,7 @@ Copyright (c) xx Tech Co.,Ltd.
 
 
 template CBaseIVViewer<IIVLiveViewerEx>;
-template CBaseIVViewer<IIVViewer>;
+template CBaseIVViewer<IIVPlayBackViewer>;
 
 template<typename TViewer>
 CBaseIVViewer<TViewer>::CBaseIVViewer(void)
@@ -53,9 +53,11 @@ BOOL CBaseIVViewer<TViewer>::Paint(
   
     WPG_Target* pTarBuf = NULL;
     int nTarCount = 0;
-    BOOL bNeedFresh = FALSE;
     int nDeviceID = nChannelID/Every_Device_Channel;
 
+    /**
+    *@note 1.得到目标数据及对新目标处理
+    */
     BaseTargetQueue* DataQueue = GetIVData(nChannelID, time);
     if ( DataQueue == NULL )
     {  
@@ -66,65 +68,45 @@ BOOL CBaseIVViewer<TViewer>::Paint(
         }
         
         DWORD dwNow = GetTickCount();
-        if ( dwNow - m_dwRecord[nChannelID] > 500 )
+        if ( dwNow - m_dwRecord[nChannelID] > Draw_Invaild_Time )
         {
             return FALSE;
         }
-
-        pTarBuf = m_pViewerBuf[nDeviceID].TarBuf;
-        nTarCount = m_pViewerBuf[nDeviceID].nTarCount;
     }
     else
     {
         m_dwRecord[nChannelID] = GetTickCount();
         m_pViewerBuf[nDeviceID].ChannelID = nChannelID;
-        pTarBuf = DataQueue->Tar;
-        nTarCount = DataQueue->nCount;
-        bNeedFresh = TRUE;
-    }
 
-    HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen);  
-
-    TShowState& ShowState = m_ShowState[nChannelID];
-    if ( ShowState.bShow && (ShowState.nState& Show_Object) )
-    {
-        HGDIOBJ hOldBrush = ::SelectObject(dc, m_hBrush);
-        //RECT ObjRect;
-        int left, top, right, bottom;
-        for (int i =0; i<nTarCount;++i)
-        {
-            WPG_Target& Tar = pTarBuf[i];
-
-            // 过滤超过视频窗口的目标，
-            // 不能在SDK和Buf数据接收事过滤，不然会造成目标丢失
-            if ( !ViewHelper::IsVaildWPGTarget(Tar) )
-            {
-                continue;
-            }
-
-            ViewHelper::TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
-            ::Rectangle(dc, left, top, right, bottom);
-        }
-        ::SelectObject(dc, hOldBrush);
-    }
-
-    if ( bNeedFresh )
-    {
+        /**
+        *@note 有的新的目标数据，刷新目标及增加轨迹数据
+        */
         ViewerBuf& viewBuf = m_pViewerBuf[nDeviceID];
         viewBuf.ChannelID = nChannelID;
         viewBuf.time = time;
         memcpy(viewBuf.TarBuf, DataQueue->Tar, DataQueue->nCount*sizeof(WPG_Target));
         viewBuf.nTarCount = DataQueue->nCount;
-        RefrehPoint(m_pViewerBuf[nDeviceID].PointBuf, DataQueue, time);
+        RefrehPoint(m_pViewerBuf[nDeviceID].PointBuf, DataQueue);
         DataQueue->Release();
     }
+    pTarBuf = m_pViewerBuf[nDeviceID].TarBuf;
+    nTarCount = m_pViewerBuf[nDeviceID].nTarCount;
 
 
-    if ( ShowState.bShow && (ShowState.nState& Show_Trace) )
+    /**
+    *@note 2. 画目标和轨迹
+    */
+    HGDIOBJ hOldPen = ::SelectObject(dc, m_hPen);  
+    TShowState& ShowState = m_ShowState[nChannelID];
+    if ( ShowState.bShow && (ShowState.nState & Show_Object) )
+    {
+        DrawObject(dc, pTarBuf, nTarCount, rect);
+    }
+
+    if ( ShowState.bShow && (ShowState.nState & Show_Trace) )
     {
         DrawTrace(dc, m_pViewerBuf[nDeviceID].PointBuf, rect);
-    }
-    
+    } 
     ::SelectObject(dc, hOldPen);
     return TRUE;
 }
@@ -158,8 +140,7 @@ void CBaseIVViewer<TViewer>::GetDataShowState( int nChannelID, int& nState )
 template<typename TViewer>
 void CBaseIVViewer<TViewer>::RefrehPoint( 
     ChannelPoint& PointBuf, 
-    const BaseTargetQueue* DataQueue,
-    const FILETIME& time )
+    const BaseTargetQueue* DataQueue )
 {
     ChannelPoint PointTmpBuf;
     ChannelPoint::iterator iter;
@@ -239,7 +220,32 @@ void CBaseIVViewer<TViewer>::DrawTrace(
     }
 }
 
+template<typename TViewer>
+void CBaseIVViewer<TViewer>::DrawObject(
+    const HDC dc,
+    WPG_Target* pTarBuf,
+    size_t nTarCount,
+    const RECT& rect )
+{
+    HGDIOBJ hOldBrush = ::SelectObject(dc, m_hBrush);
+    //RECT ObjRect;
+    int left, top, right, bottom;
+    for (size_t i =0; i<nTarCount; ++i)
+    {
+        WPG_Target& Tar = pTarBuf[i];
 
+        // 过滤超过视频窗口的目标，
+        // 不能在SDK和Buf数据接收事过滤，不然会造成目标丢失
+        if ( !ViewHelper::IsVaildWPGTarget(Tar) )
+        {
+            continue;
+        }
+
+        ViewHelper::TranslateToRect(rect,Tar.boundingBox, left, top, right, bottom);
+        ::Rectangle(dc, left, top, right, bottom);
+    }
+    ::SelectObject(dc, hOldBrush);
+}
 
 // End fo file
 
