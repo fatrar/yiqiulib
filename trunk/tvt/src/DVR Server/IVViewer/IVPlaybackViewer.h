@@ -22,7 +22,7 @@
 
 
 class CIVPlaybackViewer :
-    public CBaseIVViewer<IIVViewer>,
+    public CBaseIVViewer<IIVPlayBackViewer>,
     public Singleton<CIVPlaybackViewer>
 {
 public:
@@ -38,7 +38,17 @@ public:
         int nChannelID,
         const FILETIME& time);
 
+    virtual void RefrehPoint(
+        ChannelPoint& PointBuf,
+        const BaseTargetQueue* DataQueue );
+
+    // IIVPlayBackViewer
 public:
+    virtual void SetPlayBackMode(PlayBack_Mode Mode);
+
+protected:
+    PlayBack_Mode m_PlayBackMode;
+    BOOL m_NeedClearBuf;
 };
 
 

@@ -233,8 +233,8 @@ struct IIVPlayBackViewer :
 {
     enum PlayBack_Mode
     {
-        __Dir,   // Left
-        Dir__    // Right
+        __Dir,   // Left , Õý×Å²¥
+        Dir__    // Right, µ¹×Å²¥
     };
     virtual void SetPlayBackMode(PlayBack_Mode Mode)=0;
 };
@@ -244,7 +244,7 @@ struct IIVPlayBackViewer :
 */ 
 namespace IVPlaybackFactory
 {
-    IVVIEWER_API IIVViewer* GetPlaybackViewer();
+    IVVIEWER_API IIVPlayBackViewer* GetPlaybackViewer();
     IVVIEWER_API IIVDataFound* GetDataFound();
 };
 
