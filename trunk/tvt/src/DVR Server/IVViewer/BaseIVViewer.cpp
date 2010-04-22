@@ -150,24 +150,26 @@ void CBaseIVViewer<TViewer>::RefrehPoint(
         // 并将数据放入临时的ChannelPoint中
         const WPG_Target& tar = DataQueue->Tar[i];
         iter = PointBuf.find(tar.equalId);
-        PointList* pPointList  = NULL;
+        PointInfo* pPointInfo  = NULL;
         if ( iter != PointBuf.end() )
         {
-            pPointList = iter->second;
-            pPointList->push_back(tar.centroid);
+            pPointInfo = iter->second;
+            pPointInfo->PointQueue.push_back(tar.centroid);
+            pPointInfo->nPreviousID = tar.equalId;
             PointBuf.erase(iter);
         }
         else
         {
             // 没找到就直接new一个新的内存
-            pPointList = new PointList();
+            pPointInfo = new PointInfo();
            
             ++g_PointList;
-            pPointList->push_back(tar.centroid);
+            pPointInfo->PointQueue.push_back(tar.centroid);
+            pPointInfo->nPreviousID = tar.equalId;
         }
 
         assert(PointTmpBuf[tar.equalId]==NULL);
-        PointTmpBuf[tar.equalId] = pPointList;
+        PointTmpBuf[tar.equalId] = pPointInfo;
     }
 
     // 释放那些目标丢失的数据
@@ -193,24 +195,25 @@ void CBaseIVViewer<TViewer>::DrawTrace(
           iter != PointBuf.end();
           ++iter )
     {
-        PointList* pPointList = iter->second;
-        if ( pPointList == NULL )
+        PointInfo* pPointInfo = iter->second;
+        if ( pPointInfo == NULL )
         {
             // Trace;
             continue;
         }
 
-        if ( pPointList->size() == 0 ||
-             pPointList->size() == 1 )
+        PointList& PointList = pPointInfo->PointQueue;
+        if ( PointList.size() == 0 ||
+             PointList.size() == 1 )
         {
             continue;
         }
 
-        PointList::iterator listIter = pPointList->begin();
+        PointList::iterator listIter = PointList.begin();
         int x = int(listIter->x * (rect.right-rect.left)) + rect.left;
         int y = int(listIter->y * (rect.bottom-rect.top)) + rect.top;
         MoveToEx(dc, x, y, &p);
-        for ( ++listIter; listIter != pPointList->end();
+        for ( ++listIter; listIter != PointList.end();
               ++listIter )
         {
             x = int(listIter->x * (rect.right-rect.left)) + rect.left;
