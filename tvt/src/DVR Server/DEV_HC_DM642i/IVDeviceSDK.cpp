@@ -36,7 +36,7 @@ bool IsInScheduleSettings(
         {
             return true;
         }
-        else if (nTestMin > DaySet.endtime[i] )
+        else if (nTestMin < DaySet.starttime[i] )
         {
             return false;
         }

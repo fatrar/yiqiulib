@@ -532,7 +532,7 @@ void CIVRuleDlg::OnRuleEditrule()
         */
         if ( g_IIVDeviceBase2->IsUse(m_nCurrentChan) )
         {
-            g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pTmpRule);
+            //g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pTmpRule);
             IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
             pIVLiveViewerEx->ModifyRule(m_nCurrentChan, *pRule);
         }

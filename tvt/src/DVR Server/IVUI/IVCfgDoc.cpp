@@ -512,7 +512,8 @@ void CIVRuleCfgDoc::EnableRule(
         {
             Iter.ModifyRule(pRuleSettings->Rule);
             pIVCfgMgr->Apply();
-            return;
+            bFound = TRUE;
+            break;
         }
     }
 
@@ -543,24 +544,51 @@ void CIVCfgDoc::UpdateRuleCfgXX(
         void Set(const WPG_Rule& p){if(&p!=&m_p->Rule) m_p->Rule=p;}
         void Set(const ScheduleSettings&p){if(&p!=&m_p->Sch) m_p->Sch=p;}
         void Set(const AlarmOutSettings&p){if(&p!=&m_p->Alarm) m_p->Alarm=p;}
+
+        void ToDevice(int nChannelID, const WPG_Rule& p)
+        {
+            g_IIVDeviceBase2->ModifyRule(nChannelID, p);
+        }
+        void ToDevice(int nChannelID, const ScheduleSettings&p)
+        {
+            g_IIVDeviceBase2->ModifySchedule(
+                nChannelID,
+                (const IV_RuleID&)m_p->Rule.ruleId,
+                p );
+        }
+        void ToDevice(int nChannelID, const AlarmOutSettings&p)
+        {
+            g_IIVDeviceBase2->ModifyAlarmOut(
+                nChannelID,
+                (const IV_RuleID&)m_p->Rule.ruleId,
+                p );
+        }
+    private:
         RuleSettings* m_p;
     };
 
     /**
     @note  2. Update To memory
-    */
-    if ( !IsRef )
+    */ 
+    
+    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap::iterator MapIter = Map.find(pID);
+    CXXX UpdateXXX(MapIter->second);
+    if ( MapIter == Map.end() )
     {
-        RuleSettingMap& Map = m_pDoc[nChannelID];
-        RuleSettingMap::iterator MapIter = Map.find(pID);
-        if ( MapIter == Map.end() )
+        // log
+        assert(false);
+        TRACE("CIVRuleCfgDoc::RemoveRule No Found Iter!\n");
+    }
+    else
+    {
+        if ( !IsRef )
         {
-            // log
-            TRACE("CIVRuleCfgDoc::RemoveRule No Found Iter!\n");
+            UpdateXXX.Set(V);
         }
-        else
+        if ( g_IIVDeviceBase2->IsUse(nChannelID) )
         {
-            CXXX(MapIter->second).Set(V);
+            UpdateXXX.ToDevice(nChannelID, V);
         }
     }
 
@@ -578,7 +606,8 @@ void CIVCfgDoc::UpdateRuleCfgXX(
         {
             (Iter.*fn)(V);
             pIVCfgMgr->Apply();
-            return;
+            bFound = TRUE;
+            break;
         }
     }
 
