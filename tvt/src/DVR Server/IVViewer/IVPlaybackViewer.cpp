@@ -59,34 +59,42 @@ void CIVPlaybackViewer::RefrehPoint(
     ChannelPoint::iterator iter;
     for (int i=0; i<DataQueue->nCount; ++i)
     {
-        // 如果有就利用原来的那个指针，插入数据
-        // 并将数据放入临时的ChannelPoint中
+        /**
+        *@note 在数据队列中找是否有上一个目标等于现在的
+        *      如果有则取去队列指针，删除数据队列的这个节点
+        *  如果没有则new一个
+        */
         const WPG_Target& tar = DataQueue->Tar[i];
-        iter = PointBuf.find(tar.equalId);
-        PointList* pPointList  = NULL;
-        if ( iter != PointBuf.end() )
+        PointInfo* pPointInfo  = NULL;
+        for ( iter = PointBuf.begin();
+              iter!= PointBuf.end();
+              ++iter )
         {
-            pPointList = iter->second;
-            pPointList->push_back(tar.centroid);
-            PointBuf.erase(iter);
-        }
-        else
-        {
-            // 没找到就直接new一个新的内存
-            pPointList = new PointList();
-
-            ++g_PointList;
-            pPointList->push_back(tar.centroid);
+            assert(iter->second);
+            if ( iter->second->nPreviousID == tar.targetId )
+            { 
+                pPointInfo = iter->second;
+                PointBuf.erase(iter);
+                break;
+            }
         }
 
+        if ( pPointInfo == NULL )
+        {
+            pPointInfo = new PointInfo();
+        }
+        pPointInfo->PointQueue.push_back(tar.centroid);
+        pPointInfo->nPreviousID = tar.equalId;
         assert(PointTmpBuf[tar.equalId]==NULL);
-        PointTmpBuf[tar.equalId] = pPointList;
+        PointTmpBuf[tar.targetId] = pPointInfo;
     }
 
-    // 释放那些目标丢失的数据
+    /**
+    *@note 释放那些目标丢失的数据
+    */
     for ( iter = PointBuf.begin();
-        iter!= PointBuf.end();
-        ++iter )
+          iter!= PointBuf.end();
+          ++iter )
     {
         --g_PointList;
         delete iter->second;

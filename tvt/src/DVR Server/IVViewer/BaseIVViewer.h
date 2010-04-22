@@ -54,7 +54,12 @@ public:
 
 protected:
     typedef deque<WPG_PointF> PointList;
-    typedef map<size_t, PointList*> ChannelPoint;
+    struct PointInfo 
+    {
+        PointList PointQueue;
+        size_t nPreviousID;
+    };  
+    typedef map<size_t, PointInfo*> ChannelPoint;
 
     struct ViewerBuf
     {
