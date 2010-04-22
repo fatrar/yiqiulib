@@ -264,7 +264,7 @@ protected:
     void UpdateAlarmOut(
         const AlarmOutSettings& Alarm, 
         HTREEITEM Item,
-        BOOL IsRef = TRUE);
+        BOOL IsRef = TRUE );
 
     void SetCfgToAll(const AlarmOutSettings& Alarm);
 };
@@ -289,7 +289,7 @@ protected:
     void UpdateSchedule(
         const ScheduleSettings& Sch, 
         HTREEITEM Item,
-        BOOL IsRef = TRUE);
+        BOOL IsRef = TRUE );
 
 
     void SetCfgToAll(const ScheduleSettings& Sch);
