@@ -119,12 +119,15 @@ static char* s_pStandardName[] = {"PAL", "NTSC"};
 class CAutoCriticalSection
 {
 public:
-    CAutoCriticalSection(CCriticalSection& sec):m_cs(sec)
+    inline CAutoCriticalSection(CCriticalSection& sec):m_cs(sec)
     {
         //m_cs = sec;
         m_cs.Lock();
     }
-    ~CAutoCriticalSection(){m_cs.Unlock();}
+    inline ~CAutoCriticalSection()
+    {
+        m_cs.Unlock();
+    }
 private:
     CCriticalSection& m_cs;
 };

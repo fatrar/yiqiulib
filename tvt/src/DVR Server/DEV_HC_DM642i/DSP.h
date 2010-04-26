@@ -215,7 +215,6 @@ private:
     // IIVDeviceBase
 public:
     virtual BOOL IsUse(int nChannelID);
-    virtual BOOL Use(int nChannelID, bool bState);
     virtual BOOL IsHaveFreeDevice(void);
     virtual BOOL IsHaveStatisticRule(int nChannelID);
 
@@ -229,6 +228,8 @@ public:
 
     // IIVDeviceBase2
 public:
+    virtual BOOL Use(int nChannelID, bool bState);
+
     /**
     *@note Add a Rule, when Program is Run, Set All Rule To Device which channel is Auto Run Channel
     *@param	nChannelID  Channel ID
@@ -283,12 +284,12 @@ public:
     virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p);
 
     virtual void GetDeviceInfo(
-        int* pnDeviceNum,
-        int* pnChannelNumByDevice );
+        size_t* pnDeviceNum,
+        size_t* pnChannelNumByDevice );
 
     virtual void GetIVDeviceInfo(
-        int* pnIVChannelNumByDevice,
-        int* pnMaxRuleNumByIVChannel );
+        size_t* pnIVChannelNumByDevice,
+        size_t* pnMaxRuleNumByIVChannel );
 
     // IIVDeviceSetter
 public:

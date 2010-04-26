@@ -86,31 +86,23 @@ HTREEITEM InitCameraTree(
     CameraTree.SetItemData(Root, (DWORD_PTR)pInfo);
 
     CString strCameraName;
-    for ( DWORD i = 0; i< CIVCfgDoc::s_nMaxChannel; ++i )
+    for ( size_t i = 0; i< CIVCfgDoc::s_nMaxChannel; ++i )
     {
         strCameraName.Format(Channel_Name, i);
         HTREEITEM CurrentItem = CameraTree.InsertItem(strCameraName, Root);
         
-        pInfo = new ItemAttribute(IV_Tree_Camera, i, NULL);
+        pInfo = new ItemAttribute(IV_Tree_Camera, int(i), NULL);
         CameraTree.SetItemData(CurrentItem, (DWORD_PTR)pInfo);
 
         if ( pCameraTreeInitor )
         {
-            pCameraTreeInitor->OnInitCameraTree(i, CurrentItem);
+            pCameraTreeInitor->OnInitCameraTree(int(i), CurrentItem);
         }
     }
 
     CameraTree.Expand(Root, TVE_EXPAND);
     return Root;
 }
-
-//HTREEITEM GetTreeClickItem(CTreeCtrl& CameraTree)
-//{
-//    CPoint pt; 
-//    ::GetCursorPos(&pt); 
-//    CameraTree.ScreenToClient(&pt); 
-//    return CameraTree.HitTest(pt); 
-//}
 
 void PopUpCameraMemu(
     CTreeCtrl& CameraTree,

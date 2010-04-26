@@ -213,6 +213,7 @@ void CMainDlg::Init()
     *@note 5 Load IV Config And Set To Device
     */
     IVUIFactory::InitIVConfig();
+    IVUIFactory::SetAlarmOutDeviceInfo(TRUE, 4);
 
 
     /**

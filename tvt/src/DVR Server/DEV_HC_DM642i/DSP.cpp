@@ -733,15 +733,7 @@ void CDSP::GetOneChannelPreData(
         TRACE("Data loss videoLoss %d\n", nChannel);
         ReleaseDriverBuffer(pStatus);
         return;
-    }  
-
-    
-    if ( nChannel == 0 )
-    {
-        // CFrameCount<0> aa;
     }
-
-    //PrintFrameRate(nDevice * CHANNEL_PER_DEVICE + nChannel, VIDEO_STREAM_PREVIEW);
 
     if ( !FindPrvBuf(nChannel, nIndex) )
     {

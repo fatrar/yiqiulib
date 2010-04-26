@@ -99,14 +99,15 @@ protected:
         Ctrl_ID_Start = WM_USER,
         Week_Ctrl_X_Offset = 20,
 
-        Week_Ctrl_Between_Off = 20,
+        //Week_Ctrl_Between_Off = 15,
+        Week_Ctrl_Height  = 40,
         Week_Ctrl_Name_ID =IDS_Schu_Week_Sun,
 
         BT_X_Offset = 40,
-        BT_Start_Y = 20,
+        BT_Start_Y = 15,
 
         BT_Width = 40,
-        BT_Height = 20,
+        BT_Height = 25,
     };
 
 private:

@@ -183,7 +183,7 @@ static CPoint* WPGPolygonToPointList(
     int nWidth = WindowRect.Width();
     int nHeight = WindowRect.Height();
     const WPG_PointF (&points)[WPG_MAX_NUM_OF_POINTS] = polygon.points;
-    for ( int i=0; i<nCount; ++i )
+    for ( size_t i=0; i<nCount; ++i )
     {
         pPoint[i].x = int(points[i].x*nWidth);
         pPoint[i].y = int(points[i].y*nHeight);

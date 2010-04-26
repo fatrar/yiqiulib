@@ -59,10 +59,13 @@ public:
     static void Unit();
 
 public:
-    static int s_nDeviceNum;
-    static int s_nMaxChannel;
-    static int s_nIVChannelNumByDevice;
-    static int s_nMaxRuleNumByIVChannel;
+    static size_t s_nDeviceNum;
+    static size_t s_nMaxChannel;
+    static size_t s_nIVChannelNumByDevice;
+    static size_t s_nMaxRuleNumByIVChannel;
+
+    static DWORD s_dwRelayCount;
+    static BOOL s_bTelphone;
 
 protected:
     /**
@@ -104,15 +107,13 @@ protected:
 
 private:
     typedef map<const char*, RuleSettings*> RuleSettingMap;
-    static RuleSettingMap* m_pDoc; 
-    static int* m_pShowState;
-    static BOOL* m_pIsHaveStatistic;
+    static RuleSettingMap* s_pDoc; 
+    static int* s_pShowState;
+    static BOOL* s_pIsHaveStatistic;
 
     typedef deque<IRuleTrigger*> RuleTriggerList;
-    static RuleTriggerList m_RuleTrigger;
-    static set<int> m_UseChannel;
-
-    
+    static RuleTriggerList s_RuleTrigger;
+    static set<int> s_UseChannel;
 
 protected:
     CTreeCtrl m_CameraTree;
@@ -159,6 +160,15 @@ private:
 class CIVRuleCfgDoc :
     protected CIVCfgDoc
 {
+    friend IVUIFactory::UseIV(int, bool);
+protected:
+    /**
+    *@brief XX channel Run or Stop IV
+    *@param nChannelID Channel ID
+    *@param bEnable    Run or Stop
+    */
+    static BOOL Use(int nChannelID, bool bEnable);
+
 protected:
     /**
     *@brief Get Rule
@@ -205,13 +215,6 @@ protected:
     *@param Item        Rule TreeCtrl Item HANDLE
     */
     void EnableRule(HTREEITEM Item, BOOL bEnable =TRUE);
-
-    /**
-    *@brief XX channel Run or Stop IV
-    *@param nChannelID Channel ID
-    *@param bEnable    Run or Stop
-    */
-    void Use(int nChannelID, bool bEnable);
 
     /**
     *@brief Test XX channel is Run or Stop IV

@@ -1,7 +1,8 @@
 #pragma once
 #include "afxwin.h"
-#include "afxcmn.h"
-#include "IVUICommon.h"
+//#include "afxwin.h"
+//#include "afxcmn.h"
+//#include "IVUICommon.h"
 
 
 // CIVAlarmOutDlg dialog
@@ -93,6 +94,7 @@ protected:
     enum
     {
         Alarm_Check_Num = AlarmOutTable_Count,
+        Alarm_Max_Check_Num = 10,
         Alarm_Out_String_Start = IDS_AlarmOut_Record,
 
         Alarm_Out_X_Offset = 10,
@@ -100,8 +102,9 @@ protected:
        
         Alarm_Hold_Select_Y_Offset = 20,
 
-        BT_Height   = 25,
+        BT_Height   = 15,
         Combo_Width = 50,
+        Alarm_Check_Width = 100,
 
         Alarm_Hold_Height  = Alarm_Out_Y_Offset*3+2*BT_Height, 
     };
@@ -119,7 +122,7 @@ private:
 
     // Choose Alarm
     CStatic m_ChooseAlarmGroup;
-    CButton m_AlarmCheck[Alarm_Check_Num];
+    CButton m_AlarmCheck[Alarm_Max_Check_Num];
 
     int m_nCurrentChan;
     HTREEITEM m_ClickItem;
@@ -130,4 +133,9 @@ private:
     //AlarmOutSettings m_TmpAlarmSet;
     AlarmOutSettings m_CopyAlarmSet;
     BOOL m_bIsCopy;
+private:
+    CCheckComboBox m_SensorCombo;
+    //CComboBox m_SensorCombo;
+private:
+    //CComboBox m_SensorCombo;
 };
