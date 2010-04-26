@@ -233,6 +233,11 @@ BOOL DestroySnapShotWnd()
     return g_Wnd.DestroyWindow();
 }
 
+BOOL ShowSnapShotWnd( int nCmdShow )
+{
+    return g_Wnd.ShowWindow(nCmdShow);
+}
+
 }
 
 // End of file

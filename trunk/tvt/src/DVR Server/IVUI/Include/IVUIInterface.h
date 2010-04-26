@@ -69,6 +69,17 @@ namespace IVUIFactory
     *@note 设置IV SDK设置的指针
     */
     IVUI_API void SetIVOpeator(IIVDeviceBase2* p);
+
+    /**
+    *@note 对某个通道使用智能
+    */
+    IVUI_API BOOL UseIV(int nChannelID, bool bEnable);
+
+    /**
+    *@note 设置报警设备信息
+    */
+    IVUI_API void SetAlarmOutDeviceInfo(
+        BOOL bTelphone, DWORD dwRelayCount);
 };
 
 

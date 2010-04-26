@@ -18,10 +18,10 @@
 #include "StdAfx.h"
 #include "IVCfgDoc.h"
 
-int CIVCfgDoc::s_nDeviceNum  = Default_Device_Num;
-int CIVCfgDoc::s_nMaxChannel = Default_Max_Channel;
-int CIVCfgDoc::s_nIVChannelNumByDevice  = Default_IVChannelNum_By_Device;
-int CIVCfgDoc::s_nMaxRuleNumByIVChannel = Default_Max_RuleNum_By_IVChannel;
+size_t CIVCfgDoc::s_nDeviceNum  = Default_Device_Num;
+size_t CIVCfgDoc::s_nMaxChannel = Default_Max_Channel;
+size_t CIVCfgDoc::s_nIVChannelNumByDevice  = Default_IVChannelNum_By_Device;
+size_t CIVCfgDoc::s_nMaxRuleNumByIVChannel = Default_Max_RuleNum_By_IVChannel;
 
 using namespace CameraTreeUtil;
 
@@ -33,21 +33,23 @@ typedef BOOL (IIVDeviceBase2::*DeviceModifyScheduleFn)(int,const IV_RuleID&,cons
 typedef BOOL (IIVDeviceBase2::*DeviceModifyAlarmOutFn)(int,const IV_RuleID&,const AlarmOutSettings&);
 
 
-CIVCfgDoc::RuleSettingMap* CIVCfgDoc::m_pDoc = NULL; 
-int* CIVCfgDoc::m_pShowState = NULL;
-BOOL* CIVCfgDoc::m_pIsHaveStatistic = NULL;
+CIVCfgDoc::RuleSettingMap* CIVCfgDoc::s_pDoc = NULL; 
+int* CIVCfgDoc::s_pShowState = NULL;
+BOOL* CIVCfgDoc::s_pIsHaveStatistic = NULL;
 
+DWORD CIVCfgDoc::s_dwRelayCount = 0;
+BOOL CIVCfgDoc::s_bTelphone = FALSE;
 
-set<int> CIVCfgDoc::m_UseChannel;
-CIVCfgDoc::RuleTriggerList CIVCfgDoc::m_RuleTrigger;
+set<int> CIVCfgDoc::s_UseChannel;
+CIVCfgDoc::RuleTriggerList CIVCfgDoc::s_RuleTrigger;
 
 void CIVCfgDoc::Init()
 {
-    CIVCfgDoc::m_pDoc = new CIVCfgDoc::RuleSettingMap[CIVCfgDoc::s_nMaxChannel];
-    CIVCfgDoc::m_pShowState = new int[CIVCfgDoc::s_nMaxChannel];
-    ZeroMemory(m_pShowState, sizeof(int)*CIVCfgDoc::s_nMaxChannel);
-    CIVCfgDoc::m_pIsHaveStatistic = new BOOL[CIVCfgDoc::s_nMaxChannel];
-    ZeroMemory(m_pIsHaveStatistic, sizeof(BOOL)*CIVCfgDoc::s_nMaxChannel);
+    CIVCfgDoc::s_pDoc = new CIVCfgDoc::RuleSettingMap[CIVCfgDoc::s_nMaxChannel];
+    CIVCfgDoc::s_pShowState = new int[CIVCfgDoc::s_nMaxChannel];
+    ZeroMemory(s_pShowState, sizeof(int)*CIVCfgDoc::s_nMaxChannel);
+    CIVCfgDoc::s_pIsHaveStatistic = new BOOL[CIVCfgDoc::s_nMaxChannel];
+    ZeroMemory(s_pIsHaveStatistic, sizeof(BOOL)*CIVCfgDoc::s_nMaxChannel);
 
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
     IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
@@ -55,16 +57,16 @@ void CIVCfgDoc::Init()
     int szChannel[_MaxAutoChannel] = {0};
     size_t nCount;
     pIVCfgMgr->GetAutoRunChannel(szChannel, nCount);
-    StlHelper::Array2STL(szChannel, nCount, m_UseChannel);
+    StlHelper::Array2STL(szChannel, nCount, s_UseChannel);
 
     for (int i=0; i<s_nMaxChannel; ++i)
     {
-        BOOL bUse = m_UseChannel.find(i) != m_UseChannel.end();
+        BOOL bUse = s_UseChannel.find(i) != s_UseChannel.end();
 
-        RuleSettingMap& Map = m_pDoc[i];
+        RuleSettingMap& Map = s_pDoc[i];
         StlHelper::STLDeleteAssociate(Map); // ·ÀÖ¹µ÷¶à´Î
 
-        int& nShowState = m_pShowState[i];
+        int& nShowState = s_pShowState[i];
         pIVCfgMgr->GetDataShowState(i, nShowState);
         pIVLiveViewerEx->SetDataShowState(i, nShowState);
         
@@ -93,7 +95,7 @@ void CIVCfgDoc::Init()
 
             if ( IVUtil::IsStatisticRule(pRuleSettings->Rule) )
             {
-                m_pIsHaveStatistic[i] = TRUE;
+                s_pIsHaveStatistic[i] = TRUE;
             }
 
             if ( !Iter.GetAlarmOut(pRuleSettings->Alarm) )
@@ -123,30 +125,30 @@ void CIVCfgDoc::Init()
 
 void CIVCfgDoc::Unit()
 {
-    if ( m_pDoc == NULL )
+    if ( s_pDoc == NULL )
     {
         return;
     }
 
     for (int i=0; i<s_nMaxChannel; ++i)
     {
-        RuleSettingMap& Map = m_pDoc[i];
+        RuleSettingMap& Map = s_pDoc[i];
         StlHelper::STLDeleteAssociate(Map);
     }
 
-    safeDeleteArray(CIVCfgDoc::m_pDoc);
-    safeDeleteArray(CIVCfgDoc::m_pShowState);
-    safeDeleteArray(CIVCfgDoc::m_pIsHaveStatistic);
+    safeDeleteArray(CIVCfgDoc::s_pDoc);
+    safeDeleteArray(CIVCfgDoc::s_pShowState);
+    safeDeleteArray(CIVCfgDoc::s_pIsHaveStatistic);
 }
 
 void CIVCfgDoc::RegisterRuleTrigger( IRuleTrigger* pRuleTrigger )
 {
-    m_RuleTrigger.push_back(pRuleTrigger);
+    s_RuleTrigger.push_back(pRuleTrigger);
 }
 
 BOOL CIVCfgDoc::IsIVChannel( int nChannelID )
 {
-    return  m_UseChannel.find(nChannelID) != m_UseChannel.end();
+    return  s_UseChannel.find(nChannelID) != s_UseChannel.end();
 }
 
 
@@ -157,7 +159,7 @@ const IV_RuleID* CIVCfgDoc::GetRuleID(
     const char* pID = (const char*)GetUserDataFromItemData(pItemData);
     int nChannelID = GetChannelFromItemData(pItemData);
 
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettings* pRuleSettings = Map[pID];
     ASSERT(pRuleSettings);
     return (IV_RuleID*)pRuleSettings->Rule.ruleId;
@@ -167,7 +169,7 @@ void CIVCfgDoc::OnInitCameraTree(
     int nChannelID, 
     HTREEITEM Item )
 {
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettingMap::iterator iter;
     for ( iter = Map.begin(); 
           iter!= Map.end();
@@ -219,7 +221,7 @@ T* CIVCfgDoc::GetIVRuleCfgXX(
     /**
     *@note  2. Get XX To memory
     */
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettingMap::iterator MapIter = Map.find(pID);
     if ( MapIter == Map.end() )
     {
@@ -263,20 +265,20 @@ void CIVCfgDoc::SetCfgToAllXX(const T& V)
     *@note  1. Set Cfg To XML and Memory
     */
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
-    for (int i=0; i<s_nMaxChannel; ++i)
+    for (size_t i=0; i<s_nMaxChannel; ++i)
     {
-        IIVCfgMgr::IVVistor IVIter = pIVCfgMgr->Begin(i);
+        IIVCfgMgr::IVVistor IVIter = pIVCfgMgr->Begin(int(i));
         for ( ; IVIter != pIVCfgMgr->End();
             IVIter=IVIter.Next() )
         {
             (IVIter.*fn1)(V);
         }
 
-        RuleSettingMap& Map = m_pDoc[i];
+        RuleSettingMap& Map = s_pDoc[i];
         RuleSettingMap::iterator iter;
         for ( iter = Map.begin();
-            iter!= Map.end();
-            ++iter )
+              iter!= Map.end();
+              ++iter )
         {
             RuleSettings* pRuleSettings = iter->second;
             pRuleSettings->*P = V;
@@ -288,12 +290,12 @@ void CIVCfgDoc::SetCfgToAllXX(const T& V)
     *@note 2. Update Device Cfg is Channel If Run IV
     */
     set<int>::iterator ChIter;
-    for ( ChIter = m_UseChannel.begin();
-          ChIter!= m_UseChannel.end();
+    for ( ChIter = s_UseChannel.begin();
+          ChIter!= s_UseChannel.end();
           ++ChIter )
     {
         int nChannelID = *ChIter;
-        RuleSettingMap& Map = m_pDoc[nChannelID];
+        RuleSettingMap& Map = s_pDoc[nChannelID];
         RuleSettingMap::iterator iter;
         for ( iter = Map.begin();
               iter!= Map.end();
@@ -350,11 +352,11 @@ void CIVRuleCfgDoc::AddRule(
     /**
     @note  2. Save To memory
     */
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     Map[pID] = new RuleSettings(Rule);
     if ( IVUtil::IsStatisticRule(Rule) )
     {
-        m_pIsHaveStatistic[nChannelID] = TRUE;
+        s_pIsHaveStatistic[nChannelID] = TRUE;
     }
 
     /**
@@ -397,7 +399,7 @@ void CIVRuleCfgDoc::RemoveRule(
     /**
     @note  2. Remove To memory And If Channel Is Use IV, notify Device
     */
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettingMap::iterator MapIter = Map.find(pID);
     if ( MapIter == Map.end() )
     {
@@ -409,7 +411,7 @@ void CIVRuleCfgDoc::RemoveRule(
         RuleSettings* pRuleSettings = MapIter->second;
         if ( IVUtil::IsStatisticRule(pRuleSettings->Rule) )
         {
-            m_pIsHaveStatistic[nChannelID] = FALSE;
+            s_pIsHaveStatistic[nChannelID] = FALSE;
         }
 
         if ( IsIVChannel(nChannelID) )
@@ -470,7 +472,7 @@ void CIVRuleCfgDoc::EnableRule(
     /**
     @note  2. Update To memory And If Channel Is Use IV, notify Device
     */
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettingMap::iterator MapIter = Map.find(pID);
     RuleSettings* pRuleSettings = NULL;
     if ( MapIter == Map.end() )
@@ -571,7 +573,7 @@ void CIVCfgDoc::UpdateRuleCfgXX(
     @note  2. Update To memory
     */ 
     
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettingMap::iterator MapIter = Map.find(pID);
     CXXX UpdateXXX(MapIter->second);
     if ( MapIter == Map.end() )
@@ -636,18 +638,24 @@ void CIVRuleCfgDoc::DoTriggerTFun(
     CString& strRuleName )
 {
     CIVCfgDoc::RuleTriggerList::iterator iter;
-    for ( iter = m_RuleTrigger.begin();
-         iter!= m_RuleTrigger.end();
-         ++iter )
+    for ( iter = s_RuleTrigger.begin();
+          iter!= s_RuleTrigger.end();
+          ++iter )
     {
         (*iter->*T)(nChannelID, pIdentityID, strRuleName);
     }
 }
 
-void CIVRuleCfgDoc::Use( 
+BOOL CIVRuleCfgDoc::Use( 
     int nChannelID, 
     bool bEnable )
 {
+    if ( s_pDoc == NULL ||
+         g_IIVDeviceBase2 == NULL )
+    {
+        return FALSE;
+    }
+
     /**
     *@note 1. Set is Enable to Device
     */
@@ -663,9 +671,9 @@ void CIVRuleCfgDoc::Use(
         *@note if Enable, Add That channel All Rule To Device and 
         *           set to live Viewer and update m_UseChannel
         */
-        m_UseChannel.insert(nChannelID);
+        s_UseChannel.insert(nChannelID);
 
-        RuleSettingMap& Map = m_pDoc[nChannelID];
+        RuleSettingMap& Map = s_pDoc[nChannelID];
         RuleSettingMap::iterator iter = Map.begin();
         for ( ; iter != Map.end(); ++iter)
         {
@@ -688,33 +696,35 @@ void CIVRuleCfgDoc::Use(
         */
         pIVLiveViewerEx->ClearAllRule(nChannelID);
 
-        m_UseChannel.erase(nChannelID);
+        s_UseChannel.erase(nChannelID);
     }
 
     /**
     *@note 3. update To XML
     */
     int szChannel[_MaxAutoChannel] = {0};
-    StlHelper::STL2Array(m_UseChannel, szChannel);
+    StlHelper::STL2Array(s_UseChannel, szChannel);
 
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
-    pIVCfgMgr->SetAutoRunChannel(szChannel, m_UseChannel.size());
+    pIVCfgMgr->SetAutoRunChannel(szChannel, s_UseChannel.size());
     pIVCfgMgr->Apply();
+
+    return TRUE;
 }
 
 bool CIVRuleCfgDoc::IsUse( int nChannelID )
 {
-    return m_UseChannel.find(nChannelID) != m_UseChannel.end();
+    return s_UseChannel.find(nChannelID) != s_UseChannel.end();
 }
 
 int CIVRuleCfgDoc::GetShowState(int nChannelID)
 {
-    return m_pShowState[nChannelID];
+    return s_pShowState[nChannelID];
 }
 
 void CIVRuleCfgDoc::SetShowState(int nChannelID, int nState)
 {
-    m_pShowState[nChannelID] = nState;
+    s_pShowState[nChannelID] = nState;
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
     pIVCfgMgr->SetDataShowState(nChannelID, nState);
     pIVCfgMgr->Apply();
@@ -732,7 +742,7 @@ BOOL CIVRuleCfgDoc::IsRuleEnbale( HTREEITEM Item )
     /**
     *@note  2. Get XX To memory
     */
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettingMap::iterator MapIter = Map.find(pID);
     if ( MapIter == Map.end() )
     {
@@ -749,7 +759,7 @@ void CIVRuleCfgDoc::EnableAllRule( int nChannelID, bool bEnable )
     @note  1. Update To Memory
     *         if Use IV, update to Device
     */
-    RuleSettingMap& Map = m_pDoc[nChannelID];
+    RuleSettingMap& Map = s_pDoc[nChannelID];
     RuleSettingMap::iterator MapIter;
     bool bIsUseIV = IsUse(nChannelID);
     if ( bIsUseIV )
@@ -797,22 +807,22 @@ BOOL CIVRuleCfgDoc::IsCanAddRule(
     int nChannelID,
     IVRuleType RuleType )
 {
-    if ( m_pIsHaveStatistic[nChannelID] )
+    if ( s_pIsHaveStatistic[nChannelID] )
     {
         if ( RuleType == IV_Statistic )
         {
             return FALSE;
         }
-        return s_nMaxRuleNumByIVChannel-1 > m_pDoc[nChannelID].size();
+        return s_nMaxRuleNumByIVChannel-1 > s_pDoc[nChannelID].size();
     }
     else
     {
         if ( RuleType == IV_Statistic )
         {
-            return s_nMaxRuleNumByIVChannel-1 > m_pDoc[nChannelID].size();
+            return s_nMaxRuleNumByIVChannel-1 > s_pDoc[nChannelID].size();
         }
 
-        return s_nMaxRuleNumByIVChannel > m_pDoc[nChannelID].size();
+        return s_nMaxRuleNumByIVChannel > s_pDoc[nChannelID].size();
     }
 }
 

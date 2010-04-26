@@ -92,7 +92,7 @@ protected:
     enum
     {
         X_Offset = 30,
-        Y_Offset = 30,
+        Y_Offset = 10,
         PlayerWnd_ID = 0x8100,
 
         Invaild_ChannelID = -1,

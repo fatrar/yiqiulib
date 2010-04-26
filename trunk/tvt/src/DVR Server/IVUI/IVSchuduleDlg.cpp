@@ -201,21 +201,24 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
     int nSchCtrlWidth = nWidth-Week_Ctrl_X_Offset-CameraCtrl_Width;
 
     int nMed = nWidth - nSchCtrlWidth/2;
-    m_AddCheck.MoveWindow(nMed-BT_X_Offset-BT_Width, BT_Start_Y, BT_Width, BT_Height);
-    m_EraseCheck.MoveWindow(nMed+BT_X_Offset,BT_Start_Y,BT_Width, BT_Height);
+    m_AddCheck.MoveWindow(
+        nMed-BT_X_Offset-BT_Width, BT_Start_Y, BT_Width, BT_Height);
+    m_EraseCheck.MoveWindow(
+        nMed+BT_X_Offset,BT_Start_Y,BT_Width, BT_Height);
     m_AddCheck.SetCheck(BST_CHECKED);
 
-    int nAllSchHeight = nHeight-(BT_Start_Y*4+ 2*BT_Height);
-    int nSchCtrlHeight = (nAllSchHeight-(Week_Day-1)*Week_Ctrl_Between_Off)/Week_Day;
+    int nAllSchHeight = nHeight-(BT_Start_Y*4+ BT_Height+ApplyBT_Height);
+    int nWeekCtrlYOffset = (nAllSchHeight-Week_Day*Week_Ctrl_Height)/(Week_Day-1);
+    //int nSchCtrlHeight = (nAllSchHeight-(Week_Day-1)*Week_Ctrl_Between_Off)/Week_Day;
     
     int nSchCtrlRight = nWidth-Week_Ctrl_X_Offset;
-    int nYMove = Week_Ctrl_Between_Off+nSchCtrlHeight;
+    int nYMove = nWeekCtrlYOffset+Week_Ctrl_Height;
     CString strName;
     CRect TmpRect(
         CameraCtrl_Width+Week_Ctrl_X_Offset, 
         BT_Start_Y*2+ BT_Height,
         nSchCtrlRight,
-        BT_Start_Y*2+ BT_Height+nSchCtrlHeight );
+        BT_Start_Y*2+ BT_Height+Week_Ctrl_Height );
     for ( int i = 0; i< Week_Day; ++i )
     {
         m_ScheduleCtrl[i].Create(

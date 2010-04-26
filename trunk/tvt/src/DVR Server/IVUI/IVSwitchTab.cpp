@@ -8,10 +8,10 @@
 enum
 {
     // Tab Button
-    BT_Width = 80,
-    BT_Height = 40,
+    BT_Width = 60,
+    BT_Height = 30,
     BT_Start_X = 60,
-    BT_Start_Y = 40,
+    BT_Start_Y = 20,
 
     // Tab Static Group
     IV_TAB_Group_X = 20,
@@ -21,6 +21,7 @@ enum
     // Function Dialog
     FunDlg_Start_X = 10,
     FunDlg_Start_Y = IV_TAB_Group_Y+IV_TAB_Height+5,
+    FunDlg_Offset_Y = 10,
    /* FunDlg_Width,
     FunDlg_Height,*/
 
@@ -50,6 +51,7 @@ void CIVSwitchTab::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_ALARMOUT, m_TabBt[1]);
     DDX_Control(pDX, IDC_SCHUDULE, m_TabBt[2]);
     DDX_Control(pDX, IDC_IV_Tab_Group, m_IVTabGroup);
+    DDX_Control(pDX, IDC_IV_Tab_Func, m_FuncGroup);
 }
 
 
@@ -69,11 +71,14 @@ BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
     ShowWindow(SW_HIDE);
     MoveWindow(rect);
 
+    // Òþ²Øtab Group
     m_IVTabGroup.MoveWindow(
         IV_TAB_Group_X,
         IV_TAB_Group_Y,
         rect.Width()-2*IV_TAB_Group_X,
         IV_TAB_Height );
+    m_IVTabGroup.ShowWindow(SW_HIDE);
+
     
     int nDistanceBt = (rect.Width() - 2*BT_Start_X-BT_Width)/(TAB_BT_NUM-1);	
     m_TabBt[0].SetCheck(BST_CHECKED);
@@ -87,8 +92,8 @@ BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
     CRect FuncRect(
         FunDlg_Start_X, 
         FunDlg_Start_Y, 
-        rect.right-FunDlg_Start_X,
-        rect.bottom-FunDlg_Start_X);
+        rect.Width()-FunDlg_Start_X,
+        rect.Height()-FunDlg_Offset_Y);
     m_IVSchuduleDlg.Init(this, FuncRect);
     m_IVSchuduleDlg.ShowWindow(SW_HIDE);
 
@@ -102,6 +107,13 @@ BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
     m_IVRuleDlg.ShowWindow(SW_SHOW);
     //m_IVRuleDlg.MoveWindow(&FuncRect);
 
+    // ÔÝÊ±²»Òª
+    //FuncRect.left-=5;
+    //FuncRect.right+=5;
+    //FuncRect.top-=5;
+    //FuncRect.bottom+=5;
+    //m_FuncGroup.MoveWindow(FuncRect);
+    m_FuncGroup.ShowWindow(SW_HIDE);
     return TRUE;
 }
 
@@ -157,6 +169,12 @@ void CIVSwitchTab::OnClose()
     CDialog::OnClose();
 }
 
+void CIVSwitchTab::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+    CDialog::OnShowWindow(bShow, nStatus);
+    m_IVRuleDlg.OnShowWindow(bShow);
+}
+
 
 CIVSwitchTab* g_pIVSwitchTab = NULL;
 IIVDeviceBase2* g_IIVDeviceBase2 =NULL;
@@ -200,7 +218,7 @@ void SetIVOpeator( IIVDeviceBase2* p )
 {
     g_IIVDeviceBase2 = p;
 
-    int nChannelNumByDevice;
+    size_t nChannelNumByDevice;
     p->GetDeviceInfo(
         &CIVCfgDoc::s_nDeviceNum,
         &nChannelNumByDevice);
@@ -210,11 +228,17 @@ void SetIVOpeator( IIVDeviceBase2* p )
         &CIVCfgDoc::s_nMaxRuleNumByIVChannel);
 }
 
-}
-
-
-void CIVSwitchTab::OnShowWindow(BOOL bShow, UINT nStatus)
+BOOL UseIV(int nChannelID, bool bEnable)
 {
-    CDialog::OnShowWindow(bShow, nStatus);
-    m_IVRuleDlg.OnShowWindow(bShow);
+    return CIVRuleCfgDoc::Use(nChannelID, bEnable);
 }
+
+void SetAlarmOutDeviceInfo(
+    BOOL bTelphone, DWORD dwRelayCount)
+{
+    CIVCfgDoc::s_dwRelayCount = dwRelayCount;
+    CIVCfgDoc::s_bTelphone = bTelphone;
+}
+
+}
+

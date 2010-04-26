@@ -54,11 +54,7 @@ CDeviceSDK::CDeviceSDK()
 
 CDeviceSDK::~CDeviceSDK()
 {
-    if ( m_pDSP )
-    {
-        delete m_pDSP;
-        m_pDSP = NULL;
-    }
+    safeDelete(m_pDSP);
 }
 
 /******************************************************************************
@@ -110,19 +106,11 @@ DWORD CDeviceSDK::GetCardOpt(DWORD dwOptType)
 		return 4 * m_pDSP->GetDevNum();
 	case DVRCARDOPT_ALARMIN_NUM:
     {
-        if (m_bAlarmCard)
-		{
-			return 16;
-		}
-        return 0;
+        return m_bAlarmCard ? 16:0;
     }
 	case DVRCARDOPT_ALARMOUT_NUM:
 	{
-        if (m_bAlarmCard)
-        {
-	        return 5;
-        }
-	    return 0;
+        return m_bAlarmCard ? 5:0;
     }
 	case DVRCARDOPT_STREAM_NUM:
 		return 5;	//<REC-NET>现场流+录像流+网络流+手机流+网络实时流
@@ -222,11 +210,6 @@ BOOL CDeviceSDK::GetAllChannelStatus(DWORD StatusType,DWORD StatusLen,DWORD	pChS
 
 BOOL CDeviceSDK::SetChannelStatus(DWORD StatusType, DWORD index,long Status)
 {
-    //if ( IDNO == MessageBox(NULL, _T("Is SetChannelStatus?"), _T("Info"), MB_YESNO))
-    //{
-    //    return TRUE;
-    //}
-
 	ERROR_RETURN_FALSE(!m_bInitialized);
 
 	if (index >= 4 * m_pDSP->GetDevNum())

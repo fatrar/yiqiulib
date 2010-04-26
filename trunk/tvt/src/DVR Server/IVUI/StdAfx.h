@@ -74,6 +74,8 @@ using namespace OCI;
 #define TRACE XTRACE
 #include "XTrace.h"
 
+#include "CheckComboBox.h"
+
 #include "OtherUtil.h"
 
 #include "IVUICommon.h"

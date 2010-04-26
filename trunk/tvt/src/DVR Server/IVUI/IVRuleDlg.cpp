@@ -93,7 +93,6 @@ void CIVRuleDlg::OnPaint()
     m_Player.ShowBack();
 }
 
-
 void CIVRuleDlg::OnNMRclickRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
     *pResult = 0;

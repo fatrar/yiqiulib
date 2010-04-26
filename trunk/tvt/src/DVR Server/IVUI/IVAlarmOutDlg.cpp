@@ -59,7 +59,7 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_ALARM_HOLD_TIME, m_AlarmOutHoldTimeComb);
-    for (int i=0;i<Alarm_Check_Num;++i)
+    for (int i=0;i<Alarm_Max_Check_Num;++i)
     {
         DDX_Control(pDX, IDC_CHECK1+i, m_AlarmCheck[i]);
     }
@@ -70,6 +70,7 @@ void CIVAlarmOutDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_AlarmHold_Group, m_AlarmHoldGroup);
     DDX_Control(pDX, IDC_Choose_Alarm_Group, m_ChooseAlarmGroup);
     DDX_Control(pDX, IDC_Apply_BT, m_ApplyBT);
+    DDX_Control(pDX, IDC_Alarm_Sensor_Combo, m_SensorCombo);
 }
 
 void CIVAlarmOutDlg::OnDestroy()
@@ -171,6 +172,10 @@ BOOL CIVAlarmOutDlg::OnInitDialog()
         m_AlarmCheck[i].SetWindowText(strTmp);
         m_AlarmCheck[i].SetCheck(BST_CHECKED);
     }
+    for (int i=Alarm_Check_Num; i<Alarm_Max_Check_Num;++i)
+    {
+        m_AlarmCheck[i].ShowWindow(SW_HIDE);
+    }
     
     strTmp.LoadString(g_hmodule, IDS_Apply);
     m_ApplyBT.SetWindowText(strTmp);
@@ -215,7 +220,7 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
         nWidth-2*Alarm_Out_X_Offset-Combo_Width, 
         nAlarmOutGroupY+2*Alarm_Out_Y_Offset+BT_Height,
         Combo_Width,
-        10*BT_Height);
+        /*10**/BT_Height);
 
     // Init Alarm Group
     int nChooseAlarmGroupY = Alarm_Out_Y_Offset*2 + Alarm_Hold_Height;
@@ -226,7 +231,7 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
         nAlarmOutGroupWidth,
         nChooseAlarmGroupHeight );
 
-    int nOutBtYOffset = (nChooseAlarmGroupHeight-6*Alarm_Out_Y_Offset)/4;
+    int nOutBtYOffset = (nChooseAlarmGroupHeight-6*Alarm_Out_Y_Offset)/3;
     int nOutBtYStart = nChooseAlarmGroupY+2*Alarm_Out_Y_Offset;
     int nOutWidth = (nAlarmOutGroupWidth-6*Alarm_Out_X_Offset)/2;
     int nOutButtonX = nAllButtonX+2*Alarm_Out_X_Offset;
@@ -235,15 +240,42 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
         m_AlarmCheck[i*2].MoveWindow(
             nOutButtonX,
             nOutBtYStart+i*nOutBtYOffset,
-            nOutWidth,
+            Alarm_Check_Width,
             BT_Height );
         m_AlarmCheck[i*2+1].MoveWindow(
             nOutButtonX + nOutWidth,
             nOutBtYStart+i*nOutBtYOffset,
-            nOutWidth,
+            Alarm_Check_Width,
             BT_Height );
+        if ( i*2+1 == IDS_AlarmOut_Relay-Alarm_Out_String_Start )
+        {
+            m_SensorCombo.MoveWindow(
+                nOutButtonX + nOutWidth + Alarm_Check_Width+Alarm_Out_X_Offset,
+                nOutBtYStart+i*nOutBtYOffset,
+                Combo_Width*2,
+                BT_Height);
+        }
     }
 
+    if ( !s_bTelphone )
+    {
+        m_AlarmCheck[IDS_AlarmOut_TelphoneCall-Alarm_Out_String_Start].EnableWindow(FALSE);
+    }
+    if ( s_dwRelayCount == 0 )
+    {
+        m_AlarmCheck[IDS_AlarmOut_Relay-Alarm_Out_String_Start].EnableWindow(FALSE);
+        m_SensorCombo.EnableWindow(FALSE);
+    }
+    else
+    {
+        CString strTmp;
+        for (int i=0; i<s_dwRelayCount; ++i)
+        {
+            strTmp.Format(_T("%d"), i);
+            m_SensorCombo.InsertString(i, strTmp);
+        }
+    }
+    
     m_ApplyBT.MoveWindow(
         nWidth-ApplyBT_X_ROffset,
         nHeight-ApplyBT_Y_ROffset,
@@ -339,6 +371,20 @@ void CIVAlarmOutDlg::Enable( BOOL bEnable /*= TRUE*/ )
         m_AlarmCheck[i].EnableWindow(bEnable);
     }
     m_ApplyBT.EnableWindow(bEnable);
+    m_SensorCombo.EnableWindow(bEnable);
+
+    if ( bEnable )
+    {
+        if ( !s_bTelphone )
+        {
+            m_AlarmCheck[IDS_AlarmOut_TelphoneCall-Alarm_Out_String_Start].EnableWindow(FALSE);
+        }
+        if ( s_dwRelayCount == 0 )
+        {
+            m_AlarmCheck[IDS_AlarmOut_Relay-Alarm_Out_String_Start].EnableWindow(FALSE);
+            m_SensorCombo.EnableWindow(FALSE);
+        }
+    }
 }
 
 void CIVAlarmOutDlg::UpdateAlarm()
@@ -365,12 +411,23 @@ void CIVAlarmOutDlg::CollectUserSet(AlarmOutSettings& TmpAlarmSet)
     * 首先通过右移可用Alarm的数目,再左移回来m，从而将需要设置的位清除为0
     * 然后在for循环中对对应位赋值
     */
-    WORD& nTable = TmpAlarmSet.table.nTable;
+    DWORD& nTable = TmpAlarmSet.table.nTable;
     nTable >>= Alarm_Check_Num;
     nTable <<= Alarm_Check_Num;
     for (int i=0; i<Alarm_Check_Num; ++i)
     {
         nTable |= (m_AlarmCheck[i].GetCheck() << i);
+    }
+
+    if ( m_AlarmCheck[IDS_AlarmOut_TelphoneCall-Alarm_Out_String_Start].GetCheck() == BST_CHECKED )
+    {
+        unsigned short& nRelay = TmpAlarmSet.table.Table.nRelay;
+        nRelay = 0;
+        int nCount = m_SensorCombo.GetCount();
+        for ( int i = 0; i<nCount; ++i )
+        {
+            nRelay |= (m_SensorCombo.GetCheck(i) << i);
+        }
     }
 }
 
@@ -412,10 +469,10 @@ void CIVAlarmOutDlg::UpdateUI( const AlarmOutSettings& Alarm )
     *@note 2. Update Alarm check Group
     */
     //TRACE("Start Alarm Table \n");
-    WORD nTable = Alarm.table.nTable;
+    DWORD nTable = Alarm.table.nTable;
     for (int i = 0; i < Alarm_Check_Num; ++i)
     {
-        register WORD nVlaue = ( nTable & (1<<i) ) >> i;
+        register DWORD nVlaue = ( nTable & (1<<i) ) >> i;
         //TRACE("%d", nVlaue);
         m_AlarmCheck[i].SetCheck( nVlaue );
     }

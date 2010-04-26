@@ -313,15 +313,18 @@ BOOL CDSP::ModifyXX(
     _Rule_Conifg_Check(nDeviceID);
 
     RuleSettingMap& RuleSettings = m_RuleCfgMap[nDeviceID];
-    AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
-    RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
-    if ( iter == RuleSettings.end() )
+    
     {
-        return FALSE;
-    }
+        AutoLockAndUnlock(m_CfgMapCS[nDeviceID]);
+        RuleSettingMap::iterator iter = RuleSettings.find(RuleID);
+        if ( iter == RuleSettings.end() )
+        {
+            return FALSE;
+        }
 
-    CurrentRuleSetting* pCurrentSet = iter->second;
-    *pCurrentSet.*t = V;
+        CurrentRuleSetting* pCurrentSet = iter->second;
+        *pCurrentSet.*t = V;
+    }
     return TRUE;
 }
 
@@ -349,17 +352,21 @@ void CDSP::RegisterLiveDataCallBack(
     int nChannelID,
     IVideoSend* pVideoSend )
 {
-    AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
-    m_szVideoSend[nChannelID] = pVideoSend;
+    {   
+        AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
+        m_szVideoSend[nChannelID] = pVideoSend;
+    }
 }
 
 void CDSP::UnRegisterLiveDataCallBack(
     int nChannelID,
     IVideoSend* pVideoSend )
 {
-    AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
-    ASSERT(pVideoSend == m_szVideoSend[nChannelID]);
-    m_szVideoSend[nChannelID] = NULL;
+    {
+        AutoLockAndUnlock(m_VideoSendCS[nChannelID]);
+        ASSERT(pVideoSend == m_szVideoSend[nChannelID]);
+        m_szVideoSend[nChannelID] = NULL;
+    } 
 }
 
 void CDSP::ReleaseLiveBuf( FRAMEBUFSTRUCT* p )
@@ -372,8 +379,8 @@ void CDSP::ReleaseLiveBuf( FRAMEBUFSTRUCT* p )
 }
 
 void CDSP::GetDeviceInfo(
-    int* pnDeviceNum,
-    int* pnChannelNumByDevice )
+    size_t* pnDeviceNum,
+    size_t* pnChannelNumByDevice )
 {
     if ( pnDeviceNum )
     {
@@ -386,8 +393,8 @@ void CDSP::GetDeviceInfo(
 }
 
 void CDSP::GetIVDeviceInfo(
-    int* pnIVChannelNumByDevice,
-    int* pnMaxRuleNumByIVChannel )
+    size_t* pnIVChannelNumByDevice,
+    size_t* pnMaxRuleNumByIVChannel )
 {
     if ( pnIVChannelNumByDevice )
     {

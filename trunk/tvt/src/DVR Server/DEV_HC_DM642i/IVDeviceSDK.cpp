@@ -38,10 +38,11 @@ bool IsInScheduleSettings(
         }
         else if (nTestMin < DaySet.starttime[i] )
         {
-            return false;
+            break;
         }
     }
 
+    TRACE("Schedule Pass Alarm!\n");
     return false;
 }
 
@@ -213,7 +214,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
         AutoLockAndUnlock(m_SimulationCS);
         if (m_pIVAlarmCallBack && nChannelID==m_SimulationChanID)
         {
-            for ( int i=0 ;i<dwNumberOfEvents;
+            for ( unsigned int i=0 ;i<dwNumberOfEvents;
                   ++i, ++pFirstEvent )
             {
                 const AlarmOutTable* pTable = NULL;
@@ -239,7 +240,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     }
    
     // 如果没有不是模拟通道，就按正常逻辑
-    for ( int i=0 ;i<dwNumberOfEvents;
+    for ( unsigned int i=0 ;i<dwNumberOfEvents;
           ++i, ++pFirstEvent )
     {
         const AlarmOutTable* pTable = NULL;
@@ -306,6 +307,7 @@ bool CDSP::IsNeedAlarmOut(
     CurrentRuleSetting* pCurrentSet = iter->second;
     if ( *pTestTime - pCurrentSet->nLastHoldTime < pCurrentSet->Alarm.nHoldTime*10 )
     {
+        TRACE("Alarm Hold Pass Alarm!\n");
         return false;
     }
 
@@ -356,7 +358,7 @@ void CDSP::DoSnapShot(
         return;
     }
 
-    for (int i = 0; i<pEvent->numOfSlices; ++i)
+    for (unsigned int i = 0; i<pEvent->numOfSlices; ++i)
     {   
         const WPG_EventSlice& slices = pEvent->slices[i];
 
@@ -392,12 +394,12 @@ void CDSP::PassSnapShot(
     /**
     *@note 偏移截图位置
     */
-    for (int i = 0; i<pEvent->numOfSlices; ++i)
+    for (unsigned int i = 0; i<pEvent->numOfSlices; ++i)
     {   
         const WPG_EventSlice& slices = pEvent->slices[i];
-        pFirstPic += slices.snapshotLength;      
+        pFirstPic += slices.snapshotLength;
     }
-}
+} 
 
 
 // {
@@ -690,7 +692,6 @@ DWORD WINAPI CDSP::OnThreadSmooth( PVOID pParam )
 
 void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
 {
-    bool bflag = true;
     m_VideoSendCS[nChannel].Lock();
     if ( m_szVideoSend[nChannel] )
     {
@@ -698,17 +699,15 @@ void CDSP::VideoSend(int nChannel, FRAMEBUFSTRUCT* p)
         {
             ReleaseLiveBuf(p);
         }
-        bflag = false;
     }
-    m_VideoSendCS[nChannel].Unlock();
-
-    if ( bflag )
+    else
     {
         if ( !m_pVideoCallBack(p) )
         {
             ReleaseLiveBuf(p);
         }
     }
+    m_VideoSendCS[nChannel].Unlock();
 }
 
 void CDSP::FreeLiveList(list<FRAMEBUFSTRUCT*>& LiveList)

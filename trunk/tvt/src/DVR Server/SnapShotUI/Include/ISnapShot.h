@@ -65,6 +65,12 @@ SNAPSHOTUI_API ISnapShotSender* CreateSnapShotWnd(
 */
 SNAPSHOTUI_API BOOL DestroySnapShotWnd();
 
+/**
+*@note 显示还是隐藏窗口
+*@nCmdShow 等同于ShowWinodw的参数，ex SW_SHOW
+*/
+SNAPSHOTUI_API BOOL ShowSnapShotWnd(int nCmdShow);
+
 };
 
 

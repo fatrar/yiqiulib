@@ -40,11 +40,6 @@ struct IIVDeviceBase
     virtual BOOL IsUse(int nChannelID)=0;
 
     /**
-    *@note 对这个通道使用智能
-    */ 
-    virtual BOOL Use(int nChannelID, bool bState)=0;
-
-    /**
     *@note 是否还有空闲的智能设备
     */ 
     virtual BOOL IsHaveFreeDevice(void)=0;
@@ -72,7 +67,7 @@ enum
 
     Max_Rule_Name = 20,
 
-    AlarmOutTable_Count = 10,
+    AlarmOutTable_Count = 8,
 
     Max_SnapShot_Pic_Size = 128 * 1024,  // 一张JPG图的最大大小
     Max_SnapShot_Pic_Count = 8,         // 一次最多几张图
@@ -103,28 +98,57 @@ struct ScheduleSettings
 static const ScheduleSettings g_DefaultScheduleSettings;
 
 // Alarm 回调输出数据，下面bool代表对应项是否输出
+//union AlarmOutTable
+//{
+//    AlarmOutTable():nTable(0xffff){}
+//    struct {
+//        bool AlarmRecord:1;
+//        bool FullScreen:1;
+//        bool Relay:1;
+//        bool Sensor:1;
+//        bool EMail:1;
+//        bool EMap:1;
+//        bool Buzzer:1; 
+//        bool SnapShot:1;
+//        bool PlaySound:1;
+//        bool TelphoneCall:1;   
+//        bool resvr1:1;
+//        bool resvr2:1;
+//        bool resvr3:1;
+//        bool resvr4:1;
+//        bool resvr5:1;
+//        bool resvr6:1;
+//    } Table;
+//    unsigned short nTable;
+//};
+
+// Alarm 回调输出数据，下面bool代表对应项是否输出
 union AlarmOutTable
 {
-    AlarmOutTable():nTable(0xffff){}
+    AlarmOutTable():nTable(0xffffffff){}
     struct {
         bool AlarmRecord:1;
-        bool FullScreen:1;
-        bool Relay:1;
-        bool Sensor:1;
+        bool FullScreen:1; 
         bool EMail:1;
         bool EMap:1;
         bool Buzzer:1; 
         bool SnapShot:1;
+        bool TelphoneCall:1;
+        bool Relay:1;
+        bool Sensor:1;
         bool PlaySound:1;
-        bool TelphoneCall:1;   
         bool resvr1:1;
         bool resvr2:1;
         bool resvr3:1;
         bool resvr4:1;
         bool resvr5:1;
         bool resvr6:1;
+
+        // 最大支持16个Relay，以二机制位表示第几个Relay，
+        // ex： 0x1  代表只是输出第一个Relay
+        unsigned short nRelay; 
     } Table;
-    unsigned short nTable;
+    DWORD nTable;
 };
 
 struct AlarmOutSettings
@@ -324,11 +348,6 @@ struct IIVSimulationAlarmCallBack :
         IVRuleType type,
         int nChannelID,
         const FILETIME* pTime)=0;
-
-    ///**
-    //*@note i=0  dir A, i=1 dir B
-    //*/
-    //virtual void OnStatisticAdd(int i)=0;
 };
 
 struct IIVSimulation
@@ -345,6 +364,11 @@ struct IIVDeviceBase2 :
     public IIVDeviceBase,
     public IIVSimulation
 {
+    /**
+    *@note 对这个通道使用智能
+    */ 
+    virtual BOOL Use(int nChannelID, bool bState)=0;
+
     virtual BOOL Add(
         int nChannelID,
         const WPG_Rule& Rule,
@@ -385,12 +409,12 @@ struct IIVDeviceBase2 :
     virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p)=0;
 
     virtual void GetDeviceInfo(
-        int* pnDeviceNum,
-        int* pnChannelNumByDevice )=0;
+        size_t* pnDeviceNum,
+        size_t* pnChannelNumByDevice )=0;
 
     virtual void GetIVDeviceInfo(
-        int* pnIVChannelNumByDevice,
-        int* pnMaxRuleNumByIVChannel )=0;
+        size_t* pnIVChannelNumByDevice,
+        size_t* pnMaxRuleNumByIVChannel )=0;
 };
 
 
