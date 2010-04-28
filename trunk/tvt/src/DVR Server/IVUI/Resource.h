@@ -53,7 +53,6 @@
 #define IDC_LEFTBEHIND_EDIT             1020
 #define IDC_RULENAME                    1021
 #define IDC_ALARM_HOLD_TIME2            1021
-#define IDC_Alarm_Sensor_Combo          2021
 #define IDC_VIEW                        1022
 #define IDC_CURSOR_ADD                  1022
 #define IDC_OBJECT                      1023
@@ -62,7 +61,9 @@
 #define IDC_CHECK_VEHICLE               1025
 #define IDD_Add_Edit_Rule_Main          1025
 #define IDC_CHECK_OTHER                 1026
+#define IDI_Camera1                     1026
 #define IDC_CHECK_ALL                   1027
+#define IDI_Camera2                     1027
 #define IDC_TIME                        1028
 #define IDC_CHECK_Light_on              1028
 #define IDC_LOITERS                     1029
@@ -105,6 +106,7 @@
 #define IDC_Apply_BT                    1064
 #define IDS_Finish                      2005
 #define IDS_Apply                       2006
+#define IDC_Alarm_Sensor_Combo          2021
 #define IDS_Rule_Tree_Group             3005
 #define IDS_Invade                      3006
 #define IDS_Leave_Disappear             3007
@@ -219,7 +221,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1026
+#define _APS_NEXT_RESOURCE_VALUE        1030
 #define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1065
 #define _APS_NEXT_SYMED_VALUE           1000

@@ -43,6 +43,9 @@ BOOL CIVCfgDoc::s_bTelphone = FALSE;
 set<int> CIVCfgDoc::s_UseChannel;
 CIVCfgDoc::RuleTriggerList CIVCfgDoc::s_RuleTrigger;
 
+CImageList CIVCfgDoc::s_CameraImageList;
+
+
 void CIVCfgDoc::Init()
 {
     CIVCfgDoc::s_pDoc = new CIVCfgDoc::RuleSettingMap[CIVCfgDoc::s_nMaxChannel];
@@ -50,6 +53,20 @@ void CIVCfgDoc::Init()
     ZeroMemory(s_pShowState, sizeof(int)*CIVCfgDoc::s_nMaxChannel);
     CIVCfgDoc::s_pIsHaveStatistic = new BOOL[CIVCfgDoc::s_nMaxChannel];
     ZeroMemory(s_pIsHaveStatistic, sizeof(BOOL)*CIVCfgDoc::s_nMaxChannel);
+ BOOL bRc;
+ DWORD dwErr; //21
+ bRc = s_CameraImageList.Create(25, 25, 
+     /*ILC_COLORDDB*/ILC_COLOR32/*| ILC_MASK*/,
+        3, 1);  
+   // s_CameraImageList.Add( hicon );
+    dwErr =  GetLastError();
+    s_CameraImageList.Add( AfxGetApp()->LoadIcon(IDI_Camera1));
+    s_CameraImageList.Add( AfxGetApp()->LoadIcon(IDI_Camera1));
+    s_CameraImageList.Add( AfxGetApp()->LoadIcon(IDI_Camera2));
+    int nImageCount = s_CameraImageList.GetImageCount();
+
+    // bRc = s_CameraImageList.Create(IDI_Camera1, 32, 1, 0);
+    //s_CameraImageList.Create(IDI_Camera2, 32, 1, 0);
 
     IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
     IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
@@ -709,6 +726,14 @@ BOOL CIVRuleCfgDoc::Use(
     pIVCfgMgr->SetAutoRunChannel(szChannel, s_UseChannel.size());
     pIVCfgMgr->Apply();
 
+
+    CIVCfgDoc::RuleTriggerList::iterator iter;
+    for ( iter = s_RuleTrigger.begin();
+          iter!= s_RuleTrigger.end();
+          ++iter )
+    {
+        (*iter)->OnUseIV(nChannelID, bEnable);
+    }
     return TRUE;
 }
 
@@ -826,6 +851,48 @@ BOOL CIVRuleCfgDoc::IsCanAddRule(
     }
 }
 
+BOOL CIVRuleCfgDoc::ModifyRuleName(
+    HTREEITEM Item, 
+    const _bstr_t& bstrRuleName )
+{
+    /**
+    *@note  1. Get ID And channelID by Tree Item
+    */
+    void* pItemData = (void*)m_CameraTree.GetItemData(Item); 
+    const char* pID = (const char*)GetUserDataFromItemData(pItemData);
+    int nChannelID = GetChannelFromItemData(pItemData);
+
+    /**
+    *@note  2. Get XX To memory
+    */
+    RuleSettingMap& Map = s_pDoc[nChannelID];
+    RuleSettingMap::iterator MapIter = Map.find(pID);
+    if ( MapIter == Map.end() )
+    {
+        TRACE("GetIVRuleCfgXX No Found Iter!\n");
+        return FALSE;
+    }
+
+    strcpy(MapIter->second->Rule.ruleName, (char*)bstrRuleName);
+
+    BOOL bFound = FALSE;
+    IIVCfgMgr* pIVCfgMgr = IIVCfgMgrFactory::GetIIVCfgMgr();
+    for ( IIVCfgMgr::IVVistor Iter = pIVCfgMgr->Begin(nChannelID);
+          Iter != pIVCfgMgr->End();
+          Iter = Iter.Next() )
+    {
+        const char* pTmpID = Iter.GetIdentityID();
+        if ( pTmpID == pID )
+        {
+            Iter.ModifyRuleName((char*)bstrRuleName);
+            pIVCfgMgr->Apply();
+            bFound = TRUE;
+            break;
+        }
+    }
+
+    return bFound;
+}
 //
 // CIVRuleCfgDoc
 // }

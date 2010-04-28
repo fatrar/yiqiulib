@@ -193,7 +193,11 @@ BOOL CIVSchuduleDlg::Init( CWnd* pWnd, const CRect& Rect)
     */
     Create(CIVSchuduleDlg::IDD, pWnd);
     MoveWindow(Rect);
-    CameraTreeUtil::InitCameraTree(m_CameraTree, this, m_TreeGroup, 0, nHeight);
+    CameraTreeUtil::InitCameraTree(
+        m_CameraTree,
+        this, m_TreeGroup, 
+        0, nHeight,
+        &s_CameraImageList );
     
     /** 
     *@Note 2. Init ScheduleCtrl
@@ -371,6 +375,14 @@ void CIVSchuduleDlg::OnRuleAdd(
         nChannelID,
         (const void*)pIdentityID,
         strRuleName );
+}
+
+void CIVSchuduleDlg::OnUseIV( int nChannelID, BOOL bEnable )
+{
+    CameraTreeUtil::OnChangeCameraTreeItemState(
+        m_CameraTree,
+        nChannelID,
+        bEnable);
 }
 
 //

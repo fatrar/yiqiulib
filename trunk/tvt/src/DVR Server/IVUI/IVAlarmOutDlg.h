@@ -66,7 +66,7 @@ protected:
 
     virtual void OnUseIV(
         int nChannelID,
-        BOOL bEnbale);
+        BOOL bEnable);
 
 protected:
     void CollectUserSet(AlarmOutSettings& TmpAlarmSet);
@@ -106,7 +106,7 @@ protected:
         Combo_Width = 50,
         Alarm_Check_Width = 100,
 
-        Alarm_Hold_Height  = Alarm_Out_Y_Offset*3+2*BT_Height, 
+        Alarm_Hold_Height  = Alarm_Out_Y_Offset*3+3*BT_Height, 
     };
 
 private:   

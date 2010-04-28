@@ -283,7 +283,11 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\res\Clear.cur"
+				RelativePath=".\res\Camera-1.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Camera-2.ico"
 				>
 			</File>
 			<File
@@ -292,10 +296,6 @@
 			</File>
 			<File
 				RelativePath=".\res\cursor2.cur"
-				>
-			</File>
-			<File
-				RelativePath=".\res\Edit.cur"
 				>
 			</File>
 			<File

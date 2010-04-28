@@ -66,7 +66,7 @@ protected:
 
     virtual void OnUseIV(
         int nChannelID,
-        BOOL bEnbale){};
+        BOOL bEnable);
 
 protected:
     void UpdateSchudule();

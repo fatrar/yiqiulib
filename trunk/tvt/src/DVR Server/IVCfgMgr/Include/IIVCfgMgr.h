@@ -69,6 +69,7 @@ struct IIVCfgMgr
         bool ModifyAlarmOut(const AlarmOutSettings& Alarm);
 
         bool EnableRule(bool bEnbale);
+        bool ModifyRuleName(const char* pRuleName);
 
     private:
         TiXmlElement* m_pEle;       // 指向一个规则的节点

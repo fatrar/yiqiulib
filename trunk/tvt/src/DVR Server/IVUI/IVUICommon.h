@@ -90,7 +90,8 @@ HTREEITEM InitCameraTree(
     IInitCameraTree* pCameraTreeInitor,
     CStatic& Group,
     UINT GroupStringID,
-    int nHeight );
+    int nHeight,
+    CImageList* pImageList );
 
 void UnitCameraTree(CTreeCtrl& CameraTree);
 
@@ -126,7 +127,10 @@ HTREEITEM OnAddCameraTreeItem(
     const void* pUseData,
     CString& strRuleName);
 
-
+HTREEITEM OnChangeCameraTreeItemState(
+    CTreeCtrl& CameraTree,
+    int nChannelID, 
+    BOOL bEnable );
 }
 
 
