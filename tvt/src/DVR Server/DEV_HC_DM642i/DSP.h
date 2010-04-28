@@ -19,6 +19,7 @@
 #define _DSP_H_2010_4
 #pragma once
 
+#define _UseLiveTime
 
 class CTiCoffFile;
 #include "CounterTime.h"

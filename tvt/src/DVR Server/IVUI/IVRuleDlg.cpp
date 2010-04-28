@@ -126,6 +126,8 @@ BEGIN_MESSAGE_MAP(CIVRuleDlg, CDialog)
     ON_COMMAND(ID_RULE_RENAMERULE, &CIVRuleDlg::OnRuleRenamerule)
     ON_COMMAND(ID_RULE_ENABLERULE, &CIVRuleDlg::OnRuleEnablerule)
     ON_COMMAND(ID_RULE_DISABLERULE, &CIVRuleDlg::OnRuleDisablerule)
+    ON_NOTIFY(TVN_BEGINLABELEDIT, IDC_RULE_CAMERA_TREE, &CIVRuleDlg::OnTvnBeginlabeleditRuleCameraTree)
+    ON_NOTIFY(TVN_ENDLABELEDIT, IDC_RULE_CAMERA_TREE, &CIVRuleDlg::OnTvnEndlabeleditRuleCameraTree)
 END_MESSAGE_MAP()
 
 
@@ -152,7 +154,8 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
     CameraTreeUtil::InitCameraTree(
         m_CameraTree, this,
         m_TreeGroup, 0,
-        Rect.Height() );
+        Rect.Height(),
+        &s_CameraImageList);
 
     CRect rect;
     GetClientRect(&rect);
@@ -186,7 +189,6 @@ BOOL CIVRuleDlg::Init( CWnd* pWnd, const CRect& Rect)
     //{
     //    g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
     //}
-    
     return TRUE;
 }
 
@@ -405,12 +407,20 @@ void CIVRuleDlg::OnRuleUse()
     if ( CIVRuleCfgDoc::IsUse(m_nCurrentChan) )
     {
         CIVRuleCfgDoc::Use(m_nCurrentChan,false); 
+        m_CameraTree.SetItemState(
+            m_ClickItem, 
+            INDEXTOSTATEIMAGEMASK(1), 
+            TVIS_STATEIMAGEMASK ); 
     }
     else
     {
         if ( g_IIVDeviceBase2->IsHaveFreeDevice() )
         {
             CIVRuleCfgDoc::Use(m_nCurrentChan,true);
+            m_CameraTree.SetItemState(
+                m_ClickItem, 
+                INDEXTOSTATEIMAGEMASK(2), 
+                TVIS_STATEIMAGEMASK ); 
         }
         else
         {
@@ -533,14 +543,14 @@ void CIVRuleDlg::OnRuleEditrule()
         {
             //g_IIVDeviceBase2->ModifyRule(m_nCurrentChan, *pTmpRule);
             IIVLiveViewerEx* pIVLiveViewerEx = IVLiveFactory::GetLiveViewerEx();
-            pIVLiveViewerEx->ModifyRule(m_nCurrentChan, *pRule);
+            pIVLiveViewerEx->ModifyRule(m_nCurrentChan, *pTmpRule);
         }
 
         /**
         *@note 2. Update To XML and Memory
         */
         CIVRuleCfgDoc::UpdateRule(
-            *pRule, m_ClickItem, FALSE);    
+            *pTmpRule, m_ClickItem, FALSE);    
     }
     else {}
     delete pDlg;
@@ -555,6 +565,7 @@ void CIVRuleDlg::OnRuleEditrule()
 void CIVRuleDlg::OnRuleRenamerule()
 {
     // [] 
+    m_CameraTree.ModifyStyle(0, TVS_EDITLABELS);
     m_CameraTree.EditLabel(m_ClickItem);
 }
 
@@ -573,3 +584,52 @@ void CIVRuleDlg::OnRuleDisablerule()
 
 // End of file
 
+
+void CIVRuleDlg::OnTvnBeginlabeleditRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMTVDISPINFO pTVDispInfo = reinterpret_cast<LPNMTVDISPINFO>(pNMHDR);
+    // TODO: Add your control notification handler code here
+    m_CameraTree.GetEditControl()->LimitText(Max_Rule_Name);
+    *pResult = 0;
+}
+
+void CIVRuleDlg::OnTvnEndlabeleditRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMTVDISPINFO pTVDispInfo = reinterpret_cast<LPNMTVDISPINFO>(pNMHDR);
+    // TODO: Add your control notification handler code here
+
+    do 
+    {
+        CString strText;
+        m_CameraTree.GetEditControl()->GetWindowText(strText);
+        _bstr_t bstrText = (LPCTSTR)strText;
+        size_t nTextLen = bstrText.length();
+        if ( nTextLen == 0 )
+        {
+            AfxMessageBox(_T("Must Set Rule Name!"));
+            break;
+        }
+
+        if ( nTextLen > Max_Rule_Name )
+        {
+            AfxMessageBox(_T("Rule Name is Too Long!"));
+            break;
+        }
+
+        if ( !CIVRuleCfgDoc::ModifyRuleName(
+            m_ClickItem, 
+            bstrText ) )
+        {
+            break;
+        }
+
+        m_CameraTree.ModifyStyle(TVS_EDITLABELS, 0);
+        *pResult = TRUE;
+        return;
+    }
+    while (0);
+
+    // other Tree not Update user modify!
+    // no set *pResult
+    TRACE("Modify Rule Name Failed!");
+}

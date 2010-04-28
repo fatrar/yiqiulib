@@ -121,6 +121,13 @@ bool IIVCfgMgr::IVVistor::EnableRule( bool bEnbale )
     return true;
 }
 
+bool IIVCfgMgr::IVVistor::ModifyRuleName(const char* pRuleName)
+{
+    assert(m_pEle);
+    m_pEle->SetAttribute(_RuleName, pRuleName);
+    return true;
+}
+
 // } 
 // Modify
 

@@ -779,7 +779,9 @@ void CDSP::GetOneChannelPreData(
 
     do 
     {
+#ifndef _UseLiveTime
         if ( nChannel != m_szCurrentIVChannel[nDevice] )
+#endif
         {
             VideoSend(nChannel, &Frame);
             break;

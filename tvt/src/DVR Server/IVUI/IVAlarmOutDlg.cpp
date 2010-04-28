@@ -196,7 +196,8 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
     MoveWindow(Rect);
     CameraTreeUtil::InitCameraTree(
         m_CameraTree, this,
-        m_TreeGroup, 0, nHeight);
+        m_TreeGroup, 0, nHeight,
+        &s_CameraImageList );
     
     //
     // 2. Init Other Child Ctrl
@@ -204,21 +205,21 @@ BOOL CIVAlarmOutDlg::Init(CWnd* pWnd, const CRect& Rect)
     int nAlarmOutGroupWidth = nWidth-CameraCtrl_Width-2*Alarm_Out_X_Offset;
     int nAlarmOutGroupX = CameraCtrl_Width+Alarm_Out_X_Offset;
     int nAlarmOutGroupY = Alarm_Out_Y_Offset;
-    int nAllButtonX = nAlarmOutGroupX + Alarm_Out_X_Offset;
+    int nAllButtonX = nAlarmOutGroupX + 2*Alarm_Out_X_Offset;
     m_AlarmHoldGroup.MoveWindow(nAlarmOutGroupX, nAlarmOutGroupY, nAlarmOutGroupWidth, Alarm_Hold_Height);
     m_AlarmNoHoldBt.MoveWindow(
         nAllButtonX, 
-        nAlarmOutGroupY+Alarm_Out_Y_Offset,
+        nAlarmOutGroupY+2*Alarm_Out_Y_Offset,
         nAlarmOutGroupWidth-2*Alarm_Out_X_Offset,
         BT_Height);
     m_AlarmHoldBt.MoveWindow(
         nAllButtonX, 
-        nAlarmOutGroupY+2*Alarm_Out_Y_Offset+BT_Height,
+        nAlarmOutGroupY+3*Alarm_Out_Y_Offset+BT_Height,
         nAlarmOutGroupWidth-2*Alarm_Out_X_Offset-Combo_Width,
         BT_Height);
     m_AlarmOutHoldTimeComb.MoveWindow(
         nWidth-2*Alarm_Out_X_Offset-Combo_Width, 
-        nAlarmOutGroupY+2*Alarm_Out_Y_Offset+BT_Height,
+        nAlarmOutGroupY+3*Alarm_Out_Y_Offset+BT_Height,
         Combo_Width,
         /*10**/BT_Height);
 
@@ -503,9 +504,12 @@ void CIVAlarmOutDlg::OnRuleAdd(
         strRuleName );
 }
 
-void CIVAlarmOutDlg::OnUseIV( int nChannelID, BOOL bEnbale )
+void CIVAlarmOutDlg::OnUseIV( int nChannelID, BOOL bEnable )
 {
-
+    CameraTreeUtil::OnChangeCameraTreeItemState(
+        m_CameraTree,
+        nChannelID,
+        bEnable);
 }
 
 //

@@ -114,4 +114,6 @@ private:
 
     // 这个是为了防止上层重复调用ShowWindow，我用这个做记录
     BOOL m_IsShow;
+    afx_msg void OnTvnBeginlabeleditRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnTvnEndlabeleditRuleCameraTree(NMHDR *pNMHDR, LRESULT *pResult);
 };

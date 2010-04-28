@@ -35,7 +35,7 @@ struct IRuleTrigger
         int nChannelID,
         const char* pIdentityID,
         CString& strRuleName)=0;
-    virtual void OnUseIV(int nChannelID, BOOL bEnbale) =0;
+    virtual void OnUseIV(int nChannelID, BOOL bEnable) =0;
 };
 
 typedef void (IRuleTrigger::*OnRuleXXFn)(int,const char*,CString&);
@@ -58,6 +58,8 @@ public:
     */
     static void Unit();
 
+    static BOOL IsIVChannel(int nChannelID);
+
 public:
     static size_t s_nDeviceNum;
     static size_t s_nMaxChannel;
@@ -66,6 +68,8 @@ public:
 
     static DWORD s_dwRelayCount;
     static BOOL s_bTelphone;
+
+    static CImageList s_CameraImageList;
 
 protected:
     /**
@@ -83,8 +87,6 @@ protected:
     void OnInitCameraTree(
         int nChannelID, 
         HTREEITEM Item);
-
-    static BOOL IsIVChannel(int nChannelID);
 
     const IV_RuleID* GetRuleID(HTREEITEM Item);
 
@@ -221,6 +223,10 @@ protected:
     *@param nChannelID Channel ID
     */
     bool IsUse(int nChannelID); 
+
+    BOOL ModifyRuleName(
+        HTREEITEM Item,
+        const _bstr_t& bstrRuleName );
 
     int GetShowState(int nChannelID);
     void SetShowState(int nChannelID, int nState);

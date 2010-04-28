@@ -100,9 +100,6 @@ BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
     m_IVAlarmOutDlg.Init(this, FuncRect);
     m_IVAlarmOutDlg.ShowWindow(SW_HIDE);
 
-    //m_IVSchuduleDlg.MoveWindow(&FuncRect, FALSE);
-    //m_IVAlarmOutDlg.MoveWindow(&FuncRect, FALSE);
-
     m_IVRuleDlg.Init(this, FuncRect);
     m_IVRuleDlg.ShowWindow(SW_SHOW);
     //m_IVRuleDlg.MoveWindow(&FuncRect);
@@ -113,7 +110,7 @@ BOOL CIVSwitchTab::Init(HWND hWnd, const CRect& rect)
     //FuncRect.top-=5;
     //FuncRect.bottom+=5;
     //m_FuncGroup.MoveWindow(FuncRect);
-    m_FuncGroup.ShowWindow(SW_HIDE);
+    m_FuncGroup.ShowWindow(SW_HIDE); 
     return TRUE;
 }
 
@@ -157,7 +154,7 @@ BOOL CIVSwitchTab::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  Add extra initialization here
-
+//AfxMessageBox(_T("aaaa"));
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -186,6 +183,7 @@ namespace IVUIFactory
 {
 void InitIVConfig()
 {
+    AFX_MANAGE_STATE(AfxGetStaticModuleState());
     CIVCfgDoc::Init();
 }
 
