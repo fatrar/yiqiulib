@@ -261,7 +261,8 @@ void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
     double m = Distance(MedPoint, BeginPoint);
     if ( m < 0.0001 )
     {
-        assert(false);
+        //assert(false);
+        // 起点和终点很近时不画箭头，因为这个时候根本无法知道法方向
         OutputDebugString(_T("CArrowLineDrawer::OnPaint m too Small!\n"));
         return;
     }
@@ -327,8 +328,10 @@ void CArrowLineDrawer::SendCommond(
     case Line_Show_Right:
     case Line_Show_All:
         m_dwDrawCommond=c;
-        m_pWnd->ShowWindow(SW_HIDE);
-        m_pWnd->ShowWindow(SW_SHOW);
+        if ( m_bIsOK )
+        {
+            m_pWnd->RedrawWindow();
+        }
     	break;
     case Get_Line_Dir:
         *(long*)p1 = m_dwDrawCommond;

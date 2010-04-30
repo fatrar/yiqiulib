@@ -31,6 +31,8 @@ public:
     //void SetSelectCursor(HWND Cursor);
     //void SetEditCursor();
     virtual void SetDrawModeNotify(IDrawModeNotify* pDrawModeNotify){m_pDrawModeNotify=pDrawModeNotify;};
+    virtual void SetDrawMode(DrawMode mode){m_Mode=mode;};
+    virtual void OnUseDraw(CDC& dc);
 
     virtual IDrawer* Add(IDrawerGraphType t);
     virtual BOOL Remove(IDrawer* pDrawer);
@@ -70,6 +72,7 @@ private:
     DrawerList m_GraphContainer;
     IDrawerEx* m_pSelect;
     IDrawModeNotify* m_pDrawModeNotify;
+    DrawMode m_Mode;
 };
 
 

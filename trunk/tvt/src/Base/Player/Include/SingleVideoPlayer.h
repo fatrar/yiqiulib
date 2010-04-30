@@ -104,7 +104,7 @@ protected :
 
 protected:
     BOOL InitYUVBack(DWORD dwWidth, DWORD dwHeight);
-    BOOL InitRGBBack(DWORD dwWidth, DWORD dwHeight, DWORD BitDepth=24);
+    BOOL InitRGBBack(DWORD dwWidth, DWORD dwHeight, DWORD BitDepth=32);
 
     BOOL ReInitYUVBack(DWORD dwWidth, DWORD dwHeight);
     BOOL ReInitRGBBack(DWORD dwWidth, DWORD dwHeight);
@@ -117,7 +117,8 @@ protected:
     IDirectDraw7 *m_pDD7;
     IDirectDrawSurface7 *m_pddsPrimary;
     IDirectDrawClipper* m_lpClipper;     // Pointer to the clipper 
-    IDirectDrawSurface7* m_pDDSBack;
+    IDirectDrawSurface7* m_pDDSYUVBack;
+    IDirectDrawSurface7* m_pDDSRGBBack;
 
     DWORD m_dwWidth, m_dwHeight;
 

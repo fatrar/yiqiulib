@@ -23,7 +23,8 @@ IMPLEMENT_DYNAMIC(CDrawContainer, CWnd)
 
 CDrawContainer::CDrawContainer()
     : m_pSelect(NULL)
-    , m_pDrawModeNotify(NULL){}
+    , m_pDrawModeNotify(NULL)
+    , m_Mode(Window_Draw) {}
 
 CDrawContainer::~CDrawContainer()
 {
@@ -199,10 +200,20 @@ void CDrawContainer::OnLButtonDown( UINT nFlags, CPoint point )
 void CDrawContainer::OnPaint()
 {
     CPaintDC dc(this);
+    if ( m_Mode != Window_Draw )
+    {
+        return;
+    }
+
+    OnUseDraw(dc);
+}
+
+void CDrawContainer::OnUseDraw(CDC& dc )
+{
     DrawerList::iterator iter;
     for ( iter = m_GraphContainer.begin();
-          iter!= m_GraphContainer.end();
-          ++iter)
+        iter!= m_GraphContainer.end();
+        ++iter)
     {
         IDrawerEx* p = iter->pDrawer;
         if ( p->IsEnable() )
@@ -211,7 +222,6 @@ void CDrawContainer::OnPaint()
         }  
     }
 }
-
 
 CDrawContainer::DrawerIter::DrawerIter(IDrawerEx* p)
     : pDrawer(p)
