@@ -77,6 +77,7 @@
 #define IDC_FILTER_ON                   1036
 #define IDC_FILTER_OFF                  1037
 #define IDC_SPIN1                       1038
+#define IDC_Delete_Graph                1038
 #define IDC_EDIT2                       1039
 #define IDC_Muti_Edit                   1039
 #define IDC_Multiplier                  1040
@@ -94,6 +95,7 @@
 #define IDC_Line_Check                  1051
 #define IDC_Zone_Check                  1052
 #define IDC_Select_Check                1053
+#define IDC_Simulation_BT2              1053
 #define IDC_Right_Check                 1054
 #define IDC_Left_Check                  1055
 #define IDC_Both_Check                  1056

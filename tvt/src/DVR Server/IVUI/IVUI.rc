@@ -212,22 +212,22 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,281,276,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,365,276,50,14
-    GROUPBOX        "Draw Tool",IDC_STATIC,7,4,77,186
-    GROUPBOX        "",IDC_STATIC,7,82,77,78
-    GROUPBOX        "Adv.",IDC_STATIC,7,191,78,48
-    CONTROL         "Line",IDC_Line_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,25,15,39,19
-    CONTROL         "Zone",IDC_Zone_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,25,39,39,19
-    CONTROL         "Select",IDC_Select_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,25,63,39,19
-    CONTROL         "Polygon",IDC_Polygon_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,128,39,19
-    CONTROL         "Right",IDC_Right_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,91,39,19
-    CONTROL         "Left",IDC_Left_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,114,39,19
-    CONTROL         "Both",IDC_Both_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,137,39,19
-    PUSHBUTTON      "Adv. ..",IDC_Adv_BT,21,201,50,14
-    PUSHBUTTON      "Filter ..",IDC_Filter_BT,21,219,50,14
+    GROUPBOX        "Draw Tool",IDC_STATIC,7,4,77,171
+    GROUPBOX        "",IDC_STATIC,7,60,77,84
+    GROUPBOX        "Adv.",IDC_STATIC,7,171,78,48
+    CONTROL         "Line",IDC_Line_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,22,16,49,19
+    CONTROL         "Zone",IDC_Zone_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,22,38,49,19
+    CONTROL         "Polygon",IDC_Polygon_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,22,111,49,19
+    CONTROL         "Right",IDC_Right_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,22,71,49,19
+    CONTROL         "Left",IDC_Left_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,22,94,49,19
+    CONTROL         "Both",IDC_Both_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,22,118,49,19
+    PUSHBUTTON      "Adv. ..",IDC_Adv_BT,21,181,49,14
+    PUSHBUTTON      "Filter ..",IDC_Filter_BT,21,199,49,14
     PUSHBUTTON      "Simulation",IDC_Simulation_BT,8,245,76,14
-    CONTROL         "Rectangle",IDC_Rectangle_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,25,99,39,19
-    PUSHBUTTON      "Colour",IDC_Colour_BT,23,165,43,18
+    CONTROL         "Rectangle",IDC_Rectangle_Check,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,22,81,49,19
+    PUSHBUTTON      "Colour",IDC_Colour_BT,22,150,49,19
     LTEXT           "Alarm Occur",IDC_Alarm_Occur_STATIC,19,268,150,12
+    PUSHBUTTON      "Delete",IDC_Delete_Graph,7,225,76,14
 END
 
 

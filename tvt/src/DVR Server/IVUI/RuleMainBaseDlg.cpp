@@ -32,8 +32,11 @@ CRuleMainBaseDlg::CRuleMainBaseDlg(CWnd* pParent)
     , m_EditMode(FALSE)
     , m_bUse(TRUE)
     , m_ChangeCursor(FALSE)
+    , m_CurrentDrawer(NULL)
 {
+     using namespace OCI::Windows;
      m_pDrawContainer = Windows::CreateDrawContainer();
+     m_pDrawContainer->SetDrawMode( IDrawContainer::User_Draw );
      m_LineDrawer     = m_pDrawContainer->Add(Windows::IDrawer_ArrowLine);
      m_LineDrawerEx   = m_pDrawContainer->Add(Windows::IDrawer_ArrowLineEx);
      m_RectangleDrawer= m_pDrawContainer->Add(Windows::IDrawer_Rectangle);
@@ -50,7 +53,6 @@ void CRuleMainBaseDlg::DoDataExchange(CDataExchange* pDX)
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_Line_Check, m_LineBT);
     DDX_Control(pDX, IDC_Zone_Check, m_ZoneBT);
-    DDX_Control(pDX, IDC_Select_Check, m_SelectBT);
     DDX_Control(pDX, IDC_Right_Check, m_LineRightBT);
     DDX_Control(pDX, IDC_Left_Check, m_LineLeftBT);
     DDX_Control(pDX, IDC_Both_Check, m_LineBothBT);
@@ -63,51 +65,32 @@ void CRuleMainBaseDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_Alarm_Occur_STATIC, m_AlarmOccurStatic);
     DDX_Control(pDX, IDOK, m_OKBt);
     DDX_Control(pDX, IDCANCEL, m_CancelBt);
+    DDX_Control(pDX, IDC_Delete_Graph, m_DeleteGraphBt);
 }
-
-
-BEGIN_MESSAGE_MAP(CRuleMainBaseDlg, CDialog)
-    ON_BN_CLICKED(IDOK, &CRuleMainBaseDlg::OnBnClickedOk)
-    ON_BN_CLICKED(IDCANCEL, &CRuleMainBaseDlg::OnBnClickedCancel)
-    ON_BN_CLICKED(IDC_Adv_BT, &CRuleMainBaseDlg::OnBnClickedAdvBt)
-    ON_BN_CLICKED(IDC_Filter_BT, &CRuleMainBaseDlg::OnBnClickedFilterBt)
-    ON_BN_CLICKED(IDC_Simulation_BT, &CRuleMainBaseDlg::OnBnClickedSimulationBt)
-    ON_BN_CLICKED(IDC_Line_Check, &CRuleMainBaseDlg::OnBnClickedLineCheck)
-    ON_BN_CLICKED(IDC_Zone_Check, &CRuleMainBaseDlg::OnBnClickedZoneCheck)
-    ON_BN_CLICKED(IDC_Select_Check, &CRuleMainBaseDlg::OnBnClickedSelectCheck)
-    ON_BN_CLICKED(IDC_Right_Check, &CRuleMainBaseDlg::OnBnClickedRightCheck)
-    ON_BN_CLICKED(IDC_Left_Check, &CRuleMainBaseDlg::OnBnClickedLeftCheck)
-    ON_BN_CLICKED(IDC_Both_Check, &CRuleMainBaseDlg::OnBnClickedBothCheck)
-    ON_BN_CLICKED(IDC_Colour_BT, &CRuleMainBaseDlg::OnBnClickedColourBt)
-    ON_BN_CLICKED(IDC_Polygon_Check, &CRuleMainBaseDlg::OnBnClickedPolygonCheck)
-    ON_BN_CLICKED(IDC_Rectangle_Check, &CRuleMainBaseDlg::OnBnClickedRectangleCheck)
-    ON_WM_CLOSE()
-    ON_WM_PAINT()
-    ON_WM_TIMER()
-    ON_WM_SETCURSOR()
-END_MESSAGE_MAP()
-
 
 // CRuleAddMainDlg message handlers
 
 BOOL CRuleMainBaseDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
-    
+
     int x = 140, y = 15;
     m_Rect.SetRect(x,y,int(x+352*1.4),int(y+288*1.4)); 
+
+    m_pDrawContainer->Create(
+        NULL,NULL,
+        WS_VISIBLE|WS_CHILD,
+        m_Rect, this, DrawWnd_ID);
+
     m_Player.InitDirectDraw(
-        this->m_hWnd, 352, 288, &m_Rect);
+        m_pDrawContainer->m_hWnd, 352, 288, &m_Rect);
     m_Player.SetVideoPlayCallback(this, m_nCurrentChan);
     if ( g_IIVDeviceBase2 )
     {
         g_IIVDeviceBase2->RegisterLiveDataCallBack(m_nCurrentChan, this);
     }
- 
-    m_pDrawContainer->Create(
-        NULL,NULL,
-        WS_VISIBLE|WS_CHILD,
-        m_Rect, this, DrawWnd_ID);
+
+
     CRect TmpRect;
     m_pDrawContainer->GetClientRect(&TmpRect);
     if ( m_EditMode )
@@ -117,44 +100,32 @@ BOOL CRuleMainBaseDlg::OnInitDialog()
         switch (Choose)
         {
         case IVUtil::Choose_Line:
-        {   
-            LineEditMode(m_LineDrawer, TmpRect);
-        	break;
-        }
+            {   
+                LineEditMode(m_LineDrawer, TmpRect);
+                break;
+            }
         case IVUtil::Choose_LineEx:
-        {   
-            LineEditMode(m_LineDrawerEx, TmpRect);
-            break;
-        }
+            {   
+                LineEditMode(m_LineDrawerEx, TmpRect);
+                break;
+            }
         case IVUtil::Choose_Rectangle:
-        {
-            RectangleEditMode(TmpRect);
-            break;
-        }    
+            {
+                RectangleEditMode(TmpRect);
+                break;
+            }    
         case IVUtil::Choose_Polygon:
-        {    
-            PolygonEditMode(TmpRect);
-    	    break;
-        }
+            {    
+                PolygonEditMode(TmpRect);
+                break;
+            }
         default:
-        	break;
+            break;
         }
     }
     else{}
-    
-    return TRUE;
-}
 
-void CRuleMainBaseDlg::SetComomParm(
-    int nChannelID,
-    WPG_Rule* pRule,
-    IVRuleType type,
-    BOOL EditMode)
-{
-    m_nCurrentChan = nChannelID;
-    m_pRule = pRule;
-    m_type = type;
-    m_EditMode = EditMode;
+    return TRUE;
 }
 
 void CRuleMainBaseDlg::OnBnClickedOk()
@@ -179,7 +150,7 @@ void CRuleMainBaseDlg::OnBnClickedCancel()
 void CRuleMainBaseDlg::OnBnClickedAdvBt()
 {  
     if ( m_nToolsChoose == IVUtil::Choose_Line ||
-         m_nToolsChoose == IVUtil::Choose_LineEx )
+        m_nToolsChoose == IVUtil::Choose_LineEx )
     {
         CLineAdvDlg Dlg;
         Dlg.Init(m_pRule);
@@ -259,6 +230,11 @@ void CRuleMainBaseDlg::OnBnClickedSimulationBt()
 void CRuleMainBaseDlg::DrawToolChange( Windows::IDrawer* pDrawer )
 {
     m_pDrawContainer->EnableToolAndNotEnableOther(pDrawer, TRUE);
+    if ( m_CurrentDrawer != NULL )
+    {
+        m_CurrentDrawer->Clear();
+    }
+    m_CurrentDrawer = pDrawer;
 }
 
 void CRuleMainBaseDlg::OnBnClickedLineCheck()
@@ -266,7 +242,6 @@ void CRuleMainBaseDlg::OnBnClickedLineCheck()
     m_nToolsChoose = IVUtil::Choose_Line;
     m_LineBT.SetCheck(BST_CHECKED);
     m_ZoneBT.SetCheck(BST_UNCHECKED);
-    m_SelectBT.SetCheck(BST_UNCHECKED);
 
     m_RectangleBT.ShowWindow(SW_HIDE);
     m_PolygonBT.ShowWindow(SW_HIDE);
@@ -274,7 +249,7 @@ void CRuleMainBaseDlg::OnBnClickedLineCheck()
     m_LineRightBT.ShowWindow(SW_SHOW);
     m_LineLeftBT.ShowWindow(SW_SHOW);
     m_LineBothBT.ShowWindow(SW_SHOW);
-    
+
     DrawToolChange(m_LineDrawer);
 }
 
@@ -283,7 +258,6 @@ void CRuleMainBaseDlg::OnBnClickedZoneCheck()
     m_nToolsChoose = IVUtil::Choose_Rectangle;
     m_LineBT.SetCheck(BST_UNCHECKED);
     m_ZoneBT.SetCheck(BST_CHECKED);
-    m_SelectBT.SetCheck(BST_UNCHECKED);
 
     //m_RectangleBT.SetCheck(BST_CHECKED);
     m_RectangleBT.ShowWindow(SW_SHOW);
@@ -295,20 +269,12 @@ void CRuleMainBaseDlg::OnBnClickedZoneCheck()
     OnBnClickedRectangleCheck();
 }
 
-void CRuleMainBaseDlg::OnBnClickedSelectCheck()
-{
-    m_AlarmOccurStatic.OnAlarmOccur();
-    //m_LineBT.SetCheck(BST_UNCHECKED);
-    //m_ZoneBT.SetCheck(BST_UNCHECKED);
-    //m_SelectBT.SetCheck(BST_CHECKED);
-}
-
 void CRuleMainBaseDlg::OnBnClickedRightCheck()
 {
     m_LineRightBT.SetCheck(BST_CHECKED);
     m_LineLeftBT.SetCheck(BST_UNCHECKED);
     m_LineBothBT.SetCheck(BST_UNCHECKED);
-    m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Right,NULL,NULL);
+    m_CurrentDrawer->SendCommond(Windows::IDrawer::Line_Show_Right,NULL,NULL);
 }
 
 void CRuleMainBaseDlg::OnBnClickedLeftCheck()
@@ -316,7 +282,7 @@ void CRuleMainBaseDlg::OnBnClickedLeftCheck()
     m_LineRightBT.SetCheck(BST_UNCHECKED);
     m_LineLeftBT.SetCheck(BST_CHECKED);
     m_LineBothBT.SetCheck(BST_UNCHECKED);
-    m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_Left,NULL,NULL);
+    m_CurrentDrawer->SendCommond(Windows::IDrawer::Line_Show_Left,NULL,NULL);
 }
 
 void CRuleMainBaseDlg::OnBnClickedBothCheck()
@@ -324,7 +290,7 @@ void CRuleMainBaseDlg::OnBnClickedBothCheck()
     m_LineRightBT.SetCheck(BST_UNCHECKED);
     m_LineLeftBT.SetCheck(BST_UNCHECKED);
     m_LineBothBT.SetCheck(BST_CHECKED); 
-    m_LineDrawer->SendCommond(Windows::IDrawer::Line_Show_All,NULL,NULL);
+    m_CurrentDrawer->SendCommond(Windows::IDrawer::Line_Show_All,NULL,NULL);
 }
 
 void CRuleMainBaseDlg::OnBnClickedColourBt()
@@ -370,10 +336,80 @@ void CRuleMainBaseDlg::OnBnClickedRectangleCheck()
     DrawToolChange(m_RectangleDrawer);
 }
 
+void CRuleMainBaseDlg::OnBnClickedDeleteGraph()
+{
+    if ( m_nToolsChoose == IVUtil::Choose_Line )
+    {
+        m_LineDrawer->Clear();
+    }
+    else if ( m_nToolsChoose == IVUtil::Choose_LineEx )
+    {
+        m_LineDrawerEx->Clear();
+    }
+    else if (m_nToolsChoose == IVUtil::Choose_Rectangle)
+    {
+        m_RectangleDrawer->Clear();
+    }
+    else if (m_nToolsChoose == IVUtil::Choose_Polygon)
+    {
+        m_PolygonDrawer->Clear();
+    }
+    else 
+    {
+        ASSERT(FALSE);
+    }
+}
+
 void CRuleMainBaseDlg::OnClose()
 {
     // TODO: Add your message handler code here and/or call default
     CDialog::OnClose();
+}
+
+void CRuleMainBaseDlg::OnTimer(UINT_PTR nIDEvent)
+{
+    // TODO: Add your message handler code here and/or call default
+    if ( nIDEvent == Start_Simulation )
+    {
+        KillTimer(Start_Simulation);
+        m_ChangeCursor = FALSE;
+        EndWaitCursor();
+    }
+    __super::OnTimer(nIDEvent);
+}
+
+BEGIN_MESSAGE_MAP(CRuleMainBaseDlg, CDialog)
+    ON_BN_CLICKED(IDOK, &CRuleMainBaseDlg::OnBnClickedOk)
+    ON_BN_CLICKED(IDCANCEL, &CRuleMainBaseDlg::OnBnClickedCancel)
+    ON_BN_CLICKED(IDC_Adv_BT, &CRuleMainBaseDlg::OnBnClickedAdvBt)
+    ON_BN_CLICKED(IDC_Filter_BT, &CRuleMainBaseDlg::OnBnClickedFilterBt)
+    ON_BN_CLICKED(IDC_Simulation_BT, &CRuleMainBaseDlg::OnBnClickedSimulationBt)
+    ON_BN_CLICKED(IDC_Line_Check, &CRuleMainBaseDlg::OnBnClickedLineCheck)
+    ON_BN_CLICKED(IDC_Zone_Check, &CRuleMainBaseDlg::OnBnClickedZoneCheck)
+    ON_BN_CLICKED(IDC_Right_Check, &CRuleMainBaseDlg::OnBnClickedRightCheck)
+    ON_BN_CLICKED(IDC_Left_Check, &CRuleMainBaseDlg::OnBnClickedLeftCheck)
+    ON_BN_CLICKED(IDC_Both_Check, &CRuleMainBaseDlg::OnBnClickedBothCheck)
+    ON_BN_CLICKED(IDC_Colour_BT, &CRuleMainBaseDlg::OnBnClickedColourBt)
+    ON_BN_CLICKED(IDC_Polygon_Check, &CRuleMainBaseDlg::OnBnClickedPolygonCheck)
+    ON_BN_CLICKED(IDC_Rectangle_Check, &CRuleMainBaseDlg::OnBnClickedRectangleCheck)
+    ON_WM_CLOSE()
+    ON_WM_PAINT()
+    ON_WM_TIMER()
+    ON_WM_SETCURSOR()
+    ON_BN_CLICKED(IDC_Delete_Graph, &CRuleMainBaseDlg::OnBnClickedDeleteGraph)
+END_MESSAGE_MAP()
+
+
+void CRuleMainBaseDlg::SetComomParm(
+    int nChannelID,
+    WPG_Rule* pRule,
+    IVRuleType type,
+    BOOL EditMode)
+{
+    m_nCurrentChan = nChannelID;
+    m_pRule = pRule;
+    m_type = type;
+    m_EditMode = EditMode;
 }
 
 BOOL CRuleMainBaseDlg::OnVideoSend( FRAMEBUFSTRUCT *bufStruct )
@@ -398,7 +434,8 @@ void CRuleMainBaseDlg::OnPaint()
     // TODO: Add your message handler code here
     // Do not call __super::OnPaint() for painting messages
     m_Player.ShowBack();
-    m_pDrawContainer->Invalidate();
+    //m_pDrawContainer->Invalidate();
+    //m_pDrawContainer->SendMessage(WM_PAINT);
 }
 
 void CRuleMainBaseDlg::UseToolCtrlMode(ToolMode Mode)
@@ -412,7 +449,6 @@ void CRuleMainBaseDlg::UseToolCtrlMode(ToolMode Mode)
         m_LineLeftBT.EnableWindow(FALSE);
         m_LineBothBT.EnableWindow(FALSE);
         m_ColourBT.EnableWindow(FALSE);
-        m_SelectBT.EnableWindow(FALSE);
         m_RectangleBT.ShowWindow(SW_HIDE);
         m_PolygonBT.ShowWindow(SW_HIDE);
         m_pDrawContainer->EnableWindow(FALSE);
@@ -436,12 +472,46 @@ BOOL CRuleMainBaseDlg::OnVideoPlay(
     int nFlag,
     DWORD dwUserData )
 {
-    //m_Drawer->ShowWindow(SW_HIDE);
-    //m_Drawer->ShowWindow(SW_SHOW);
     static IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
     pViewer->Paint(dwUserData, dc, *rect, *pTime);
 
-    m_pDrawContainer->Invalidate();
+    CRect Rect;
+    m_pDrawContainer->GetClientRect(&Rect);
+    CDC* pdc = CDC::FromHandle(dc);
+    CDC  Mydc;  
+    Mydc.CreateCompatibleDC(  pdc  );  
+    CBitmap  bm;  
+    bm.CreateCompatibleBitmap(pdc, Rect.Width(), Rect.Height() );  
+    Mydc.SelectObject(  bm  );
+    m_pDrawContainer->OnUseDraw(Mydc);
+    //Mydc.StretchBlt(
+    //    0,  0,
+    //    Rect.Width(), Rect.Height(), 
+    //    pdc,  0,  0, 
+    //    352, 288,
+    //    SRCCOPY  ); 
+    pdc->StretchBlt(
+        0,  0,
+        352, 288,
+        &Mydc,  0,  0, 
+        Rect.Width(), Rect.Height(), 
+        BLACKNESS  );
+    bm.DeleteObject();
+    Mydc.DeleteDC();
+    //pdc->BitBlt(  0,  0,  rect.Width(),  rect.Height(),  &dc,  0,  0,  SRCCOPY  );  
+    //DeleteObject(  bm  );  
+    //DeleteObject(  dc  ); 
+
+
+    //CRect Rect;
+    //m_pDrawContainer->GetClientRect(&Rect);
+    //CDC* pdc = CDC::FromHandle(dc);
+    //pdc->OffsetWindowOrg(Rect.Width(),Rect.Height());
+    ////CDC* pdc = m_pDrawContainer->GetDC();
+    //m_pDrawContainer->OnUseDraw(*pdc);
+    //pdc->OffsetWindowOrg(352, 288);
+    //m_pDrawContainer->Invalidate();
+    //m_pDrawContainer->SendMessage(WM_PAINT);
     return TRUE;
 }
 
@@ -464,20 +534,8 @@ void CRuleMainBaseDlg::SimulationEnable( BOOL bEnable )
 {
     m_OKBt.EnableWindow(bEnable);
     m_CancelBt.EnableWindow(bEnable);
+    m_DeleteGraphBt.EnableWindow(bEnable);
 }
-
-void CRuleMainBaseDlg::OnTimer(UINT_PTR nIDEvent)
-{
-    // TODO: Add your message handler code here and/or call default
-    if ( nIDEvent == Start_Simulation )
-    {
-        KillTimer(Start_Simulation);
-        m_ChangeCursor = FALSE;
-        EndWaitCursor();
-    }
-    __super::OnTimer(nIDEvent);
-}
-
 
 BOOL CRuleMainBaseDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
@@ -540,4 +598,8 @@ void CRuleMainBaseDlg::PolygonEditMode(
     OnBnClickedZoneCheck();
     OnBnClickedPolygonCheck();
 }
+
+
 // End of file
+
+
