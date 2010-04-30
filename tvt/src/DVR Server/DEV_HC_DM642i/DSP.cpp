@@ -115,6 +115,8 @@ CDSP::CDSP()
     , m_pIVAlarmCallBack(NULL)
     , m_SimulationChanID(Invaild_ChannelID)
     , m_dwVideoFormat(DVRVIDEO_STANDARD_PAL)
+    , m_hIVAlarmCallBackThread(NULL)
+    , m_dwIVAlarmCallBackTheadID(0)
 {
     //__asm
     //{
@@ -427,6 +429,12 @@ BOOL CDSP::CreateWorkerThread()
             0, &m_dwSmoothTheadID[i]);
     }
 
+    m_hIVAlarmCallBackThread = CreateThread(
+        NULL, 0, 
+        OnThreadAlarmCallBack, this,
+        0, 
+        &m_dwIVAlarmCallBackTheadID);
+
     // 等待平滑线程创建消息栈
     WaitForMultipleObjects(m_nDeviceNum, TempEvent, TRUE, INFINITE);
     for ( int j=0; j<m_nDeviceNum; ++j)
@@ -466,6 +474,8 @@ void CDSP::DestroyWorkerThread()
             DWORD dwErr = GetLastError();
         }
     }
+
+    PostThreadMessage(m_dwIVAlarmCallBackTheadID,WM_QUIT,0,0);
 
     struct CDestroyThread 
     {
@@ -510,6 +520,10 @@ void CDSP::DestroyWorkerThread()
             m_hSmooth[i],
             "Terminate Smooth Thread End Time %d\n", i);
 	}
+
+    DestroyThread(
+        m_hIVAlarmCallBackThread,
+        "Terminate IVAlarm CallBack Thread End Time %d\n", 0);
 }
 
 BOOL CDSP::CreateBuffer()
@@ -1894,6 +1908,5 @@ DWORD CDSP::NetFrameRateInc(int inc)
 
 	return RefreshNetFrameRate();
 }
-
 
 // end of file  old -> 2114

@@ -99,6 +99,12 @@ BOOL CDSP::Use( int nChannelID, bool bState )
         m_RuleCfgMap[nDeviceID].clear();
         //SuspendThread(m_hSmooth[nDeviceID]);
     }
+
+    if ( !PostThreadMessage( m_dwSmoothTheadID[nDeviceID], Switch_Channel, 0, 0) )
+    {
+        TRACE("CDSP::Use PostThreadMessage Failed at Switch_Channel!\n"); 
+        //ASSERT(FALSE);
+    }
     return SetParam(
         PT_PCI_SET_AI_ENABLE, nChannelID, int(bState) );
 }

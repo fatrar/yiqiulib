@@ -60,6 +60,13 @@ public:
 
     static BOOL IsIVChannel(int nChannelID);
 
+    static void SetChannelName(
+        int nChannelID,
+        const char* pChannelName);
+
+    static const CString& GetChannelName(
+        int nChannelID);
+
 public:
     static size_t s_nDeviceNum;
     static size_t s_nMaxChannel;
@@ -117,6 +124,7 @@ private:
     static RuleTriggerList s_RuleTrigger;
     static set<int> s_UseChannel;
 
+    static CString* s_pChannelName;
 protected:
     CTreeCtrl m_CameraTree;
     CStatic m_TreeGroup;

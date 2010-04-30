@@ -44,8 +44,14 @@ namespace IVUIFactory
 {
     /**
     *@note 将IV设置从XML读出，并将默认运行智能的通道设置数据
+    *@param	p IV SDK设置的指针  
+    *@param bTelphone 是否是打电话功能 
+    *@param dwRelayCount Relay的个数 
     */
-    IVUI_API void InitIVConfig();
+    IVUI_API void InitIVConfig(
+        IIVDeviceBase2* p,
+        BOOL bTelphone,
+        DWORD dwRelayCount);
 
     /**
     *@note 回收资源
@@ -66,20 +72,16 @@ namespace IVUIFactory
     IVUI_API void ReleaseIVConfigDlg();
 
     /**
-    *@note 设置IV SDK设置的指针
-    */
-    IVUI_API void SetIVOpeator(IIVDeviceBase2* p);
-
-    /**
     *@note 对某个通道使用智能
     */
     IVUI_API BOOL UseIV(int nChannelID, bool bEnable);
 
     /**
-    *@note 设置报警设备信息
+    *@note 设置通道的名称
     */
-    IVUI_API void SetAlarmOutDeviceInfo(
-        BOOL bTelphone, DWORD dwRelayCount);
+    IVUI_API void SetChannelName(
+        int nChannelID, 
+        const char* pChannelName);
 };
 
 
