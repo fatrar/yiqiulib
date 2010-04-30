@@ -120,13 +120,13 @@ protected:
 
     virtual afx_msg void OnBnClickedLineCheck();
     virtual afx_msg void OnBnClickedZoneCheck();
-    virtual afx_msg void OnBnClickedSelectCheck();
 
     afx_msg void OnBnClickedRightCheck();
     afx_msg void OnBnClickedLeftCheck();
     afx_msg void OnBnClickedBothCheck();
 
     afx_msg void OnBnClickedColourBt();
+    afx_msg void OnBnClickedDeleteGraph();
 
     virtual afx_msg void OnBnClickedPolygonCheck();
     virtual afx_msg void OnBnClickedRectangleCheck();
@@ -144,7 +144,6 @@ protected:
 protected:
     CButton m_LineBT;
     CButton m_ZoneBT;
-    CButton m_SelectBT;
 
     CButton m_LineRightBT;
     CButton m_LineLeftBT;
@@ -158,13 +157,14 @@ protected:
     CButton m_AdvBT;
     CButton m_FilterBT;
     CButton m_SimulationBT;
+    CButton m_DeleteGraphBt;
 
 protected:   
     BOOL m_bUse;
  
     IVUtil::UserToolsChoose m_nToolsChoose;
 
-    CWnd m_PlayerWnd;
+    //CWnd m_PlayerWnd;
     CYUVSingleVideoPlayer m_Player;
     int m_nCurrentChan;  
     CRect m_Rect;
@@ -175,6 +175,7 @@ protected:
     Windows::IDrawer* m_LineDrawerEx;
     Windows::IDrawContainer* m_pDrawContainer;
 
+    Windows::IDrawer* m_CurrentDrawer;
     WPG_Rule* m_pRule;
     IVRuleType m_type;
     BOOL m_EditMode;
@@ -185,7 +186,7 @@ protected:
     CButton m_OKBt;
     CButton m_CancelBt;
 
-    BOOL m_ChangeCursor;
+    BOOL m_ChangeCursor;   
 };
 
 

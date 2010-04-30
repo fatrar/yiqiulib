@@ -103,7 +103,6 @@ void CLineAndRectDlg<Fn,nNameID>::SimulationEnable( BOOL bEnable )
 {
     m_LineBT.EnableWindow(bEnable);
     m_ZoneBT.EnableWindow(bEnable);
-    m_SelectBT.EnableWindow(bEnable);
 
     m_ColourBT.EnableWindow(bEnable);
     m_AdvBT.EnableWindow(bEnable);
@@ -185,7 +184,6 @@ void CZoneDlg<nNameID>::SimulationEnable( BOOL bEnable )
     if ( m_nToolsChoose == IVUtil::Choose_Rectangle ||
          m_nToolsChoose == IVUtil::Choose_Polygon )
     {
-        m_SelectBT.EnableWindow(bEnable);
         m_ZoneBT.EnableWindow(bEnable);
         m_LineBT.EnableWindow(bEnable);
 
@@ -234,7 +232,6 @@ void CStatisticDlg::OnBnClickedLineCheck()
     m_nToolsChoose = IVUtil::Choose_LineEx;
     m_LineBT.SetCheck(BST_CHECKED);
     m_ZoneBT.SetCheck(BST_UNCHECKED);
-    m_SelectBT.SetCheck(BST_UNCHECKED);
 
     m_RectangleBT.ShowWindow(SW_HIDE);
     m_PolygonBT.ShowWindow(SW_HIDE);
@@ -269,7 +266,6 @@ BOOL CStatisticDlg::GatherUseSet()
 void CStatisticDlg::SimulationEnable( BOOL bEnable )
 {
     m_LineBT.EnableWindow(bEnable);
-    m_SelectBT.EnableWindow(bEnable);
 
     m_ColourBT.EnableWindow(bEnable);
     m_AdvBT.EnableWindow(bEnable);
