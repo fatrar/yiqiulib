@@ -52,7 +52,7 @@ struct ItemAttribute
 };
 
 #define IV_Root_Name  _T("IV")
-#define Channel_Name  _T("Ch%d")
+
 //#define Max_Channel               4
 
 //HTREEITEM InsertItem(LPCTSTR lpszItem, int nImage, int nSelectedImage,
@@ -96,7 +96,7 @@ HTREEITEM InitCameraTree(
     CString strCameraName;
     for ( size_t i = 0; i< CIVCfgDoc::s_nMaxChannel; ++i )
     {
-        strCameraName.Format(Channel_Name, i);
+        //strCameraName.Format(Channel_Name, i);
         //HTREEITEM CurrentItem = CameraTree.InsertItem(
         //    strCameraName, Root);
         //HTREEITEM CurrentItem = CameraTree.InsertItem(
@@ -105,7 +105,7 @@ HTREEITEM InitCameraTree(
         BOOL bRC = CIVCfgDoc::IsIVChannel(i);
         CurrentItem = CameraTree.InsertItem(
             TVIF_TEXT | TVIF_STATE | TVIF_IMAGE, 
-            strCameraName,
+            CIVCfgDoc::GetChannelName(i),
             0, 0,
             INDEXTOSTATEIMAGEMASK(bRC+1), 
             TVIS_STATEIMAGEMASK,

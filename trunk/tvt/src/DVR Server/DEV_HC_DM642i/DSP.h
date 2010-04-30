@@ -19,7 +19,7 @@
 #define _DSP_H_2010_4
 #pragma once
 
-#define _UseLiveTime
+//#define _UseLiveTime
 
 class CTiCoffFile;
 #include "CounterTime.h"
@@ -327,6 +327,25 @@ private:
         const AlarmOutTable*& pTable );
 
 private:
+    static DWORD WINAPI OnThreadAlarmCallBack(PVOID pParam);
+
+    DWORD LoopAlarmCallBack();
+
+    struct IVAlarmCallBackParm
+    {
+        IVAlarmCallBackParm(){}
+        IVAlarmCallBackParm(
+            IVRuleType _t, int _nChannel,
+            AlarmOutTable _Table, FILETIME _Time)
+            : t(_t)
+            , nChannel(_nChannel)
+            , Table(_Table)
+            , Time(_Time){}
+        IVRuleType t;
+        int nChannel;
+        AlarmOutTable Table;
+        FILETIME Time;
+    };
     /**
     *@note 智能报警
     */
@@ -336,6 +355,14 @@ private:
     IIVStatisticFresher* m_pIVStatisticFresher;
     ISnapShotSender* m_pSnapShotSender;
     int m_szCurrentIVChannel[MAX_DEVICE_NUM];
+    deque<IVAlarmCallBackParm> m_IVAlarmCallBackParmQueue;
+    HANDLE m_hIVAlarmCallBackThread;
+    DWORD m_dwIVAlarmCallBackTheadID;
+    CCriticalSection m_AlarmCallBackCS;
+    enum AlarmCallBackThreadMsg
+    {
+        Alarm_Coming,
+    };
     //BOOL m_ShowSnapShot;
 
 private:
@@ -450,10 +477,11 @@ private:
     */
     enum SmoothDef
     {
-        Suspend_Thread = WM_USER + 1,
+        Switch_Channel = WM_USER + 1,
         Push_Live_Data,
         IV_Data_Coming,
         Play_Again,
+        Alarm_Occur,
         End_Thead,
     };
 

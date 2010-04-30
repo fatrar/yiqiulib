@@ -26,7 +26,7 @@ CIVLiveDataBuf::CIVLiveDataBuf(void)
     , m_pTargetBuf(NULL)
     , m_Event(NULL)
     , m_Thread(NULL)
-    , m_nPreAlarmTime()
+    , m_nPreAlarmTime(0)
 {
     DebugOut("CIVLiveDataBuf() \n");
     memory_check.Init("IV Viewer");
@@ -98,6 +98,7 @@ BOOL CIVLiveDataBuf::OnIVDataSend(
     {
         return TRUE;
     }
+    assert(nLen <= TARGET_MAX_NUM);
     
     /**
     *@note 1. 找是否有目标数据缓冲(TargetQueue)
@@ -273,9 +274,10 @@ size_t CIVLiveDataBuf::SaveFileLoopFun()
             return 0;
         default:
             DWORD dwOffsetValue = dwRc - (WAIT_OBJECT_0 +1);
-            DWORD dwEventID = dwOffsetValue%(m_nDeviceCount*m_nEveryDeviceChannelNum);
+             DWORD dwEventID = dwOffsetValue%(Event_Count);
+            //DWORD dwEventID = dwOffsetValue%(m_nDeviceCount*m_nEveryDeviceChannelNum);
             //DWORD dwDeviceID = dwOffsetValue%(_EventTypeCount*m_nEveryDeviceChannelNum);
-            DWORD dwChannelID = dwOffsetValue%(Event_Count);
+            DWORD dwChannelID = dwOffsetValue/(Event_Count);
             if ( dwChannelID >= m_nEveryDeviceChannelNum )
             {
                 // log

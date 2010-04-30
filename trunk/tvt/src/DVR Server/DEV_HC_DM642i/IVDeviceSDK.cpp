@@ -164,7 +164,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
 #else
     //ULONGLONG nTime = ChangeTime(m_prevVideoTime);
     ULONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
-  
+#endif  
     {
     //CStopWatchCallTest aa;
     }
@@ -185,7 +185,7 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
         --s_nNum;
     }
     //ASSERT( CompareFileTime((FILETIME*)&nLiveTime, (FILETIME*)&nTime) > 0 );
-#endif
+
 
     FILETIME* pTime = (FILETIME*)&nTime;
 
@@ -334,15 +334,25 @@ void CDSP::DoIVAlarm(
 
     IV_RuleID& RuleID = (IV_RuleID&)(pEvent->ruleId);
     IVRuleType t = RuleID.RuleID.nType;
-    if ( m_AlarmCallBackFn )
     {
-        m_AlarmCallBackFn(
-            *pTable,
-            t,
-            nChannelID,
-            pTime,
-            m_pAlarmCallBackParm );
+        AutoLockAndUnlock(m_AlarmCallBackCS);
+        m_IVAlarmCallBackParmQueue.push_back(
+            IVAlarmCallBackParm(t, nChannelID, *pTable, *pTime) );
+        PostThreadMessage(
+            m_dwIVAlarmCallBackTheadID,
+            Alarm_Coming, 
+            0, 0);
     }
+    
+    //if ( m_AlarmCallBackFn )
+    //{
+    //    m_AlarmCallBackFn(
+    //        *pTable,
+    //        t,
+    //        nChannelID,
+    //        pTime,
+    //        m_pAlarmCallBackParm );
+    //}
 }
 
 static bool s_bSavePic = false;
@@ -402,6 +412,71 @@ void CDSP::PassSnapShot(
 } 
 
 
+DWORD WINAPI CDSP::OnThreadAlarmCallBack( PVOID pParam )
+{
+    CDSP* pThis = (CDSP*)pParam;
+    return pThis->LoopAlarmCallBack();
+}
+
+DWORD CDSP::LoopAlarmCallBack()
+{
+    if ( m_AlarmCallBackFn == NULL )
+    {
+        return -1;
+    }
+
+#define _Max_Alarm_CallBack_Loop 10
+
+    IVAlarmCallBackParm Parm;
+    MSG msg;
+    while(1)
+    {     
+        BOOL bRc = GetMessage(
+            &msg, HWND(-1), 0, 0);
+        if ( !bRc )
+        {
+            DWORD dwError = GetLastError();
+            TRACE(
+                _T("LoopAlarmCallBack GetMessage End at %x, msg.lParam=%x, msg.wParam=%x!\n"),
+                dwError, msg.lParam, msg.wParam);
+            break; // 是发WM_QUIT
+        }
+
+        switch(msg.message)
+        { 
+        case Alarm_Coming:
+        {   
+            int nLoopCount = 0;
+            while ( m_IVAlarmCallBackParmQueue.size() != 0 )
+            {
+                {
+                    AutoLockAndUnlock(m_AlarmCallBackCS);
+                    Parm = m_IVAlarmCallBackParmQueue.front();
+                    m_IVAlarmCallBackParmQueue.pop_front();
+                }
+
+                m_AlarmCallBackFn(
+                    Parm.Table,
+                    Parm.t,
+                    Parm.nChannel,
+                    &Parm.Time,
+                    m_pAlarmCallBackParm );
+                ++nLoopCount;
+                if ( nLoopCount > _Max_Alarm_CallBack_Loop )
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    return 0;
+}
+
 // {
 // ********************* IIVSimulation *******************
 // 
@@ -447,22 +522,11 @@ BOOL CDSP::StartSimulation(
         *@note 3.1. 如果还没使用智能，就直接启用这个通道的智能，
         *           然后添加规则
         */
-        DWORD dwExitCode;
-        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
-        if ( !bRc)
+        if ( !PostThreadMessage( m_dwSmoothTheadID[nDeviceID], Switch_Channel, 0, 0) )
         {
+            TRACE("PostThreadMessage Failed at Switch_Channel!\n"); 
             ASSERT(FALSE);
             return FALSE;
-        }
-    
-        if ( dwExitCode == STILL_ACTIVE )
-        {
-            TRACE("StartSimulation Thread Still Active!\n"); 
-            ASSERT(FALSE);
-        }
-        else
-        {
-            //ResumeThread(m_hSmooth[nDeviceID]);
         }
         
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 1);
@@ -473,7 +537,6 @@ BOOL CDSP::StartSimulation(
         /**
         *@note 3.2. 如果刚好正在使用智能，就直接添加规则
         */
-        //Add(nChannelID, Rule);
         SimulationAddRule(nChannelID, Rule);
     }
     else
@@ -482,24 +545,15 @@ BOOL CDSP::StartSimulation(
         *@note 3.3. 如果被其他的占用，首先停用占用的，然后开启模拟的，
         *           最后添加规则
         */
-        DWORD dwExitCode;
-        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
-        if ( !bRc)
+        if ( !PostThreadMessage( m_dwSmoothTheadID[nDeviceID], Switch_Channel, 0, 0) )
         {
+            TRACE("PostThreadMessage Failed at Switch_Channel!\n"); 
             ASSERT(FALSE);
             return FALSE;
         }
-
-        if ( dwExitCode != STILL_ACTIVE )
-        {
-            TRACE("StartSimulation Thread Dead!\n"); 
-            ASSERT(FALSE);
-            return FALSE;
-        }
-
         SetParam(PT_PCI_SET_AI_ENABLE, m_LastRunChanID, 0);
         SetParam(PT_PCI_SET_AI_ENABLE, nChannelID, 1);
-        //Add(nChannelID, Rule);
+ 
         SimulationAddRule(nChannelID, Rule);
     }
 
@@ -535,16 +589,9 @@ BOOL CDSP::StopSimulation( int nChannelID )
         /**
         *@note 3.1. 如果开启模拟前，还没使用智能，就直接停止模拟的智能，
         */
-        DWORD dwExitCode;
-        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
-        if ( !bRc)
+        if ( !PostThreadMessage( m_dwSmoothTheadID[nDeviceID], Switch_Channel, 0, 0) )
         {
-            ASSERT(FALSE);
-            return FALSE;
-        }
-        if ( dwExitCode != STILL_ACTIVE )
-        {
-            TRACE("StartSimulation Thread Dead!\n"); 
+            TRACE("PostThreadMessage Failed at Switch_Channel!\n"); 
             ASSERT(FALSE);
             return FALSE;
         }
@@ -568,16 +615,9 @@ BOOL CDSP::StopSimulation( int nChannelID )
         *           就停止模拟通道，开启模拟前的通道
         *           最后添加所有模拟前的规则
         */
-        DWORD dwExitCode;
-        BOOL bRc = GetExitCodeThread(m_hSmooth[nDeviceID], &dwExitCode);
-        if ( !bRc)
+        if ( !PostThreadMessage( m_dwSmoothTheadID[nDeviceID], Switch_Channel, 0, 0) )
         {
-            ASSERT(FALSE);
-            return FALSE;
-        }
-        if ( dwExitCode != STILL_ACTIVE )
-        {
-            TRACE("StartSimulation Thread Dead!\n"); 
+            TRACE("PostThreadMessage Failed at Switch_Channel!\n"); 
             ASSERT(FALSE);
             return FALSE;
         }
@@ -860,29 +900,24 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
     UINT nEventID= ::timeSetEvent(1000/nFrame, 1, pSmoothTimer,(DWORD)this,TIME_PERIODIC); 
     while(1)
     {     
-        BOOL bRc = GetMessage(&msg, HWND(-1),Suspend_Thread,End_Thead);
+        BOOL bRc = GetMessage(
+            &msg, HWND(-1), 
+            Switch_Channel, End_Thead);
         if ( !bRc )
         {
             DWORD dwError = GetLastError();
             TRACE(
-                _T("LoopLiveSmooth GetMessage Failed at %x, msg.lParam=%x, msg.wParam=%x!\n"),
+                _T("LoopLiveSmooth GetMessage End at %x, msg.lParam=%x, msg.wParam=%x!\n"),
                 dwError, msg.lParam, msg.wParam);
-            if ( dwError != 0 )
-            {
-                //ASSERT(false);
-                continue;
-            } 
-            else
-            {
-                goto end; // 是发WM_QUIT
-            }
+            goto end; // 是发WM_QUIT
         }
    
         switch(msg.message)
         { 
-        case Suspend_Thread:
-            FreeLiveList(LiveList);
-            bCanSendLive = false;
+        case Switch_Channel:
+            FreeLiveList(BufList);
+            //FreeLiveList(LiveList);
+            //bCanSendLive = false;
             //m_bFisrtIVDataFlag[nDevice] = FALSE;
             //SuspendThread(m_hSmooth[nDevice]);
             break;
@@ -890,6 +925,7 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
             if ( msg.wParam != m_szCurrentIVChannel[nDevice] )
             {
                 TRACE(_T("Push_Live_Data Filter Some!\n"));
+                ReleaseLiveBuf((FRAMEBUFSTRUCT*)msg.lParam);
             }
             else
             {
@@ -928,6 +964,12 @@ void CDSP::LoopLiveSmooth(int nDevice, HANDLE h)
 
                 LiveList.pop_front();
             }
+            else
+            {
+                TRACE("Play_Again Pass!\n");
+            }
+            break;
+        case Alarm_Occur:
             break;
         case End_Thead:
             goto end;

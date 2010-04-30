@@ -222,9 +222,10 @@ struct IIVDataBuf
         const FILETIME& time )=0;
 };
 
+template<typename T>
 static size_t IVViewerFindBuf(
     size_t& nLastPos,
-    BaseTargetQueue* pTargetBuf,
+    T* pTargetBuf,  // BaseTargetQueue
     size_t nMaxBufCount )
 {
     // 算法需要检验是否正确

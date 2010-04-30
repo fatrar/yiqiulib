@@ -207,14 +207,11 @@ void CMainDlg::Init()
     GetIVDeviceBase2Fn f2 = 
         (GetIVDeviceBase2Fn)::GetProcAddress(
         m_Hinstance, g_szIVDeviceFuncName[GetIVDeviceBase2_Index]);
-    IVUIFactory::SetIVOpeator(f2());
     
     /**
     *@note 5 Load IV Config And Set To Device
     */
-    IVUIFactory::InitIVConfig();
-    IVUIFactory::SetAlarmOutDeviceInfo(TRUE, 4);
-
+    IVUIFactory::InitIVConfig(f2(), TRUE, 4);
 
     /**
     *@note 6 General Device Init

@@ -44,6 +44,10 @@ CIVLiveViewer::CIVLiveViewer(void)
 CIVLiveViewer::~CIVLiveViewer(void)
 {
     //::DeleteObject(m_hFont);
+    for (size_t i=0; i< MAX_IV_Channel; ++i)
+    {
+        StlHelper::STLDeleteAssociate(m_AllRuleGraph[i]);
+    }   
 }
 
 BaseTargetQueue* CIVLiveViewer::GetIVData( 
@@ -377,7 +381,11 @@ void CIVLiveViewer::PaintArrowLine(
     MedPoint.y = (y[0] + y[1])/2;
     double m = sqrt( 
         Pow2(double(MedPoint.x-x[0])) + Pow2(double(MedPoint.y-y[0])) );
-    
+    if ( m < 0.0001 )
+    {
+        return;
+    }
+
     POINT A[2];
     A[0].x = MedPoint.x + long(ArrowLineLen/m*(y[0]-MedPoint.y));
     A[0].y = MedPoint.y - long(ArrowLineLen/m*(x[0]-MedPoint.x));

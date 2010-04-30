@@ -181,8 +181,25 @@ IIVDeviceBase2* g_IIVDeviceBase2 =NULL;
 
 namespace IVUIFactory
 {
-void InitIVConfig()
+void InitIVConfig(
+    IIVDeviceBase2* p,
+    BOOL bTelphone,
+    DWORD dwRelayCount)
 {
+    g_IIVDeviceBase2 = p;
+
+    size_t nChannelNumByDevice;
+    p->GetDeviceInfo(
+        &CIVCfgDoc::s_nDeviceNum,
+        &nChannelNumByDevice);
+    CIVCfgDoc::s_nMaxChannel = CIVCfgDoc::s_nDeviceNum*nChannelNumByDevice;
+    p->GetIVDeviceInfo(
+        &CIVCfgDoc::s_nIVChannelNumByDevice, 
+        &CIVCfgDoc::s_nMaxRuleNumByIVChannel);
+
+    CIVCfgDoc::s_dwRelayCount = dwRelayCount;
+    CIVCfgDoc::s_bTelphone = bTelphone;
+
     AFX_MANAGE_STATE(AfxGetStaticModuleState());
     CIVCfgDoc::Init();
 }
@@ -212,30 +229,17 @@ void ReleaseIVConfigDlg()
     safeDelete(g_pIVSwitchTab);   
 }
 
-void SetIVOpeator( IIVDeviceBase2* p )
-{
-    g_IIVDeviceBase2 = p;
-
-    size_t nChannelNumByDevice;
-    p->GetDeviceInfo(
-        &CIVCfgDoc::s_nDeviceNum,
-        &nChannelNumByDevice);
-    CIVCfgDoc::s_nMaxChannel = CIVCfgDoc::s_nDeviceNum*nChannelNumByDevice;
-    p->GetIVDeviceInfo(
-        &CIVCfgDoc::s_nIVChannelNumByDevice, 
-        &CIVCfgDoc::s_nMaxRuleNumByIVChannel);
-}
-
 BOOL UseIV(int nChannelID, bool bEnable)
 {
     return CIVRuleCfgDoc::Use(nChannelID, bEnable);
 }
 
-void SetAlarmOutDeviceInfo(
-    BOOL bTelphone, DWORD dwRelayCount)
+IVUI_API void SetChannelName( 
+    int nChannelID,
+    const char* pChannelName )
 {
-    CIVCfgDoc::s_dwRelayCount = dwRelayCount;
-    CIVCfgDoc::s_bTelphone = bTelphone;
+    return CIVCfgDoc::SetChannelName(
+        nChannelID, pChannelName);
 }
 
 }

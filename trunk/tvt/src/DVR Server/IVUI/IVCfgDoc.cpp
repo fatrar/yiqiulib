@@ -18,6 +18,7 @@
 #include "StdAfx.h"
 #include "IVCfgDoc.h"
 
+#define Channel_Name  _T("Ch%d")
 size_t CIVCfgDoc::s_nDeviceNum  = Default_Device_Num;
 size_t CIVCfgDoc::s_nMaxChannel = Default_Max_Channel;
 size_t CIVCfgDoc::s_nIVChannelNumByDevice  = Default_IVChannelNum_By_Device;
@@ -44,15 +45,23 @@ set<int> CIVCfgDoc::s_UseChannel;
 CIVCfgDoc::RuleTriggerList CIVCfgDoc::s_RuleTrigger;
 
 CImageList CIVCfgDoc::s_CameraImageList;
+CString* CIVCfgDoc::s_pChannelName = NULL;
 
 
 void CIVCfgDoc::Init()
 {
-    CIVCfgDoc::s_pDoc = new CIVCfgDoc::RuleSettingMap[CIVCfgDoc::s_nMaxChannel];
-    CIVCfgDoc::s_pShowState = new int[CIVCfgDoc::s_nMaxChannel];
-    ZeroMemory(s_pShowState, sizeof(int)*CIVCfgDoc::s_nMaxChannel);
-    CIVCfgDoc::s_pIsHaveStatistic = new BOOL[CIVCfgDoc::s_nMaxChannel];
-    ZeroMemory(s_pIsHaveStatistic, sizeof(BOOL)*CIVCfgDoc::s_nMaxChannel);
+    CIVCfgDoc::s_pDoc = new CIVCfgDoc::RuleSettingMap[s_nMaxChannel];
+    CIVCfgDoc::s_pShowState = new int[s_nMaxChannel];
+    ZeroMemory(s_pShowState, sizeof(int)*s_nMaxChannel);
+    CIVCfgDoc::s_pIsHaveStatistic = new BOOL[s_nMaxChannel];
+    ZeroMemory(s_pIsHaveStatistic, sizeof(BOOL)*s_nMaxChannel);
+
+    s_pChannelName = new CString[s_nMaxChannel];
+    for ( size_t i = 0; i<s_nMaxChannel; ++i )
+    {
+        s_pChannelName[i].Format(Channel_Name, i+1);
+    }
+
  BOOL bRc;
  DWORD dwErr; //21
  bRc = s_CameraImageList.Create(25, 25, 
@@ -153,9 +162,22 @@ void CIVCfgDoc::Unit()
         StlHelper::STLDeleteAssociate(Map);
     }
 
-    safeDeleteArray(CIVCfgDoc::s_pDoc);
-    safeDeleteArray(CIVCfgDoc::s_pShowState);
-    safeDeleteArray(CIVCfgDoc::s_pIsHaveStatistic);
+    safeDeleteArray(s_pDoc);
+    safeDeleteArray(s_pShowState);
+    safeDeleteArray(s_pIsHaveStatistic);
+    safeDeleteArray(s_pChannelName);
+}
+
+void CIVCfgDoc::SetChannelName( 
+    int nChannelID,
+    const char* pChannelName )
+{
+    s_pChannelName[nChannelID] = pChannelName;
+}
+
+const CString& CIVCfgDoc::GetChannelName( int nChannelID )
+{
+    return s_pChannelName[nChannelID];
 }
 
 void CIVCfgDoc::RegisterRuleTrigger( IRuleTrigger* pRuleTrigger )
@@ -330,14 +352,6 @@ void CIVCfgDoc::SetCfgToAllXX(const T& V)
 // {
 // ****************** CIVRuleCfgDoc **********************
 //
-
-//void CIVRuleCfgDoc::OnInitCameraTree( 
-//    int nChannelID, 
-//    CTreeCtrl& CameraTree,
-//    HTREEITEM Item )
-//{
-//
-//}
 WPG_Rule* CIVRuleCfgDoc::GetRule( 
     HTREEITEM Item )
 {
