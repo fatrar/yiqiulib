@@ -78,7 +78,12 @@ void CDrawer::SetLineWidth(int nWidth)
     m_pWnd->RedrawWindow();
 }
 
-void CDrawer::Clear(){ m_PointQueue.clear(); m_bIsOK=false; m_pWnd->RedrawWindow();};
+void CDrawer::Clear()
+{ 
+    //m_PointQueue.clear(); 
+    m_bIsOK=false;
+    m_pWnd->RedrawWindow();
+};
 
 void CDrawer::SetDefault(const CPoint* pPoint, size_t nCount)
 {

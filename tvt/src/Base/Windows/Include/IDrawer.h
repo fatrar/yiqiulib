@@ -103,9 +103,16 @@ struct IDrawContainer :
     public CWnd
 {
 public:
+    enum DrawMode
+    {
+        Window_Draw,
+        User_Draw,
+    };
     //void SetSelectCursor(HWND Cursor);
     //void SetEditCursor();
     virtual void SetDrawModeNotify(IDrawModeNotify* pDrawMode) = 0;
+    virtual void SetDrawMode(DrawMode mode)=0;
+    virtual void OnUseDraw(CDC& dc)=0;
 
     virtual IDrawer* Add(IDrawerGraphType t) = 0;
     virtual BOOL Remove(IDrawer* pDrawer)=0;

@@ -27,8 +27,15 @@ public:
     CPolygonDrawer(CWnd* pWnd);
     virtual ~CPolygonDrawer(void);
 
-    void SendCommond(DrawCommond c, void* p1=NULL, void* p2=NULL);
+    virtual void SendCommond(DrawCommond c, void* p1=NULL, void* p2=NULL);
 
+    virtual void Clear()
+    {
+        m_PointQueue.clear();
+        m_PointQueue.push_back(CPoint());
+        m_bIsOK=false;
+        m_pWnd->RedrawWindow();
+    }
 protected:
     virtual BOOL OnMouseMove(UINT nFlags, CPoint& point);
     virtual BOOL OnLButtonUp(UINT nFlags, CPoint& point);

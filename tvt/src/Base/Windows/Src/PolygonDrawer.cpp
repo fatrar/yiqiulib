@@ -18,7 +18,6 @@
 #include "StdAfx.h"
 #include "PolygonDrawer.h"
 
-
 //IMPLEMENT_DYNAMIC(CPolygonDrawer, CWnd)
 
 CPolygonDrawer::CPolygonDrawer(CWnd* pWnd)
@@ -220,5 +219,5 @@ void CPolygonDrawer::OnPaint(CDC& dc, BOOL bSelect)
     dc.SelectObject(pOldPen);
     dc.SelectObject(pOldBrush);  
 }
-
+//CRgn
 // End of file
