@@ -71,7 +71,7 @@ IIVCfgMgr::IVVistor CIVCfgMgr::Add(
         return End();
     }
     
-    assert(_AddSchedule(pRuleEle, Sch));
+    _AddSchedule(pRuleEle, Sch);
     //TinyXmlUtil::SetChildBinaryTextData(pRuleEle, _Schudule, Sch);
     TinyXmlUtil::SetChildBinaryTextData(pRuleEle, _AlarmOut, Alarm);
     pChannelEle->LinkEndChild(pRuleEle);

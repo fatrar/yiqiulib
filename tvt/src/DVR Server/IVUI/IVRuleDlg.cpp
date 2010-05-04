@@ -493,7 +493,7 @@ void CIVRuleDlg::OnRuleNewrule()
         */
         CIVRuleCfgDoc::AddRule(
             *pRule,
-            m_ClickItem);    
+            m_ClickItem);
     }
     else
     {

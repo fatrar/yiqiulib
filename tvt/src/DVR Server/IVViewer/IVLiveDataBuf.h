@@ -62,13 +62,18 @@ public:
     // 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
     virtual BOOL Open(
         int nChannelID,
+        const char* pPath );
+
+    virtual BOOL EnableSave(
+        int nChannelID,
         const char* pPath,
-        const FILETIME& time );
+        const FILETIME& time,
+        BOOL bEnable );
 
     // 视频文件关闭时，回调
     virtual BOOL Close(
         int nChannelID,
-        const FILETIME& time );
+        const char* pPath );
 
     virtual BOOL DeleteIVFile(
         const char* pPath);

@@ -47,14 +47,23 @@ struct IIVDataSaver
     *@time Video File First Frame Time
     */
     virtual BOOL Open(
-        int nChannelID,const char* pPath, const FILETIME& time)=0;
+        int nChannelID,
+        const char* pPath)=0;
+
+    virtual BOOL EnableSave(
+        int nChannelID,
+        const char* pPath,
+        const FILETIME& time,
+        BOOL bEnable)=0;
 
     /**
     *@note 视频文件关闭时，调用
     *@param nChannelID Channel ID
     *@time Video File last Frame Time
     */
-    virtual BOOL Close(int nChannelID, const FILETIME& time)=0;
+    virtual BOOL Close(
+        int nChannelID,
+        const char* pPath)=0;
 
     /**
     *@note 删除视频文件回调，从而通知智能这边删除智能文件。

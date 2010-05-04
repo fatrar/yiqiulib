@@ -207,14 +207,29 @@ BOOL CIVLiveDataBuf::Open(
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
     ChanTarget.NewFileComing(pPath, time);
     return SetEvent(
-        GetMyWantEvent(OpenFile_Event,nChannelID) );
+        GetMyWantEvent(OpenFile_Event, nChannelID) );
+}
+
+
+BOOL CIVLiveDataBuf::EnableSave(
+    int nChannelID, 
+    const char* pPath, 
+    const FILETIME& time, 
+    BOOL bEnable )
+{
+    if ( !m_IsInit ||
+         !isValidString(pPath) )
+    {
+        return FALSE;
+    }
 }
 
 BOOL CIVLiveDataBuf::Close(
     int nChannelID, 
-    const FILETIME& time )
+    const char* pPath )
 {
-    if ( !m_IsInit )
+    if ( !m_IsInit ||
+         !isValidString(pPath) )
     {
         return FALSE;
     }
@@ -226,7 +241,7 @@ BOOL CIVLiveDataBuf::Close(
     }
 
     return SetEvent(
-        GetMyWantEvent(CloseFile_Evnet,nChannelID) );
+        GetMyWantEvent(CloseFile_Evnet, nChannelID) );
 }
 
 BOOL CIVLiveDataBuf::DeleteIVFile( 
@@ -359,7 +374,6 @@ DWORD CIVLiveDataBuf::GetEventCount()
     static DWORD s_nEventCount = 1+m_nDeviceCount*m_nEveryDeviceChannelNum*Event_Count;
     return s_nEventCount; 
 }
-
 
 
 
