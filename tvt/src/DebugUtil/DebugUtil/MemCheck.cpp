@@ -24,6 +24,12 @@ Copyright (c) DOWSHU Electronica (China) Ltd.
 
 char g_szProjectName[MAX_PATH] = {0};
 
+void DumpMemoryInfo()
+{
+    DebugOut("\n Dump Info:\n");
+    _CrtDumpMemoryLeaks();
+}
+
 ds::ds()
 {
     HMODULE hModule = NULL;
@@ -43,6 +49,8 @@ ds::ds()
         OutputDebugString("\n*******************GetModuleHandleEx Failed!\n\n");
     }
 
+   
+
     _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE );
     _CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDERR );
     /*
@@ -50,9 +58,9 @@ ds::ds()
     * heap's linked list - This will allow us to catch any
     * inadvertent use of freed memory
     */
-    int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-    tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-    _CrtSetDbgFlag(tmpDbgFlag);
+    //int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    //tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF;
+    //_CrtSetDbgFlag(tmpDbgFlag);
 }
 
 ds::~ds ()
@@ -61,6 +69,7 @@ ds::~ds ()
     OutputDebugString(" *    End of Application.                            * \n");
     DebugOut(" *    Project %s Begin memory leak check.     * \n", g_szProjectName);
     OutputDebugString(s_strLine);
+     _Atexit(DumpMemoryInfo);
 }
 
 void ds::Init(const char* pProject)

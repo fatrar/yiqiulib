@@ -40,16 +40,15 @@
     void __cdecl DebugOut(const char* format, ...);
     void __cdecl DebugOutIndex (const char *format, ... );
     void __cdecl KAssert(const char *format, ...);
+
+    #define verify(f)  assert(f)
 #else
     #define DebugOut __noop
     #define  DebugOutIndex __noop
     #define KAssert __noop
+
+    #define verify(f)  ((void)(f))
 #endif // _DEBUG
-
-
-
-
-
 
 
 #endif  // _TRACE_H_2010_
