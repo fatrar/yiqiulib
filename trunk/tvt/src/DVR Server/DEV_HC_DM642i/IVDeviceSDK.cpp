@@ -164,6 +164,14 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
 #else
     //ULONGLONG nTime = ChangeTime(m_prevVideoTime);
     ULONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
+    static ULONGLONG s_nPreviousTime = 0;
+    if ( s_nPreviousTime == nTime )
+    {
+#define Same_Time_Error "IV Same Time error!"
+        ASSERT(Same_Time_Error);
+        TRACE(Same_Time_Error);
+    }
+    s_nPreviousTime = nTime;
 #endif  
     {
     //CStopWatchCallTest aa;
@@ -425,10 +433,25 @@ DWORD CDSP::LoopAlarmCallBack()
         return -1;
     }
 
+   
+
 #define _Max_Alarm_CallBack_Loop 10
 
     IVAlarmCallBackParm Parm;
     MSG msg;
+
+    //for ( int i = 0; i<10; ++i)
+    //{
+    //    m_AlarmCallBackFn(
+    //        Parm.Table,
+    //        Parm.t,
+    //        0,
+    //        &Parm.Time,
+    //        m_pAlarmCallBackParm );
+    //    Sleep(1000);
+    //}
+    //return 0;
+
     while(1)
     {     
         BOOL bRc = GetMessage(
