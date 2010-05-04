@@ -34,32 +34,33 @@ BOOL CLineDrawer::OnMouseMove(UINT nFlags, CPoint& point)
     {
         return FALSE;
     }
-
-    if ( m_bDragging && m_nDragIndex != -1 )
+ 
+    do 
     {
-        m_PointQueue[m_nDragIndex] = point;
-        //Invalidate();
-        ParentInvalidateEx();
-        return TRUE;
-    }
+        if ( m_bDragging && m_nDragIndex != -1 )
+        {
+            m_PointQueue[m_nDragIndex] = point;
+            break;
+        }
 
-    if ( m_bDrawing )
-    {
-        m_PointQueue[1] = point;
-        //Invalidate();
-        ParentInvalidateEx();
-        return TRUE;
-    }
+        if ( m_bDrawing )
+        {
+            m_PointQueue[1] = point;
+            break;
+        }
 
-    if ( m_bDragCenter )
-    {
-        CenterPointMoveTo(point);
-        //Invalidate();
-        ParentInvalidateEx();
-        return TRUE;
+        if ( m_bDragCenter )
+        {
+            CenterPointMoveTo(point);
+            break;
+        }
+        
+        return FALSE;
     }
+    while (0);
 
-    return FALSE;
+    Redraw();
+    return TRUE;
 }
 
 BOOL CLineDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
@@ -132,7 +133,7 @@ BOOL CLineDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     m_PointQueue[0] = m_PointQueue[1] = point;
     m_bIsOK = true;
     m_bDrawing = true;
-    ParentInvalidateEx();
+    Redraw();
     return TRUE;
 }
 

@@ -60,26 +60,31 @@ BOOL CPolygonDrawer::OnMouseMove(UINT nFlags, CPoint& point)
         return FALSE;
     }
 
-    if ( m_bDragging && m_nDragIndex != -1 )
+    do 
     {
-        m_PointQueue[m_nDragIndex] = point;
-        ParentInvalidateEx();
-        return TRUE;
-    }
+        if ( m_bDragging && m_nDragIndex != -1 )
+        {
+            m_PointQueue[m_nDragIndex] = point;
+            break;
+        }
 
-    if ( m_bDrawing )
-    {
-        m_PointQueue.back() = point;
-        ParentInvalidateEx();
-        return TRUE;
-    }
+        if ( m_bDrawing )
+        {
+            m_PointQueue.back() = point;
+            break;
+        }
 
-    if ( m_bDragCenter )
-    {
-        CenterPointMoveTo(point);
-        ParentInvalidateEx();
-        return TRUE;
+        if ( m_bDragCenter )
+        {
+            CenterPointMoveTo(point);
+            break;
+        }
+
+        return FALSE;
     }
+    while (0);
+    
+    Redraw();
     return TRUE;
 }
 
@@ -152,7 +157,7 @@ BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
             //ReFreshPoint(m_PointQueue.size()-1, point);
             m_bDrawing = false;
             m_bIsOK = true;
-            ParentInvalidateEx();
+            Redraw();
             AfxMessageBox(_T("Is OK!"));
             return TRUE;
         }
@@ -162,7 +167,7 @@ BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     m_PointQueue.push_back(point);
     m_bDrawing = true;
     m_bDragging = false;
-    ParentInvalidateEx();
+    Redraw();
     return TRUE;
 }
 

@@ -59,38 +59,40 @@ CRectangleDrawer::~CRectangleDrawer(void)
 
 BOOL CRectangleDrawer::OnMouseMove(UINT nFlags, CPoint& point)
 {
-    if ( m_bDragging )
+    do 
     {
-        //TRACE("OnMouseMove %d\n", m_nDragIndex);
-        ReFreshPoint(m_nDragIndex, point);
-        ParentInvalidateEx();
-        //GetParent()->Invalidate();
-        return TRUE;
-    }
+        if ( m_bDragging )
+        {
+            //TRACE("OnMouseMove %d\n", m_nDragIndex);
+            ReFreshPoint(m_nDragIndex, point);
+            break;
+        }
 
-    if ( m_bDrawing )
-    {
-        //TRACE("OnMouseMove m_bDrawing\n");
-        ReFreshPoint(2, point);
-        ParentInvalidateEx();
-        //GetParent()->Invalidate();
-        return TRUE;
-    }
+        if ( m_bDrawing )
+        {
+            //TRACE("OnMouseMove m_bDrawing\n");
+            ReFreshPoint(2, point);
+            break;
+        }
 
-    if ( m_nDragDir !=  NO_Darg )
-    {
-        ReFreshPoint2(m_nDragDir, point);
-        ParentInvalidateEx();
-        return TRUE;
-    }
+        if ( m_nDragDir !=  NO_Darg )
+        {
+            ReFreshPoint2(m_nDragDir, point);
+            break;
+        }
 
-    if ( m_bDragCenter )
-    {
-        CenterPointMoveTo(point);
-        ParentInvalidateEx();
-        return TRUE;
-    }
-    return FALSE;
+        if ( m_bDragCenter )
+        {
+            CenterPointMoveTo(point);
+            break;
+        }
+
+        return FALSE;
+    } 
+    while (0);
+
+    Redraw();
+    return TRUE;
 }
 
 BOOL CRectangleDrawer::OnLButtonUp(UINT nFlags, CPoint& point)
@@ -166,7 +168,7 @@ BOOL CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     m_bIsOK = m_bDrawing = true;
     m_PointQueue[0] = m_PointQueue[1] =
         m_PointQueue[2] = m_PointQueue[3] = point;
-    ParentInvalidateEx();
+    Redraw();
     
     return TRUE;
 }
