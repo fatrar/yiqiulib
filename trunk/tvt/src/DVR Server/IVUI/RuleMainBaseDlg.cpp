@@ -475,41 +475,73 @@ BOOL CRuleMainBaseDlg::OnVideoPlay(
     static IIVViewer* pViewer = IVLiveFactory::GetLiveViewer();
     pViewer->Paint(dwUserData, dc, *rect, *pTime);
 
-    CRect Rect;
-    m_pDrawContainer->GetClientRect(&Rect);
-    CDC* pdc = CDC::FromHandle(dc);
-    CDC  Mydc;  
-    Mydc.CreateCompatibleDC(  pdc  );  
-    CBitmap  bm;  
-    bm.CreateCompatibleBitmap(pdc, Rect.Width(), Rect.Height() );  
-    Mydc.SelectObject(  bm  );
-    m_pDrawContainer->OnUseDraw(Mydc);
-    //Mydc.StretchBlt(
-    //    0,  0,
-    //    Rect.Width(), Rect.Height(), 
-    //    pdc,  0,  0, 
-    //    352, 288,
-    //    SRCCOPY  ); 
-    pdc->StretchBlt(
-        0,  0,
-        352, 288,
-        &Mydc,  0,  0, 
-        Rect.Width(), Rect.Height(), 
-        BLACKNESS  );
-    bm.DeleteObject();
-    Mydc.DeleteDC();
-    //pdc->BitBlt(  0,  0,  rect.Width(),  rect.Height(),  &dc,  0,  0,  SRCCOPY  );  
-    //DeleteObject(  bm  );  
-    //DeleteObject(  dc  ); 
-
-
     //CRect Rect;
     //m_pDrawContainer->GetClientRect(&Rect);
     //CDC* pdc = CDC::FromHandle(dc);
-    //pdc->OffsetWindowOrg(Rect.Width(),Rect.Height());
-    ////CDC* pdc = m_pDrawContainer->GetDC();
-    //m_pDrawContainer->OnUseDraw(*pdc);
-    //pdc->OffsetWindowOrg(352, 288);
+    //CDC  Mydc;
+    //Mydc.CreateCompatibleDC(  pdc  );  
+    //CBitmap  bm;  
+    //bm.CreateCompatibleBitmap(pdc, Rect.Width(), Rect.Height() );  
+    //Mydc.SelectObject(  bm  );
+    //m_pDrawContainer->OnUseDraw(Mydc);
+    ////Mydc.StretchBlt(
+    ////    0,  0,
+    ////    Rect.Width(), Rect.Height(), 
+    ////    pdc,  0,  0, 
+    ////    352, 288,
+    ////    SRCCOPY  ); 
+    //pdc->StretchBlt(
+    //    0,  0,
+    //    352, 288,
+    //    &Mydc,  0,  0, 
+    //    Rect.Width(), Rect.Height(), 
+    //    BLACKNESS  );
+    //bm.DeleteObject();
+    //Mydc.DeleteDC();
+    ////pdc->BitBlt(  0,  0,  rect.Width(),  rect.Height(),  &dc,  0,  0,  SRCCOPY  );  
+    ////DeleteObject(  bm  );  
+    ////DeleteObject(  dc  ); 
+
+
+    CRect Rect;
+    m_pDrawContainer->GetClientRect(&Rect);
+    CDC* pdc = CDC::FromHandle(dc);
+    //int nOldMapMode = pdc->SetMapMode(MM_ISOTROPIC);
+    //pdc->SetWindowExt(Rect.Width(), Rect.Height());
+
+    int nOldGraphicsMode = pdc->SetGraphicsMode(GM_ADVANCED);
+    //int nMapMode = pdc->SetMapMode(MM_LOENGLISH); 
+
+    XFORM xForm;
+    xForm.eM11 = 352.0/Rect.Width(); 
+    xForm.eM12 = (FLOAT) 0.0; 
+    xForm.eM21 = (FLOAT) 0.0; 
+    xForm.eM22 = 288.0/Rect.Height(); 
+    xForm.eDx  = (FLOAT) 0.0; 
+    xForm.eDy  = (FLOAT) 0.0; 
+
+    pdc->SetWorldTransform(&xForm); 
+
+
+    //CPoint p = pdc->SetWindowOrg(Rect.Width(), Rect.Height());
+   // CPoint p = pdc->OffsetViewportOrg(Rect.Width(),Rect.Height());
+    //CPoint p = pdc->OffsetWindowOrg(Rect.Width(),Rect.Height());
+    //CDC* pdc = m_pDrawContainer->GetDC();
+    m_pDrawContainer->OnUseDraw(*pdc);
+   // p = pdc->OffsetViewportOrg(352, 288);
+    //pdc->SetWindowExt(352, 288);
+    //pdc->SetMapMode(nOldMapMode);
+
+    xForm.eM11 = (FLOAT) 1; 
+    xForm.eM22 = (FLOAT) 1; 
+    pdc->SetWorldTransform(&xForm);
+
+    //pdc->SetMapMode(nMapMode); 
+    pdc->SetGraphicsMode(nOldGraphicsMode);
+    
+
+    //p = pdc->OffsetWindowOrg(352, 288);
+    //p = pdc->SetWindowOrg(352, 288);
     //m_pDrawContainer->Invalidate();
     //m_pDrawContainer->SendMessage(WM_PAINT);
     return TRUE;
