@@ -136,7 +136,8 @@ protected:
     bool IsDargCenterPoint(CPoint& point);
     void DrawCenterPoint(CDC* pdc);
     void CenterPointMoveTo(const CPoint& CenterpointNow);
-
+   
+    void Redraw();
 protected:
     bool m_bIsOK;               // Is Drew?
     bool m_bDrawing;            // Is Drawing?

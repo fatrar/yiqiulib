@@ -154,6 +154,13 @@ void CDrawer::CenterPointMoveTo(const CPoint& CenterpointNow)
     }
 }
 
+void CDrawer::Redraw()
+{
+    //if ( )
+    //{
+    //}
+    //ParentInvalidateEx();
+}
 
 
 
