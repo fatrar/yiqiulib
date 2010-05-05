@@ -20,25 +20,33 @@
 
 class CIVLiveDataBuf;
 
+struct FileSectionTime
+{
+    CFileTime BeginTime;
+    CFileTime EndTime;
+};
+
 struct CIVLiveDataBuf::FileInfo
 {
     FileInfo(
-        const char* pPath, 
-        const FILETIME& time)
-        :Path(pPath),OpenTime(time),IsColse(FALSE){}
+        const char* pPath)
+        : strPath(pPath), bIsColse(FALSE){}
     FileInfo(){}
     FileInfo& operator = (const FileInfo& a)
     {
-        Path      = a.Path;
-        OpenTime  = a.OpenTime;
-        CloseTime = a.CloseTime;
-        IsColse   = a.IsColse;
+        strPath      = a.strPath;
+        FinishSection = a.FinishSection;
+        UnFinishSection = a.UnFinishSection;
+        bIsColse   = a.bIsColse;
         return *this;
     }
-    string Path;
-    FILETIME OpenTime;
-    FILETIME CloseTime;
-    BOOL IsColse;
+
+    typedef deque<FileSectionTime> SectionTimeList;
+
+    string strPath;
+    SectionTimeList FinishSection;
+    SectionTimeList UnFinishSection;
+    BOOL bIsColse;
 };
 
 
@@ -69,17 +77,31 @@ public:
     *@note 下面两个函数的功能是上层发现有文件打开或关闭，将信息传到这边
     */
     void NewFileComing(
-        const char* pPath,
-        const FILETIME& time)
+        const char* pPath )
     {
         AutoLockAndUnlock(cs);
-        FilePathList.push_back( FileInfo(pPath, time) );
+        FilePathList.push_back( FileInfo(pPath) );
     }
-    bool FileClose(const FILETIME& time);
+    bool FileClose(const char* pPath);
 
     void TrySaveData(int nPreAlarmTime);
-protected:
 
+    bool StartSection(
+        const char* pPath, 
+        const FILETIME& time);
+
+    bool EndSection(
+        const char* pPath, 
+        const FILETIME& time);
+
+protected:
+    void SaveByFileIsSetClose(
+        int nPreAlarmTime,
+        FileInfo& Info);
+
+    void SaveByFileIsNoSetClose(
+        int nPreAlarmTime,
+        FileInfo& Info);
 
 protected:
     void FillHeadToFile(
@@ -91,6 +113,7 @@ protected:
     }
 
     void DropSomeData(int nPreAlarmTime);
+    void DropSomeData(int nPreAlarmTime, const FILETIME& Now);
 
     void SaveData(
         int nPreAlarmTime,
@@ -114,10 +137,10 @@ protected:
         dwCurPos = sizeof(IVFileHead);
     }
 
-    void UpdateFileInfo()
-    {
-        FilePathList.pop_front();
-    }
+    //void PopFileInfo()
+    //{
+    //    FilePathList.pop_front();
+    //}
 
     void ResetFileHead()
     {
@@ -129,12 +152,12 @@ protected:
         const FILETIME& t,
         DWORD DataOffset);
 
-    void UpdateDataIndexToFile(const FILETIME& EndTime);
+    void UpdateDataIndexToFile(const FileInfo& Info);
 
 protected:
     typedef list<TGroupTarget*> TTargetList;
     typedef TTargetList::iterator TargetListIter;
-    typedef deque<FileInfo> FileInfoList;
+    typedef list<FileInfo> FileInfoList;
 
 private:
 

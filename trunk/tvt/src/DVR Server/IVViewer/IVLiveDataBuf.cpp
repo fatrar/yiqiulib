@@ -195,8 +195,7 @@ BOOL CIVLiveDataBuf::Unit()
 //
 BOOL CIVLiveDataBuf::Open(
     int nChannelID,
-    const char* pPath,
-    const FILETIME& time )
+    const char* pPath )
 {
     if ( !m_IsInit ||
          !isValidString(pPath) )
@@ -205,9 +204,13 @@ BOOL CIVLiveDataBuf::Open(
     }
 
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
-    ChanTarget.NewFileComing(pPath, time);
-    return SetEvent(
-        GetMyWantEvent(OpenFile_Event, nChannelID) );
+    ChanTarget.NewFileComing(pPath);
+    
+    return TRUE;
+
+    // [] heliang, no use
+    //return SetEvent(
+    //    GetMyWantEvent(OpenFile_Event, nChannelID) );
 }
 
 
@@ -222,6 +225,16 @@ BOOL CIVLiveDataBuf::EnableSave(
     {
         return FALSE;
     }
+
+    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    if ( bEnable )
+    {
+        return ChanTarget.StartSection(pPath, time);
+    }
+    else
+    {
+        return ChanTarget.EndSection(pPath, time);
+    }
 }
 
 BOOL CIVLiveDataBuf::Close(
@@ -235,13 +248,16 @@ BOOL CIVLiveDataBuf::Close(
     }
 
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
-    if ( !ChanTarget.FileClose(time) )
+    if ( !ChanTarget.FileClose(pPath) )
     {
         return FALSE;
     }
 
-    return SetEvent(
-        GetMyWantEvent(CloseFile_Evnet, nChannelID) );
+    return TRUE;
+
+    // [] heliang, no use
+    //return SetEvent(
+    //    GetMyWantEvent(CloseFile_Evnet, nChannelID) );
 }
 
 BOOL CIVLiveDataBuf::DeleteIVFile( 
