@@ -52,6 +52,9 @@
 #include <hash_map>
 using namespace std;
 
+#include <atltime.h>
+using namespace ATL;
+
 
 #include "..\..\Base\Base\Include\Singleton.h"
 #include "..\..\Base\System\Include\Thread.h"
