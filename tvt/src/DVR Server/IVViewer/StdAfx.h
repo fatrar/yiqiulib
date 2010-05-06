@@ -68,8 +68,14 @@ using namespace OCI;
 
 #include "..\..\DebugUtil\DebugUtil\MemCheck.h"
 #include "..\..\DebugUtil\DebugUtil\Trace.h"
+
+#undef TRACE
+#define TRACE XTRACE
+#include "XTrace.h"
+
 #include "IVViewerUtil.h"
 #include "ViewHelper.h"
+
 
 #include "Include\IVViewer.h"
 #include "IVFileCommon.h"

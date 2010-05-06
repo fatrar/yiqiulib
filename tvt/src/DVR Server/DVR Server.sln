@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml_dynamic", "..\Base\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "System", "..\Base\System\System.vcproj", "{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IVFileViewer", "IVFileViewer\IVFileViewer.vcproj", "{B0C75EC0-CA46-4986-9586-E9E0D2521C26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -104,6 +106,12 @@ Global
 		{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}.Release_Debug|Win32.Build.0 = Release_Debug|Win32
 		{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}.Release|Win32.ActiveCfg = Release|Win32
 		{E0F8AD80-7C81-498E-9E20-C29B64D9DE63}.Release|Win32.Build.0 = Release|Win32
+		{B0C75EC0-CA46-4986-9586-E9E0D2521C26}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B0C75EC0-CA46-4986-9586-E9E0D2521C26}.Debug|Win32.Build.0 = Debug|Win32
+		{B0C75EC0-CA46-4986-9586-E9E0D2521C26}.Release_Debug|Win32.ActiveCfg = Debug|Win32
+		{B0C75EC0-CA46-4986-9586-E9E0D2521C26}.Release_Debug|Win32.Build.0 = Debug|Win32
+		{B0C75EC0-CA46-4986-9586-E9E0D2521C26}.Release|Win32.ActiveCfg = Release|Win32
+		{B0C75EC0-CA46-4986-9586-E9E0D2521C26}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

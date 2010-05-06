@@ -58,7 +58,8 @@ public:
     ChannelTarget()
         : dwPrePos(0)
         , dwCurPos(0)
-        , dwCount(0){}
+        , dwCount(0)
+        , bIsFirstFrame(TRUE) {}
 
     ~ChannelTarget()
     {
@@ -104,6 +105,26 @@ protected:
         FileInfo& Info);
 
 protected:
+    void DropSomeData(int nPreAlarmTime);
+    void DropSomeData(int nPreAlarmTime, const FILETIME& Now);
+
+    void UpdatePos()
+    {
+        dwPrePos = 0;
+        dwCurPos = sizeof(IVFileHead);
+    }
+
+    void ResetFileHead()
+    {
+        FileHead.FileFlag = g_dwIVFileFail;
+        FileHead.dwIndexNum = 0;
+    }
+
+    void UpdateDataIndex(
+        const FILETIME& t,
+        DWORD DataOffset);
+
+protected:
     void FillHeadToFile(
         const FILETIME& OpenTime )
     {
@@ -111,9 +132,6 @@ protected:
         Writer.write((char*)&FileHead, sizeof(IVFileHead));
         UpdatePos();
     }
-
-    void DropSomeData(int nPreAlarmTime);
-    void DropSomeData(int nPreAlarmTime, const FILETIME& Now);
 
     void SaveData(
         int nPreAlarmTime,
@@ -131,28 +149,19 @@ protected:
         Writer.write((char*)&m_TargetQueue->Tar, nSize);
     }
 
-    void UpdatePos()
+    // Save a Data head + a Group Target Data
+    void SaveGroupDataToFile(
+        IVFileDataHead& DataHead,
+        TGroupTarget* pGroupTarget )
     {
-        dwPrePos = 0;
-        dwCurPos = sizeof(IVFileHead);
+        SaveDataHeadToFile(
+            DataHead,
+            pGroupTarget->m_TargetQueue->nCount,
+            pGroupTarget->m_time);
+        SaveTargetToFile(pGroupTarget->m_TargetQueue);
     }
 
-    //void PopFileInfo()
-    //{
-    //    FilePathList.pop_front();
-    //}
-
-    void ResetFileHead()
-    {
-        FileHead.FileFlag = g_dwIVFileFail;
-        FileHead.dwIndexNum = 0;
-    }
-
-    void UpdateDataIndex(
-        const FILETIME& t,
-        DWORD DataOffset);
-
-    void UpdateDataIndexToFile(const FileInfo& Info);
+    void UpdateDataIndexToFile(const FileInfo& Info);  
 
 protected:
     typedef list<TGroupTarget*> TTargetList;
@@ -167,6 +176,7 @@ private:
     ofstream Writer;
     DWORD dwPrePos;
     DWORD dwCurPos;
+    BOOL bIsFirstFrame;
 
     /**
     *@note 下面三个参数主要为了保存索引数据，即IV文件头
@@ -222,6 +232,8 @@ protected:
     size_t FindBuf();
 
     BOOL ReadSome(FILETIME& CurrentFrameTime);
+
+    void ClearTempData();
 private:
     ifstream m_Reader;
     //BOOL IsFoundFile;

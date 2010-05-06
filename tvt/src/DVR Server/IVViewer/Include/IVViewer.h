@@ -242,8 +242,8 @@ struct IIVPlayBackViewer :
 {
     enum PlayBack_Mode
     {
-        __Dir,   // Left , 正着播
-        Dir__    // Right, 倒着播
+        __Dir,   // Left , 倒着播
+        Dir__    // Right, 正着播
     };
     virtual void SetPlayBackMode(PlayBack_Mode Mode)=0;
 };

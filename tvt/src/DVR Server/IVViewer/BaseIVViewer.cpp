@@ -50,7 +50,12 @@ BOOL CBaseIVViewer<TViewer>::Paint(
     {
         return FALSE;
     }
-  
+ 
+#ifdef _PlayBack_Test
+    RECT rect2 = {0,0,352,288};
+    memcpy((char*)&rect, &rect2, sizeof(RECT));
+#endif // _PlayBack_Test
+    
     WPG_Target* pTarBuf = NULL;
     int nTarCount = 0;
     int nDeviceID = nChannelID/Every_Device_Channel;

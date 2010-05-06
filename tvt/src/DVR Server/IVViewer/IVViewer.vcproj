@@ -427,6 +427,10 @@
 				RelativePath=".\ViewHelper.h"
 				>
 			</File>
+			<File
+				RelativePath=".\XTrace.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
