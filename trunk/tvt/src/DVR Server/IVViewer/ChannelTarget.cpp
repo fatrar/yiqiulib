@@ -107,6 +107,17 @@ bool CIVLiveDataBuf::ChannelTarget::StartSection(
                 break;
             }
 
+            // 防止连续调两次Start
+            if ( !iter->UnFinishSection.empty() )
+            {
+                if ( iter->UnFinishSection.back().EndTime == 0 )
+                {
+                    assert(false);
+                    TRACE("StartSection Error!");
+                    break;
+                }
+            }
+
             FileSectionTime SectionTime;
             SectionTime.BeginTime = time;
             iter->UnFinishSection.push_back( SectionTime );          
@@ -144,6 +155,7 @@ bool CIVLiveDataBuf::ChannelTarget::EndSection(
             if ( SectionTime.BeginTime.GetTime() == 0 ||
                  SectionTime.EndTime.GetTime() != 0 )
             {
+                TRACE("EndSection Error!");
                 assert(false);
                 break;
             }
@@ -252,7 +264,6 @@ void CIVLiveDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
     {
         AutoLockAndUnlock(cs);
         FileInfo& Info = FilePathList.front();
-
         if ( Info.UnFinishSection.empty() )
         {
             return;
@@ -347,6 +358,8 @@ typedef QueueDropTableMgr::c_DropTable QueueDropTable;
 
 /**
 *@note 这个函数算法比较复杂，需要验证
+*   这个算法原本是用于一个文件只有一个区段，现在文件可能有很多个段，丢弃效果就好了，
+*  可以根据每个段的个数，重新算丢弃值。现在只做当一个段处理，暂时不改
 */
 void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
     const FileInfo& Info )
@@ -364,7 +377,9 @@ void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
     *    然后将调整后的时候放在FileHead中
     *    MoreDataIndex没数据，那么直接写FileHead就好
     */
+    FileHead.BeginTime = FinishSection.front().BeginTime;
     FileHead.EndTime = FinishSection.back().EndTime;
+    FileHead.FileFlag = g_dwIVFileOK;
     FileHead.dwLastFramePos = dwPrePos;
     Writer.seekp(0);
     size_t nQueueSize = MoreDataIndex.size();
@@ -540,11 +555,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsSetClose(
         /**
         *@note 2.3.2 小于等于，则保存数据
         */
-        SaveDataHeadToFile(
-            DataHead,
-            pGroupTarget->m_TargetQueue->nCount,
-            pGroupTarget->m_time);
-        SaveTargetToFile(pGroupTarget->m_TargetQueue);
+        SaveGroupDataToFile(DataHead, pGroupTarget);
         bNeedFlush = TRUE;
 
         /**
@@ -684,11 +695,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsNoSetClose(
         /**
         *@note 2.4. 保存数据
         */
-        SaveDataHeadToFile(
-            DataHead,
-            pGroupTarget->m_TargetQueue->nCount,
-            pGroupTarget->m_time);
-        SaveTargetToFile(pGroupTarget->m_TargetQueue);
+        SaveGroupDataToFile(DataHead, pGroupTarget);
         bNeedFlush = TRUE;
 
         /**
@@ -739,9 +746,11 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
     m_DataIndex.clear();
     if ( Head.FileFlag != g_dwIVFileOK )
     {
-        return FALSE;
+        //return FALSE;
     }
 
+    m_BeginTime = Head.BeginTime;
+    m_EndTime = Head.EndTime;
     StlHelper::Array2STL(
         Head.DataIndex, 
         Head.dwIndexNum, 
@@ -762,7 +771,7 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
     {
         TmpDataIndex.TimeOffset = EndTimeOffset;
         TmpDataIndex.DataOffset = Head.dwLastFramePos;
-        m_DataIndex.push_front(TmpDataIndex);
+        m_DataIndex.push_back(TmpDataIndex);
     }
 
     return TRUE;
@@ -815,8 +824,13 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::Open(
         m_Reader.close();
     }
 
-    m_Reader.open(pPath, ios::binary|ios::in);
-    if ( m_Reader.is_open() )
+    m_Reader.clear();
+    string strPath = pPath;
+    strPath += c_szIVFileExt;
+    m_Reader.open(
+        strPath.c_str(),
+        ios::binary |ios::in | ios::_Nocreate );
+    if ( !m_Reader.is_open() )
     {
         return FALSE;
     }
@@ -865,10 +879,11 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::MoveToAndReadSome(
     if ( (time < m_BeginTime || time > m_EndTime) ||
          nQueueSize == 0 )
     {
-        m_Reader.close();
+        //m_Reader.close();
         return FALSE;
     }
 
+    ClearTempData();
     size_t nPos = GetPos(time);
     if ( nPos == size_t(-1) )
     {
@@ -895,7 +910,8 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::MoveToAndReadSome(
 
     BOOL bFirstFrame = TRUE;
     IVFileDataIndex& TmpDataIndex2 = m_DataIndex[nPos+1];
-    while ( m_Reader.tellg() < TmpDataIndex2.DataOffset )
+    size_t nCurrentPos;
+    while ( (nCurrentPos = m_Reader.tellg()) < TmpDataIndex2.DataOffset )
     {
         if ( !ReadSome(CurrentFrameTime) )
         {
@@ -909,7 +925,8 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::MoveToAndReadSome(
 
         if ( bFirstFrame )
         {
-            m_BufStartTime = CurrentFrameTime ;
+            m_BufStartTime = m_BufEndTime = CurrentFrameTime;
+            bFirstFrame = FALSE;
         }
         else
         {
@@ -926,9 +943,22 @@ size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
     DWORD nTestTime = (DWORD)(time - m_BeginTime);
     double dGuessPercent = double(nTestTime)/double(m_EndTime-time);
     size_t nGuessQueusPos = size_t(nQueueSize*dGuessPercent);
-    assert(nGuessQueusPos > nQueueSize);
+    assert(nGuessQueusPos < nQueueSize);
 
     IVFileDataIndex& GuessDataIndex = m_DataIndex[nGuessQueusPos];
+    if ( nGuessQueusPos == 0 )
+    {
+        for ( size_t i=0; i<nQueueSize; ++i )
+        {
+            IVFileDataIndex& TmpDataIndex = m_DataIndex[i];
+            if ( nTestTime >= TmpDataIndex.TimeOffset  )
+            {
+                return i;
+            }
+        }
+        return size_t(-1);
+    }
+
     if ( nTestTime == GuessDataIndex.TimeOffset )
     {
         return nGuessQueusPos;
@@ -948,7 +978,7 @@ size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
     }
     else //( nTestTime < GuessDataIndex.TimeOffset )
     {
-        for (size_t i=nGuessQueusPos+1; i<nQueueSize; ++i)
+        for (size_t i=nGuessQueusPos; i<nQueueSize; ++i)
         {
             IVFileDataIndex& TmpDataIndex = m_DataIndex[i];
             if ( nTestTime >= TmpDataIndex.TimeOffset  )
@@ -1004,9 +1034,15 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::ReadSome(FILETIME& CurrentFrameTime)
 CIVPlaybackDataBuf::TGroupTarget* CIVPlaybackDataBuf::ChannelTarget::Find(
     const FILETIME& time )
 {
+    if ( time < m_BeginTime ||
+         time > m_EndTime )
+    {
+        return NULL;
+    }
+
     if ( time < m_BufStartTime ||
          time > m_BufEndTime )
-    {
+     {
         if ( !MoveToAndReadSome(time) )
         {
             return NULL;
@@ -1023,6 +1059,17 @@ CIVPlaybackDataBuf::TGroupTarget* CIVPlaybackDataBuf::ChannelTarget::Find(
     return &(*iter);
 }
 
+void CIVPlaybackDataBuf::ChannelTarget::ClearTempData()
+{
+    set<PlayBackGroupTarget>::iterator iter;
+    for ( iter = m_IVSomeData.begin(); 
+          iter!= m_IVSomeData.end();
+          ++iter )
+    {
+        iter->m_TargetQueue->Release();
+    }
+    m_IVSomeData.clear();
+}
 // }
 // CIVPlaybackDataBuf::ChannelTarget
 

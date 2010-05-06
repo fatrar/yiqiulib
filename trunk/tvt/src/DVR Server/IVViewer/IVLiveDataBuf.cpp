@@ -123,8 +123,10 @@ BOOL CIVLiveDataBuf::OnIVDataSend(
     *@note 3. 将数据插入队列，等待外部取这个数据进行显示
     */
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
-    AutoLockAndUnlock(m_cs);
-    ChanTarget.PushBack(pGroupTarget);
+    {
+        AutoLockAndUnlock(m_cs);
+        ChanTarget.PushBack(pGroupTarget);
+    }
     return TRUE;
 }
 
