@@ -46,6 +46,8 @@ struct CIVLiveDataBuf::FileInfo
     string strPath;
     SectionTimeList FinishSection;
     SectionTimeList UnFinishSection;
+    CFileTime FrameBeginTime;
+    CFileTime FrameEndTime;
     BOOL bIsColse;
 };
 
@@ -87,6 +89,8 @@ public:
 
     void TrySaveData(int nPreAlarmTime);
 
+    void FinallySave();
+
     bool StartSection(
         const char* pPath, 
         const FILETIME& time);
@@ -102,6 +106,9 @@ protected:
 
     void SaveByFileIsNoSetClose(
         int nPreAlarmTime,
+        FileInfo& Info);
+
+    void FinallySaveAFile(
         FileInfo& Info);
 
 protected:
@@ -133,9 +140,9 @@ protected:
         UpdatePos();
     }
 
-    void SaveData(
-        int nPreAlarmTime,
-        FileInfo* Info = NULL);
+    //void SaveData(
+    //    int nPreAlarmTime,
+    //    FileInfo* Info = NULL);
 
     void SaveDataHeadToFile(
         IVFileDataHead& DataHead, 
@@ -151,9 +158,30 @@ protected:
 
     // Save a Data head + a Group Target Data
     void SaveGroupDataToFile(
+        FileInfo& Info,
+        FileSectionTime& SectionTime,
         IVFileDataHead& DataHead,
         TGroupTarget* pGroupTarget )
     {
+        if ( bIsFirstFrame )
+        {
+            SectionTime.BeginTime = pGroupTarget->m_time;
+            bIsFirstFrame = FALSE;
+        }
+
+        if ( !Writer.is_open() )
+        {
+            Info.FrameBeginTime = pGroupTarget->m_time;
+            string strPath = Info.strPath;
+            strPath += c_szIVFileExt;
+            Writer.open(
+                strPath.c_str(),
+                ios::binary | ios::trunc | ios::out );
+            assert( Writer.is_open() );
+            FillHeadToFile(SectionTime.BeginTime);
+        }
+
+        Info.FrameEndTime = pGroupTarget->m_time;
         SaveDataHeadToFile(
             DataHead,
             pGroupTarget->m_TargetQueue->nCount,
@@ -225,7 +253,7 @@ public:
 
 protected:
     template<IVFileVersionDefine Version>
-    BOOL PraseHeadToMap(const IVFileHead& Head);
+    BOOL ParseHeadToMap(const IVFileHead& Head);
 
     size_t GetPos(const FILETIME& time);
 
@@ -238,8 +266,8 @@ private:
     ifstream m_Reader;
     //BOOL IsFoundFile;
     DWORD m_dwCurrentPos;
-    FILETIME m_BeginTime;
-    FILETIME m_EndTime;
+    CFileTime m_BeginTime;
+    CFileTime m_EndTime;
 
     // 第一个位置放第一帧的信息，
     // 队列最后放最后一针的信息
@@ -250,8 +278,8 @@ private:
     size_t m_nBufLastPos;
 
     set<PlayBackGroupTarget> m_IVSomeData;
-    FILETIME m_BufStartTime;
-    FILETIME m_BufEndTime;
+    CFileTime m_BufStartTime;
+    CFileTime m_BufEndTime;
 
 #ifdef _FixIVFile
 protected:

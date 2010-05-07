@@ -51,14 +51,14 @@ public:
         const WPG_Target* pData,
         size_t nLen );
 
+    // IIVDataSaver
+public:
     virtual BOOL Init(
         int nDeviceCount,
         int nEveryDeviceChannelNum );
 
     virtual BOOL Unit();
 
-    // IIVDataSaver
-public:
     // 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
     virtual BOOL Open(
         int nChannelID,
@@ -95,7 +95,7 @@ protected:
     inline HANDLE GetMyWantEvent(IVBufEvent e, int nChannelID);
     inline DWORD GetEventCount();
     
-    void DoSaveFileEvent(DWORD dwChannel);
+    void DoSaveFileEvent(DWORD dwChannel, BOOL bFinallySave = FALSE);
     void DoOpenFileEvevt(DWORD dwChannel);
     void DoCloseFileEvent(DWORD dwChannel);
 

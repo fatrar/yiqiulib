@@ -48,6 +48,20 @@ struct IIVDeviceBase
     *@note 是否有统计规则,输入通道号（int nChannelID，下同）
     */ 
     virtual BOOL IsHaveStatisticRule(int nChannelID)=0;
+
+    /**
+    *@note 得到卡的个数和一个卡有多少通道
+    */
+    virtual void GetDeviceInfo(
+        size_t* pnDeviceNum,
+        size_t* pnChannelNumByDevice )=0;
+
+    /**
+    *@note 1张卡的最多可以处理的最大智能通道数和1个智能通道最大规则数
+    */
+    virtual void GetIVDeviceInfo(
+        size_t* pnIVChannelNumByDevice,
+        size_t* pnMaxRuleNumByIVChannel )=0;
 };
 
 //struct IIVStatistic
@@ -407,14 +421,6 @@ struct IIVDeviceBase2 :
         IVideoSend* pVideoSend)=0;
 
     virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p)=0;
-
-    virtual void GetDeviceInfo(
-        size_t* pnDeviceNum,
-        size_t* pnChannelNumByDevice )=0;
-
-    virtual void GetIVDeviceInfo(
-        size_t* pnIVChannelNumByDevice,
-        size_t* pnMaxRuleNumByIVChannel )=0;
 };
 
 

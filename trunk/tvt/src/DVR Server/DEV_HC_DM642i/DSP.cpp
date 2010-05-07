@@ -1434,7 +1434,7 @@ BOOL CDSP::CaptureStop()
 		}
 	}
 
-    m_pIVDataSender->Unit();
+    //m_pIVDataSender->Unit();
 	return bRc;
 }
 

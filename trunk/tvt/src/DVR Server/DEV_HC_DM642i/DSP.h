@@ -218,6 +218,13 @@ public:
     virtual BOOL IsUse(int nChannelID);
     virtual BOOL IsHaveFreeDevice(void);
     virtual BOOL IsHaveStatisticRule(int nChannelID);
+    virtual void GetDeviceInfo(
+        size_t* pnDeviceNum,
+        size_t* pnChannelNumByDevice );
+
+    virtual void GetIVDeviceInfo(
+        size_t* pnIVChannelNumByDevice,
+        size_t* pnMaxRuleNumByIVChannel );
 
     // IIVSimulation
 public:
@@ -283,14 +290,6 @@ public:
         IVideoSend* pVideoSend);
 
     virtual void ReleaseLiveBuf(FRAMEBUFSTRUCT* p);
-
-    virtual void GetDeviceInfo(
-        size_t* pnDeviceNum,
-        size_t* pnChannelNumByDevice );
-
-    virtual void GetIVDeviceInfo(
-        size_t* pnIVChannelNumByDevice,
-        size_t* pnMaxRuleNumByIVChannel );
 
     // IIVDeviceSetter
 public:
