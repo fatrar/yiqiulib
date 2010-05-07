@@ -171,7 +171,8 @@ BOOL CIVLiveDataBuf::Unit()
     {
         return FALSE;
     }
-  
+
+    m_IsInit = FALSE;
     SetEvent(m_Event[0]);
     if ( m_Thread )
     {
@@ -188,7 +189,7 @@ BOOL CIVLiveDataBuf::Unit()
 
     delete[] m_pTargetBuf; m_pTargetBuf = NULL;
     delete[] m_TargetMap; m_TargetMap =NULL;
-    m_IsInit = FALSE;
+    
     return TRUE;
 }
 
@@ -208,11 +209,8 @@ BOOL CIVLiveDataBuf::Open(
     ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
     ChanTarget.NewFileComing(pPath);
     
-    return TRUE;
-
-    // [] heliang, no use
-    //return SetEvent(
-    //    GetMyWantEvent(OpenFile_Event, nChannelID) );
+    return SetEvent(
+        GetMyWantEvent(SaveFile_Event, nChannelID) );
 }
 
 
@@ -255,11 +253,8 @@ BOOL CIVLiveDataBuf::Close(
         return FALSE;
     }
 
-    return TRUE;
-
-    // [] heliang, no use
-    //return SetEvent(
-    //    GetMyWantEvent(CloseFile_Evnet, nChannelID) );
+    return SetEvent(
+        GetMyWantEvent(SaveFile_Event, nChannelID) );
 }
 
 BOOL CIVLiveDataBuf::DeleteIVFile( 
@@ -295,19 +290,29 @@ size_t CIVLiveDataBuf::SaveFileLoopFun()
     while (1)
     {
         DWORD dwRc = WaitForMultipleObjects(
-            dwEventCount, m_Event, FALSE, -1 );
+            dwEventCount, m_Event, FALSE, 2000 );
         switch (dwRc)
         {
         case WAIT_ABANDONED:
         case WAIT_FAILED:
             break;	
         case WAIT_TIMEOUT:
+            TRACE("CIVLiveDataBuf::SaveFileLoopFun Time out!\n");
+            for ( DWORD i = 0; i< m_nEveryDeviceChannelNum*m_nDeviceCount; ++i)
+            { 
+                DoSaveFileEvent(i);
+            }
         	break;
         case WAIT_OBJECT_0:
+            TRACE("CIVLiveDataBuf::SaveFileLoopFun Thread Close!\n");
+            for ( DWORD i = 0; i< m_nEveryDeviceChannelNum*m_nDeviceCount; ++i)
+            { 
+                DoSaveFileEvent(i, TRUE);
+            }
             return 0;
         default:
             DWORD dwOffsetValue = dwRc - (WAIT_OBJECT_0 +1);
-             DWORD dwEventID = dwOffsetValue%(Event_Count);
+            DWORD dwEventID = dwOffsetValue%(Event_Count);
             //DWORD dwEventID = dwOffsetValue%(m_nDeviceCount*m_nEveryDeviceChannelNum);
             //DWORD dwDeviceID = dwOffsetValue%(_EventTypeCount*m_nEveryDeviceChannelNum);
             DWORD dwChannelID = dwOffsetValue/(Event_Count);
@@ -366,10 +371,18 @@ size_t CIVLiveDataBuf::FindBuf()
     return IVViewerFindBuf(m_nLastPos, m_pTargetBuf, m_dwMaxBufCount);
 }
 
-void CIVLiveDataBuf::DoSaveFileEvent(DWORD dwChannel)
+void CIVLiveDataBuf::DoSaveFileEvent(DWORD dwChannel, BOOL bFinallySave)
 {
-    ChannelTarget& ChanTarget = m_TargetMap[dwChannel];   
-    ChanTarget.TrySaveData(m_nPreAlarmTime);
+    ChannelTarget& ChanTarget = m_TargetMap[dwChannel];
+    if ( bFinallySave )
+    {
+        ChanTarget.FinallySave();
+    }
+    else
+    {
+        ChanTarget.TrySaveData(m_nPreAlarmTime);
+    }
+    
 }
 
 void CIVLiveDataBuf::DoOpenFileEvevt( DWORD dwChannel )

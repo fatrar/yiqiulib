@@ -731,7 +731,7 @@ void CDSP::SetIVDataCallBack(
 {
     m_pIVDataSender = pIVDataSender;
     m_pIVStatisticFresher = pIVStatisticFresher;
-    m_pIVDataSender->Init(m_nDeviceNum, CHANNEL_PER_DEVICE);
+    //m_pIVDataSender->Init(m_nDeviceNum, CHANNEL_PER_DEVICE);
 }
 
 void CDSP::SetSnapShotCallBack( ISnapShotSender* pSnapShotSender )

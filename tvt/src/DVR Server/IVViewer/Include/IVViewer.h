@@ -40,6 +40,12 @@
 */
 struct IIVDataSaver
 {
+    virtual BOOL Init(
+        int nDeviceCount,
+        int nEveryDeviceChannelNum )=0;
+
+    virtual BOOL Unit()=0;
+
     /**
     *@note 视频文件第一次写时回调，告诉智能这边文件保存的路径和开始的时间
     *@param nChannelID Channel ID

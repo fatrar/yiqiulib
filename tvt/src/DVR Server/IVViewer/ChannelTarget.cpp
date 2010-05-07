@@ -112,8 +112,8 @@ bool CIVLiveDataBuf::ChannelTarget::StartSection(
             {
                 if ( iter->UnFinishSection.back().EndTime == 0 )
                 {
-                    assert(false);
-                    TRACE("StartSection Error!");
+                    //assert(false);
+                    TRACE("StartSection Error!\n");
                     break;
                 }
             }
@@ -125,7 +125,7 @@ bool CIVLiveDataBuf::ChannelTarget::StartSection(
         }
     }
 
-    assert(false);
+    //assert(false);
     return false;
 }
 
@@ -151,12 +151,26 @@ bool CIVLiveDataBuf::ChannelTarget::EndSection(
                 break;
             }
 
+            if ( iter->UnFinishSection.empty() )
+            {
+                TRACE("EndSection UnFinishSection empty!\n");
+                break;
+            }
+
             FileSectionTime& SectionTime = iter->UnFinishSection.back();
             if ( SectionTime.BeginTime.GetTime() == 0 ||
                  SectionTime.EndTime.GetTime() != 0 )
             {
-                TRACE("EndSection Error!");
+                TRACE("EndSection Error!\n");
                 assert(false);
+                break;
+            }
+
+            if ( SectionTime.BeginTime >= time ||
+                 time - SectionTime.BeginTime < 300 )
+            {
+                assert(false);
+                FilePathList.erase(iter);
                 break;
             }
 
@@ -236,11 +250,12 @@ void CIVLiveDataBuf::ChannelTarget::DropSomeData(int nPreAlarmTime)
     return DropSomeData(nPreAlarmTime, Now);
 }
 
-void CIVLiveDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
+void CIVLiveDataBuf::ChannelTarget::TrySaveData(
+    int nPreAlarmTime )
 {
     if ( TargetSaveList.size() == 0 )
     {
-        return;
+        return;    
     }
 
     /**
@@ -250,11 +265,11 @@ void CIVLiveDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
     *            判断文件是否有Close标记，有则保存数据到Close时间
     *   Yes, 直接写PreAlarm的数据，判断文件是否有Close标记，有则保存数据到Close时间
     */
-    bool IsFileOpen = Writer.is_open();
-    if ( IsFileOpen )
-    {
-        return SaveData(nPreAlarmTime);
-    }
+    //bool IsFileOpen = Writer.is_open();
+    //if ( IsFileOpen )
+    //{
+    //    return SaveData(nPreAlarmTime);
+    //}
 
     if ( FilePathList.size() == 0 )
     {
@@ -264,48 +279,60 @@ void CIVLiveDataBuf::ChannelTarget::TrySaveData(int nPreAlarmTime)
     {
         AutoLockAndUnlock(cs);
         FileInfo& Info = FilePathList.front();
-        if ( Info.UnFinishSection.empty() )
+        if ( Info.bIsColse )
         {
-            return;
+            SaveByFileIsSetClose(nPreAlarmTime, Info);
         }
-
-        string strPath = Info.strPath+c_szIVFileExt;
-        Writer.open(
-            strPath.c_str(),
-            ios::binary | ios::trunc | ios::out );
-        IsFileOpen = Writer.is_open();
-        if ( IsFileOpen )
+        else // Info->bIsColse
         {
-            FillHeadToFile(Info.UnFinishSection.front().BeginTime);
+            SaveByFileIsNoSetClose(nPreAlarmTime, Info);
         }
-        else
-        {
-            assert(false);
-        }
-
-        SaveData(nPreAlarmTime, &Info);
     }
+    //{
+    //    AutoLockAndUnlock(cs);
+    //    FileInfo& Info = FilePathList.front();
+    //    if ( Info.UnFinishSection.empty() )
+    //    {
+    //        return;
+    //    }
+
+    //    string strPath = Info.strPath+c_szIVFileExt;
+    //    Writer.open(
+    //        strPath.c_str(),
+    //        ios::binary | ios::trunc | ios::out );
+    //    IsFileOpen = Writer.is_open();
+    //    if ( IsFileOpen )
+    //    {
+    //        FillHeadToFile(Info.UnFinishSection.front().BeginTime);
+    //    }
+    //    else
+    //    {
+    //        assert(false);
+    //    }
+
+    //    SaveData(nPreAlarmTime, &Info);
+    //}
 }
 
-void CIVLiveDataBuf::ChannelTarget::SaveData(
-    int nPreAlarmTime,
-    FileInfo* Info)
-{
-    AutoLockAndUnlock(cs);
-    if ( Info == NULL )
-    {
-        Info = &(FilePathList.front());
-    }
-
-    if ( Info->bIsColse )
-    {
-        SaveByFileIsSetClose(nPreAlarmTime, *Info);
-    }
-    else // Info->bIsColse
-    {
-        SaveByFileIsNoSetClose(nPreAlarmTime, *Info);
-    }
-}
+//void CIVLiveDataBuf::ChannelTarget::SaveData(
+//    int nPreAlarmTime,
+//    FileInfo* Info)
+//{
+//    AutoLockAndUnlock(cs);
+//    if ( Info == NULL )
+//    {
+//        Info = &(FilePathList.front());
+//    }
+//
+//    if ( Info->bIsColse )
+//    {
+//        SaveByFileIsSetClose(nPreAlarmTime, *Info);
+//    }
+//    else // Info->bIsColse
+//    {
+//        SaveByFileIsNoSetClose(nPreAlarmTime, *Info);
+//    }
+//}
 
 void CIVLiveDataBuf::ChannelTarget::SaveDataHeadToFile( 
     IVFileDataHead& DataHead,
@@ -364,11 +391,11 @@ typedef QueueDropTableMgr::c_DropTable QueueDropTable;
 void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
     const FileInfo& Info )
 {
-    const FileInfo::SectionTimeList& FinishSection = Info.FinishSection;
-    if ( FinishSection.empty() )
-    {
-        return;
-    }
+    //const FileInfo::SectionTimeList& FinishSection = Info.FinishSection;
+    //if ( FinishSection.empty() )
+    //{
+    //    return;
+    //}
 
     /**
     *@note 1. 将IV文件头EndTime赋值，注意这个值是上层传过来的视频文件最后一帧时间
@@ -377,8 +404,8 @@ void CIVLiveDataBuf::ChannelTarget::UpdateDataIndexToFile(
     *    然后将调整后的时候放在FileHead中
     *    MoreDataIndex没数据，那么直接写FileHead就好
     */
-    FileHead.BeginTime = FinishSection.front().BeginTime;
-    FileHead.EndTime = FinishSection.back().EndTime;
+    FileHead.BeginTime = Info.FrameBeginTime;
+    FileHead.EndTime = Info.FrameEndTime;
     FileHead.FileFlag = g_dwIVFileOK;
     FileHead.dwLastFramePos = dwPrePos;
     Writer.seekp(0);
@@ -473,9 +500,15 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsSetClose(
     */
     if ( Info.UnFinishSection.empty() )
     {
-        // 首先更新文件索引，然后关闭文件，删除当前使用文件信息
-        UpdateDataIndexToFile(Info);
-        Writer.close();
+        if ( Writer.is_open() )
+        {
+            // 首先更新文件索引，然后关闭文件，删除当前使用文件信息
+            UpdateDataIndexToFile(Info);
+            // 这里有一种情况是，文件路径给了，但是一直没开始设置录
+            // 即有路径但没有段信息，
+            // 这个时候需要丢弃所有期间数据，文件也没创建
+            Writer.close();
+        }    
         FilePathList.pop_front();
         return;
     }
@@ -486,6 +519,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsSetClose(
     IVFileDataHead DataHead = {0};
     BOOL bNeedFlush = FALSE;
     FileSectionTime& SectionTime = Info.UnFinishSection.front();
+    string& strPath = Info.strPath;
     for ( TTargetList::iterator iter = TargetSaveList.begin();
           iter!= TargetSaveList.end(); )
     {
@@ -510,10 +544,15 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsSetClose(
             assert(false);
 
             Info.UnFinishSection.pop_front();
+            bIsFirstFrame = TRUE;
+
             if ( Info.UnFinishSection.empty() )
             {
                 UpdateDataIndexToFile(Info);
-                Writer.close();
+                if ( Writer.is_open() )
+                {
+                    Writer.close();
+                }
                 FilePathList.pop_front();
                 return;
             }
@@ -539,11 +578,15 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsSetClose(
             SectionTime.EndTime = pGroupTarget->m_time;
             Info.FinishSection.push_back(SectionTime);
             Info.UnFinishSection.pop_front();
+            bIsFirstFrame = TRUE;
 
             if ( Info.UnFinishSection.empty() )
             {
-                UpdateDataIndexToFile(Info);
-                Writer.close();
+                if ( Writer.is_open() )
+                {
+                    UpdateDataIndexToFile(Info);
+                    Writer.close();
+                }
                 FilePathList.pop_front();
                 return;
             }
@@ -555,7 +598,11 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsSetClose(
         /**
         *@note 2.3.2 小于等于，则保存数据
         */
-        SaveGroupDataToFile(DataHead, pGroupTarget);
+        SaveGroupDataToFile(
+            Info,
+            SectionTime,
+            DataHead, 
+            pGroupTarget);
         bNeedFlush = TRUE;
 
         /**
@@ -575,6 +622,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsSetClose(
             */
             Info.FinishSection.push_back(SectionTime);
             Info.UnFinishSection.pop_front();
+            bIsFirstFrame = TRUE;
 
             if ( Info.UnFinishSection.empty() )
             {
@@ -618,9 +666,10 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsNoSetClose(
     /**
     *@note 2. 保存还没有保存完的段信息的数据
     */
-    FileSectionTime& SectionTime = Info.UnFinishSection.front();
     IVFileDataHead DataHead = {0};
     BOOL bNeedFlush = FALSE;
+    FileSectionTime& SectionTime = Info.UnFinishSection.front();
+    string& strPath = Info.strPath;  
     for ( TTargetList::iterator iter = TargetSaveList.begin();
           iter!= TargetSaveList.end(); )
     {
@@ -643,6 +692,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsNoSetClose(
         {
             assert(false);
 
+            bIsFirstFrame = TRUE;
             Info.UnFinishSection.pop_front();
             if ( Info.UnFinishSection.empty() )
             {
@@ -663,7 +713,9 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsNoSetClose(
             long nState = pGroupTarget->m_time ^ SectionTime.EndTime;
             if ( nState > 0 )
             {
+                bIsFirstFrame = TRUE;
                 SectionTime.EndTime = pGroupTarget->m_time;
+                Info.FinishSection.push_back(SectionTime);
                 Info.UnFinishSection.pop_front();
                 if ( Info.UnFinishSection.empty() )
                 {
@@ -672,6 +724,7 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsNoSetClose(
                 }
 
                 SectionTime = Info.UnFinishSection.front();
+ 
                 continue;
             }
 
@@ -695,7 +748,11 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsNoSetClose(
         /**
         *@note 2.4. 保存数据
         */
-        SaveGroupDataToFile(DataHead, pGroupTarget);
+        SaveGroupDataToFile(
+            Info,
+            SectionTime,
+            DataHead,
+            pGroupTarget);
         bNeedFlush = TRUE;
 
         /**
@@ -713,6 +770,181 @@ void CIVLiveDataBuf::ChannelTarget::SaveByFileIsNoSetClose(
     {
         Writer.flush();
     }
+}
+
+void CIVLiveDataBuf::ChannelTarget::FinallySave()
+{
+    // 将所有未来得及live播放的数据放进保存队列
+    TargetSaveList.splice(TargetSaveList.end(), TargetList);
+
+    AutoLockAndUnlock(cs);
+    FileInfoList::iterator iter;
+    for ( iter = FilePathList.begin();
+          iter!= FilePathList.end();
+          ++iter )
+    {
+        FileInfo& Info = *iter;
+        FinallySaveAFile(Info);
+    }
+
+    FilePathList.clear();
+}
+
+void CIVLiveDataBuf::ChannelTarget::FinallySaveAFile(
+    FileInfo& Info )
+{
+    /**
+    *@note 1. 如果没有的处理的数据段信息，就直接刷新索引，关闭文件
+    */
+    if ( Info.UnFinishSection.empty() )
+    { 
+        if ( Writer.is_open() )
+        {
+            // 首先更新文件索引，然后关闭文件，删除当前使用文件信息
+            UpdateDataIndexToFile(Info);
+            // 这里有一种情况是，文件路径给了，但是一直没开始设置录
+            // 即有路径但没有段信息，
+            // 这个时候需要丢弃所有期间数据，文件也没创建
+            Writer.close();
+        }    
+        return;
+    }
+
+    /**
+    *@note 2. 保存还没有保存完的段信息的数据 
+    */
+    IVFileDataHead DataHead = {0};
+    BOOL bNeedFlush = FALSE;
+    FileSectionTime& SectionTime = Info.UnFinishSection.front();
+    string& strPath = Info.strPath;
+    for ( TTargetList::iterator iter = TargetSaveList.begin();
+          iter!= TargetSaveList.end(); )
+    {
+        TGroupTarget* pGroupTarget = *iter;
+
+        /**
+        *@note 2.2. 异常处理，判断段信息时间是否有误，
+        *           正常情况都不为0,
+        *  如果为异常数据则丢弃，取下一个
+        */
+        if ( SectionTime.BeginTime.GetTime() == 0 ||
+             SectionTime.EndTime.GetTime() == 0 )
+        {
+            assert(false);
+
+            Info.UnFinishSection.pop_front();
+            bIsFirstFrame = TRUE;
+
+            if ( Info.UnFinishSection.empty() )
+            {
+                UpdateDataIndexToFile(Info);
+                if ( Writer.is_open() )
+                {
+                    Writer.close();
+                }
+                return;
+            }
+
+            SectionTime = Info.UnFinishSection.front();
+            continue;
+        }
+
+        /**
+        *@note 2.3. 判断数据要保存到的时间与数据时间的关系
+        *  if > 数据大于保存的时间则，取下一个段信息。没有下一个段则关闭文件
+        *  if =  保存当前的这组数据，然后关闭文件
+        *  if <  保存数据，继续循环
+        */
+        long nState = pGroupTarget->m_time ^ SectionTime.EndTime;
+        if ( nState > 0 )
+        {
+            /**
+            *@note 2.3.1 段时间用真正的数据时间，然后将段信息放进处理完的队列里，
+            *  判断是否还有未处理的段，没有就做文件关闭及其更新文件索引
+            *  有则取下一个段，继续循环
+            */
+            SectionTime.EndTime = pGroupTarget->m_time;
+            Info.FinishSection.push_back(SectionTime);
+            Info.UnFinishSection.pop_front();
+            bIsFirstFrame = TRUE;
+
+            if ( Info.UnFinishSection.empty() )
+            {
+                if ( Writer.is_open() )
+                {
+                    UpdateDataIndexToFile(Info);
+                    Writer.close();
+                }
+                return;
+            }
+
+            SectionTime = Info.UnFinishSection.front();
+            continue;
+        }
+
+        /**
+        *@note 2.3.2 小于等于，则保存数据
+        */
+        SaveGroupDataToFile(
+            Info,
+            SectionTime,
+            DataHead,
+            pGroupTarget);
+        bNeedFlush = TRUE;
+
+        /**
+        *@note 2.3.3. 收尾(释放缓存的引用，删除节点)
+        */
+        pGroupTarget->m_TargetQueue->nUse = Buf_No_Use;
+        pGroupTarget->m_TargetQueue->nRef = 0;
+        delete pGroupTarget;
+        TargetSaveList.erase(iter);
+
+        if ( nState == 0 )
+        {
+            /**
+            *@note 2.3.4. 刚好相等，则将当前段信息放进处理完的队列里，
+            *  判断是否还有未处理的段，没有就做文件关闭及其更新文件索引
+            *  有则取下一个段，继续循环
+            */
+            Info.FinishSection.push_back(SectionTime);
+            Info.UnFinishSection.pop_front();
+            bIsFirstFrame = TRUE;
+
+            if ( Info.UnFinishSection.empty() )
+            {
+                // 使用真正的数据时间
+                UpdateDataIndexToFile(Info);
+                Writer.close();
+                return;
+            }
+
+            SectionTime = Info.UnFinishSection.front();
+            // continue;
+        }
+
+        iter = TargetSaveList.begin();
+    }
+
+    if ( Info.UnFinishSection.empty() )
+    {
+        assert(false);
+        if ( Writer.is_open() )
+        {
+            UpdateDataIndexToFile(Info);
+            Writer.close();
+        }
+        return;
+    }
+
+    if ( Writer.is_open() )
+    {
+        Info.UnFinishSection.front().EndTime = Info.FrameBeginTime;
+        UpdateDataIndexToFile(Info);
+        Writer.close();
+    }
+
+    return;
 }
 
 // }
@@ -740,39 +972,77 @@ CIVPlaybackDataBuf::ChannelTarget::~ChannelTarget()
 };
 
 template<>
-BOOL CIVPlaybackDataBuf::ChannelTarget::PraseHeadToMap<IVFile_Version_1_0>(
+BOOL CIVPlaybackDataBuf::ChannelTarget::ParseHeadToMap<IVFile_Version_1_0>(
     const IVFileHead& Head)
 {
     m_DataIndex.clear();
     if ( Head.FileFlag != g_dwIVFileOK )
     {
-        //return FALSE;
+        return FALSE;
     }
 
     m_BeginTime = Head.BeginTime;
     m_EndTime = Head.EndTime;
+    if ( m_BeginTime.GetTime() == 0 ||
+         m_EndTime.GetTime() == 0 )
+    {
+        return FALSE;
+    }
+
     StlHelper::Array2STL(
         Head.DataIndex, 
         Head.dwIndexNum, 
         m_DataIndex );
 
     IVFileDataIndex TmpDataIndex; 
-    if ( m_DataIndex.size()==0 ||
-         m_DataIndex.front().TimeOffset != 0 )
+    DWORD EndTimeOffset = (DWORD)(Head.EndTime - Head.BeginTime);
+    if ( m_DataIndex.size()==0 )
     {
         TmpDataIndex.TimeOffset = 0;
         TmpDataIndex.DataOffset = sizeof(IVFileHead);
         m_DataIndex.push_front(TmpDataIndex);
+
+        if ( Head.dwLastFramePos != sizeof(IVFileHead) )
+        {
+            TmpDataIndex.TimeOffset = EndTimeOffset;
+            TmpDataIndex.DataOffset = Head.dwLastFramePos;
+            m_DataIndex.push_back(TmpDataIndex);
+        }
+    }
+    else
+    {
+        if ( m_DataIndex.front().TimeOffset != 0 )
+        {
+            TmpDataIndex.TimeOffset = 0;
+            TmpDataIndex.DataOffset = sizeof(IVFileHead);
+            m_DataIndex.push_front(TmpDataIndex);
+        }
+
+        if ( m_DataIndex.back().TimeOffset != EndTimeOffset )
+        {
+            TmpDataIndex.TimeOffset = EndTimeOffset;
+            TmpDataIndex.DataOffset = Head.dwLastFramePos;
+            m_DataIndex.push_back(TmpDataIndex);
+        }
     }
 
-    DWORD EndTimeOffset = (DWORD)(Head.EndTime - Head.BeginTime);
-    if ( m_DataIndex.size()==0 || 
-         m_DataIndex.back().TimeOffset != EndTimeOffset )
-    {
-        TmpDataIndex.TimeOffset = EndTimeOffset;
-        TmpDataIndex.DataOffset = Head.dwLastFramePos;
-        m_DataIndex.push_back(TmpDataIndex);
-    }
+    //IVFileDataIndex TmpDataIndex; 
+    //if ( m_DataIndex.size()==0 ||
+    //     m_DataIndex.front().TimeOffset != 0 )
+    //{
+    //    TmpDataIndex.TimeOffset = 0;
+    //    TmpDataIndex.DataOffset = sizeof(IVFileHead);
+    //    m_DataIndex.push_front(TmpDataIndex);
+    //}
+
+    //DWORD EndTimeOffset = (DWORD)(Head.EndTime - Head.BeginTime);
+    //if ( m_DataIndex.size()==0 || 
+    //     m_DataIndex.back().TimeOffset != EndTimeOffset )
+    //{
+    //    TmpDataIndex.TimeOffset = EndTimeOffset;
+    //    TmpDataIndex.DataOffset = Head.dwLastFramePos;
+    //    m_DataIndex.push_back(TmpDataIndex);
+    //}
 
     return TRUE;
 }
@@ -841,14 +1111,16 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::Open(
     switch ( Head.Version )
     {
     case IVFile_Version_1_0:
-        bRc = PraseHeadToMap<IVFile_Version_1_0>(Head);
+        bRc = ParseHeadToMap<IVFile_Version_1_0>(Head);
         break;
     default:
+        m_Reader.close();
         return FALSE;
     }
 
     if ( !bRc )
     {
+        m_Reader.close();
         return bRc;
     }
 
@@ -939,9 +1211,39 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::MoveToAndReadSome(
 
 size_t CIVPlaybackDataBuf::ChannelTarget::GetPos( const FILETIME& time )
 {
-    size_t nQueueSize = m_DataIndex.size();
     DWORD nTestTime = (DWORD)(time - m_BeginTime);
-    double dGuessPercent = double(nTestTime)/double(m_EndTime-time);
+    size_t nQueueSize = m_DataIndex.size();
+    for ( size_t i=0; i<nQueueSize; ++i )
+    {
+        IVFileDataIndex& TmpDataIndex = m_DataIndex[i];
+        if ( nTestTime == TmpDataIndex.TimeOffset )
+        {
+            return i;
+        }
+
+        if ( nTestTime > TmpDataIndex.TimeOffset )
+        {
+            if ( i == nQueueSize-1 )
+            {
+                return i;
+            }
+
+            if ( nTestTime < m_DataIndex[i+1].TimeOffset )
+            {
+                return i;
+            }
+            
+            continue;
+        }
+
+        if ( nTestTime < TmpDataIndex.TimeOffset)
+        {
+            break;
+        }
+    }
+    return size_t(-1);
+    
+    double dGuessPercent = double(nTestTime)/double((FILETIME)m_EndTime-time);
     size_t nGuessQueusPos = size_t(nQueueSize*dGuessPercent);
     assert(nGuessQueusPos < nQueueSize);
 
@@ -1034,6 +1336,11 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::ReadSome(FILETIME& CurrentFrameTime)
 CIVPlaybackDataBuf::TGroupTarget* CIVPlaybackDataBuf::ChannelTarget::Find(
     const FILETIME& time )
 {
+    if ( !m_Reader.is_open() )
+    {
+        return NULL;
+    }
+
     if ( time < m_BeginTime ||
          time > m_EndTime )
     {
