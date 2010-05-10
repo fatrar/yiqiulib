@@ -1120,6 +1120,21 @@ int CDSP::CmprssStreamProcessRcd(
 	int	nIndex = 0;	//选中缓冲区编号
 	int	nLen = 0;	//视频数据长度
 
+    //static ofstream s_Writer;
+ 
+    //if ( !s_Writer.is_open() )
+    //{
+    //    s_Writer.open("C:\\TestVideo.dat", ios::out| ios::binary );
+    //}  
+
+    //if ( nChl == 0 )
+    //{
+    //    DWORD nLen = pVBI->dwLen;
+    //    s_Writer.write((char*)&nLen, sizeof(DWORD));
+    //    s_Writer.write((char*)pVideoData, nLen);
+    //    s_Writer.flush();
+    //}
+
 	//正在等待关键帧，但该帧不是关键帧，丢弃
 	if(m_bNextFrameIsKeyRcd[nChl] && !pVBI->byKeyFrame)
 	{

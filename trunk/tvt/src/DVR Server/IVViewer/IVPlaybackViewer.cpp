@@ -69,8 +69,12 @@ void CIVPlaybackViewer::RefrehPoint(
         for ( iter = PointBuf.begin();
               iter!= PointBuf.end();
               ++iter )
-        {
-            assert(iter->second);
+        {    
+            if ( iter->second == NULL )
+            {
+                assert(iter->second);
+                continue;
+            }
             if ( iter->second->nPreviousID == tar.targetId )
             { 
                 pPointInfo = iter->second;
@@ -85,7 +89,7 @@ void CIVPlaybackViewer::RefrehPoint(
         }
         pPointInfo->PointQueue.push_back(tar.centroid);
         pPointInfo->nPreviousID = tar.equalId;
-        assert(PointTmpBuf[tar.equalId]==NULL);
+        assert(PointTmpBuf[tar.targetId]==NULL);
         PointTmpBuf[tar.targetId] = pPointInfo;
     }
 

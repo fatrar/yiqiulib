@@ -70,8 +70,8 @@ void CIVCfgDoc::Init()
    // s_CameraImageList.Add( hicon );
     dwErr =  GetLastError();
     s_CameraImageList.Add( AfxGetApp()->LoadIcon(IDI_Camera1));
-    s_CameraImageList.Add( AfxGetApp()->LoadIcon(IDI_Camera1));
     s_CameraImageList.Add( AfxGetApp()->LoadIcon(IDI_Camera2));
+    s_CameraImageList.Add( AfxGetApp()->LoadIcon(IDI_Camera1));
     int nImageCount = s_CameraImageList.GetImageCount();
 
     // bRc = s_CameraImageList.Create(IDI_Camera1, 32, 1, 0);

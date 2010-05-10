@@ -445,16 +445,10 @@ typedef QueueDropTableMgr::c_DropTable QueueDropTable;
 *   这个算法原本是用于一个文件只有一个区段，现在文件可能有很多个段，丢弃效果就好了，
 *  可以根据每个段的个数，重新算丢弃值。现在只做当一个段处理，暂时不改
 */
-template<DWORD dwIVFileVersion>
-void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::UpdateDataIndexToFile(
+template<>
+void CIVLiveDataBuf::ChannelTarget<IVFile_Version_1_0>::UpdateDataIndexToFile(
     const FileInfo& Info )
 {
-    //const FileInfo::SectionTimeList& FinishSection = Info.FinishSection;
-    //if ( FinishSection.empty() )
-    //{
-    //    return;
-    //}
-
     /**
     *@note 1. 将IV文件头EndTime赋值，注意这个值是上层传过来的视频文件最后一帧时间
     *    将Writer文件指针移到开始，这样就可以直接覆盖文件打开的那个
@@ -466,7 +460,7 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::UpdateDataIndexToFile(
     FileHead.EndTime = Info.FrameEndTime;
     FileHead.HeadFirst.FileFlag = g_dwIVFileOK;
     FileHead.dwLastFramePos = dwPrePos;
-    Writer.seekp(0);
+    
     size_t nQueueSize = MoreDataIndex.size();
     if ( nQueueSize != 0 )
     {
@@ -544,9 +538,35 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::UpdateDataIndexToFile(
         }
     }
 
+    Writer.seekp(0);
     Writer.write(
         (char*)&FileHead,
-        sizeof(IVFileHead<dwIVFileVersion>) );
+        sizeof(FileHead) );
+}
+
+template<>
+void CIVLiveDataBuf::ChannelTarget<IVFile_Version_2_0>::UpdateDataIndexToFile(
+    const FileInfo& Info )
+{
+    size_t nQueueSize = MoreDataIndex.size();
+    if ( nQueueSize != 0 )
+    {
+        IVFileDataIndex* pIndexBuf = new IVFileDataIndex[nQueueSize];
+        StlHelper::STL2Array(MoreDataIndex, pIndexBuf, nQueueSize);
+        Writer.write(
+            (char*)&pIndexBuf,
+            sizeof(IVFileDataIndex)*nQueueSize );
+        delete[] pIndexBuf;
+    }
+
+    FileHead.BeginTime = Info.FrameBeginTime;
+    FileHead.EndTime = Info.FrameEndTime;
+    FileHead.HeadFirst.FileFlag = g_dwIVFileOK;
+    FileHead.dwLastFramePos = dwPrePos;
+    Writer.seekp(0);
+    Writer.write(
+        (char*)&FileHead,
+        sizeof(FileHead) );
 }
 
 template<DWORD dwIVFileVersion>

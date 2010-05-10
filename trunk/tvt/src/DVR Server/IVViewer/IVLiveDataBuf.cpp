@@ -206,6 +206,7 @@ BOOL CIVLiveDataBuf::Open(
         return FALSE;
     }
 
+    TRACE("Open CH=%d %s\n", nChannelID, pPath);
     ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     ChanTarget.NewFileComing(pPath);
     
@@ -226,6 +227,7 @@ BOOL CIVLiveDataBuf::EnableSave(
         return FALSE;
     }
 
+    TRACE("Enable CH=%d Value=%d %s\n", nChannelID, bEnable, pPath);
     ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     if ( bEnable )
     {
@@ -248,6 +250,7 @@ BOOL CIVLiveDataBuf::Close(
         return FALSE;
     }
 
+    TRACE("Close CH=%d %s\n", nChannelID, pPath);
     ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     if ( !ChanTarget.FileClose(pPath) )
     {
