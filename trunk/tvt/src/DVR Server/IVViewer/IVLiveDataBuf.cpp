@@ -64,7 +64,7 @@ BaseTargetQueue* CIVLiveDataBuf::GetData(
         return NULL;
     }
 
-    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     TGroupTarget* pGroupTarget = NULL;
    
     {
@@ -122,7 +122,7 @@ BOOL CIVLiveDataBuf::OnIVDataSend(
     /**
     *@note 3. 将数据插入队列，等待外部取这个数据进行显示
     */
-    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     {
         AutoLockAndUnlock(m_cs);
         ChanTarget.PushBack(pGroupTarget);
@@ -139,7 +139,7 @@ BOOL CIVLiveDataBuf::Init(
         return TRUE;
     }
 
-    m_TargetMap = new ChannelTarget[nDeviceCount*nEveryDeviceChannelNum];
+    m_TargetMap = new ChannelTarget_2_0[nDeviceCount*nEveryDeviceChannelNum];
 
     m_dwMaxBufCount = Single_Device_Buf_Size*nDeviceCount;
     m_pTargetBuf = new LiveTargetQueue[m_dwMaxBufCount];
@@ -206,7 +206,7 @@ BOOL CIVLiveDataBuf::Open(
         return FALSE;
     }
 
-    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     ChanTarget.NewFileComing(pPath);
     
     return SetEvent(
@@ -226,14 +226,15 @@ BOOL CIVLiveDataBuf::EnableSave(
         return FALSE;
     }
 
-    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     if ( bEnable )
     {
         return ChanTarget.StartSection(pPath, time);
     }
     else
     {
-        return ChanTarget.EndSection(pPath, time);
+        return ( ChanTarget.EndSection(pPath, time) && 
+             SetEvent(GetMyWantEvent(SaveFile_Event, nChannelID)) );
     }
 }
 
@@ -247,7 +248,7 @@ BOOL CIVLiveDataBuf::Close(
         return FALSE;
     }
 
-    ChannelTarget& ChanTarget = m_TargetMap[nChannelID];
+    ChannelTarget_2_0& ChanTarget = m_TargetMap[nChannelID];
     if ( !ChanTarget.FileClose(pPath) )
     {
         return FALSE;
@@ -373,7 +374,7 @@ size_t CIVLiveDataBuf::FindBuf()
 
 void CIVLiveDataBuf::DoSaveFileEvent(DWORD dwChannel, BOOL bFinallySave)
 {
-    ChannelTarget& ChanTarget = m_TargetMap[dwChannel];
+    ChannelTarget_2_0& ChanTarget = m_TargetMap[dwChannel];
     if ( bFinallySave )
     {
         ChanTarget.FinallySave();

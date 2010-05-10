@@ -51,7 +51,7 @@ struct CIVLiveDataBuf::FileInfo
     BOOL bIsColse;
 };
 
-
+template<DWORD dwIVFileVersion>
 class CIVLiveDataBuf::ChannelTarget
 {
 //public:
@@ -118,14 +118,10 @@ protected:
     void UpdatePos()
     {
         dwPrePos = 0;
-        dwCurPos = sizeof(IVFileHead);
+        dwCurPos = sizeof(IVFileHead<dwIVFileVersion>);
     }
 
-    void ResetFileHead()
-    {
-        FileHead.FileFlag = g_dwIVFileFail;
-        FileHead.dwIndexNum = 0;
-    }
+    void ResetFileHead();
 
     void UpdateDataIndex(
         const FILETIME& t,
@@ -136,7 +132,7 @@ protected:
         const FILETIME& OpenTime )
     {
         FileHead.BeginTime = OpenTime;
-        Writer.write((char*)&FileHead, sizeof(IVFileHead));
+        Writer.write((char*)&FileHead, sizeof(FileHead));
         UpdatePos();
     }
 
@@ -217,7 +213,7 @@ private:
     *     这个时候在文件保存时需要将FileHead和MoreDataIndex的索引数据在平均丢弃，
     *     算法见对于处理函数UpdateDataIndexToFile的注解
     */
-    IVFileHead FileHead;
+    IVFileHead<dwIVFileVersion> FileHead;
     DWORD dwCount;
     deque<IVFileDataIndex> MoreDataIndex;
 
@@ -252,8 +248,14 @@ public:
     TGroupTarget* Find(const FILETIME& time);
 
 protected:
+    BOOL ParseFile();
+
     template<IVFileVersionDefine Version>
-    BOOL ParseHeadToMap(const IVFileHead& Head);
+    BOOL ParseHeadToMap();
+
+    template<IVFileVersionDefine Version>
+    void PushFileIndexDataToMemory(
+        IVFileHead<Version>& Head);
 
     size_t GetPos(const FILETIME& time);
 

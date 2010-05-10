@@ -103,11 +103,15 @@ protected:
 
 protected:
     struct FileInfo;
+
+    template<DWORD dwIVFileVersion>
     class ChannelTarget;
 
 protected:
     //typedef map<int, ChannelTarget> AllChannelTarget;
-    typedef ChannelTarget* AllChannelTarget;
+
+    typedef ChannelTarget<IVFile_Version_2_0> ChannelTarget_2_0;
+    typedef ChannelTarget_2_0* AllChannelTarget;
 
     AllChannelTarget m_TargetMap;
     CriticalSection m_cs;
