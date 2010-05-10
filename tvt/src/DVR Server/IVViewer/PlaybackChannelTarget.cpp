@@ -158,11 +158,6 @@ BOOL CIVPlaybackDataBuf::ChannelTarget::ParseHeadToMap()
         return FALSE;
     }
 
-    struct PushFileDataToMemory
-    {
-
-    };
-
     m_DataIndex.clear();
     PushFileIndexDataToMemory(Head);
 
