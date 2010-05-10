@@ -137,7 +137,9 @@ BOOL CLineDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     return TRUE;
 }
 
-void CLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
+
+
+void CLineDrawer::OnPaint(CDC& dc, const RECT& rect, BOOL bSelect)
 {
     if (!m_bIsOK)
     {
@@ -150,11 +152,16 @@ void CLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
         return;
     }
 
+    CRect WindowRect;
+    m_pWnd->GetClientRect(&WindowRect);
+    double fWidth = (rect.right-rect.left)*1.0/WindowRect.Width();
+    double fHeight = (rect.bottom-rect.top)*1.0/WindowRect.Height();
+
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
 
-    CPoint& BeginPoint = m_PointQueue[0];
-    CPoint& EndPoint = m_PointQueue[1];
+    CPoint BeginPoint = ZoomPoint(m_PointQueue[0], fWidth, fHeight);
+    CPoint EndPoint = ZoomPoint(m_PointQueue[1], fWidth, fHeight);
     dc.MoveTo(BeginPoint);  
     dc.LineTo(EndPoint);
     
@@ -162,7 +169,7 @@ void CLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
     {
         DrawSquare(&dc, BeginPoint, Point_Radii);
         DrawSquare(&dc, EndPoint, Point_Radii);
-        DrawCenterPoint(&dc);
+        DrawCenterPoint(&dc, fWidth, fHeight);
     }
 
     dc.SelectObject(pOldPen);
@@ -224,7 +231,7 @@ CArrowLineDrawer::CArrowLineDrawer(CWnd* pWnd)
     m_szdwNumber[0] = m_szdwNumber[1] = 0;
 }
 
-void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
+void CArrowLineDrawer::OnPaint(CDC& dc, const RECT& rect, BOOL bSelect)
 {
     if (!m_bIsOK)
     {
@@ -237,11 +244,16 @@ void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
         return;
     }
 
+    CRect WindowRect;
+    m_pWnd->GetClientRect(&WindowRect);
+    double fWidth = (rect.right-rect.left)*1.0/WindowRect.Width();
+    double fHeight = (rect.bottom-rect.top)*1.0/WindowRect.Height();
+
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
     
-    CPoint& BeginPoint = m_PointQueue[0];
-    CPoint& EndPoint = m_PointQueue[1];
+    CPoint BeginPoint = ZoomPoint(m_PointQueue[0], fWidth, fHeight);
+    CPoint EndPoint = ZoomPoint(m_PointQueue[1], fWidth, fHeight);
     dc.MoveTo(BeginPoint);  
     dc.LineTo(EndPoint);
 
@@ -254,7 +266,7 @@ void CArrowLineDrawer::OnPaint(CDC& dc, BOOL bSelect)
     {
         DrawSquare(&dc, BeginPoint, Point_Radii);
         DrawSquare(&dc, EndPoint, Point_Radii);  
-        DrawCenterPoint(&dc); 
+        DrawCenterPoint(&dc, fWidth, fHeight); 
     }
 
     // 利用垂直和两点的距离算出两个点的坐标

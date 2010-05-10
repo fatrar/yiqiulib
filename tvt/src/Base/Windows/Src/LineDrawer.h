@@ -31,7 +31,7 @@ protected:
     virtual BOOL OnMouseMove(UINT nFlags, CPoint& point);
     virtual BOOL OnLButtonUp(UINT nFlags, CPoint& point);
     virtual BOOL OnLButtonDown(UINT nFlags, CPoint& point);
-    virtual void OnPaint(CDC& dc,BOOL bSelect=FALSE);
+    virtual void OnPaint(CDC& dc, const RECT& rect, BOOL bSelect=FALSE);
 };
 
 class CArrowLineDrawer:
@@ -41,7 +41,7 @@ public:
     CArrowLineDrawer(CWnd* pWnd);
     virtual ~CArrowLineDrawer(void){};
 protected:
-    virtual void OnPaint(CDC& dc,BOOL bSelect=FALSE);
+    virtual void OnPaint(CDC& dc, const RECT& rect, BOOL bSelect=FALSE);
     virtual void SendCommond(DrawCommond c, void* p1=NULL, void* p2=NULL);
 
 protected:

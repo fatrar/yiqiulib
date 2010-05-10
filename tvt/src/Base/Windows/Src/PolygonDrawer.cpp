@@ -171,7 +171,7 @@ BOOL CPolygonDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     return TRUE;
 }
 
-void CPolygonDrawer::OnPaint(CDC& dc, BOOL bSelect)
+void CPolygonDrawer::OnPaint(CDC& dc, const RECT& rect, BOOL bSelect)
 {
     //if (!m_bIsOK && !m_bDrawing && )
     //{
@@ -183,6 +183,11 @@ void CPolygonDrawer::OnPaint(CDC& dc, BOOL bSelect)
         return;
     }
    
+    CRect WindowRect;
+    m_pWnd->GetClientRect(&WindowRect);
+    double fWidth = (rect.right-rect.left)*1.0/WindowRect.Width();
+    double fHeight = (rect.bottom-rect.top)*1.0/WindowRect.Height();
+
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectObject(&m_Brush);
 
@@ -191,7 +196,7 @@ void CPolygonDrawer::OnPaint(CDC& dc, BOOL bSelect)
     {    
         for  ( ; iter != m_PointQueue.end(); ++iter )
         {
-            CPoint& point = *iter;
+            CPoint point = ZoomPoint(*iter, fWidth, fHeight);
             DrawSquare(&dc, point, Point_Radii);
         }
     }
@@ -204,11 +209,11 @@ void CPolygonDrawer::OnPaint(CDC& dc, BOOL bSelect)
     }
  
     iter = m_PointQueue.begin();
-    CPoint& BeginPoint = *iter;
+    CPoint BeginPoint = ZoomPoint(*iter, fWidth, fHeight);
     dc.MoveTo(BeginPoint);
     for  ( ++iter; iter != m_PointQueue.end(); ++iter )
     {
-        dc.LineTo(*iter);
+        dc.LineTo( ZoomPoint(*iter, fWidth, fHeight) );
     }
 
     if ( m_bIsOK )
@@ -217,7 +222,7 @@ void CPolygonDrawer::OnPaint(CDC& dc, BOOL bSelect)
 
         if ( bSelect )
         {
-            DrawCenterPoint(&dc);
+            DrawCenterPoint(&dc, fWidth, fHeight);
         }
     }
 

@@ -40,7 +40,7 @@ protected:
     virtual BOOL OnMouseMove(UINT nFlags, CPoint& point);
     virtual BOOL OnLButtonUp(UINT nFlags, CPoint& point);
     virtual BOOL OnLButtonDown(UINT nFlags, CPoint& point);
-    virtual void OnPaint(CDC& dc, BOOL bSelect=FALSE);
+    virtual void OnPaint(CDC& dc, const RECT& rect, BOOL bSelect=FALSE);
 
 protected:
     bool m_bFirst;

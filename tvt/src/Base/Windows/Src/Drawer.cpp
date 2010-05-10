@@ -131,7 +131,7 @@ bool CDrawer::IsDargCenterPoint(CPoint& point)
     return Distance(point, p) <= Point_Radii;
 }
 
-void CDrawer::DrawCenterPoint(CDC* pdc)
+void CDrawer::DrawCenterPoint(CDC* pdc, double fWidth, double fHeight)
 {
     if ( !m_bIsOK )
     {
@@ -139,6 +139,7 @@ void CDrawer::DrawCenterPoint(CDC* pdc)
     }
 
     CPoint& p = CenterPoint();
+    p = ZoomPoint(p, fWidth, fHeight);
     DrawCircle(pdc, p, Point_Radii);
 }
 

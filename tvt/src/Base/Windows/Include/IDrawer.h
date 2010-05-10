@@ -112,7 +112,7 @@ public:
     //void SetEditCursor();
     virtual void SetDrawModeNotify(IDrawModeNotify* pDrawMode) = 0;
     virtual void SetDrawMode(DrawMode mode)=0;
-    virtual void OnUseDraw(CDC& dc)=0;
+    virtual void OnUseDraw(HDC dc, const RECT& rect)=0;
 
     virtual IDrawer* Add(IDrawerGraphType t) = 0;
     virtual BOOL Remove(IDrawer* pDrawer)=0;

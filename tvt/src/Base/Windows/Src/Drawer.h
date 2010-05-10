@@ -97,6 +97,10 @@ inline void DrawSquare(CDC* pdc, const CPoint& point, size_t nr)
         int(point.y+nr) );
 }
 
+CPoint inline ZoomPoint(const CPoint& Src, double fWidth, double fHeight)
+{
+    return CPoint(int(Src.x*fWidth), int(Src.y*fHeight));
+}
 
 
 class IDrawerEx :
@@ -107,7 +111,7 @@ public:
     virtual BOOL OnMouseMove(UINT nFlags, CPoint& point) = 0;
     virtual BOOL OnLButtonUp(UINT nFlags, CPoint& point) = 0;
     virtual BOOL OnLButtonDown(UINT nFlags, CPoint& point) = 0;
-    virtual void OnPaint(CDC& dc, BOOL bSelect=FALSE) = 0;
+    virtual void OnPaint(CDC& dc, const RECT& rect, BOOL bSelect=FALSE) = 0;
 protected:
     CWnd* m_pWnd;
 };
@@ -134,7 +138,7 @@ protected:
     bool IsDargPoint(CPoint& point);
     CPoint CenterPoint();
     bool IsDargCenterPoint(CPoint& point);
-    void DrawCenterPoint(CDC* pdc);
+    void DrawCenterPoint(CDC* pdc, double fWidth, double fHeight);
     void CenterPointMoveTo(const CPoint& CenterpointNow);
    
     void Redraw();
