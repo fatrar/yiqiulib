@@ -205,20 +205,23 @@ void CDrawContainer::OnPaint()
         return;
     }
 
-    OnUseDraw(dc);
+    CRect rect;
+    GetClientRect(&rect);
+    OnUseDraw(dc.m_hDC, rect);
 }
 
-void CDrawContainer::OnUseDraw(CDC& dc )
+void CDrawContainer::OnUseDraw(HDC dc, const RECT& rect)
 {
+    CDC* pdc = CDC::FromHandle(dc);
     DrawerList::iterator iter;
     for ( iter = m_GraphContainer.begin();
-        iter!= m_GraphContainer.end();
-        ++iter)
+          iter!= m_GraphContainer.end();
+          ++iter)
     {
         IDrawerEx* p = iter->pDrawer;
         if ( p->IsEnable() )
         {    
-            p->OnPaint(dc, p==m_pSelect);
+            p->OnPaint(*pdc, rect, p==m_pSelect);
         }  
     }
 }

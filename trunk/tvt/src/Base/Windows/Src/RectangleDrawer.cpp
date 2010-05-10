@@ -173,15 +173,20 @@ BOOL CRectangleDrawer::OnLButtonDown(UINT nFlags, CPoint& point)
     return TRUE;
 }
 
-void CRectangleDrawer::OnPaint(CDC& dc, BOOL bSelect)
+void CRectangleDrawer::OnPaint(CDC& dc, const RECT& rect, BOOL bSelect)
 {
     if (!m_bIsOK)
     {
         return;
     }
 
-    CPoint& p0 = m_PointQueue[0];
-    CPoint& p2 = m_PointQueue[2];
+    CRect WindowRect;
+    m_pWnd->GetClientRect(&WindowRect);
+    double fWidth = (rect.right-rect.left)*1.0/WindowRect.Width();
+    double fHeight = (rect.bottom-rect.top)*1.0/WindowRect.Height();
+
+    CPoint p0 = ZoomPoint(m_PointQueue[0], fWidth, fHeight);
+    CPoint p2 = ZoomPoint(m_PointQueue[2], fWidth, fHeight);
 
     CGdiObject *pOldPen = dc.SelectObject(&m_Pen);  
     CGdiObject *pOldBrush = dc.SelectStockObject(NULL_BRUSH);
@@ -193,7 +198,7 @@ void CRectangleDrawer::OnPaint(CDC& dc, BOOL bSelect)
     {
         for (int i=0; i<=3; ++i)
         {
-            CPoint& point = m_PointQueue[i];
+            CPoint point = ZoomPoint(m_PointQueue[i], fWidth, fHeight);
             DrawSquare(&dc, point, Point_Radii);
         }
 
@@ -202,10 +207,10 @@ void CRectangleDrawer::OnPaint(CDC& dc, BOOL bSelect)
         GetMedPointQueue(PointQueue, TmpPoint);
         for (int i=0; i<=3; ++i)
         {
-            CPoint& point = PointQueue[i];
+            CPoint point = ZoomPoint(PointQueue[i], fWidth, fHeight);
             DrawSquare(&dc, point, Point_Radii);
         }
-        DrawCenterPoint(&dc);
+        DrawCenterPoint(&dc, fWidth, fHeight);
     }
 
     dc.SelectObject(pOldPen);
