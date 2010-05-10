@@ -45,11 +45,16 @@ union IVFileFlag
 enum IVFileVersionDefine
 {
     IVFile_Version_1_0 = _MakeIVFileVersion(2010,3,23),
+    IVFile_Version_2_0 = _MakeIVFileVersion(2010,5,8),
+
+
+    IVFile_Version_Now = IVFile_Version_2_0,
 };
 
 union IVFileVersion
 {
-    IVFileVersion():dwFileVersion(IVFile_Version_1_0){}
+    IVFileVersion(DWORD Ver=IVFile_Version_Now)
+        : dwFileVersion(Ver){}
     DWORD dwFileVersion;
     struct {
         WORD nYear;
@@ -77,16 +82,46 @@ enum
 /**
 *@note IV File Head Data
 */
-struct IVFileHead
+template<DWORD dwIVFileVersion>
+struct IVFileHead;
+
+struct IVFileHeadFrist
 {
-    IVFileHead():dwIndexNum(0){}
+    IVFileHeadFrist(){}
+    IVFileHeadFrist(IVFileVersion Ver):Version(Ver){}
     IVFileFlag FileFlag;     // 文件标志，用于判断文件是否正常关闭
     IVFileVersion Version;   // 文件版本
+};
+
+template<>
+struct IVFileHead<IVFile_Version_1_0>
+{
+    IVFileHead()
+        : HeadFirst(IVFile_Version_1_0)
+        , dwIndexNum(0){}
+    IVFileHeadFrist HeadFirst;
     DWORD dwReserve;         // 对齐预留
     DWORD dwLastFramePos;    // 最后一帧数据的位置
     FILETIME BeginTime;      // 第一帧数据的时间
     FILETIME EndTime;        // 最后一帧数据的时间
     DWORD dwIndexNum;        // 索引的个数
+    IVFileDataIndex DataIndex[Max_IVData_Index]; // 索引数据
+};
+
+template<>
+struct IVFileHead<IVFile_Version_2_0>
+{
+    IVFileHead()
+        : HeadFirst(IVFile_Version_2_0)
+        , wTailIndexNum(0)
+        , wIndexNum(0){}
+    IVFileHeadFrist HeadFirst;
+    DWORD dwReserve;         // 对齐预留
+    DWORD dwLastFramePos;    // 最后一帧数据的位置
+    FILETIME BeginTime;      // 第一帧数据的时间
+    FILETIME EndTime;        // 最后一帧数据的时间
+    WORD wTailIndexNum;      // 放文件尾索引的个数
+    WORD wIndexNum;          // 放在头索引的个数
     IVFileDataIndex DataIndex[Max_IVData_Index]; // 索引数据
 };
 
