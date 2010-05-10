@@ -220,7 +220,7 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::DropSomeData(
 {
     AutoLockAndUnlock(cs);
     for ( TTargetList::iterator iter = TargetSaveList.begin();
-        iter!= TargetSaveList.end(); )
+          iter!= TargetSaveList.end(); )
     {
         /**
         *@note 1. 判断数据是否还被引用
@@ -291,12 +291,6 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::TrySaveData(
     *            判断文件是否有Close标记，有则保存数据到Close时间
     *   Yes, 直接写PreAlarm的数据，判断文件是否有Close标记，有则保存数据到Close时间
     */
-    //bool IsFileOpen = Writer.is_open();
-    //if ( IsFileOpen )
-    //{
-    //    return SaveData(nPreAlarmTime);
-    //}
-
     if ( FilePathList.size() == 0 )
     {
         return DropSomeData(nPreAlarmTime);
@@ -314,51 +308,7 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::TrySaveData(
             SaveByFileIsNoSetClose(nPreAlarmTime, Info);
         }
     }
-    //{
-    //    AutoLockAndUnlock(cs);
-    //    FileInfo& Info = FilePathList.front();
-    //    if ( Info.UnFinishSection.empty() )
-    //    {
-    //        return;
-    //    }
-
-    //    string strPath = Info.strPath+c_szIVFileExt;
-    //    Writer.open(
-    //        strPath.c_str(),
-    //        ios::binary | ios::trunc | ios::out );
-    //    IsFileOpen = Writer.is_open();
-    //    if ( IsFileOpen )
-    //    {
-    //        FillHeadToFile(Info.UnFinishSection.front().BeginTime);
-    //    }
-    //    else
-    //    {
-    //        assert(false);
-    //    }
-
-    //    SaveData(nPreAlarmTime, &Info);
-    //}
 }
-
-//void CIVLiveDataBuf::ChannelTarget::SaveData(
-//    int nPreAlarmTime,
-//    FileInfo* Info)
-//{
-//    AutoLockAndUnlock(cs);
-//    if ( Info == NULL )
-//    {
-//        Info = &(FilePathList.front());
-//    }
-//
-//    if ( Info->bIsColse )
-//    {
-//        SaveByFileIsSetClose(nPreAlarmTime, *Info);
-//    }
-//    else // Info->bIsColse
-//    {
-//        SaveByFileIsNoSetClose(nPreAlarmTime, *Info);
-//    }
-//}
 
 template<DWORD dwIVFileVersion>
 void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::SaveDataHeadToFile( 
@@ -366,12 +316,14 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::SaveDataHeadToFile(
     WORD nTargetCount,
     const FILETIME& t )
 {
+    assert( DataHead.t < t );
+    assert( dwCurPos == Writer.tellp() );
     DataHead.dwPrePos = dwPrePos;
     DataHead.dwNextPos = dwCurPos + sizeof(IVFileDataHead) + nTargetCount*sizeof(WPG_Target);
     DataHead.wTargetNum = nTargetCount;
     DataHead.t = t;
-    Writer.write((char*)&DataHead, sizeof(IVFileDataHead));
 
+    Writer.write((char*)&DataHead, sizeof(IVFileDataHead));
     UpdateDataIndex(t, dwCurPos);
 
     dwPrePos = dwCurPos;
@@ -388,11 +340,13 @@ void CIVLiveDataBuf::ChannelTarget<IVFile_Version_1_0>::UpdateDataIndex(
         return;
     }
 
-    dwCount = 0;  
+    dwCount = 0;
+    __int64 nTimeOffset = t-FileHead.BeginTime;
+    assert(nTimeOffset < MAXDWORD);
     if ( FileHead.dwIndexNum == Max_IVData_Index )
     {
         IVFileDataIndex TmpDataIndex;
-        TmpDataIndex.TimeOffset = (DWORD)(t-FileHead.BeginTime);
+        TmpDataIndex.TimeOffset = (DWORD)(nTimeOffset);
         TmpDataIndex.DataOffset = DataOffset;
         MoreDataIndex.push_back(TmpDataIndex);
     }
@@ -400,7 +354,7 @@ void CIVLiveDataBuf::ChannelTarget<IVFile_Version_1_0>::UpdateDataIndex(
     {
         IVFileDataIndex& TmpDataIndex = 
             FileHead.DataIndex[FileHead.dwIndexNum];
-        TmpDataIndex.TimeOffset = (DWORD)(t-FileHead.BeginTime);
+        TmpDataIndex.TimeOffset = (DWORD)(nTimeOffset);
         TmpDataIndex.DataOffset = DataOffset;
         ++FileHead.dwIndexNum;
     }
@@ -417,10 +371,12 @@ void CIVLiveDataBuf::ChannelTarget<IVFile_Version_2_0>::UpdateDataIndex(
     }
 
     dwCount = 0;  
+    __int64 nTimeOffset = t-FileHead.BeginTime;
+    assert(nTimeOffset < MAXDWORD);
     if ( FileHead.wIndexNum == Max_IVData_Index )
     {
         IVFileDataIndex TmpDataIndex;
-        TmpDataIndex.TimeOffset = (DWORD)(t-FileHead.BeginTime);
+        TmpDataIndex.TimeOffset = (DWORD)(nTimeOffset);
         TmpDataIndex.DataOffset = DataOffset;
         MoreDataIndex.push_back(TmpDataIndex);
         ++FileHead.wTailIndexNum;
@@ -429,7 +385,7 @@ void CIVLiveDataBuf::ChannelTarget<IVFile_Version_2_0>::UpdateDataIndex(
     {
         IVFileDataIndex& TmpDataIndex = 
             FileHead.DataIndex[FileHead.wIndexNum];
-        TmpDataIndex.TimeOffset = (DWORD)(t-FileHead.BeginTime);
+        TmpDataIndex.TimeOffset = (DWORD)(nTimeOffset);
         TmpDataIndex.DataOffset = DataOffset;
         ++FileHead.wIndexNum;
     }
@@ -587,6 +543,7 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::SaveByFileIsSetClose(
             // 即有路径但没有段信息，
             // 这个时候需要丢弃所有期间数据，文件也没创建
             Writer.close();
+            Writer.clear();
         }    
         FilePathList.pop_front();
         return;
@@ -607,7 +564,7 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::SaveByFileIsSetClose(
         */
         TGroupTarget* pGroupTarget = *iter;
         if ( pGroupTarget->m_TargetQueue->nRef != 0 &&
-            pGroupTarget->m_TargetQueue->nUse != Buf_No_Use )
+             pGroupTarget->m_TargetQueue->nUse != Buf_No_Use )
         {
             break;
         }
@@ -618,7 +575,7 @@ void CIVLiveDataBuf::ChannelTarget<dwIVFileVersion>::SaveByFileIsSetClose(
         *  如果为异常数据则丢弃，取下一个
         */
         if ( SectionTime.BeginTime.GetTime() == 0 ||
-            SectionTime.EndTime.GetTime() == 0 )
+             SectionTime.EndTime.GetTime() == 0 )
         {
             assert(false);
 
