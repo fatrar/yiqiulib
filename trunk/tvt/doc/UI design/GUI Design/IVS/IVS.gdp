@@ -6,7 +6,7 @@
 		CID = "1"/>
 	<OpenFiles
 		CID = "2"
-		LastActive = "8">
+		LastActive = "5">
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Schedule Config.gui"
@@ -37,10 +37,6 @@
 			ViewSettings = ""/>
 		<File
 			RootPath = "$Container"
-			RelativePathname = "Rule Config.gui"
-			ViewSettings = ""/>
-		<File
-			RootPath = "$Container"
 			RelativePathname = "Adv Filter.gui"
 			ViewSettings = ""/>
 		<File
@@ -54,6 +50,10 @@
 		<File
 			RootPath = "$Container"
 			RelativePathname = "Add Rule Main.gui"
+			ViewSettings = ""/>
+		<File
+			RootPath = "$Container"
+			RelativePathname = "Rule Config.gui"
 			ViewSettings = ""/>
 	</OpenFiles>
 </Project>
