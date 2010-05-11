@@ -208,7 +208,7 @@ void CPlayerWnd::VideoComing(
     GetClientRect(&Rect);
     ClientToScreen(&Rect);
 
-    FILETIME* pTime = (FILETIME*)&bufs->localTime;
+    FILETIME* pTime = (FILETIME*)&bufs->FrameTime;
 
 #ifdef YUV_Play
     m_Player.Show(
