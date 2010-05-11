@@ -40,7 +40,7 @@
 
 
 #ifndef XTRACE_TEXT_COLOR
-	#define XTRACE_TEXT_COLOR RGB(0, 0, 0)
+	#define XTRACE_TEXT_COLOR RGB(255, 0, 0)
 #endif
 
 #define COUNTER_COUNT	10

@@ -165,9 +165,9 @@ void CDSP::DoIVData(int nDevice, PBYTE pData)
     //ULONGLONG nTime = ChangeTime(m_prevVideoTime);
     ULONGLONG nTime = ChangeTime(pIVVBI->frameRealTime);
     static ULONGLONG s_nPreviousTime = 0;
-    if ( s_nPreviousTime == nTime )
+    if ( s_nPreviousTime >= nTime )
     {
-#define Same_Time_Error "IV Same Time error!"
+#define Same_Time_Error "IV Same Time error!\n"
         ASSERT(Same_Time_Error);
         TRACE(Same_Time_Error);
     }
