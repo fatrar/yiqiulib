@@ -1,0 +1,89 @@
+
+_splitpath_s  分割一个文件路径为 盘符，路径，文件名，扩展名
+_fullpath     将一个路径转换为全路径，可以用于相对路径转绝对路径
+
+
+C# 的命名空间
+System.Windows.Forms
+
+
+得到是控制台还是其他的。
+  _get_osplatform(&osplatform);
+  if(osplatform == VER_PLATFORM_WIN32_WINDOWS)
+
+//
+// dwPlatformId defines:
+//
+
+#define VER_PLATFORM_WIN32s             0
+#define VER_PLATFORM_WIN32_WINDOWS      1
+#define VER_PLATFORM_WIN32_NT           2
+
+
+将输入输出，重新定义，
+BOOL WINAPI SetStdHandle(
+  __in          DWORD nStdHandle,
+  __in          HANDLE hHandle
+);
+STD_INPUT_HANDLE
+(DWORD)-10
+ The standard input device.
+ 
+STD_OUTPUT_HANDLE
+(DWORD)-11
+ The standard output device.
+ 
+STD_ERROR_HANDLE
+(DWORD)-12
+ The standard error device.
+
+
+CTRL + { 或者  CTRL + }  可以跳到对应的括号
+
+
+Perfmon 这个命令 可以到 一个控制 查看某些进程资源使用
+ 
+
+
+
+
+#define FTYPE	double
+#define FCOMP	double
+#define FCTYPE	_Dcomplex
+#define FBITS	DBL_MANT_DIG
+#define FEPS	DBL_EPSILON
+#define FMAXEXP	DBL_MAX_EXP
+#define FFUN(fun)	fun
+#define FMACRO(x)	x
+#define FNAME(fun)	_##fun
+#define FCONST(obj)	_##obj._Double
+#define FLIT(lit)	lit
+#define FISNEG(exp)	DSIGN(exp)
+#define FCPTYPE	complex<double>
+
+
+
+
+
+MFT_STRING　　　　=　0;　　　　{菜单项是字符串}
+MFT_BITMAP　　　　=　4;　　　　{菜单项用一个图片来代替(暂没测试)}
+MFT_MENUBARBREAK　=　$20;　　　{换列并有分列线}
+MFT_MENUBREAK　　=　$40;　　　{换列}
+MFT_OWNERDRAW　　=　$100;　　{指定为物主菜单;　通过　WM_DRAWITEM　消息的申请可以绘制更复杂的菜单}
+MFT_RADIOCHECK　　=　$200;　　{圆点代替　√　来表示选择
+MFT_SEPARATOR　　=　$800;　　{指定为分割线,　会忽略前面指定的菜单文本}
+MFT_RIGHTORDER　　=　$2000;　　{右对齐}
+MFT_RIGHTJUSTIFY　=　$4000;　　{显示在右边(帮助位置)}
+
+MFS_GRAYED　　　　=　3;　　　　　{禁止使用,　灰度显示}
+MFS_DISABLED　　　=　MFS_GRAYED;　{同上}
+MFS_CHECKED　　　　=　8;　　　　　{选择}
+MFS_HILITE　　　　=　$80;　　　　{反色凸现}
+MFS_ENABLED　　　　=　0;　　　　　{不禁止,　这是默认的,　一般用于程序中对禁止的反操作}
+MFS_UNCHECKED　　　=　0;　　　　　{不选择}
+MFS_UNHILITE　　　=　0;　　　　　{不反色}
+MFS_DEFAULT　　　　=　$1000;　　　{指定为缺省,　应该类似与缺省按钮(还没试过),　会加粗显示菜单文本}
+
+
+
+Iu16vec4  MMX转换类

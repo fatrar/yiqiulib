@@ -1,0 +1,51 @@
+最近从Holyn那里得到一个VS2008的宏，添加函数、类注释的时候使用的是DoxyGen的风格，感觉比较好，因此就熟悉了一下DoxyGen常用的标记，便于我对这个宏做“二次加工”。但是我一般用不上DoxyGen，所以就没装使用手册，从网上踅摸了半天，没有一篇文章讲完整的，因此就“自力更生，丰衣足食”吧，把一些常用的DoxyGen标记总结归纳成一个合集，也希望能给其他需要的人带来方便：）
+下面是我个人认为比较常用的标记：
+@author          作者
+@brief             摘要
+@version         版本号
+@date             日期
+@file                文件名，可以默认为空，DoxyGen会自己加
+@class             类名
+@param           函数参数
+@return           函数返回值描述
+@exception      函数抛异常描述
+@warning         函数使用中需要注意的地方
+@remarks        备注
+@see               see also字段
+@note             brief下空一行后的内容表示详细描述，但也可以不空行用note表示
+@par               开始一个段落，段落名称描述由你自己指定，比如可以写一段示例代码
+@code             引用代码段
+@endcode        引用代码段结束
+@pre               函数前置条件，比如对输入参数的要求
+@post             函数后置条件，比如对系统状态的影响或返回参数的结果预期
+附带我感觉不太会常用到的其他标记：
+@defgroup       模块名
+@name            分组名
+@{                  模块开始
+@}                  模块结束
+@deprecated    今后可能将被废弃或已经有替代品的函数
+@since             从哪个版本后开始有这个函数的
+@todo             被标记的代码会在ToDo列表中出现
+@bug              被标记的代码会在Bug列表中出现
+@test              被标记的代码会在Test列表中出现
+-                     一级项目符号
+-#                   二级项目符号
+-- 本文来源于创世软件团队博客, 原文地址: http://www.cnblogs.com/wondering/archive/2009/05/22/doxygen-mark.html
+
+
+@addtogroup 添加到一个组。
+@brief  概要信息
+@deprecated 已废弃函数
+@details  详细描述
+@note  开始一个段落，用来描述一些注意事项
+@par  开始一个段落，段落名称描述由你自己指定
+@param  标记一个参数的意义
+@code .. @endcode 包含一段代码
+@fn  函数说明
+@ingroup 加入到一个组
+@return  描述返回意义
+@retval  描述返回值意义
+@include 包含文件
+
+
+

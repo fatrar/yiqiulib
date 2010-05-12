@@ -1,0 +1,37 @@
+
+
+怎么知道某个dll的名称，在该dll的程序中获得，不用dllmain去获取。传句柄
+因为可能是静态库，
+
+DWORD WINAPI GetDllDirectory(
+  __in          DWORD nBufferLength,
+  __out         LPTSTR lpBuffer
+);
+
+// vc  strcore.cpp 59
+UINT AFXAPI HashKey(LPCWSTR key)
+{
+	ENSURE_ARG(AfxIsValidString(key));
+	UINT nHash = 0;
+	while (*key)
+		nHash = (nHash<<5) + nHash + *key++;
+	return nHash;
+}
+
+
+class a 要继承class B ，但是只想让B中几个函数可以让客户调用，怎么办？
+我以前的做法是，对不让用户调用的函数，重写一个放在protetct里面，函数实现为空
+
+
+CTime 在 vs2005以后支持到 毫秒吗？
+
+[x]指定调用类的某个变量，然后对他赋值，  
+  用类变量指针
+
+
+
+ATL UUEncode?
+
+
+#error 这个可以用来，设置编译评定的错误，从而提示用户，
+我本来想想用警告，但是还没找到关键字， 这个用来我那些代码今后要修正
