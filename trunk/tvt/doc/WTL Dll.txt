@@ -1,0 +1,39 @@
+
+
+====为Regular   DLL工程加入ATL/WTL支持=========================================   
+  1.在工程的stdafx.h中除去#include   <windows.h>,加上   
+  #include   <atlbase.h>   
+  #include   <atlapp.h>   
+  extern   CComModule   _Module;或extern   CAppModule   _Module;   
+  2.在工程主cpp(即main所处的文件中加入:   
+  CComModule   _Module;   或CAppModule   _Module;   
+  3.在main入口中模块加载处加入:   
+  _Module.Init(NULL,   HINSTANCE(hModule));   
+  4.在main入口模块撤载处加入   
+  _Module.Term();   
+    
+  ====为VC6   ATL   DLL工程加入WTL支持=========================================   
+  1.在工程的stdafx.h中的加上   
+  #include   <atlapp.h>   
+  将extern   CComModule   _Module;改为extern   CAppModule   _Module;   
+  2.在工程主cpp,即main所处的文件中改为:   
+  CAppModule   _Module;   
+    
+  ====为VC.NET2003   ATL工程工程加入WTL支持=========================================   
+  1.在工程的stdafx.h的#include   <atlbase.h>后   
+  加入#include   <atlapp.h>   
+  去掉#include   <atltypes.h>   
+    
+  ====为将MFC工程加入ATL/WTL支持===============================================   
+  1.在工程的stdafx.h中尾部加入   
+  #define   _WTL_NO_AUTOMATIC_NAMESPACE   
+  #include   <atlbase.h>   
+  #include   <atlapp.h>   
+  extern   WTL::CAppModule   _Module;   
+  2.在工程theApp声明下加入:   
+  WTL::CAppModule   _Module;   
+  3.在InitInstance中部加入   
+    _Module.Init(NULL,   theApp.m_hInstance);   
+  4.在ExitInstance中加入   
+  _Module.Term();   
+  5.必须使用WTL   namespace.
