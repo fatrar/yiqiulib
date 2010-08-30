@@ -494,3 +494,4 @@ void CGameToolView::EarseBack()
     InvalidateRect(&rect);
     m_bIsDrawGraph = TRUE;
 }
+
