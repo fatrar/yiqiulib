@@ -283,15 +283,90 @@ sx：
 
 
 
+---------------------------------------------------------
+17:06 2010-8-30
+备注： 如无特别什么下列说的OpenGL是指OpenGL ES，以后也是如此。
 
+关于渲染部分研究的想法：
+以现在的状况而言，我们以前有点太高估与openGL的能力，导致自己觉得一直是自己对OpenGL不了解，用了性能不高的方法去贴图。
+所以我们需要论证下，openGL到底多大的能力，是我们理解不够导致我们没有把它用对地方，还是我们对他期望太高。
 
+所以我的第一步工作应该是，目标很简单：验证OpenGL的能力，附带提高自己对OpenGL的认识
+1. 论证OpenGL 以现有方式到底最大能达到多少帧
+   这个部分可以分为接下来几个测试。
+  A， 一个纯贴图界面，以每次贴 copy 320×480的数据到512×512的buf，然后绑定Buf到材质，然后贴出来。
+  B， 几乎跟上面一样，不同是只做一次copy，以后全部只是显示
+  C， 做一个背景只做Copy一次，然后有很多动画让其与一个小材质去更新，没次更新材质，然后贴出来。
+  D， C测试加上多个材质
+2. 具体修改方案简单模型测试（这个等第一步确认后再决定如何做）
 
+先OpenGl的资料，然后再做测试。
+虽然自己而言非常想马上就做这个测试，但是理论知识深入会对测试，自我学习有促进。
 
+---------------------------------------------------------
+10:27 2010-9-2
 
+今天突然觉得要实现最大化的利用GPU，其实还有一部分就是RXImage中的一些Bit方法。
+我列出来好了，研究下是否能全部交给GPU去实现
+源代码没有注释，对于那些没有图像概念的人，是中折磨，我先列出来。
+罗列方式以三个为一组，第一行是原函数的愿意，第二行是函数申明，
+第三行OpenGL的可行的实现方案，X代表需要CPU做
 
+所有的图都映射到一个材质
 
+直接贴图
+Blt(CCanvas* canvas,int x,int y) const;
+将材质显示在指定位置
 
+贴图+用一个指定的Alpha值
+BltA(CCanvas* canvas,int x,int y,TUint8 a8) const;
+将材质显示在指定位置+glColorPointer，设置Alpha
 
+贴图中一部分到画布
+BltClip(CCanvas* canvas,int x,int y,int cx,int cy,int cw,int ch) const;
+将材质显示在指定位置+glTexCoordPointer改材质坐标
+
+贴图中一部分到画布且带Alpha值贴
+BltClipA(CCanvas* canvas,int x,int y,int cx,int cy,int cw,int ch,TUint8 a8) const;
+将材质显示在指定位置+glTexCoordPointer改材质坐标+glColorPointer设置Alpha
+
+将图中指定区域的图贴到画布区域，如果两个区域大小不一致，就缩放
+BltZoom(CCanvas* canvas,int srcX,int srcY,int srcW,int srcH,int dstX,int dstY,int dstW,int dstH,float=-1) const;
+glVertexPointer设置需要显示部分+glScale缩放
+
+将图中指定区域的图+Alpha值贴到画布区域，如果两个区域大小不一致，就缩放
+BltZoomA(CCanvas* canvas,int srcX,int srcY,int srcW,int srcH,int dstX,int dstY,int dstW,int dstH,TUint8 a8,float=-1) const;
+glScalef+glColorPointer设置Alpha
+
+贴一张水平翻转的图到画布
+BltFlipH(CCanvas* canvas,int x,int y) const;
+glRotatef(180,0,0,1)
+
+贴一张垂直翻转的图到画布
+BltFlipV(CCanvas* canvas,int x,int y) const;
+glRotatef(180,1,0,0)
+
+贴一张即水平又垂直翻转的图到画布
+BltFlipHV(CCanvas* canvas,int x,int y) const;
+glRotatef(180,1,0,1)
+
+贴一张水平翻转的图+蒙色到画布
+BltFlipH_ColorCoat(CCanvas* canvas,int x,int y,int rgb888,TUint8 a8) const;
+
+贴一张水平翻转的图+Alpha到画布
+BltFlipHA(CCanvas* canvas,int x,int y,TUint8 a8) const;
+
+贴一张图+蒙色到画布
+BltColorCoat(CCanvas* canvas,int x,int y,int rgb888,TUint8 a8) const;
+
+复制一份
+RXImage* Clone() const;
+
+复制一份带缩放，里面参数为目标区域的宽高
+RXImage* CloneZoom(int czw,int czh) const;
+
+调整如的色调与灰阶
+void HueAdjust(int hueDelta, TUint8 grayLevel8B=0);
 
 
 
