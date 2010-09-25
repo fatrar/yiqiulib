@@ -18,70 +18,132 @@
 #ifndef _FILESYSTEM_H_2010_9
 #define _FILESYSTEM_H_2010_9
 
-
+#ifdef _WIN32
+    typedef void* HANDLE;
+    typedef HANDLE FHANDLE;
+    typedef const char* FString;
+#elif defined(__APPLE__) 
+    struct FILE;
+    typedef FILE* FHANDLE;
+    typedef const char* FString;
+#elif defined(__SYMBIAN32__)
+    struct FILE;
+    typedef FILE* FHANDLE;
+#else
+    #error FileSystem unsupport system
+#endif
 
 namespace FileSystem
 {
-	
+typedef unsigned long size_t;
+typedef long BOOL;
+#define NULL 0
+#define FALSE 0
+#define TRUE 1
+
+enum FileSystemCode
+{
+    NO_Error,
+    Open_Error,
+    Seek_Error,
+    Flush_Error,
+    Close_Error,
+    Read_Error,
+    Write_Error,
+};
+
+namespace Util
+{
+    BOOL IsFolder(FString pName);
+    FileSystemCode GetLastError();
+};
+
 class CFile
 {
 public:
 	// Flag values
-	enum OpenFlags
+	enum AccessFlags
 	{
-		modeRead =         (int) 0x00000,
-		modeWrite =        (int) 0x00001,
-		modeReadWrite =    (int) 0x00002,
+		modeRead =         (int) 0x00001,
+		modeWrite =        (int) 0x00002,
+		modeReadWrite =    (int) 0x00003,
+    };
+
+    enum ShareFlags
+    {
 		//shareCompat =      (int) 0x00000,
 		//shareExclusive =   (int) 0x00010,
-		shareDenyWrite =   (int) 0x00020,
-		shareDenyRead =    (int) 0x00030,
-		//shareDenyNone =    (int) 0x00040,
+        shareDenyNone  =     (int) 0x00000,
+		shareDenyWrite =     (int) 0x00001,
+		shareDenyRead  =     (int) 0x00002,
+		shareDenyAll   =     (int) 0x00003,
+    };
+
+    // Only Use to Write
+    enum CreateFlags
+    {
 		//modeNoInherit =    (int) 0x00080,
-		modeCreate =       (int) 0x01000,
-		modeNoTruncate =   (int) 0x02000,
-		//typeText =         (int) 0x04000, // typeText and typeBinary are
-		//typeBinary =       (int) 0x08000, // used in derived classes only
-		//osNoBuffer =       (int) 0x10000,
-		//osWriteThrough =   (int) 0x20000,
-		//osRandomAccess =   (int) 0x40000,
-		//osSequentialScan = (int) 0x80000,
-	};
+		modeCreate =       (int) 0x00001,
+		modeNoTruncate =   (int) 0x00002,
+        modeOpenAlway  =   (int) 0x00003
+    };
 	
 	enum SeekPosition { begin = 0x0, current = 0x1, end = 0x2 };
-	
+
+public:	
 	// Constructors
-	CFile();
-	CFile(HANDLE hFile);
-	CFile(LPCTSTR lpszFileName, UINT nOpenFlags);
+	CFile(FHANDLE hFile=NULL):m_hFile(NULL){};
+    CFile(
+        FString pFileName,
+        AccessFlags nAccessFlags,
+        CreateFlags nCreateFlags, 
+        ShareFlags nShareFlags = shareDenyAll);
+    ~CFile();
+
+public:	
+	BOOL Open(
+        FString pFileName,
+        AccessFlags nAccessFlags,
+        CreateFlags nCreateFlags, 
+        ShareFlags nShareFlags = shareDenyAll );
+
+    BOOL OpenByRead(
+        FString pFileName,
+        ShareFlags nShareFlags = shareDenyAll );
+
+    BOOL OpenByWrite(
+        FString pFileName,
+        CreateFlags nCreateFlags = modeOpenAlway,
+        ShareFlags nShareFlags = shareDenyAll );
 	
-	virtual BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags);
-	
+    inline BOOL IsOpen(){return NULL != m_hFile;}
+    inline operator FHANDLE()const {return m_hFile;}
+
 	// Overridables
-	ULONGLONG Seek(LONGLONG lOff, UINT nFrom);
+	void Seek(size_t nOffset, SeekPosition nFrom);
 	
 	// 文件截断
-	void SetLength(ULONGLONG dwNewLen);
+	void SetLength(size_t nNewLen);
 	
 	// 取文件大小
-	ULONGLONG GetLength() const;
+	size_t GetLength() const;
 	
-	UINT Read(void* lpBuf, UINT nCount);
-	void Write(const void* lpBuf, UINT nCount);
+	size_t Read(void* pBuf, size_t nCount);
+	void Write(const void* pBuf, size_t nCount);
 	
 	void Flush();
 	void Close();
 	
 	// 重命名
-	static void Rename(LPCTSTR lpszOldName,
-		LPCTSTR lpszNewName);
+	static BOOL Rename(FString pOldName, FString pNewName);
+
 	// 删除
-	static void Remove(LPCTSTR lpszFileName);
+	static BOOL Remove(FString pFileName);
 	
-	virtual ~CFile();
-	
+    static BOOL IsExist(FString pFileName);
+
 protected:
-	HANDLE m_hFile;
+	FHANDLE m_hFile;
 };
 
 	
