@@ -22,9 +22,8 @@
     typedef void* HANDLE;
     typedef HANDLE FHANDLE;
     typedef const char* FString;
-#elif defined(__APPLE__) 
-    struct FILE;
-    typedef FILE* FHANDLE;
+#elif defined(__APPLE__)
+    typedef int FHANDLE;
     typedef const char* FString;
 #elif defined(__SYMBIAN32__)
     struct FILE;
@@ -50,6 +49,10 @@ enum FileSystemCode
     Close_Error,
     Read_Error,
     Write_Error,
+    File_Rename_Error,
+    File_Remove_Error,
+    File_SetLengh_Error,
+    File_GetLengh_Error,
 };
 
 namespace Util
