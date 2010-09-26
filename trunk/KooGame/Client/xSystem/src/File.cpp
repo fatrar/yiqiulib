@@ -19,9 +19,9 @@
 
 
 #ifdef _WIN32
-    #include "Windows_File.cpp"
+    #include ".\Windows\Windows_File.cpp"
 #elif defined(__APPLE__)
-    #include "IOS_File.cpp"
+    #include "./IOS/IOS_File.cpp"
 #elif defined(__SYMBIAN32__)
 
 #else
