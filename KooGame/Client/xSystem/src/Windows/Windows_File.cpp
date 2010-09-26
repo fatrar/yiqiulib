@@ -229,13 +229,14 @@ void CFile::Write( const void* pBuf, size_t nCount )
     DWORD nWritten;
     if (!::WriteFile(m_hFile, pBuf, nCount, &nWritten, NULL))
     {
-        return RefreshErrCode();
+		// VC 对C++支持太烂，居然不支持return RefreshErrCode();
+        RefreshErrCode(); return;
     }
 
     // Win95 will not return an error all the time (usually DISK_FULL)
     if (nWritten != nCount)
     {
-        return RefreshErrCode();
+        RefreshErrCode(); return;
     }
 }
 
@@ -243,7 +244,7 @@ void CFile::Flush()
 {
     if (!::FlushFileBuffers(m_hFile))
     {
-        return RefreshErrCode();
+        RefreshErrCode(); return;
     }
 }
 
@@ -274,7 +275,7 @@ BOOL CFile::Rename( FString pOldName, FString pNewName )
 
 BOOL CFile::Remove( FString pFileName )
 {
-    if (::DeleteFile((LPTSTR)pFileName))
+    if (::DeleteFile(pFileName))
     {
         return TRUE;
     }
