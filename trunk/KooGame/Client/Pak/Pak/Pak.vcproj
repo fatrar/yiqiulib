@@ -179,6 +179,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ICommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IResPackor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Pak.cpp"
 				>
 			</File>
@@ -210,6 +218,18 @@
 			>
 			<File
 				RelativePath=".\FileSystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ICommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IResPackor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RecFileDef.h"
 				>
 			</File>
 			<File
