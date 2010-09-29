@@ -23,12 +23,12 @@
 namespace RecFile
 {
 
-typedef unsigned int DWROD;
+typedef unsigned int DWORD;
 typedef unsigned int size_t;
-typedef unsigned short WORD;
+typedef unsigned short WORD; 
 typedef unsigned char BYTE;
 
-typedef unsigned long long QWROD;
+typedef unsigned long long QWORD;
 
 #define _MakeDWORD(a,b,c,d) ((a<<24)|(b<<16)|(c<<8)|(d))
 #define _MakeFileVersion(year,month,day) ((year<<16)|(month<<8)|(day))
@@ -37,51 +37,86 @@ enum
 {
 	File_Format_Flag = _MakeDWORD('A','n','i','m'),
 	File_Version_1_0 = _MakeFileVersion(2010,9,28),
+
 };
 
+// Encrypt Algorithm 
+enum EncryptAlgo
+{
+    Raw_E_Algo,
+    Xor_E_Algo,
+    BlowFish_E_Algo,
+};
 
-struct 
+enum CompressAlgo
+{
+    Raw_C_Algo,
+    LZMA_C_Algo,  // 7z
+};
+
+struct DataInfo
+{
+    DWORD dwDataPos;
+    DWORD dwDataLen;
+    BYTE nEncryptAlgo;
+    BYTE nCompressAlgo;
+    BYTE nReserve[2];
+
+    union {
+        struct {
+            DWORD dwParam1;
+            DWORD dwParam2;
+        } EncryptParam;
+
+        char cEncryptParam[8];
+        BYTE ucEncryptParam[8];
+    };
+};
 
 struct FileHead
 {
-    DWROD FormatFlag;
-    DWROD Version;
-    DWROD nFileCount;
-    BYTE nHashBits;    // 8位，16位，32位，64位
+    DWORD FormatFlag;
+    DWORD Version;
+    DWORD nFileCount;
+    BYTE nHashBits;    // 16位，32位，64位
                        // 要检验hash碰撞，包增量更新及时处理出一个新最适应的模式
     BYTE nHashPart;
     BYTE nHashKey;
     BYTE nFileName;
 
+    WORD wDataEncryptLen;
+
     union
     {
-        BYTE  nHashValue[1];
         WORD  wHashValue[1];
-        DWROD dwHashValue[1];
-        QWROD qwHashValue[1];
+        DWORD dwHashValue[1];
+        QWORD qwHashValue[1];
     };
-
-    DWROD dwDataPos[1];
-    DWROD nImgGroupCount;
-    DWROD nImgGroupDataPos;
-    DWROD nPalGroupCount;
-    DWROD nPalGroupDataPos;
 };
+
 
 struct DataHead
 {
-    BYTE nEncryptMode;
-    BYTE nCompressMode;
-    WORD nEncryptLen;
-    size_t nDataLen;
+    DWORD dwSize;
+    BYTE nEncryptAlgo;
+    BYTE nCompressAlgo;
+    DWORD dwDataLen;
 
+    union
+    {
+        struct {
+            DWORD dwParam1;
+            DWORD dwParam2;
+        } EncryptParam;
+
+        char cEncryptParam[8];
+        BYTE ucEncryptParam[8];
+    };
 };
 
 
 
 };
-
-
 
 
 #endif  // _RECFILEDEF_H_2010_
