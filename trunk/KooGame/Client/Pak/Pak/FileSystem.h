@@ -13,7 +13,7 @@
  -------
 
 
- Copyright (c) Shenzhen KooGame Technologies Co.,Ltd. Ltd.
+ Copyright (c) Shenzhen KooGame Technologies Co.,Ltd.
 ***************************************************************************H*/
 #ifndef _FILESYSTEM_H_2010_9
 #define _FILESYSTEM_H_2010_9

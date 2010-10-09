@@ -8,8 +8,6 @@ using namespace std;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-    IP();
-
     open("C:\\Info.txt", 0);
     ifstream Reader;
     Reader.open("C:\\Info.txt");
