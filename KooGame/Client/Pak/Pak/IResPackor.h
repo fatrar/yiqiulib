@@ -30,14 +30,14 @@ struct IResPackor
 
 
 
-struct IRecFileReader
+struct IResFileReader
 {
 
 };
 
 
 
-struct IRecFileWriter
+struct IResFileWriter
 {
 
 };
