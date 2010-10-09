@@ -95,7 +95,7 @@ public:
 
 public:	
 	// Constructors
-	CFile(FHANDLE hFile=NULL):m_hFile(NULL){};
+	CFile():m_hFile(NULL){};
     CFile(
         FString pFileName,
         AccessFlags nAccessFlags,
