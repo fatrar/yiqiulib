@@ -23,6 +23,11 @@ namespace ResFile
 {
 //template class CResPacker<File_Version_1_0>;
 
+enum
+{
+    Buf_Memory = 1 << 26,  // 64MB
+};
+
 template<typename T>
 inline void CopyParam(T& TParam, void* pParam)
 {
@@ -44,6 +49,7 @@ IResPacker* CreateResPacker(
     typedef TEncryptParam<File_Version_1_0> EncryptParam;
     typedef TCompressParam<File_Version_1_0> CompressParam;
 
+    
     EncryptParam eParam;
     CompressParam cParam = g_DefcParam;
     if ( eAlgo != Raw_E_Algo )
@@ -89,7 +95,9 @@ CResPacker<File_Version_1_0>::CResPacker(
     : m_strResFold(pResFlodPath)
     , m_DefeAlgo(eAlgo)
     , m_DefcAlgo(cAlgo)
-    , m_Thread(NULL)
+    , m_hDataTransformThread(NULL)
+    , m_hDataSaveThread(NULL)
+    , m_ReadFinsihEvent(NULL)
     , m_pFileBuf(NULL)
     , m_nNowPos(0)
     , m_DefcParam(pcParam)
@@ -100,52 +108,6 @@ template<>
 CResPacker<File_Version_1_0>::~CResPacker(void)
 {
 }
-
-// template<>
-// void CResPacker<File_Version_1_0>::SetDefaultEncryptParam(
-//     EncryptAlgo eAlgo,
-//     void* peParam /*= NULL */ )
-// {
-//     typedef TEncryptParam<File_Version_1_0> EncryptParam;
-//     if ( eAlgo != Raw_E_Algo )
-//     {
-//         if ( NULL == peParam )
-//         {
-//             return;
-//         }
-//         
-//         CopyParam(m_DefeParam, peParam);
-//         //m_DefeParam = *((EncryptParam*)peParam);
-//     }
-//     m_DefeAlgo = eAlgo;
-// }
-// 
-// template<>
-// void CResPacker<File_Version_1_0>::SetDefaultCompressParam(
-//     CompressAlgo cAlgo, 
-//     void* pcParam /*= NULL*/ )
-// {
-//     typedef TCompressParam<File_Version_1_0> CompressParam;
-//     if ( pcParam == NULL )
-//     {
-//         return;
-//     }
-//     m_DefcAlgo = cAlgo;
-//     CopyParam(m_DefcParam, pcParam);
-//     //m_DefcParam = *((CompressParam*)pcParam);
-// }
-// 
-// template<>
-// void CResPacker<File_Version_1_0>::SetCurrentPath(
-//     const char* pPath )
-// {
-//     if ( isValidString(pPath) )
-//     {
-//         return;
-//     }
-// 
-//     m_strResFold = pPath;
-// }
 
 template<>
 void CResPacker<File_Version_1_0>::AddFile(
@@ -222,7 +184,7 @@ bool CResPacker<File_Version_1_0>::MakeFile(
 // Thread
 
 template<>
-DWORD CResPacker<File_Version_1_0>::FileReadWrite()
+DWORD CResPacker<File_Version_1_0>::DataTransform()
 {
     FileInfoList::iterator iter;
     for ( iter = m_FileInfoList.begin();
@@ -232,6 +194,12 @@ DWORD CResPacker<File_Version_1_0>::FileReadWrite()
     }
 
     return 0;
+}
+
+template<DWORD Version>
+DWORD CResPacker<Version>::DataSave()
+{
+
 }
 
 }

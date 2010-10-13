@@ -93,12 +93,19 @@ protected:
         public set<TFileHead<File_Version_1_0>::TDataIndex >{};
 
 protected:
-    static DWORD WINAPI FileReadWrite(void* p)
+    static DWORD WINAPI DataTransform(void* p)
     {
         CResPacker* pThis = (CResPacker*)p;
-        return pThis->FileReadWrite();
+        return pThis->DataTransform();
     }
-    DWORD FileReadWrite();
+    DWORD DataTransform();
+
+    static DWORD WINAPI DataSave(void* p)
+    {
+        CResPacker* pThis = (CResPacker*)p;
+        return pThis->DataSave();
+    }
+    DWORD DataSave();
 
 private:
     eEncryptAlgo m_DefeAlgo;
@@ -113,10 +120,12 @@ private:
     DataIndexList<Version> m_DataIndexList;
 
     // Thread
-    HANDLE m_Thread;
-    HANDLE m_Event;
+    HANDLE m_hDataTransformThread;
+    HANDLE m_hDataSaveThread;
+    HANDLE m_ReadFinsihEvent;
     BYTE* m_pFileBuf;
-    size_t m_nNowPos;
+    size_t m_nUsePos;
+    size_t m_n
 };
 
 }
