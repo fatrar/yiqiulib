@@ -20,43 +20,103 @@
 
 
 #include "IResPacker.h"
+#include <string>
+#include <list>
+#include <set>
+using namespace std;
+#include <Windows.h>
 
 
 namespace ResFile
 {
 
+template<DWORD Version>
 class CResPacker :
     public IResPacker
 {
 public:
-    CResPacker(void);
+    typedef TEncryptParam<Version> EncryptParam;
+    typedef TCompressParam<Version> CompressParam;
+
+    CResPacker( 
+        const char* pResFlodPath, 
+        eCompressAlgo cAlgo,
+        const CompressParam& pcParam,
+        eEncryptAlgo eAlgo,
+        const EncryptParam& peParam );
     ~CResPacker(void);
 
     // IResPacker
-private:
-     virtual void SetDefaultEncryptParam(
-        EncryptAlgo eAlgo,
-        void* peParam = NULL );
-
-    virtual void SetDefaultCompressParam(
-        CompressAlgo cAlgo,
-        void* pcParam = NULL);
-
-    virtual void SetCurrentPath(const char* pPath);
-
+public:
     virtual void AddFile(
         const char* pFileName );
 
     virtual void AddFile(
         const char* pFileName,
-        CompressAlgo cAlgo,
+        eCompressAlgo cAlgo,
         void* pcParam,
-        EncryptAlgo eAlgo,    
+        eEncryptAlgo eAlgo,    
         void* peParam );
 
     virtual bool MakeFile(
         const char* pPackFilePath,
-        FileNamePos eFileNamePos);
+        eFileNamePos eFileNamePos);
+
+    // Struct Define
+protected:
+    struct FileInfo
+    {
+        inline FileInfo(){}
+        string strFileName;
+        eEncryptAlgo eAlgo;
+        TEncryptParam<Version> eParam;
+        eCompressAlgo cAlgo;
+        TCompressParam<Version> cParam;
+
+        FileInfo(const FileInfo& a)
+        {
+            strFileName = a.strFileName;
+            eAlgo = a.eAlgo;
+            eParam = a.eParam;
+            cAlgo = a.cAlgo;
+            cParam = a.cParam;
+        }
+    };
+
+    typedef list<FileInfo> FileInfoList;
+    typedef TFileHead<Version> FileHead;
+    template<DWORD Version> class DataIndexList;
+
+    // Version 1.0 Define
+protected:
+    template<> class DataIndexList<File_Version_1_0> :
+        public set<TFileHead<File_Version_1_0>::TDataIndex >{};
+
+protected:
+    static DWORD WINAPI FileReadWrite(void* p)
+    {
+        CResPacker* pThis = (CResPacker*)p;
+        return pThis->FileReadWrite();
+    }
+    DWORD FileReadWrite();
+
+private:
+    eEncryptAlgo m_DefeAlgo;
+    EncryptParam m_DefeParam;
+
+    eCompressAlgo m_DefcAlgo;
+    CompressParam m_DefcParam;
+
+    string m_strResFold;
+
+    FileInfoList m_FileInfoList;
+    DataIndexList<Version> m_DataIndexList;
+
+    // Thread
+    HANDLE m_Thread;
+    HANDLE m_Event;
+    BYTE* m_pFileBuf;
+    size_t m_nNowPos;
 };
 
 }

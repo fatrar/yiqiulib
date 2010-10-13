@@ -74,7 +74,7 @@ union UHashValue
 };
 
 // Encrypt Algorithm 
-enum EncryptAlgo
+enum eEncryptAlgo
 {
     Raw_E_Algo,
     Xor_E_Algo,
@@ -82,15 +82,16 @@ enum EncryptAlgo
     Encrypt_Count,
 };
 
-enum CompressAlgo
+enum eCompressAlgo
 {
     Raw_C_Algo,
     LZMA_C_Algo,  // 7z
+    LZMA2_C_Algo,
     Zip_C_Algo,   // Zip
     Compress_Count,
 };
 
-enum FileNamePos
+enum eFileNamePos
 {
     Not_Exist,
     In_Out,
@@ -157,6 +158,9 @@ struct TFileHead<File_Version_1_0> :
 
     struct TDataIndex
     {
+        bool operator < (const TDataIndex& a) const {return HashValue < a.HashValue;}
+        bool operator > (const TDataIndex& a) const {return HashValue > a.HashValue;}
+        bool operator ==(const TDataIndex& a) const {return HashValue ==a.HashValue;}
         UHashValue HashValue;
         TDataInfo<File_Version_1_0> DataHead;
     } DataIndex[1];
@@ -170,14 +174,18 @@ struct TDataHead<File_Version_1_0>
     DWORD nCompressAlgo:3;    // 0-7
     DWORD nDataEncryptLen:26; // Max 64MB-1
 
-    union {
-        struct {
-            DWORD dwParam1;
-            DWORD dwParam2;
-        } EncryptParam;
+    struct TEncryptParam
+    {
+        void operator = (const TEncryptParam& a){memcpy(this, &a, sizeof(TEncryptParam));}
+        union {
+            struct {
+                DWORD dwParam1;
+                DWORD dwParam2;
+            } EncryptParam;
 
-        char cEncryptParam[8];
-        BYTE ucEncryptParam[8];
+            char cEncryptParam[8];
+            BYTE ucEncryptParam[8];
+        };
     };
 };
 

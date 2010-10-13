@@ -16,5 +16,7 @@
 #include <string>
 using namespace std;
 
+#include "ResFileDef.h"
+#include "Common.h"
 
 // TODO: reference additional headers your program requires here
