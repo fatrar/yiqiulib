@@ -31,6 +31,32 @@ class CResPacker :
 public:
     CResPacker(void);
     ~CResPacker(void);
+
+    // IResPacker
+private:
+     virtual void SetDefaultEncryptParam(
+        EncryptAlgo eAlgo,
+        void* peParam = NULL );
+
+    virtual void SetDefaultCompressParam(
+        CompressAlgo cAlgo,
+        void* pcParam = NULL);
+
+    virtual void SetCurrentPath(const char* pPath);
+
+    virtual void AddFile(
+        const char* pFileName );
+
+    virtual void AddFile(
+        const char* pFileName,
+        CompressAlgo cAlgo,
+        void* pcParam,
+        EncryptAlgo eAlgo,    
+        void* peParam );
+
+    virtual bool MakeFile(
+        const char* pPackFilePath,
+        FileNamePos eFileNamePos);
 };
 
 }
