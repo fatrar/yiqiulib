@@ -22,36 +22,13 @@
 namespace ResFile
 {
 
+#define Res_Verion File_Version_1_0
+
 /**
 *@note 资源打包者接口定义
 */
 struct IResPacker
 {
-    /**
-    *@note 设置默认加密方式  
-    *@param eAlgo 加密算法类型
-    *@param ecParam 加密算法参数
-    */
-    virtual void SetDefaultEncryptParam(
-        EncryptAlgo eAlgo,
-        void* peParam = NULL ) = 0;
-
-    /**
-    *@note 设置默认压缩类型
-    *@param cAlgo 压缩算法类型 
-    *@param pcParam 压缩算法参数  
-    */
-    virtual void SetDefaultCompressParam(
-        CompressAlgo cAlgo,
-        void* pcParam = NULL) = 0;
-
-    /**
-    *@note 设置资源默认父目录 
-    *@param	pPath 资源文件目录  
-    *@return 
-    */
-    virtual void SetCurrentPath(const char* pPath);
-
     /**
     *@note 添加要打包进资源包的文件，用默认打包的压缩加密参数
     *@param	pFileName 文件的短名，不是全路径。要读文件则需要将当前目录+这个
@@ -69,9 +46,9 @@ struct IResPacker
     */
     virtual void AddFile(
         const char* pFileName,
-        CompressAlgo cAlgo,
+        eCompressAlgo cAlgo,
         void* pcParam,
-        EncryptAlgo eAlgo,    
+        eEncryptAlgo eAlgo,    
         void* peParam ) = 0;
 
     /**
@@ -82,10 +59,51 @@ struct IResPacker
     */
     virtual bool MakeFile(
         const char* pPackFilePath,
-        FileNamePos eFileNamePos) = 0;
+        eFileNamePos eFileNamePos) = 0;
 };
 
-IResPacker* CreateResPacker();
+enum ECompressParam
+{
+    Compress_Normal,
+    Unpack_Fast,
+    Compress_High,
+};
+
+template<DWORD Version> struct TEncryptParam;
+template<DWORD Version> struct TCompressParam;
+
+template<> class TEncryptParam<File_Version_1_0> :
+    public TDataHead<File_Version_1_0>::TEncryptParam {};
+
+template<> struct TCompressParam<File_Version_1_0>
+{   
+    TCompressParam(ECompressParam e = Compress_Normal):cParam(e){}
+    typedef TCompressParam<File_Version_1_0> CompressParam;
+    void operator = (const CompressParam& a){cParam = a.cParam;}
+    ECompressParam cParam;
+};
+
+#if Res_Verion == File_Version_1_0
+    static TCompressParam<File_Version_1_0> g_DefcParam;
+    //TEncryptParam<File_Version_1_0> g_DefeParam;
+#else
+#endif
+
+/**
+*@note 创建资源打包对象 
+*@param	pResFlodPath 资源文件目录  
+*@param cAlgo   默认压缩算法类型   
+*@param pcParam 默认压缩算法参数
+*@param eAlgo   默认加密算法类型 
+*@param ecParam 默认加密算法参数
+*/
+IResPacker* CreateResPacker(
+    const char* pResFlodPath, 
+    eCompressAlgo cAlgo = LZMA2_C_Algo,
+    void* pcParam = (void*)&g_DefcParam,
+    eEncryptAlgo eAlgo = Raw_E_Algo,
+    void* peParam  = NULL );
+
 void DestroyResPacker(IResPacker*& pResPacker);
 
 }

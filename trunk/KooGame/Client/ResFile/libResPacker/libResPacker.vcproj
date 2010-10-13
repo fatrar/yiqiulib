@@ -183,7 +183,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\inc\ResPacker.h"
+				RelativePath=".\src\ResPacker.h"
 				>
 			</File>
 			<File
@@ -237,6 +237,7 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -247,6 +248,14 @@
 			<File
 				RelativePath="..\Common\lzma\LzmaLib.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<File
