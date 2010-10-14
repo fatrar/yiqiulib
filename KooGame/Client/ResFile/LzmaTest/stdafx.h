@@ -9,20 +9,11 @@
 #define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
 #endif						
 
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#include <stdio.h>
+#include <tchar.h>
 
 
-#include <Windows.h>
-#include <assert.h>
-#include <iostream>
-#include <string>
-using namespace std;
-
-#include "ResFileDef.h"
-#include "Common.h"
-
-#include "FileSystem.h"
-//using namespace FileSystem;
-
-
+#include "..\Common\lzma\Lzma2Enc.h"
+#include "..\Common\lzma\Lzma2Dec.h"
+#include "..\Common\lzma\LzmaLib.h"
 // TODO: reference additional headers your program requires here

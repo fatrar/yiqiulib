@@ -54,15 +54,15 @@ protected:
 
     // Decrypt 
 protected:
-    void RawDecrypt(void* pIn, size_t nInLen,void*){}
-    void XorDecrypt(void* pIn, size_t nInLen,void*);
-    void BlowFishDecrypt(void* pIn, size_t nInLen,void* pEncryptParam);
+    void RawDecrypt(void* pIn, size_t nIn,void*){}
+    void XorDecrypt(void* pIn, size_t nIn,void*);
+    void BlowFishDecrypt(void* pIn, size_t nIn,void* pEncryptParam);
 
     // UnPack
 protected:
-    void RawUnPack(void* pIn, size_t nInLen, void* pOut, size_t nOut){}
-    void LZMAUnPack(void* pIn, size_t nInLen, void* pOut, size_t nOut);
-    void ZipUnPack(void* pIn, size_t nInLen, void* pOut, size_t nOut);
+    void RawUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut){}
+    void LZMAUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut);
+    void ZipUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut);
 
     typedef TFileHead<Version> FileHead;
     typedef TDataInfo<Version> DataInfo;

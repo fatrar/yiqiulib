@@ -25,7 +25,12 @@ namespace ResFile
 
 enum
 {
-    Buf_Memory = 1 << 26,  // 64MB
+    Raw_File_Buf = 64*1024*1024,  // 64MB
+    Res_File_Buf = 32*1024*1024,  // 32MB
+
+    File_Read_Flag = 3,
+
+    //Invaild_Pointer = -1, // 0xffffffff
 };
 
 template<typename T>
@@ -95,14 +100,8 @@ CResPacker<File_Version_1_0>::CResPacker(
     : m_strResFold(pResFlodPath)
     , m_DefeAlgo(eAlgo)
     , m_DefcAlgo(cAlgo)
-    , m_hDataTransformThread(NULL)
-    , m_hDataSaveThread(NULL)
-    , m_ReadFinsihEvent(NULL)
-    , m_pFileBuf(NULL)
-    , m_nNowPos(0)
     , m_DefcParam(pcParam)
-    , m_DefeParam(peParam)
-{}
+    , m_DefeParam(peParam){}
 
 template<>
 CResPacker<File_Version_1_0>::~CResPacker(void)
@@ -178,6 +177,17 @@ bool CResPacker<File_Version_1_0>::MakeFile(
     const char* pPackFilePath,
     eFileNamePos eFileNamePos )
 {
+    /**
+    *@note 操作流程，由主线程读文件和写。另外开一个线程专门做数据的转换
+    *      首先主线程读一小部分文件就发送一个事件给另外一个线程转换，转换线程转换后写进Res文件缓存
+    *      当主线程全部读完后会发一个读完的事件，这个时候转换线程如果发现现有的转换完就退出
+    *      主线程发读完事件后会等待转换线程退出，然后将Res文件缓存一次性写进文件
+    */
+    Init();
+    DoRead();
+    WaitForSingleObject(m_hTransThread, INFINITE);
+    DoWrite();
+    Unit();
     return true;
 }
 
@@ -186,18 +196,150 @@ bool CResPacker<File_Version_1_0>::MakeFile(
 template<>
 DWORD CResPacker<File_Version_1_0>::DataTransform()
 {
-    FileInfoList::iterator iter;
-    for ( iter = m_FileInfoList.begin();
-          iter!= m_FileInfoList.end();
-          ++iter )
+    DWORD dwFileHeadSize = Util::GetFileHeadSize(m_FileInfoList.size());
+    FileInfoList::iterator iter = m_FileInfoList.begin();
+    BOOL bStopLoop = FALSE;
+    while(bStopLoop)
     {
-    }
+        DWORD dwRc = WaitForMultipleObjects(
+            ReadEvent_Count, m_hReadEvent, FALSE, INFINITE);
+        switch (dwRc)
+        {
+        case WAIT_ABANDONED: 
+        case WAIT_FAILED:
+        case WAIT_TIMEOUT:
+            break;	
 
+        case WAIT_OBJECT_0 + ReadSome_Event:
+        case WAIT_OBJECT_0 + ReadFinsih_Event:
+            for ( ; iter!= m_FileInfoList.end() && iter->pBuf != NULL; ++iter )
+            {
+                TransformOne(*iter);
+            }
+    	    break;
+ 
+            if ( dwRc == WAIT_OBJECT_0 + ReadFinsih_Event )
+            {
+                bStopLoop = TRUE;
+            }
+        default:
+    	    break;
+        }
+    }
     return 0;
 }
 
-template<DWORD Version>
-DWORD CResPacker<Version>::DataSave()
+template<>
+void CResPacker<File_Version_1_0>::Init()
+{
+    m_pRawFileBuf = new BYTE[Raw_File_Buf];
+    m_nRawFileBufUse = 0;
+    m_pResFileBuf = new BYTE[Res_File_Buf];
+    m_nResFileBufUse = 0;
+
+    for ( int i = 0; i< ReadEvent_Count; ++i )
+    {
+        m_hReadEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
+    }
+    m_hTransThread = CreateThread(
+        NULL, 0, 
+        &CResPacker<File_Version_1_0>::DataTransform, this,
+        0, NULL );
+}
+
+template<>
+void CResPacker<File_Version_1_0>::Unit()
+{
+    safeDeleteArray(m_pRawFileBuf);
+    safeDeleteArray(m_pResFileBuf);
+}
+
+template<>
+void CResPacker<File_Version_1_0>::DoRead()
+{
+    BYTE* pRawFileBufNow = m_pRawFileBuf;
+    size_t nRawFileBufRemain = Raw_File_Buf;
+    BOOL bNeedNew = FALSE;
+    int nReadCount = 0;
+
+    FileInfoList::iterator iter = m_FileInfoList.begin();
+    FileInfoList::iterator Olditer;
+    for ( ; iter!= m_FileInfoList.end();  )
+    {
+        FileInfo& TmpFileInfo = *iter;
+        string strFilePath = m_strResFold + TmpFileInfo.strFileName;
+        if ( bNeedNew )
+        {
+            void* pFileData = NULL;
+            size_t nRead = FileSystem::CFile::Read(
+                strFilePath.c_str(), pFileData);
+            if ( nRead == 0 )
+            {
+                cout << "Can`t Open File:" << strFilePath.c_str() << endl;
+                Olditer = iter;
+                ++iter;
+                m_FileInfoList.erase(Olditer);
+                continue;
+                // [] Todo: Exception          
+            }
+            else
+            {
+                TmpFileInfo.pBuf = (BYTE*)pFileData;
+                TmpFileInfo.nBufSize = nRead;
+                TmpFileInfo.bNeedDelete = TRUE;
+            }  
+        }
+        else
+        {
+            FileSystem::size_t nFileBufSize = nRawFileBufRemain;
+            size_t nRead = FileSystem::CFile::Read(
+                strFilePath.c_str(), (void*)pRawFileBufNow, nFileBufSize);
+            if ( nRead == 0 )
+            {
+                if ( nFileBufSize == 0 )
+                {
+                    cout << "Can`t Open File:" << strFilePath.c_str() << endl;
+                    // [] Todo: Exception
+                    Olditer = iter;
+                    ++iter;
+                    m_FileInfoList.erase(Olditer);
+                    continue;
+                }
+                else
+                {
+                    bNeedNew = TRUE;
+                    continue;
+                }
+            }
+            else
+            {
+                TmpFileInfo.pBuf = pRawFileBufNow;
+                TmpFileInfo.nBufSize = nRead;
+                TmpFileInfo.bNeedDelete = FALSE;
+
+                pRawFileBufNow += nRead;
+                nRawFileBufRemain -= nRead;
+            }         
+        }
+        ++nReadCount;
+        if ( nReadCount == File_Read_Flag )
+        {
+            SetEvent(m_hReadEvent[ReadSome_Event]);
+            nReadCount = 0;
+        }
+        ++iter;    
+    }
+}
+
+template<>
+void CResPacker<File_Version_1_0>::DoWrite()
+{
+
+}
+
+template<>
+void CResPacker<File_Version_1_0>::TransformOne(
+    FileInfo& Info )
 {
 
 }
