@@ -103,13 +103,6 @@ namespace Util
 {
 template<DWORD Version>
 inline size_t GetFileHeadSize(size_t nFileNum);
-
-static UHashValue HashString(const char* pStr)
-{
-#pragma warning ("Not Impl.....")
-    UHashValue V;
-    return V;
-}
 }
 
 /**

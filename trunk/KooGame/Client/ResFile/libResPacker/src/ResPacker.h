@@ -66,12 +66,21 @@ public:
 protected:
     struct FileInfo
     {
-        inline FileInfo(){}
+        inline FileInfo() 
+            : pBuf(NULL)
+            , nBufSize(0)
+            , bNeedDelete(FALSE) {}
+
         string strFileName;
         eEncryptAlgo eAlgo;
         TEncryptParam<Version> eParam;
         eCompressAlgo cAlgo;
         TCompressParam<Version> cParam;
+
+        // ´æÊý¾Ý
+        BYTE* pBuf;
+        size_t nBufSize;
+        BOOL bNeedDelete;
 
         FileInfo(const FileInfo& a)
         {
@@ -80,6 +89,10 @@ protected:
             eParam = a.eParam;
             cAlgo = a.cAlgo;
             cParam = a.cParam;
+
+            pBuf = a.pBuf;
+            nBufSize = a.nBufSize;
+            bNeedDelete = a.bNeedDelete;
         }
     };
 
@@ -93,19 +106,41 @@ protected:
         public set<TFileHead<File_Version_1_0>::TDataIndex >{};
 
 protected:
-    static DWORD WINAPI DataTransform(void* p)
+    static ::DWORD WINAPI DataTransform(void* p)
     {
         CResPacker* pThis = (CResPacker*)p;
         return pThis->DataTransform();
     }
     DWORD DataTransform();
 
-    static DWORD WINAPI DataSave(void* p)
+    void Init();
+    void Unit();
+    void DoRead();
+    void DoWrite();
+
+    void TransformOne(FileInfo& Info);
+
+    // Encrypt 
+protected:
+    void RawEncrypt(void* pIn, size_t nInLen, const EncryptParam&){}
+    void XorEncrypt(void* pIn, size_t nInLen, const EncryptParam& p);
+    void BlowFishEncrypt(void* pIn, size_t nInLen, const EncryptParam& p);
+
+    // Compress
+protected:
+    void RawCompress(
+        void* pIn, size_t nIn, const CompressParam& p,
+        void*& pOut, size_t& nOut)
     {
-        CResPacker* pThis = (CResPacker*)p;
-        return pThis->DataSave();
+        pOut = pIn;
+        nOut = nIn;
     }
-    DWORD DataSave();
+    void LZMACompress(
+        void* pIn, size_t nInLen, const CompressParam& p,
+        void*& pOut, size_t& nOut);
+    void ZipCompress(
+        void* pIn, size_t nInLen, const CompressParam& p,
+        void*& pOut, size_t& nOut);
 
 private:
     eEncryptAlgo m_DefeAlgo;
@@ -119,14 +154,24 @@ private:
     FileInfoList m_FileInfoList;
     DataIndexList<Version> m_DataIndexList;
 
+    //
     // Thread
-    HANDLE m_hDataTransformThread;
-    HANDLE m_hDataSaveThread;
-    HANDLE m_ReadFinsihEvent;
-    BYTE* m_pFileBuf;
-    size_t m_nUsePos;
-    size_t m_n
+    //
+    HANDLE m_hTransThread;
+    enum eReadEvent{
+        ReadSome_Event,
+        ReadFinsih_Event,
+        ReadEvent_Count,
+    };
+    HANDLE m_hReadEvent[ReadEvent_Count];
+
+    BYTE* m_pRawFileBuf;
+    size_t m_nRawFileBufUse;
+
+    BYTE* m_pResFileBuf;
+    size_t m_nResFileBufUse;
 };
+
 
 }
 
