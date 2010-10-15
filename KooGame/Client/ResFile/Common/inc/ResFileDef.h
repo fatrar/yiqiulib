@@ -85,10 +85,18 @@ enum eEncryptAlgo
 enum eCompressAlgo
 {
     Raw_C_Algo,
-    LZMA_C_Algo,  // 7z
-    LZMA2_C_Algo,
     Zip_C_Algo,   // Zip
+    Lzma_C_Algo,  // 7z
+    //LZMA2_C_Algo,
     Compress_Count,
+};
+
+enum eCompressParam
+{
+    Unpack_Fast,
+    Compress_Normal,
+    Compress_High,
+    Compress_Auto,
 };
 
 enum eFileNamePos
@@ -113,7 +121,7 @@ inline size_t GetFileHeadSize(size_t nFileNum);
 template<>
 struct TDataInfo<File_Version_1_0>
 {
-    DWORD dwDataPos;
+    DWORD dwDataOffset;
     DWORD dwDataLen;
 };
 
@@ -155,7 +163,7 @@ struct TFileHead<File_Version_1_0> :
         bool operator > (const TDataIndex& a) const {return HashValue > a.HashValue;}
         bool operator ==(const TDataIndex& a) const {return HashValue ==a.HashValue;}
         UHashValue HashValue;
-        TDataInfo<File_Version_1_0> DataHead;
+        TDataInfo<File_Version_1_0> Info;
     } DataIndex[1];
 };
 
@@ -165,7 +173,8 @@ struct TDataHead<File_Version_1_0>
     DWORD dwRawDataLen;
     DWORD nEncryptAlgo:3;     // 0-7
     DWORD nCompressAlgo:3;    // 0-7
-    DWORD nDataEncryptLen:26; // Max 64MB-1
+    DWORD nCompressLevel:3;   // 0-7
+    DWORD nDataEncryptLen:23; // Max 8MB-1
 
     struct TEncryptParam
     {
@@ -179,7 +188,7 @@ struct TDataHead<File_Version_1_0>
             char cEncryptParam[8];
             BYTE ucEncryptParam[8];
         };
-    };
+    } eParam;
 };
 
 namespace Util

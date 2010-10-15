@@ -26,7 +26,7 @@ SRes MyLzmaEncode(Byte *dest, SizeT *destLen, const Byte *src, SizeT srcLen,
 }
 
 
-const char g_TestData[] = "0123456789_0123456789";
+const char g_TestData[] = "0123456789";
 
 void*SzAlloc(void *p, size_t size) { p = p; return malloc(size); }
 void SzFree(void *p, void *address) { p = p; free(address); }
@@ -36,18 +36,25 @@ ISzAlloc g_Alloc = { SzAlloc, SzFree };
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-    char szBuf[512] = {0};
-    size_t nDest = 512;
+    char* pTest = new char[1001];
+    char* pTmp = pTest;
+    for (int i =0; i<1; ++i)
+    {
+        strcpy(pTmp, g_TestData);
+        pTmp += sizeof(g_TestData);
+    }
+    char szBuf[3000] = {0};
+    size_t nDest = 3000;
    
     BYTE szProps[5] = {0};
     size_t outPropsSize = 5;
     int nRc = LzmaCompress(
-        (BYTE*)szBuf, &nDest, (BYTE*)g_TestData, sizeof(g_TestData), 
-        szProps, &outPropsSize, 0, 1, 3,0,2,32,1);
+        (BYTE*)szBuf, &nDest, (BYTE*)pTest, 1, 
+        szProps, &outPropsSize, 5, 1<<24, 3,0,2,32,1);
 
 
-    char szUnPackDest[64] = {0};
-    size_t nUnPackDest = 64;
+    char szUnPackDest[3000] = {0};
+    size_t nUnPackDest = 3000;
     LzmaUncompress((BYTE*)szUnPackDest, &nUnPackDest, (BYTE*)szBuf, &nDest, szProps, outPropsSize);
     //CLzmaEncProps props;
     //LzmaEncProps_Init(&props);

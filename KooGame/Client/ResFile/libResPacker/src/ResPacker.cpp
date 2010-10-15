@@ -25,11 +25,13 @@ namespace ResFile
 
 enum
 {
-    Raw_File_Buf = 64*1024*1024,  // 64MB
-    Res_File_Buf = 32*1024*1024,  // 32MB
+    Raw_File_Buf = 128*1024*1024,  // 64MB
+    Res_File_Buf = 64*1024*1024,  // 32MB
 
     File_Read_Flag = 3,
 
+    Min_Raw_File_Filter = 512,
+    Default_Encrypt_Len = 32,
     //Invaild_Pointer = -1, // 0xffffffff
 };
 
@@ -41,7 +43,7 @@ inline void CopyParam(T& TParam, void* pParam)
 
 IResPacker* CreateResPacker( 
     const char* pResFlodPath,
-    eCompressAlgo cAlgo /*= LZMA2_C_Algo*/, 
+    eCompressAlgo cAlgo /*= Lzma_C_Algo*/, 
     void* pcParam /*= (void*)&g_DefeParam*/, 
     eEncryptAlgo eAlgo /*= Raw_E_Algo*/,
     void* peParam /*= NULL */ )
@@ -72,7 +74,7 @@ IResPacker* CreateResPacker(
     if ( NULL == pcParam )
     {
         CopyParam(cParam, pcParam);
-        cAlgo = LZMA2_C_Algo;
+        cAlgo = Lzma_C_Algo;
     }
     else
     {
@@ -173,7 +175,7 @@ void CResPacker<File_Version_1_0>::AddFile(
 }
 
 template<>
-bool CResPacker<File_Version_1_0>::MakeFile(
+void CResPacker<File_Version_1_0>::MakeFile(
     const char* pPackFilePath,
     eFileNamePos eFileNamePos )
 {
@@ -186,17 +188,14 @@ bool CResPacker<File_Version_1_0>::MakeFile(
     Init();
     DoRead();
     WaitForSingleObject(m_hTransThread, INFINITE);
-    DoWrite();
+    DoWrite(pPackFilePath, eFileNamePos);
     Unit();
-    return true;
 }
-
-// Thread
 
 template<>
 DWORD CResPacker<File_Version_1_0>::DataTransform()
 {
-    DWORD dwFileHeadSize = Util::GetFileHeadSize(m_FileInfoList.size());
+    //DWORD dwFileHeadSize = Util::GetFileHeadSize<File_Version_1_0>(m_FileInfoList.size());
     FileInfoList::iterator iter = m_FileInfoList.begin();
     BOOL bStopLoop = FALSE;
     while(bStopLoop)
@@ -232,10 +231,19 @@ DWORD CResPacker<File_Version_1_0>::DataTransform()
 template<>
 void CResPacker<File_Version_1_0>::Init()
 {
+    m_CompressFn[Raw_C_Algo] = &CResPacker<File_Version_1_0>::RawCompress;
+    m_CompressFn[Zip_C_Algo] = &CResPacker<File_Version_1_0>::ZipCompress;
+    m_CompressFn[Lzma_C_Algo] = &CResPacker<File_Version_1_0>::LzmaCompress;
+
+    m_EncryptFn[Raw_E_Algo] = &CResPacker<File_Version_1_0>::RawEncrypt;
+    m_EncryptFn[Xor_E_Algo] = &CResPacker<File_Version_1_0>::XorEncrypt;
+    m_EncryptFn[BlowFish_E_Algo] = &CResPacker<File_Version_1_0>::BlowFishEncrypt;
+
     m_pRawFileBuf = new BYTE[Raw_File_Buf];
     m_nRawFileBufUse = 0;
     m_pResFileBuf = new BYTE[Res_File_Buf];
-    m_nResFileBufUse = 0;
+    m_nResFileBufRemain = Res_File_Buf;
+    m_pResFileBufNow = m_pResFileBuf;
 
     for ( int i = 0; i< ReadEvent_Count; ++i )
     {
@@ -252,6 +260,12 @@ void CResPacker<File_Version_1_0>::Unit()
 {
     safeDeleteArray(m_pRawFileBuf);
     safeDeleteArray(m_pResFileBuf);
+
+    for ( int i = 0; i< ReadEvent_Count; ++i )
+    {
+        CloseHandle(m_hReadEvent[i]);
+    }
+    CloseHandle(m_hTransThread);
 }
 
 template<>
@@ -264,84 +278,184 @@ void CResPacker<File_Version_1_0>::DoRead()
 
     FileInfoList::iterator iter = m_FileInfoList.begin();
     FileInfoList::iterator Olditer;
-    for ( ; iter!= m_FileInfoList.end();  )
+    for ( ; iter!= m_FileInfoList.end(); ++iter )
     {
         FileInfo& TmpFileInfo = *iter;
         string strFilePath = m_strResFold + TmpFileInfo.strFileName;
-        if ( bNeedNew )
+        FileSystem::CFile Reader;
+        if ( ! Reader.OpenByRead(strFilePath.c_str()) )
         {
-            void* pFileData = NULL;
-            size_t nRead = FileSystem::CFile::Read(
-                strFilePath.c_str(), pFileData);
-            if ( nRead == 0 )
-            {
-                cout << "Can`t Open File:" << strFilePath.c_str() << endl;
-                Olditer = iter;
-                ++iter;
-                m_FileInfoList.erase(Olditer);
-                continue;
-                // [] Todo: Exception          
-            }
-            else
-            {
-                TmpFileInfo.pBuf = (BYTE*)pFileData;
-                TmpFileInfo.nBufSize = nRead;
-                TmpFileInfo.bNeedDelete = TRUE;
-            }  
+            string strErr =  "Can`t Open File:";
+            strErr += strFilePath;
+            throw strErr.c_str();
         }
-        else
+        
+        FileSystem::size_t nFileSize = Reader.GetLength();
+        if ( nFileSize > nRawFileBufRemain )
         {
-            FileSystem::size_t nFileBufSize = nRawFileBufRemain;
-            size_t nRead = FileSystem::CFile::Read(
-                strFilePath.c_str(), (void*)pRawFileBufNow, nFileBufSize);
-            if ( nRead == 0 )
-            {
-                if ( nFileBufSize == 0 )
-                {
-                    cout << "Can`t Open File:" << strFilePath.c_str() << endl;
-                    // [] Todo: Exception
-                    Olditer = iter;
-                    ++iter;
-                    m_FileInfoList.erase(Olditer);
-                    continue;
-                }
-                else
-                {
-                    bNeedNew = TRUE;
-                    continue;
-                }
-            }
-            else
-            {
-                TmpFileInfo.pBuf = pRawFileBufNow;
-                TmpFileInfo.nBufSize = nRead;
-                TmpFileInfo.bNeedDelete = FALSE;
+            throw "Tatal File Size obove 128MB";
+        }
 
-                pRawFileBufNow += nRead;
-                nRawFileBufRemain -= nRead;
-            }         
+        FileSystem::size_t nFileBufSize = nRawFileBufRemain;
+        if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileBufSize) )
+        {
+            string strErr = "Read File Failed at File";
+            strErr += strFilePath;
+            throw strErr.c_str();
         }
+
+        TmpFileInfo.pBuf = pRawFileBufNow;
+        TmpFileInfo.nBufSize = nFileSize;
+
+        pRawFileBufNow += nFileSize;
+        nRawFileBufRemain -= nFileSize;
+
         ++nReadCount;
         if ( nReadCount == File_Read_Flag )
         {
             SetEvent(m_hReadEvent[ReadSome_Event]);
             nReadCount = 0;
-        }
-        ++iter;    
+        }  
     }
 }
 
 template<>
-void CResPacker<File_Version_1_0>::DoWrite()
+void CResPacker<File_Version_1_0>::DoWrite(
+    const char* pPackFilePath,
+    eFileNamePos FileNamePos )
 {
+    FileNamePos = Not_Exist;  //(暂时不考虑写文件名)
+    /**
+    *@note 1. Create File
+    */
+    FileSystem::CFile Writer;
+    Writer.OpenByWrite(pPackFilePath);
+    if ( !Writer.IsOpen() )
+    {
+        string strErr = "Can`t Open ";
+        strErr += pPackFilePath;
+        throw strErr.c_str();
+    }
 
+    size_t nResDataSize = Res_File_Buf - m_nResFileBufRemain;
+
+    /**
+    *@note 2. Write File Head 
+    */
+    size_t nHeadSize = Util::GetFileHeadSize<File_Version_1_0>(m_FileInfoList.size());
+    TFileHeadBase HeadBase;
+    HeadBase.dwSize = nHeadSize + nResDataSize;
+    HeadBase.FormatFlag = File_Format_Flag;
+    HeadBase.Version = File_Version_1_0;
+    HeadBase.dwFileCount = m_FileInfoList.size();
+    HeadBase.nFileNameFlag = FileNamePos;
+    Writer.Write(&HeadBase, sizeof(TFileHeadBase));
+
+    typedef TDataMemInfo<File_Version_1_0> DataMemInfo;
+    DWORD dwRawDataMem[DataMemInfo::Max_Num];          
+    DWORD dwCompressDataMem[DataMemInfo::Max_Num];
+    Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
+    Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
+
+    typedef TFileHead<File_Version_1_0>::TDataIndex DataIndex;
+    
+    DataIndexList<File_Version_1_0>::iterator iter;
+    for ( iter = m_DataIndexList.begin();
+          iter!= m_DataIndexList.end();
+          ++iter )
+    {
+        DataIndex& Index = *iter;
+        Index.Info.dwDataOffset += nHeadSize;
+        Writer.Write((void*)&Index, sizeof(DataIndex));
+    }
+
+    /**
+    *@note 3. Write File Data
+    */
+    Writer.Write(m_pResFileBufNow, nResDataSize);
+    Writer.Close();
 }
 
 template<>
 void CResPacker<File_Version_1_0>::TransformOne(
     FileInfo& Info )
 {
+    typedef TDataHead<File_Version_1_0> DataHead;
+    DWORD dwDataOffset = m_pResFileBufNow - m_pResFileBuf;
 
+    /**
+    *@note 1. 处理Filter
+    */
+    if ( Min_Raw_File_Filter > Info.nBufSize )
+    {
+        Info.cAlgo = Raw_C_Algo;
+    }
+    
+    /**
+    *@note 2. 填数据头
+    */
+    DataHead* pDataHead = (DataHead*)m_pResFileBufNow;
+    pDataHead->dwRawDataLen = Info.nBufSize;
+    //pDataHead->nEncryptAlgo = Info.eAlgo;
+    pDataHead->nCompressAlgo = Info.cAlgo;
+    pDataHead->nCompressLevel = Info.cParam.cParam;
+    //pDataHead->nDataEncryptLen = Default_Encrypt_Len;
+    pDataHead->eParam = Info.eParam;
+    m_pResFileBufNow += sizeof(DataHead);
+    m_nResFileBufRemain -= sizeof(DataHead);
+
+    /**
+    *@note 3. 压缩
+    */
+    CompressFn pCompressFn = m_CompressFn[Info.cAlgo];
+    size_t nPackLen = m_nResFileBufRemain;
+    int nRc = (this->*pCompressFn)(
+        Info.pBuf, Info.nBufSize,
+        (void*)m_pResFileBufNow, nPackLen, Info.cParam);
+    assert(nRc != 0);
+    if ( nRc != 0 )
+    {
+        throw "Compress Failed!";
+    }
+    void* pRawEncryptBuf = m_pResFileBufNow;
+    m_pResFileBufNow += nPackLen;
+    m_nResFileBufRemain -= nPackLen;
+
+    /**
+    *@note 4. 加密
+    */
+    if ( nPackLen < Default_Encrypt_Len && Info.eAlgo != Raw_E_Algo )
+    {
+        pDataHead->nEncryptAlgo = Info.eAlgo = Raw_E_Algo;
+        pDataHead->nDataEncryptLen = 0;
+    }
+    else
+    {
+        pDataHead->nEncryptAlgo = Info.eAlgo;
+        pDataHead->nDataEncryptLen = Default_Encrypt_Len;
+    }
+    EncryptFn pEncryptFn = m_EncryptFn[Info.eAlgo];
+    (this->*pEncryptFn)(pRawEncryptBuf, Default_Encrypt_Len, Info.eParam);
+ 
+    /**
+    *@note 5. 添加数据索引
+    */
+    TFileHead<File_Version_1_0>::TDataIndex Index;
+    Index.HashValue = OCI::HashStringEx(Info.strFileName.c_str());
+    Index.Info.dwDataOffset = dwDataOffset;
+    Index.Info.dwDataLen = nPackLen + sizeof(DataHead);
+    m_DataIndexList.insert(Index);
+}
+
+template<>
+int CResPacker<File_Version_1_0>::LzmaCompress(
+    void* pIn, size_t nIn,
+    void* pOut, size_t& nOut,
+    const CResPacker<File_Version_1_0>::CompressParam& p )
+{
+    return LzmaUtil::LzmaCompress(
+        (unsigned char*)pOut, &nOut,
+        (const unsigned char*)pIn, nIn, p.cParam);
 }
 
 }

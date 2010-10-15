@@ -116,7 +116,7 @@ void CResFileReader<Version>::BlowFishDecrypt(
 
 
 template<DWORD Version>
-void CResFileReader<Version>::LZMAUnPack(
+void CResFileReader<Version>::LzmaUnPack(
     void* pIn, size_t nInLen, 
     void* pOut, size_t nOut )
 {

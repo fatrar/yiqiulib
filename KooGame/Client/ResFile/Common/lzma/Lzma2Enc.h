@@ -53,7 +53,7 @@ Return code:
   SZ_ERROR_THREAD     - errors in multithreading functions (only for Mt version)
 */
 
-/*
+/* 这个地方是原作者注释掉的，可能是没想把Lzma2的算法开源 --heliang
 SRes Lzma2Encode(Byte *dest, SizeT *destLen, const Byte *src, SizeT srcLen,
     const CLzmaEncProps *props, Byte *propsEncoded, int writeEndMark,
     ICompressProgress *progress, ISzAlloc *alloc, ISzAlloc *allocBig);
