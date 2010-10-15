@@ -475,3 +475,31 @@ SRes Lzma2Enc_Encode(CLzma2EncHandle pp,
   }
   #endif
 }
+
+
+/**
+*@note heliang +
+先注释，貌似lzma的压缩算法没公开，有时间再去确认下
+*/
+/*
+SRes Lzma2Encode(Byte *dest, SizeT *destLen, const Byte *src, SizeT srcLen,
+    const CLzmaEncProps *props, Byte *propsEncoded, int writeEndMark,
+    ICompressProgress *progress, ISzAlloc *alloc, ISzAlloc *allocBig)
+{
+    CLzma2Enc *p = (CLzma2Enc *)Lzma2Enc_Create(alloc);
+    if (p == 0)
+        return SZ_ERROR_MEM;
+
+    SRes res = Lzma2Enc_SetProps(p, props);
+    if (res == SZ_OK)
+    {
+        res = Lzma2Enc_WriteProperties(p, propsEncoded, propsSize);
+        if (res == SZ_OK)
+            res = Lzma2Enc_Encode(p, dest, destLen, src, srcLen,
+            writeEndMark, progress, alloc, allocBig);
+    }
+
+    Lzma2Enc_Destroy(p, alloc, allocBig);
+    return res;
+}
+*/

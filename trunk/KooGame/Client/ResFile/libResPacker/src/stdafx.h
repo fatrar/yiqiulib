@@ -24,5 +24,8 @@ using namespace std;
 #include "FileSystem.h"
 //using namespace FileSystem;
 
+#include "..\..\Common\lzma\LzmaUtil.h"
+#include "..\..\Common\inc\HashHelper.h"
+
 
 // TODO: reference additional headers your program requires here

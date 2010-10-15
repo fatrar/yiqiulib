@@ -58,7 +58,7 @@ public:
         eEncryptAlgo eAlgo,    
         void* peParam );
 
-    virtual bool MakeFile(
+    virtual void MakeFile(
         const char* pPackFilePath,
         eFileNamePos eFileNamePos);
 
@@ -68,8 +68,7 @@ protected:
     {
         inline FileInfo() 
             : pBuf(NULL)
-            , nBufSize(0)
-            , bNeedDelete(FALSE) {}
+            , nBufSize(0) {}
 
         string strFileName;
         eEncryptAlgo eAlgo;
@@ -80,7 +79,6 @@ protected:
         // ´æÊý¾Ý
         BYTE* pBuf;
         size_t nBufSize;
-        BOOL bNeedDelete;
 
         FileInfo(const FileInfo& a)
         {
@@ -92,7 +90,6 @@ protected:
 
             pBuf = a.pBuf;
             nBufSize = a.nBufSize;
-            bNeedDelete = a.bNeedDelete;
         }
     };
 
@@ -116,32 +113,40 @@ protected:
     void Init();
     void Unit();
     void DoRead();
-    void DoWrite();
+    void DoWrite(
+        const char* pPackFilePath,
+        eFileNamePos FileNamePos);
 
     void TransformOne(FileInfo& Info);
 
     // Encrypt 
 protected:
+    typedef void (CResPacker<Version>::*EncryptFn)(
+        void*, size_t, const EncryptParam&);
     void RawEncrypt(void* pIn, size_t nInLen, const EncryptParam&){}
     void XorEncrypt(void* pIn, size_t nInLen, const EncryptParam& p);
     void BlowFishEncrypt(void* pIn, size_t nInLen, const EncryptParam& p);
 
     // Compress
 protected:
-    void RawCompress(
-        void* pIn, size_t nIn, const CompressParam& p,
-        void*& pOut, size_t& nOut)
-    {
-        pOut = pIn;
+    typedef int (CResPacker<Version>::*CompressFn)(
+        void*, size_t, void*, size_t&, const CompressParam&);
+    int RawCompress(
+        void* pIn, size_t nIn, void* pOut, size_t& nOut,
+        const CompressParam& p)
+    {  
+        memcpy(pOut,pIn,nIn);
         nOut = nIn;
+        return 0;
     }
-    void LZMACompress(
-        void* pIn, size_t nInLen, const CompressParam& p,
-        void*& pOut, size_t& nOut);
-    void ZipCompress(
-        void* pIn, size_t nInLen, const CompressParam& p,
-        void*& pOut, size_t& nOut);
-
+    int ZipCompress(
+        void* pIn, size_t nIn,
+        void* pOut, size_t& nOut,
+        const CompressParam& p){return 0;};
+    int LzmaCompress(
+        void* pIn, size_t nIn,
+        void* pOut, size_t& nOut,
+        const CompressParam& p);
 private:
     eEncryptAlgo m_DefeAlgo;
     EncryptParam m_DefeParam;
@@ -169,7 +174,11 @@ private:
     size_t m_nRawFileBufUse;
 
     BYTE* m_pResFileBuf;
-    size_t m_nResFileBufUse;
+    BYTE* m_pResFileBufNow;
+    size_t m_nResFileBufRemain;
+
+    CompressFn m_CompressFn[Compress_Count];
+    EncryptFn m_EncryptFn[Encrypt_Count];
 };
 
 

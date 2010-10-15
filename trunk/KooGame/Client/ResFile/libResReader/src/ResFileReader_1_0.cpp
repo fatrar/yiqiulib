@@ -36,8 +36,8 @@ CResFileReader<File_Version_1_0>::CResFileReader(
     m_DecryptFn[BlowFish_E_Algo] = &CResFileReader<File_Version_1_0>::BlowFishDecrypt;
 
     m_UnPackFn[Raw_C_Algo] = &CResFileReader<File_Version_1_0>::RawUnPack;
-    m_UnPackFn[LZMA_C_Algo] = &CResFileReader<File_Version_1_0>::LZMAUnPack;
     m_UnPackFn[Zip_C_Algo] = &CResFileReader<File_Version_1_0>::ZipUnPack;
+    m_UnPackFn[Lzma_C_Algo] = &CResFileReader<File_Version_1_0>::LzmaUnPack;
 }
 
 template<>

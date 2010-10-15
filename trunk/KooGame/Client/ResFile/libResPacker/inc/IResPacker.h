@@ -52,21 +52,13 @@ struct IResPacker
         void* peParam ) = 0;
 
     /**
-    *@note 打包
+    *@note 打包,该函数如果遇到错误会抛异常throw (const char*)
     *@param	pPackFilePath 资源包存放路径
     *@param eFileNamePos 资源文件名的存放方式
-    *@return 成功失败
     */
-    virtual bool MakeFile(
+    virtual void MakeFile(
         const char* pPackFilePath,
         eFileNamePos eFileNamePos) = 0;
-};
-
-enum ECompressParam
-{
-    Compress_Normal,
-    Unpack_Fast,
-    Compress_High,
 };
 
 template<DWORD Version> struct TEncryptParam;
@@ -77,10 +69,10 @@ template<> class TEncryptParam<File_Version_1_0> :
 
 template<> struct TCompressParam<File_Version_1_0>
 {   
-    TCompressParam(ECompressParam e = Compress_Normal):cParam(e){}
+    TCompressParam(eCompressParam e = Compress_Auto):cParam(e){}
     typedef TCompressParam<File_Version_1_0> CompressParam;
     void operator = (const CompressParam& a){cParam = a.cParam;}
-    ECompressParam cParam;
+    eCompressParam cParam;
 };
 
 #if Res_Verion == File_Version_1_0
@@ -99,7 +91,7 @@ template<> struct TCompressParam<File_Version_1_0>
 */
 IResPacker* CreateResPacker(
     const char* pResFlodPath, 
-    eCompressAlgo cAlgo = LZMA2_C_Algo,
+    eCompressAlgo cAlgo = Lzma_C_Algo,
     void* pcParam = (void*)&g_DefcParam,
     eEncryptAlgo eAlgo = Raw_E_Algo,
     void* peParam  = NULL );

@@ -29,6 +29,7 @@ class CHashHelper :
 {
 public:
     DWORD HashString(const char* pStr, DWORD dwHashType = 0);
+    uint64 HashStringEx(const char* pStr);
 public:
     CHashHelper();
     ~CHashHelper();
@@ -38,6 +39,7 @@ protected:
 
 DWORD HashString(const char* pStr, DWORD dwHashType = 0);
 
+uint64 HashStringEx(const char* pStr);
 }
 
 

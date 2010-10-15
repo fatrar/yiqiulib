@@ -29,8 +29,6 @@ template<DWORD Version>
 class CResFileReader:
     public IResReader
 {
-    typedef void (CResFileReader<Version>::*DecryptFn)(void*, size_t, void*);
-    typedef void (CResFileReader<Version>::*UnPackFn)(void*, size_t, void*, size_t);
 public:
     CResFileReader(
         FileSystem::CFile* pResFile, 
@@ -54,15 +52,17 @@ protected:
 
     // Decrypt 
 protected:
+     typedef void (CResFileReader<Version>::*DecryptFn)(void*, size_t, void*);
     void RawDecrypt(void* pIn, size_t nIn,void*){}
     void XorDecrypt(void* pIn, size_t nIn,void*);
     void BlowFishDecrypt(void* pIn, size_t nIn,void* pEncryptParam);
-
+  
     // UnPack
 protected:
+    typedef void (CResFileReader<Version>::*UnPackFn)(void*, size_t, void*, size_t);
     void RawUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut){}
-    void LZMAUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut);
     void ZipUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut);
+    void LzmaUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut);
 
     typedef TFileHead<Version> FileHead;
     typedef TDataInfo<Version> DataInfo;

@@ -19,6 +19,9 @@
 #define _ICOMMAND_H_2010_9
 
 
+namespace ICommand
+{
+
 typedef unsigned int UINT;
 
 /**
@@ -40,7 +43,7 @@ struct ICmdExecor
     virtual bool OnSetParam(
         UINT dwParam,
         const void* pParam1,
-        const void* pParam2 = NULL)=0;
+        const void* pParam2 = NULL)=0; // 第二个参数现在永远为空，做预留支持多参数
 
     /**
     *@note 执行命令，ICmdParser::ParseExec执行OnSetParam后调用
@@ -64,11 +67,6 @@ struct ICmdParser
 
     virtual ~ICmdParser(void){};
     
-    /**
-    *@note 设置默认的命令执行者，AddParamRule[ex]如果pCmdExecor为空以他为默认
-    *@param	pCmdExecor 命令执行者对象
-    */
-    virtual void SetDefaultCmdExecor(ICmdExecor* pCmdExecor)=0;
 
     /**
     *@note 添加命令，可以重复添加不同的命令，有时候命令以空格分隔，
@@ -100,6 +98,7 @@ struct ICmdParser
     *@param pCmdExecor 命令执行者对象,默认为空，如果为空就以DefaultCmdExecor替代
     *@return 是否成功，一般不错，估计设置重复或者无效规则参数
     */
+    /*  暂时不支持
     virtual bool AddParamRuleEx(
         UINT dwParam,
         const char* pParam1,
@@ -107,6 +106,7 @@ struct ICmdParser
         ValueType t1 = T_String,
         ValueType t2 = T_String,
         ICmdExecor* pCmdExecor = NULL)=0;
+    /*
 
     /**
     *@note 解析命令并执行
@@ -118,7 +118,12 @@ struct ICmdParser
 };
 
 
+ICmdParser* CreateCmdParser(ICmdExecor* pCmdExecor);
+void DestroyCmdParser(ICmdParser*& pCmdParser);
 
+
+
+};
 
 
 
