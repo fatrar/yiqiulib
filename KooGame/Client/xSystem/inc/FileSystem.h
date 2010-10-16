@@ -123,7 +123,7 @@ public:
     inline operator FHANDLE()const {return m_hFile;}
 
 	// Overridables
-	void Seek(size_t nOffset, SeekPosition nFrom);
+	void Seek(size_t nOffset, SeekPosition nFrom=begin);
 	
 	// нд╪Ч╫ь╤о
 	void SetLength(size_t nNewLen);
@@ -144,6 +144,47 @@ public:
 	static BOOL Remove(FString pFileName);
 	
     static BOOL IsExist(FString pFileName);
+
+    static size_t Read(FString pFileName, void* pBuf, size_t& nCount)
+    {
+        CFile Reader;
+        Reader.OpenByRead(pFileName);
+        if ( ! Reader.IsOpen() )
+        {
+            nCount = 0;
+            return 0;
+        }
+
+        size_t nFileSize = Reader.GetLength();
+        if ( nFileSize > nCount )
+        {
+            nCount = nFileSize;
+            return 0;
+        }
+
+        size_t nRead = Reader.Read(pBuf, nCount);
+        Reader.Close();
+        return nRead;
+    }
+
+    static size_t Read(FString pFileName, void*& pBuf)
+    {
+        CFile Reader;
+        Reader.OpenByRead(pFileName);
+        size_t nFileSize;
+        if ( !Reader.IsOpen() ||
+             (nFileSize = Reader.GetLength()) == 0 )
+        {
+            pBuf = NULL;
+            return 0;
+        }
+
+        pBuf = new char[nFileSize];
+        size_t nRead = Reader.Read(pBuf, nFileSize);
+        assert(nRead == nFileSize);
+        Reader.Close();
+        return nFileSize;
+    }
 
 protected:
 	FHANDLE m_hFile;

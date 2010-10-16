@@ -196,7 +196,7 @@ size_t CFile::GetLength() const
     liSize.LowPart = ::GetFileSize(m_hFile, &liSize.HighPart);
     if (liSize.LowPart != INVALID_FILE_SIZE)
     {
-        return liSize.QuadPart;
+        return size_t(liSize.QuadPart);
     }
 
     RefreshErrCode();
@@ -211,7 +211,8 @@ size_t CFile::Read( void* pBuf, size_t nCount )
     }
 
     DWORD dwRead = 0;
-    if (!::ReadFile(m_hFile, pBuf, nCount, &dwRead, NULL))
+    if (!::ReadFile(m_hFile, pBuf, nCount, &dwRead, NULL) ||
+         dwRead != nCount )
     {
         RefreshErrCode();
     }
@@ -229,7 +230,7 @@ void CFile::Write( const void* pBuf, size_t nCount )
     DWORD nWritten;
     if (!::WriteFile(m_hFile, pBuf, nCount, &nWritten, NULL))
     {
-		// VC 对C++支持太烂，居然不支持return RefreshErrCode();
+		// VC6 对C++支持太烂，居然不支持return RefreshErrCode();
         RefreshErrCode(); return;
     }
 
