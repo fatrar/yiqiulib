@@ -13,5 +13,15 @@
 #include <tchar.h>
 
 
+#include "ICommand.h"
+#include "IResPacker.h"
+#include "Common.h"
 
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+using namespace ResFile;
+
+#pragma warning(disable: 4996)
 // TODO: reference additional headers your program requires here

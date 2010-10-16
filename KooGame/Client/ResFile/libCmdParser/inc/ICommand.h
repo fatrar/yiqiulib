@@ -62,7 +62,7 @@ struct ICmdParser
         T_String,
         T_Int,
         T_Uint,
-        T_Unknown,
+        T_Value_Type_Max,
     };
 
     virtual ~ICmdParser(void){};
@@ -81,14 +81,12 @@ struct ICmdParser
     *@param	dwParam 用户自定义的命令码 
     *@param pParam  命令自定义字符串码  
     *@param t       命令对值的数据类型 
-    *@param pCmdExecor 命令执行者对象,默认为空，如果为空就以DefaultCmdExecor替代
     *@return 是否成功，一般不错，估计设置重复或者无效规则参数
     */
     virtual bool AddParamRule(
         UINT dwParam, 
         const char* pParam,
-        ValueType t = T_String, 
-        ICmdExecor* pCmdExecor = NULL)=0;
+        ValueType t = T_String )=0;
 
     /**
     *@note 添加命令解析规则，跟AddParamRule不同的是能设置两个参数

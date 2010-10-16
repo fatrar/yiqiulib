@@ -28,19 +28,20 @@ using namespace std;
 namespace ICommand
 {
 
+typedef void* (*Str2XXFn)(const char*);
+
 class CCmdParser :
     public ICmdParser
 {
 public:
-    CCmdParser(ICmdExecor* pCmdExecor)
-        : m_pDefCmdExecor(pCmdExecor){}
+    CCmdParser(ICmdExecor* pCmdExecor);
+       // : m_pDefCmdExecor(pCmdExecor){}
 public:
     virtual void AddCmdString(const char* pCmdString);
     virtual bool AddParamRule(
         UINT dwParam, 
         const char* pParam,
-        ValueType t = T_String, 
-        ICmdExecor* pCmdExecor = NULL);
+        ValueType t = T_String );
 
     virtual bool ParseExec(bool bIgnoreErr = false);
 
@@ -52,16 +53,16 @@ protected:
     {   
         UINT dwParam;
         ValueType t;
-        ICmdExecor* pCmdExecor;
         string strValue;
     };
 
     typedef map<string, ParamInfo> CmdParmMap;
     typedef list<string> CmdList;
 private:
-    ICmdExecor* m_pDefCmdExecor;
+    ICmdExecor* m_pCmdExecor;
     CmdParmMap m_CmdParmMap;
     CmdList m_CmdList;
+    Str2XXFn m_Str2XXFn[T_Value_Type_Max];
 };
 
 
