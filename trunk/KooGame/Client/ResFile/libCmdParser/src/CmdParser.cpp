@@ -17,28 +17,24 @@
 **************************************************************************cpp**/
 #include "StdAfx.h"
 #include "CmdParser.h"
-#include "..\..\Common\inc\Common.h"
+#include "Common.h"
 
 namespace ICommand
 {
 
-void* Str2Bool(const char* pStr)
-{
-    return (void*)(pStr[0] != 0);
-}
-
+void* Str2Bool(const char* pStr){return (void*)(pStr[0] != 0);}
 void* Str2Str(const char* pStr){return (void*)pStr;}
-void* Str2Int(const char* pStr)
-{
-    return (void*)atoi(pStr);
-}
+void* Str2Int(const char* pStr){return (void*)atoi(pStr);}
+void* Str2Uint(const char* pStr){return (void*)strtoul(pStr,NULL,10);}
 
-void* Str2Uint(const char* pStr)
+CCmdParser::CCmdParser( ICmdExecor* pCmdExecor )
+    : m_pCmdExecor(pCmdExecor)
 {
-    return (void*)strtoul(pStr,NULL,10);
-  //   _Value = strtoul(strTmp.c_str(), NULL, 10);
+    m_Str2XXFn[T_Bool] = &Str2Bool;
+    m_Str2XXFn[T_String] = &Str2Str;
+    m_Str2XXFn[T_Int] = &Str2Int;
+    m_Str2XXFn[T_Uint] = &Str2Uint;
 }
-
 
 void CCmdParser::AddCmdString(
     const char* pCmdString )
@@ -53,8 +49,7 @@ void CCmdParser::AddCmdString(
 
 bool CCmdParser::AddParamRule(
     UINT dwParam, const char* pParam, 
-    ValueType t /*= T_String*/, 
-    ICmdExecor* pCmdExecor /*= NULL*/ )
+    ValueType t /*= T_String*/)
 {
     if ( isValidString(pParam) )
     {
@@ -71,8 +66,8 @@ bool CCmdParser::AddParamRule(
     ParamInfo Info;
     Info.dwParam = dwParam;
     Info.t = t;
-    Info.pCmdExecor = pCmdExecor == NULL ? m_pDefCmdExecor : pCmdExecor;
     m_CmdParmMap[strParam] = Info;
+    return true;
 }
 
 bool CCmdParser::ParseExec(
@@ -82,9 +77,9 @@ bool CCmdParser::ParseExec(
     CmdList::iterator iter = m_CmdList.begin();
     for (; iter!= m_CmdList.end(); ++iter)
     {
-        string& strCmd = *iter;
+        const string& strCmd = *iter;
         size_t nPos = strCmd.find('=');
-        if ( nPos == string::npos )
+        if ( nPos == string::npos || 0 == nPos )  //防止没有=或者=在第一个
         {
             if (bIgnoreErr) continue;
             string strErr = "Cmd Error at Commad -->";
@@ -93,6 +88,9 @@ bool CCmdParser::ParseExec(
         }
 
         string strParam = strCmd.substr(nPos);
+        //
+        // [] 需要处理路径带""的异常
+        //
         string strValue = strCmd.substr(nPos+1, string::npos);
 
         Mapiter = m_CmdParmMap.find(strParam);
@@ -105,13 +103,20 @@ bool CCmdParser::ParseExec(
         }
 
         ParamInfo& Info = Mapiter->second;
-        if ( 1 )
+        void* pValue = m_Str2XXFn[Info.t](strValue.c_str());
+        bool bRc = m_pCmdExecor->OnSetParam(Info.dwParam, pValue);
+        if ( !bRc && !bIgnoreErr )
         {
+            string strErr = "Command Value is Valid, command Error at ";
+            strErr += strParam;
+            throw strErr.c_str();
         }
-        //Mapiter->second.strValue = strValue;
-    
     }
+
+    return m_pCmdExecor->Run();
 }
+
+
 
 }
 

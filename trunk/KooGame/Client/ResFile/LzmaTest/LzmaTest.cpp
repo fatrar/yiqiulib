@@ -52,7 +52,6 @@ int _tmain(int argc, _TCHAR* argv[])
         (BYTE*)szBuf, &nDest, (BYTE*)pTest, 1, 
         szProps, &outPropsSize, 5, 1<<24, 3,0,2,32,1);
 
-
     char szUnPackDest[3000] = {0};
     size_t nUnPackDest = 3000;
     LzmaUncompress((BYTE*)szUnPackDest, &nUnPackDest, (BYTE*)szBuf, &nDest, szProps, outPropsSize);
