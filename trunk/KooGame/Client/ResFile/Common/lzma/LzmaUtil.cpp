@@ -90,6 +90,7 @@ struct CLzmaAlloc
 
 ISzAlloc CLzmaAlloc::g_Alloc = { CLzmaAlloc::SzAlloc, CLzmaAlloc::SzFree };
 
+#if defined(_USE_LZMA_COMPRESS_) || defined(_USE_LZMA_ALL)
 int LzmaCompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t srcLen, 
@@ -104,7 +105,9 @@ int LzmaCompress(
         &props, outProps, &outPropsSize,
         0, NULL, &CLzmaAlloc::g_Alloc, &CLzmaAlloc::g_Alloc);
 }
+#endif
 
+#if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
 int LzmaUncompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t *srcLen,
@@ -118,7 +121,7 @@ int LzmaUncompress(
         props, LZMA_PROPS_SIZE,
         LZMA_FINISH_ANY, &status, &CLzmaAlloc::g_Alloc);
 }
-
+#endif
 /*
 int Lzma2Compress(
     unsigned char *dest, size_t *destLen,

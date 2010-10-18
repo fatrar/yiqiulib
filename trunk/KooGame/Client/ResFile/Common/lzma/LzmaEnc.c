@@ -10,6 +10,10 @@
 #include <stdio.h>
 #endif
 
+
+// heliang +
+#define _7ZIP_ST
+
 #include "LzmaEnc.h"
 
 #include "LzFind.h"
