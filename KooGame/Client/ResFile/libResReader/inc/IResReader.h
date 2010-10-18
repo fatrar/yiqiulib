@@ -49,7 +49,7 @@ struct IResReader
     *@note 解析数据，建立索引
     *@return 成功失败
     */
-    virtual bool Parse()=0;
+    //virtual bool Parse()=0;
 
     /**
     *@note 得到资源包中某个文件的原始数据的长度
@@ -73,7 +73,8 @@ protected:
     virtual void Release(CUnPackDataInfo* pUnPackDataInfo)=0;
 
     // 由于C++ friend特权不能继承获得，所以只能在这写个函数实现
-    inline static ResMemType& GetMemType(CUnPackDataInfo* pUnPackDataInfo);
+    //inline static ResMemType& GetMemType(CUnPackDataInfo* pUnPackDataInfo);
+    //inline static BYTE*& GetPtr(CUnPackDataInfo* pUnPackDataInfo);
 };
 
 /**
@@ -112,17 +113,18 @@ public:
     inline size_t Length(){return m_nLen;}
     inline const void* Ptr(){return (void*)m_pData;}
 
-protected:
+    // 仅IResReader本身访问，其他的最好不要直接访问
+public:
     BYTE* m_pData;
     size_t m_nLen;
     int m_nMemType;
     IResReader* m_pResReader;
 };
 
-ResMemType& IResReader::GetMemType(CUnPackDataInfo* pUnPackDataInfo)
-{
-    return (ResMemType&)pUnPackDataInfo->m_nMemType;
-}
+// ResMemType& IResReader::GetMemType(CUnPackDataInfo* pUnPackDataInfo)
+// {
+//     return (ResMemType&)pUnPackDataInfo->m_nMemType;
+// }
 
 IResReader* CreateResFileReader(const char* pResFilePath);
 IResReader* CreateMemResReader(BYTE* pData, size_t nSize);

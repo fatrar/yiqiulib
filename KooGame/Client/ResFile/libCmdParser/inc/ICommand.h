@@ -48,7 +48,7 @@ struct ICmdExecor
     /**
     *@note 执行命令，ICmdParser::ParseExec执行OnSetParam后调用
     */
-    virtual bool Run();
+    virtual bool Run() = 0;
 };
 
 /**

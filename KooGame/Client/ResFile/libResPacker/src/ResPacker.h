@@ -181,7 +181,6 @@ private:
     EncryptFn m_EncryptFn[Encrypt_Count];
 };
 
-
 }
 
 

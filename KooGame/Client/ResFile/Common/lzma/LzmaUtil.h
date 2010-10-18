@@ -48,7 +48,7 @@ int LzmaCompress(
 #if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
 int  LzmaUncompress(
     unsigned char *dest, size_t *destLen, 
-    const unsigned char *src, size_t *srcLen,
+    const unsigned char *src, size_t srcLen,
     unsigned int nlevel );
 #endif
 

@@ -21,11 +21,10 @@ using namespace std;
 #include "ResFileDef.h"
 #include "Common.h"
 
-#include "FileSystem.h"
 //using namespace FileSystem;
-
 #include "..\..\Common\lzma\LzmaUtil.h"
 #include "..\..\Common\inc\HashHelper.h"
+#include "..\..\Common\inc\FileSystem.h"
 
 
 // TODO: reference additional headers your program requires here

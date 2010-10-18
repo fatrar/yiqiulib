@@ -15,3 +15,12 @@
 
 
 // TODO: reference additional headers your program requires here
+#include "..\libResReader\inc\IResReader.h"
+
+#ifdef _DEBUG
+//#pragma comment(lib, "..\\debug\\libCmdParser.lib")
+#pragma comment(lib, "..\\debug\\libResReader.lib")
+#else
+//#pragma comment(lib, "..\\release\\libCmdParser.lib")
+#pragma comment(lib, "..\\release\\libResReader.lib")
+#endif // _DEBUG

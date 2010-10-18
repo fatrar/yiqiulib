@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 
+#define _Command_Help_Note "\nUse command like: \"ResPacker.exe ?\" can Get help!"
+#define _Command_Help "Just Test!"
 
 namespace ICommand
 {
@@ -15,7 +17,8 @@ public:
         : m_cAlgo(Lzma_C_Algo)
         , m_cParam(Compress_Normal)
         , m_eAlgo(Raw_E_Algo)
-        , m_eFileNamePos(Not_Exist){}
+        , m_eFileNamePos(Not_Exist)
+        , m_strResPackFilePath("ResPacker.pak"){}
 
 protected:
     enum CmdList
@@ -50,7 +53,7 @@ public:
         const void* pParam2 = NULL)
     {
         const char* pParam = (const char*)pParam1;
-        if ( isValidString(pParam) )
+        if ( !isValidString(pParam) )
         {
             return false;
         }
@@ -122,6 +125,13 @@ public:
 
     virtual bool Run()
     {
+        if ( m_strFileListPath.size() == 0 )
+        {
+            cout << "Must Set FileList file Path!"
+                    _Command_Help_Note << endl;
+            return false;
+        }
+
         TCompressParam<File_Version_1_0> cParam(m_cParam);
         TEncryptParam<File_Version_1_0> eParam;
         memcpy(eParam.cEncryptParam, m_strEncryptPsw.c_str(), m_strEncryptPsw.length());
@@ -130,7 +140,8 @@ public:
             m_cAlgo, &cParam, m_eAlgo, &eParam);
         if ( !pResPacker )
         {
-            cout << "Can`t Create ResPacker, maybe is some Command Param Invaild!" << endl;
+            cout << "Can`t Create ResPacker, maybe is some Command Param Invaild!"
+                    _Command_Help_Note << endl;
             return false;
         }
 
@@ -138,6 +149,7 @@ public:
 
         pResPacker->MakeFile(m_strResPackFilePath.c_str(), m_eFileNamePos);
         ResFile::DestroyResPacker(pResPacker);
+        return true;
     }
 
 protected:
@@ -154,6 +166,10 @@ protected:
         string strLine;  
         while( getline(Reader, strLine) )
         {    
+            if ( strLine.size() == 0 )
+            {
+                continue;
+            }
             ParseAndSet(pResPacker, strLine);
         }
 
@@ -167,6 +183,7 @@ protected:
         */
         // [] 这里可能需要处理两边多余空格
         pResPacker->AddFile(strLine.c_str());
+        return true;
     }   
     
 private:
@@ -201,7 +218,7 @@ int _tmain(int argc, _TCHAR* argv[])
     ICommand::CResPackerCmdExecor CmdExecor;
     ICommand::ICmdParser* pCmdParser = 
         ICommand::CreateCmdParser(&CmdExecor);
-    for ( int i = 0; i< argc; ++i )
+    for ( int i = 1; i< argc; ++i )
     {
         pCmdParser->AddCmdString(argv[i]);
     }
@@ -213,7 +230,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (const char* pErrInfo)
     {
-        cout << pErrInfo << endl;	
+        cout << pErrInfo << _Command_Help_Note << endl;	
     }
 
     ICommand::DestroyCmdParser(pCmdParser);

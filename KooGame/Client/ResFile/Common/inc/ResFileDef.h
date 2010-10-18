@@ -71,6 +71,7 @@ union UHashValue
     inline bool operator > (const UHashValue& a) const {return qwValue>a.qwValue;}
     inline bool operator < (const UHashValue& a) const {return qwValue<a.qwValue;}
     inline void operator = (const QWORD& V){qwValue = V;}
+    UHashValue(QWORD V = 0){qwValue = V;}
 };
 
 // Encrypt Algorithm 
@@ -164,7 +165,7 @@ struct TFileHead<File_Version_1_0> :
         bool operator ==(const TDataIndex& a) const {return HashValue ==a.HashValue;}
         UHashValue HashValue;
         TDataInfo<File_Version_1_0> Info;
-    } DataIndex[1];
+    }DataIndex[1];
 };
 
 template<>

@@ -18,6 +18,7 @@
 #ifndef _RESFILEREADER_H_2010_10
 #define _RESFILEREADER_H_2010_10
 
+#include <string.h>
 #include "ResFileDef.h"
 #include "IResReader.h"
 #include <FileSystem.h>
@@ -32,18 +33,18 @@ class CResFileReader:
 public:
     CResFileReader(
         FileSystem::CFile* pResFile, 
-        const TFileHeadBase& HeadBase ){};
-    virtual ~CResFileReader(void){};
+        const TFileHeadBase& HeadBase );
+    virtual ~CResFileReader(void);
 
     // IResReader
 public:
-    virtual bool Parse(){return false;}
-    virtual size_t GetDataLen(const char* pFileName){return 0;};
+    //virtual bool Parse();
+    virtual size_t GetDataLen(const char* pFileName);
     virtual bool GetData(
         const char* pFileName,
-        CUnPackDataInfo& UnPackDataInfo){return false;};
+        CUnPackDataInfo& UnPackDataInfo);
 
-    virtual void Release(CUnPackDataInfo* pUnPackDataInfo){};
+    virtual void Release(CUnPackDataInfo* pUnPackDataInfo);
 
 protected:
     int Find(const char* pFileName);//{return -1;};
@@ -59,17 +60,22 @@ protected:
   
     // UnPack
 protected:
-    typedef void (CResFileReader<Version>::*UnPackFn)(void*, size_t, void*, size_t);
-    void RawUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut){}
-    void ZipUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut);
-    void LzmaUnPack(void* pIn, size_t nIn, void* pOut, size_t nOut);
+    typedef void (CResFileReader<Version>::*UnPackFn)(
+        void*, size_t, void*, size_t&, size_t);
+    void RawUnPack(void* pIn, size_t nIn, void* pOut, size_t& nOut,size_t){}
+    void ZipUnPack(
+        void* pIn, size_t nIn,
+        void* pOut, size_t& nOut, size_t nLevel);
+    void LzmaUnPack(
+        void* pIn, size_t nIn,
+        void* pOut, size_t& nOut, size_t nLevel);
 
     typedef TFileHead<Version> FileHead;
     typedef TDataInfo<Version> DataInfo;
     typedef TDataHead<Version> DataHead;
 
 protected:
-    FileHead m_FileHead;
+    FileHead* m_pFileHead;
     DecryptFn m_DecryptFn[Encrypt_Count];
     UnPackFn  m_UnPackFn[Compress_Count];
     //DWORD m_dwHeadSize, m_dwFileCount;
