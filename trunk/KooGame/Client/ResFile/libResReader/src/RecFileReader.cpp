@@ -17,8 +17,11 @@
 **************************************************************************cpp**/
 //#include "StdAfx.h"
 #include "ResFileReader.h"
+#include "HashHelper.h"
 #include <string.h>
 #include <assert.h>
+#include "LzmaUtil.h"
+#include "Common.h"
 //template ResFile::CResFileReader<ResFile::File_Version_1_0>;
 
 namespace ResFile
@@ -29,8 +32,7 @@ template class CResFileReader<File_Version_1_0>;
 
 IResReader* CreateResFileReader( const char* pResFilePath )
 {
-    if ( NULL == pResFilePath ||
-         0 == pResFilePath[0] )
+    if ( !isValidString(pResFilePath) )
     {
         return NULL;
     }
@@ -39,6 +41,7 @@ IResReader* CreateResFileReader( const char* pResFilePath )
     FileSystem::BOOL bRc = pResFile->OpenByRead(pResFilePath);
     if ( !bRc )
     {
+        delete pResFile;
         return false;
     }
 
@@ -47,11 +50,13 @@ IResReader* CreateResFileReader( const char* pResFilePath )
         &HeadBase, sizeof(TFileHeadBase));
     if ( nRead != sizeof(TFileHeadBase) )
     {
+        delete pResFile;
         return false;
     }
 
     if ( HeadBase.FormatFlag != File_Format_Flag )
     {
+        delete pResFile;
         return false;
     }
 
@@ -75,7 +80,7 @@ void* CResFileReader<Version>::GetUnPackBuf(
     size_t nBufNeed,
     CUnPackDataInfo* pUnPackDataInfo )
 {
-    ResMemType& t = GetMemType(pUnPackDataInfo);
+    ResMemType t = (ResMemType)pUnPackDataInfo->m_nMemType;
     switch (t)
     {
     case User_Allocate:
@@ -86,8 +91,9 @@ void* CResFileReader<Version>::GetUnPackBuf(
     default:
     	break;
     }
-    t = Reader_Allocate;
-    return new char[nBufNeed];
+    pUnPackDataInfo->m_nLen = nBufNeed;
+    pUnPackDataInfo->m_nMemType = Reader_Allocate;
+    return  pUnPackDataInfo->m_pData = new BYTE[nBufNeed];
 }
 
 
@@ -108,26 +114,28 @@ void CResFileReader<Version>::XorDecrypt(
 
 template<DWORD Version>
 void CResFileReader<Version>::BlowFishDecrypt(
-    void* pIn, size_t nInLen,
+    void* pIn, size_t nIn,
     void* pEncryptParam )
 {
 
 }
 
 
+
 template<DWORD Version>
 void CResFileReader<Version>::LzmaUnPack(
-    void* pIn, size_t nInLen, 
-    void* pOut, size_t nOut )
+    void* pIn, size_t nIn, 
+    void* pOut, size_t& nOut, size_t nLevel )
 {
-
+    LzmaUtil::LzmaUncompress(
+        (BYTE*)pOut, &nOut, (const BYTE*)pIn, nIn, nLevel);
 }
 
 
 template<DWORD Version>
 void CResFileReader<Version>::ZipUnPack(
-    void* pIn, size_t nInLen,
-    void* pOut, size_t nOut )
+    void* pIn, size_t nIn,
+    void* pOut, size_t& nOut, size_t nLevel )
 {
 
 }
@@ -136,11 +144,11 @@ template<>
 int CResFileReader<File_Version_1_0>::Find(
     const char* pFileName )
 {
-    UHashValue FindKey = Util::HashString(pFileName);
-    const FileHead::TDataIndex* DataIndex = &m_FileHead.DataIndex[0];
+    UHashValue FindKey = OCI::HashStringEx(pFileName);
+    const FileHead::TDataIndex* DataIndex = &m_pFileHead->DataIndex[0];
 
     // 二分法查找
-    size_t nLow = 0, nHigh = m_FileHead.dwFileCount-1;
+    size_t nLow = 0, nHigh = m_pFileHead->dwFileCount-1;
     size_t nMid;
     while (nLow <= nHigh)
     {

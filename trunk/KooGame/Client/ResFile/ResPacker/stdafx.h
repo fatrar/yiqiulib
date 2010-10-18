@@ -25,3 +25,12 @@ using namespace ResFile;
 
 #pragma warning(disable: 4996)
 // TODO: reference additional headers your program requires here
+
+
+#ifdef _DEBUG
+#pragma comment(lib, "..\\debug\\libCmdParser.lib")
+#pragma comment(lib, "..\\debug\\libResPacker.lib")
+#else
+#pragma comment(lib, "..\\release\\libCmdParser.lib")
+#pragma comment(lib, "..\\release\\libResPacker.lib")
+#endif // _DEBUG

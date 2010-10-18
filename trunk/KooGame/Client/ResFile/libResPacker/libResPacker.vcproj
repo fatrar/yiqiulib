@@ -41,13 +41,13 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\..\xSystem\inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_COMPRESS_"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -104,7 +104,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_COMPRESS_"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -191,19 +191,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\Common\inc\HashHelper.h"
-				>
-			</File>
-			<File
 				RelativePath=".\inc\IResPacker.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\ResPacker.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Common\inc\Singleton.h"
 				>
 			</File>
 			<File
@@ -220,6 +212,39 @@
 		<Filter
 			Name="lzma"
 			>
+			<File
+				RelativePath="..\Common\lzma\LzFind.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Common\lzma\LzFind.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\lzma\LzFindMt.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Common\lzma\LzFindMt.h"
+				>
+			</File>
 			<File
 				RelativePath="..\Common\lzma\Lzma2Enc.c"
 				>
@@ -304,6 +329,46 @@
 			</File>
 			<File
 				RelativePath="..\Common\lzma\Types.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Common"
+			>
+			<File
+				RelativePath="..\Common\src\File.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Common\src\FileSystem.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Common\inc\FileSystem.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\inc\HashHelper.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\inc\Singleton.h"
 				>
 			</File>
 		</Filter>

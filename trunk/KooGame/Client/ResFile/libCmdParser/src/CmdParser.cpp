@@ -21,6 +21,21 @@
 
 namespace ICommand
 {
+ICmdParser* CreateCmdParser(ICmdExecor* pCmdExecor)
+{
+    if ( NULL == pCmdExecor )
+    {
+        return NULL;
+    }
+
+    return new CCmdParser(pCmdExecor);
+}
+
+void DestroyCmdParser(ICmdParser*& pCmdParser)
+{
+    safeDelete(pCmdParser);
+}
+
 
 void* Str2Bool(const char* pStr){return (void*)(pStr[0] != 0);}
 void* Str2Str(const char* pStr){return (void*)pStr;}
@@ -39,7 +54,7 @@ CCmdParser::CCmdParser( ICmdExecor* pCmdExecor )
 void CCmdParser::AddCmdString(
     const char* pCmdString )
 {
-    if ( isValidString(pCmdString) )
+    if ( !isValidString(pCmdString) )
     {
         return;
     }
@@ -51,7 +66,7 @@ bool CCmdParser::AddParamRule(
     UINT dwParam, const char* pParam, 
     ValueType t /*= T_String*/)
 {
-    if ( isValidString(pParam) )
+    if ( !isValidString(pParam) )
     {
         return false;
     }
@@ -87,14 +102,14 @@ bool CCmdParser::ParseExec(
             throw strErr.c_str();
         }
 
-        string strParam = strCmd.substr(nPos);
+        string strParam = strCmd.substr(0, nPos);
         //
         // [] 需要处理路径带""的异常
         //
         string strValue = strCmd.substr(nPos+1, string::npos);
 
         Mapiter = m_CmdParmMap.find(strParam);
-        if ( Mapiter != m_CmdParmMap.end() )
+        if ( Mapiter == m_CmdParmMap.end() )
         {
             if (bIgnoreErr) continue;
             string strErr = "Param Rule not find -->";

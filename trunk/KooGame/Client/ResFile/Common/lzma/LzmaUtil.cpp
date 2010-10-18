@@ -110,14 +110,14 @@ int LzmaCompress(
 #if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
 int LzmaUncompress(
     unsigned char *dest, size_t *destLen,
-    const unsigned char *src, size_t *srcLen,
+    const unsigned char *src, size_t srcLen,
     unsigned int nlevel )
 {
     ELzmaStatus status;
     Byte props[LZMA_PROPS_SIZE];
     CLzmaPropsDic::GetLzmaProps(nlevel, props);
     return LzmaDecode(
-        dest, destLen, src, srcLen,
+        dest, destLen, src, &srcLen,
         props, LZMA_PROPS_SIZE,
         LZMA_FINISH_ANY, &status, &CLzmaAlloc::g_Alloc);
 }

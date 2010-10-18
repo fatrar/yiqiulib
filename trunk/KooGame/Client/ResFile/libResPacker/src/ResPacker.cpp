@@ -48,7 +48,7 @@ IResPacker* CreateResPacker(
     eEncryptAlgo eAlgo /*= Raw_E_Algo*/,
     void* peParam /*= NULL */ )
 {
-    if ( isValidString(pResFlodPath) )
+    if ( !isValidString(pResFlodPath) )
     {
         pResFlodPath = "";
     }
@@ -114,7 +114,7 @@ template<>
 void CResPacker<File_Version_1_0>::AddFile(
     const char* pFileName )
 {
-    if ( isValidString(pFileName) )
+    if ( !isValidString(pFileName) )
     {
         return;
     }
@@ -134,7 +134,7 @@ void CResPacker<File_Version_1_0>::AddFile(
     eCompressAlgo cAlgo, void* pcParam,
     eEncryptAlgo eAlgo, void* peParam )
 {
-    if ( isValidString(pFileName) )
+    if ( !isValidString(pFileName) )
     {
         return;
     }
@@ -197,8 +197,8 @@ DWORD CResPacker<File_Version_1_0>::DataTransform()
 {
     //DWORD dwFileHeadSize = Util::GetFileHeadSize<File_Version_1_0>(m_FileInfoList.size());
     FileInfoList::iterator iter = m_FileInfoList.begin();
-    BOOL bStopLoop = FALSE;
-    while(bStopLoop)
+    volatile  BOOL bLoop = TRUE;
+    while(bLoop)
     {
         DWORD dwRc = WaitForMultipleObjects(
             ReadEvent_Count, m_hReadEvent, FALSE, INFINITE);
@@ -215,12 +215,12 @@ DWORD CResPacker<File_Version_1_0>::DataTransform()
             {
                 TransformOne(*iter);
             }
-    	    break;
- 
+    	   
             if ( dwRc == WAIT_OBJECT_0 + ReadFinsih_Event )
             {
-                bStopLoop = TRUE;
+                bLoop = FALSE;
             }
+            break;
         default:
     	    break;
         }
@@ -317,6 +317,7 @@ void CResPacker<File_Version_1_0>::DoRead()
             nReadCount = 0;
         }  
     }
+    SetEvent(m_hReadEvent[ReadFinsih_Event]);
 }
 
 template<>
@@ -344,7 +345,7 @@ void CResPacker<File_Version_1_0>::DoWrite(
     */
     size_t nHeadSize = Util::GetFileHeadSize<File_Version_1_0>(m_FileInfoList.size());
     TFileHeadBase HeadBase;
-    HeadBase.dwSize = nHeadSize + nResDataSize;
+    HeadBase.dwSize = nHeadSize;// 加了就为文件大小 + nResDataSize;
     HeadBase.FormatFlag = File_Format_Flag;
     HeadBase.Version = File_Version_1_0;
     HeadBase.dwFileCount = m_FileInfoList.size();
@@ -372,7 +373,7 @@ void CResPacker<File_Version_1_0>::DoWrite(
     /**
     *@note 3. Write File Data
     */
-    Writer.Write(m_pResFileBufNow, nResDataSize);
+    Writer.Write(m_pResFileBuf, nResDataSize);
     Writer.Close();
 }
 
@@ -412,7 +413,7 @@ void CResPacker<File_Version_1_0>::TransformOne(
     int nRc = (this->*pCompressFn)(
         Info.pBuf, Info.nBufSize,
         (void*)m_pResFileBufNow, nPackLen, Info.cParam);
-    assert(nRc != 0);
+    assert(nRc == 0);
     if ( nRc != 0 )
     {
         throw "Compress Failed!";
@@ -456,6 +457,22 @@ int CResPacker<File_Version_1_0>::LzmaCompress(
     return LzmaUtil::LzmaCompress(
         (unsigned char*)pOut, &nOut,
         (const unsigned char*)pIn, nIn, p.cParam);
+}
+
+template<>
+void CResPacker<File_Version_1_0>::BlowFishEncrypt(
+    void* pIn, size_t nInLen,
+    const EncryptParam& p )
+{
+    
+}
+
+template<>
+void CResPacker<File_Version_1_0>::XorEncrypt(
+    void* pIn, size_t nInLen,
+    const EncryptParam& p )
+{
+
 }
 
 }
