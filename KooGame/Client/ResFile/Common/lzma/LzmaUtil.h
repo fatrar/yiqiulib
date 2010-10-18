@@ -38,15 +38,19 @@ enum
     Lzma_Level_Max,
 };
 
+#if defined(_USE_LZMA_COMPRESS_) || defined(_USE_LZMA_ALL)
 int LzmaCompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t srcLen,
     unsigned int nlevel );
+#endif
 
+#if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
 int  LzmaUncompress(
     unsigned char *dest, size_t *destLen, 
     const unsigned char *src, size_t *srcLen,
     unsigned int nlevel );
+#endif
 
 /*
 int Lzma2Compress(
