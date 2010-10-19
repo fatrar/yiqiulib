@@ -75,6 +75,24 @@ void DestroyResReader( IResReader*& pResReader )
     pResReader = NULL;
 }
 
+template<>
+void CResFileReader<File_Version_1_0>::Release(
+    CUnPackDataInfo* pUnPackDataInfo )
+{
+    ResMemType t = (ResMemType)pUnPackDataInfo->m_nMemType;
+    switch (t)
+    {
+    case Mem_Unknown:
+    case User_Allocate:
+        break;
+    case Reader_Static_Buf:
+    case Reader_Allocate:
+        delete[] (char*)pUnPackDataInfo->Ptr();
+    default:
+        break;
+    }
+}
+
 template<DWORD Version>
 void* CResFileReader<Version>::GetUnPackBuf(
     size_t nBufNeed,
@@ -140,11 +158,146 @@ void CResFileReader<Version>::ZipUnPack(
 
 }
 
+/**
+*@ { ******************** File_Version_1_0 *****************
+*/
+template<>
+CResFileReader<File_Version_1_0>::CResFileReader(
+    FileSystem::CFile* pResFile, 
+    const TFileHeadBase& HeadBase )
+    : m_ResFile(pResFile)
+{
+    if ( HeadBase.dwFileCount == 0 ||
+        HeadBase.dwSize != Util::GetFileHeadSize<File_Version_1_0>(HeadBase.dwFileCount) ) 
+    {
+        return;
+    }
+
+    char* pHead = new char[HeadBase.dwSize];
+    memcpy(pHead, &HeadBase, sizeof(HeadBase));
+    char* pBuf = pHead + sizeof(TFileHeadBase);
+    m_ResFile->Read(pBuf, HeadBase.dwSize-sizeof(TFileHeadBase));
+    m_pFileHead = (FileHead*)pHead;
+
+    m_DecryptFn[Raw_E_Algo] = &CResFileReader<File_Version_1_0>::RawDecrypt;
+    m_DecryptFn[Xor_E_Algo] = &CResFileReader<File_Version_1_0>::XorDecrypt;
+    m_DecryptFn[BlowFish_E_Algo] = &CResFileReader<File_Version_1_0>::BlowFishDecrypt;
+
+    m_UnPackFn[Raw_C_Algo] = &CResFileReader<File_Version_1_0>::RawUnPack;
+    m_UnPackFn[Zip_C_Algo] = &CResFileReader<File_Version_1_0>::ZipUnPack;
+    m_UnPackFn[Lzma_C_Algo] = &CResFileReader<File_Version_1_0>::LzmaUnPack;
+}
+
+template<>
+CResFileReader<File_Version_1_0>::~CResFileReader(void)
+{
+    delete[] ((char*)m_pFileHead);
+    m_pFileHead = NULL;
+    safeDelete(m_ResFile);
+}
+
+template<>
+ResFile::size_t CResFileReader<File_Version_1_0>::GetDataLen(
+    const char* pFileName )
+{
+    int nPos = Find(pFileName);
+    if ( nPos == Invaild_Pos )
+    {
+        return 0;
+    }
+
+    const FileHead::TDataIndex* DataIndex = &m_pFileHead->DataIndex[0];
+    DWORD dwDataPos = DataIndex[nPos].Info.dwDataOffset;
+
+    m_ResFile->Seek(dwDataPos);
+    DataHead TmpDataHead;
+    m_ResFile->Read(&TmpDataHead, sizeof(DataHead)); 
+    return TmpDataHead.dwRawDataLen;
+}
+
+template<>
+bool CResFileReader<File_Version_1_0>::GetData(
+    const char* pFileName, 
+    CUnPackDataInfo& UnPackDataInfo )
+{
+    /**
+    *@note 二分法在索引中查找
+    */
+    int nPos = Find(pFileName);
+    if ( nPos == Invaild_Pos )
+    {
+        return 0;
+    }
+    
+    return GetData(nPos, UnPackDataInfo);
+}
+
+template<>
+virtual int CResFileReader<File_Version_1_0>::GetDataIndex(
+    const char* pFileName,
+    QWORD& qwHashValue )
+{
+    qwHashValue = OCI::HashStringEx(pFileName);
+    return Find(qwHashValue);
+}
+
+template<>
+virtual bool CResFileReader<File_Version_1_0>::GetData(
+    size_t nPos,
+    CUnPackDataInfo& UnPackDataInfo )
+{
+    /**
+    *@note 取文件的位置及数据大小
+    */
+    const FileHead::TDataIndex* DataIndex = &m_pFileHead->DataIndex[0];
+    DWORD dwDataOffset = DataIndex[nPos].Info.dwDataOffset;
+    DWORD dwDataLen = DataIndex[nPos].Info.dwDataLen;
+
+    /**
+    *@note 移动文件指针并读取数据（包括文件头及文件数据）
+    */
+    m_ResFile->Seek(dwDataOffset);
+    void* pBuf = GetFileReadBuf(dwDataLen);
+    m_ResFile->Read(pBuf, dwDataLen);
+
+    /**
+    *@note 解密数据,解密的数据我是放在头后面
+    */
+    DataHead* pTmpDataHead = (DataHead*)pBuf;
+    void* pEncryptBuf = (void*)(pTmpDataHead + 1);
+    assert(pTmpDataHead->nEncryptAlgo < Encrypt_Count);
+    DecryptFn pDecryptFn = m_DecryptFn[pTmpDataHead->nEncryptAlgo];
+    (this->*pDecryptFn)(
+        pEncryptBuf, pTmpDataHead->nDataEncryptLen,
+        (void*)&pTmpDataHead->eParam );
+
+    /**
+    *@note 解压数据
+    */
+    UnPackFn pUnPackFn = m_UnPackFn[pTmpDataHead->nCompressAlgo];
+    GetUnPackBuf(pTmpDataHead->dwRawDataLen, &UnPackDataInfo);
+    size_t nUnpackSize = UnPackDataInfo.Length();
+    (this->*pUnPackFn)(
+        pEncryptBuf, dwDataLen-sizeof(DataHead),
+        (void*)UnPackDataInfo.Ptr(), nUnpackSize,
+        pTmpDataHead->nCompressLevel );
+    UnPackDataInfo.m_pResReader = this;
+    return true;
+}
+
 template<>
 int CResFileReader<File_Version_1_0>::Find(
     const char* pFileName )
 {
-    UHashValue FindKey = OCI::HashStringEx(pFileName);
+    QWORD FindKey = OCI::HashStringEx(pFileName);
+    return Find(FindKey);
+}
+
+template<>
+int CResFileReader<File_Version_1_0>::Find(
+    const QWORD& qwHashValue )
+{
+    UHashValue FindKey = qwHashValue;
     const FileHead::TDataIndex* DataIndex = &m_pFileHead->DataIndex[0];
 
     // 二分法查找
@@ -169,7 +322,9 @@ int CResFileReader<File_Version_1_0>::Find(
     }
     return -1;
 }
-
+/** File_Version_1_0
+*@ }
+*/
 }
 
 

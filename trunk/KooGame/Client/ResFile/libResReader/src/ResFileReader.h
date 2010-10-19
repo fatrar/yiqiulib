@@ -44,10 +44,18 @@ public:
         const char* pFileName,
         CUnPackDataInfo& UnPackDataInfo);
 
+    virtual int GetDataIndex(
+        const char* pFileName,
+        QWORD& qwHashValue );
+    virtual bool GetData(
+        size_t nPos,
+        CUnPackDataInfo& UnPackDataInfo );
+
     virtual void Release(CUnPackDataInfo* pUnPackDataInfo);
 
 protected:
-    int Find(const char* pFileName);//{return -1;};
+    int Find(const char* pFileName);
+    int Find(const QWORD& qwHashValue);
     void* GetFileReadBuf(size_t nBufNeed);
     void* GetUnPackBuf(size_t nBufNeed, CUnPackDataInfo* pUnPackDataInfo);
 
