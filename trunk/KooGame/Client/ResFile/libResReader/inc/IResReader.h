@@ -56,7 +56,9 @@ struct IResReader
     *@param	pFileName 文件名 
     *@return 返回文件的原始数据的长度，如果为0则文件不存在
     */
-    virtual size_t GetDataLen(const char* pFileName)=0;
+    virtual size_t GetDataLen(
+        const char* pFileName,
+        size_t& nPos )=0;
 
     /**
     *@note 得到资源包中某个文件
@@ -129,13 +131,18 @@ public:
     IResReader* m_pResReader;
 };
 
-// ResMemType& IResReader::GetMemType(CUnPackDataInfo* pUnPackDataInfo)
-// {
-//     return (ResMemType&)pUnPackDataInfo->m_nMemType;
-// }
-
 IResReader* CreateResFileReader(const char* pResFilePath);
-IResReader* CreateMemResReader(BYTE* pData, size_t nSize);
+
+/**
+*@note 从内存数据创建资源包读取对象
+*@param	pData 压缩包数据  
+*@param nSize 数据长度  
+*@param bRef 是否直接引用数据 
+*@param bDelete 如果是引用，是否在析构delete pData
+*/
+IResReader* CreateMemResReader(
+    BYTE* pData, size_t nSize,
+    bool bRef, bool bDelete );
 
 /**
 *@note 干掉对象且会将pResReader赋空

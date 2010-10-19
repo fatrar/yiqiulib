@@ -39,7 +39,9 @@ public:
     // IResReader
 public:
     //virtual bool Parse();
-    virtual size_t GetDataLen(const char* pFileName);
+    virtual size_t GetDataLen(
+        const char* pFileName,
+        size_t& nPos );
     virtual bool GetData(
         const char* pFileName,
         CUnPackDataInfo& UnPackDataInfo);
