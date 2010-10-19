@@ -74,7 +74,7 @@ enum eEncryptAlgo
 {
     Raw_E_Algo,
     Xor_E_Algo,
-    BlowFish_E_Algo,
+    BlowFish_E_Algo,  // 这个算法快，但是如果经常变换密码，生成密钥表很浪费时间
     Encrypt_Count,
 };
 
