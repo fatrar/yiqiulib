@@ -61,20 +61,6 @@ struct IResPacker
         eFileNamePos eFileNamePos) = 0;
 };
 
-template<DWORD Version> struct TEncryptParam;
-template<DWORD Version> struct TCompressParam;
-
-template<> class TEncryptParam<File_Version_1_0> :
-    public TDataHead<File_Version_1_0>::TEncryptParam {};
-
-template<> struct TCompressParam<File_Version_1_0>
-{   
-    TCompressParam(eCompressParam e = Compress_Auto):cParam(e){}
-    typedef TCompressParam<File_Version_1_0> CompressParam;
-    void operator = (const CompressParam& a){cParam = a.cParam;}
-    eCompressParam cParam;
-};
-
 #if Res_Verion == File_Version_1_0
     static TCompressParam<File_Version_1_0> g_DefcParam;
     //TEncryptParam<File_Version_1_0> g_DefeParam;

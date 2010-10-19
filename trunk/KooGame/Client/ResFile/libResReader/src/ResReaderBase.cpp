@@ -82,7 +82,7 @@ bool CResReaderBase<File_Version_1_0>::GetData(
 }
 
 template<>
-virtual bool CResReaderBase<File_Version_1_0>::GetData(
+bool CResReaderBase<File_Version_1_0>::GetData(
     size_t nPos,
     CUnPackDataInfo& UnPackDataInfo )
 {
@@ -112,7 +112,7 @@ virtual bool CResReaderBase<File_Version_1_0>::GetData(
     DecryptFn pDecryptFn = m_DecryptFn[pTmpDataHead->nEncryptAlgo];
     (this->*pDecryptFn)(
         pEncryptBuf, pTmpDataHead->nDataEncryptLen,
-        (void*)&pTmpDataHead->eParam );
+        (EncryptParam&)pTmpDataHead->eParam );
     if ( bisRef )
     {
         pTmpDataHead->nEncryptAlgo = Raw_E_Algo;
@@ -208,6 +208,21 @@ void CResReaderBase<Version>::Release(
         delete[] (char*)pUnPackDataInfo->Ptr();
     default:
         break;
+    }
+}
+
+
+template<DWORD Version>
+void ResFile::CResReaderBase<Version>::XorDecrypt(
+    void* pIn, size_t nIn,const EncryptParam& p )
+{
+    assert(nIn == 32);
+    QWORD pKey = p.qwEncryptParam;
+    QWORD* pStart = (QWORD*)pIn;
+    for ( int i = 0 ; i < (32>>2); ++i )
+    {
+        *pStart ^= pKey;
+        ++pStart;
     }
 }
 

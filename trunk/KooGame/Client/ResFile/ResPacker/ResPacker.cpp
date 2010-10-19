@@ -4,7 +4,15 @@
 #include "stdafx.h"
 
 #define _Command_Help_Note "\nUse command like: \"ResPacker.exe ?\" can Get help!"
-#define _Command_Help "Just Test!"
+#define _Command_Help "xx is your set value. '[]' is not must set.\n"\
+    "'ResFileList=xx' xx is a Path.\n"\
+    "'PackFilePath=xx' xx is a Path.\n"\
+    "'[ResFlod=xx]'  xx is a Path.\n"\
+    "'[DefcAlgo=xx]' xx is must Lzma now!\n"\
+    "'[DefcParam=xx]' xx is must between of Fast,Normal,High,Auto.\n"\
+    "'[DefeAlgo=xx]' xx is must Raw Now!\n"\
+    "'[DefeParam=xx]' xx is must <= 8 char.\n"\
+    "'[FileNamePos=xx]' xx is must between of No,Out,BebindHead,FileTail.\n"
 
 namespace ICommand
 {
@@ -18,7 +26,7 @@ public:
         , m_cParam(Compress_Normal)
         , m_eAlgo(Raw_E_Algo)
         , m_eFileNamePos(Not_Exist)
-        , m_strResPackFilePath("ResPacker.pak"){}
+        , m_strResPackFilePath("C:\\ResPacker.pak"){}
 
 protected:
     enum CmdList
@@ -215,6 +223,12 @@ const char* CResPackerCmdExecor::s_CommandName[] =
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    if ( argc == 2 && argv[1][0] == '?' )
+    {
+        cout << _Command_Help << endl;
+        return 0;
+    }
+
     ICommand::CResPackerCmdExecor CmdExecor;
     ICommand::ICmdParser* pCmdParser = 
         ICommand::CreateCmdParser(&CmdExecor);

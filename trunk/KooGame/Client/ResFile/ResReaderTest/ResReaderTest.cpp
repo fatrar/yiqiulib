@@ -6,6 +6,13 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    __int64 i = 0x5546;
+    __int64 j = 5264;
+
+    j ^= i;
+    j ^= i;
+
+
     ResFile::IResReader* pResReader = 
         ResFile::CreateResFileReader("F:\\yiqiulib\\KooGame\\Client\\ResFile\\ResPacker\\ResPacker.pak");
     

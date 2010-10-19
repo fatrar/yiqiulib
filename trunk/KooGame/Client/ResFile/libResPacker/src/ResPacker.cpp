@@ -48,7 +48,7 @@ IResPacker* CreateResPacker(
     eEncryptAlgo eAlgo /*= Raw_E_Algo*/,
     void* peParam /*= NULL */ )
 {
-    if ( !isValidString(pResFlodPath) )
+    if ( NULL == pResFlodPath )
     {
         pResFlodPath = "";
     }
@@ -285,7 +285,7 @@ void CResPacker<File_Version_1_0>::DoRead()
         FileSystem::CFile Reader;
         if ( ! Reader.OpenByRead(strFilePath.c_str()) )
         {
-            string strErr =  "Can`t Open File:";
+            static string strErr =  "Can`t Open File:";
             strErr += strFilePath;
             throw strErr.c_str();
         }
@@ -299,7 +299,7 @@ void CResPacker<File_Version_1_0>::DoRead()
         FileSystem::size_t nFileBufSize = nRawFileBufRemain;
         if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileBufSize) )
         {
-            string strErr = "Read File Failed at File";
+            static string strErr = "Read File Failed at File";
             strErr += strFilePath;
             throw strErr.c_str();
         }
@@ -461,7 +461,7 @@ int CResPacker<File_Version_1_0>::LzmaCompress(
 
 template<>
 void CResPacker<File_Version_1_0>::BlowFishEncrypt(
-    void* pIn, size_t nInLen,
+    void* pIn, size_t nIn,
     const EncryptParam& p )
 {
     
@@ -469,10 +469,17 @@ void CResPacker<File_Version_1_0>::BlowFishEncrypt(
 
 template<>
 void CResPacker<File_Version_1_0>::XorEncrypt(
-    void* pIn, size_t nInLen,
+    void* pIn, size_t nIn,
     const EncryptParam& p )
 {
-
+    assert(nIn == Default_Encrypt_Len);
+    QWORD pKey = p.qwEncryptParam;
+    QWORD* pStart = (QWORD*)pIn;
+    for ( int i = 0 ; i < (Default_Encrypt_Len>>2); ++i )
+    {
+        *pStart ^= pKey;
+        ++pStart;
+    }
 }
 
 }
