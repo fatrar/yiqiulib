@@ -68,6 +68,14 @@ struct IResReader
         const char* pFileName,
         CUnPackDataInfo& UnPackDataInfo)=0;
 
+    virtual int GetDataIndex(
+        const char* pFileName,
+        QWORD& qwHashValue ) = 0;
+
+    virtual bool GetData(
+        size_t nPos,
+        CUnPackDataInfo& UnPackDataInfo ) = 0;
+
 protected:
     friend CUnPackDataInfo;
     virtual void Release(CUnPackDataInfo* pUnPackDataInfo)=0;
