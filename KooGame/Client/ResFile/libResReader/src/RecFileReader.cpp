@@ -198,9 +198,10 @@ CResFileReader<File_Version_1_0>::~CResFileReader(void)
 
 template<>
 ResFile::size_t CResFileReader<File_Version_1_0>::GetDataLen(
-    const char* pFileName )
+    const char* pFileName,
+    size_t& nPos )
 {
-    int nPos = Find(pFileName);
+    nPos = Find(pFileName);
     if ( nPos == Invaild_Pos )
     {
         return 0;
