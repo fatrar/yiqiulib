@@ -32,6 +32,7 @@ protected:
     typedef TFileHead<Version> FileHead;
     typedef TDataInfo<Version> DataInfo;
     typedef TDataHead<Version> DataHead;
+    typedef TEncryptParam<Version> EncryptParam;
 
     // 上层需要实现的
 public:
@@ -73,10 +74,11 @@ protected:
 
     // Decrypt function
 protected:
-    typedef void (CResReaderBase<Version>::*DecryptFn)(void*, size_t, void*);
-    void RawDecrypt(void* pIn, size_t nIn,void*){}
-    void XorDecrypt(void* pIn, size_t nIn,void*){};
-    void BlowFishDecrypt(void* pIn, size_t nIn,void* pEncryptParam){};
+    typedef void (CResReaderBase<Version>::*DecryptFn)(
+        void*, size_t, const EncryptParam&);
+    void RawDecrypt(void* pIn, size_t nIn,const EncryptParam&){}
+    void XorDecrypt(void* pIn, size_t nIn,const EncryptParam& p);
+    void BlowFishDecrypt(void* pIn, size_t nIn,const EncryptParam& p){};
 
     // UnPack function
 protected:

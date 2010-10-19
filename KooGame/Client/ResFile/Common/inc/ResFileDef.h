@@ -38,17 +38,12 @@ enum
     Invaild_Pos = -1,
 };
 
-template<DWORD Version>
-struct TDataInfo;
-
-template<DWORD Version>
-struct TFileHead;
-
-template<DWORD Version>
-struct TDataHead;
-
-template<DWORD Version>
-struct TDataMemInfo;
+template<DWORD Version> struct TDataInfo;
+template<DWORD Version> struct TFileHead;
+template<DWORD Version> struct TDataHead;
+template<DWORD Version> struct TDataMemInfo;
+template<DWORD Version> struct TEncryptParam;
+template<DWORD Version> struct TCompressParam;
 
 struct TFileHeadBase
 {
@@ -186,10 +181,23 @@ struct TDataHead<File_Version_1_0>
                 DWORD dwParam2;
             } EncryptParam;
 
+            QWORD qwEncryptParam;
             char cEncryptParam[8];
             BYTE ucEncryptParam[8];
         };
     } eParam;
+};
+
+
+template<> class TEncryptParam<File_Version_1_0> :
+    public TDataHead<File_Version_1_0>::TEncryptParam {};
+
+template<> struct TCompressParam<File_Version_1_0>
+{   
+    TCompressParam(eCompressParam e = Compress_Auto):cParam(e){}
+    typedef TCompressParam<File_Version_1_0> CompressParam;
+    void operator = (const CompressParam& a){cParam = a.cParam;}
+    eCompressParam cParam;
 };
 
 namespace Util
