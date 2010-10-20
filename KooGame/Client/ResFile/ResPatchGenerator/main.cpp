@@ -1,7 +1,7 @@
 /*CPP*************************************************************************
-File            : ResPatchGenerator.cpp
+File            : main.cpp
 Subsystem       : 
-Function Name(s): CResPatchGenerator
+Function Name(s): 
 
 Description     : 
 Author          : Yiqiu
@@ -12,7 +12,7 @@ History
 -------
 
 
-Copyright (c) Shenzhen KooGame Tech Co.,Ltd.
+Copyright (c) Shenzhen Sunline Tech Co.,Ltd.
 *************************************************************************CPP*/
 #include "stdafx.h"
 #include "ResPatchGenerator.h"
@@ -20,17 +20,8 @@ Copyright (c) Shenzhen KooGame Tech Co.,Ltd.
 
 
 
-CResPatchGenerator::CResPatchGenerator(void)
-{
-}
 
-CResPatchGenerator::~CResPatchGenerator(void)
+int _tmain(int argc, _TCHAR* argv[])
 {
-}
-
-bool CResPatchGenerator::Generator(
-    const char* pPatchPath )
-{
-    ifstream Reader;
-
+    return 0;
 }

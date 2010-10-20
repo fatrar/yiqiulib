@@ -13,5 +13,8 @@
 #include <tchar.h>
 
 
-
+#include <ifstream>
+#include <ofstream>
+#include <string>
+using namespace std;
 // TODO: reference additional headers your program requires here
