@@ -194,7 +194,7 @@ template<> class TEncryptParam<File_Version_1_0> :
 
 template<> struct TCompressParam<File_Version_1_0>
 {   
-    TCompressParam(eCompressParam e = Compress_Auto):cParam(e){}
+    TCompressParam(eCompressParam e = Compress_High):cParam(e){}
     typedef TCompressParam<File_Version_1_0> CompressParam;
     void operator = (const CompressParam& a){cParam = a.cParam;}
     eCompressParam cParam;

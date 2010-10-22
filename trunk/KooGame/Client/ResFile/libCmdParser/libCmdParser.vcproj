@@ -153,10 +153,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Command.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\stdafx.cpp"
 				>
 				<FileConfiguration

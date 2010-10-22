@@ -99,10 +99,12 @@ public:
     inline CUnPackDataInfo()
         : m_pData(NULL)
         , m_nLen(0)
+        , m_nNow(0)
         , m_nMemType(Mem_Unknown) {}
     inline CUnPackDataInfo(
         BYTE* pData,
         size_t nLen )
+        : m_nNow(0)
     {
         if ( pData == NULL )
         {
@@ -123,10 +125,17 @@ public:
     inline size_t Length(){return m_nLen;}
     inline const void* Ptr(){return (void*)m_pData;}
 
+    inline void Read(void* pBuf, int len)
+    {
+        memcpy(pBuf, m_pData+m_nNow, len);
+        m_nNow += len;
+    }
+
     // 仅IResReader本身访问，其他的最好不要直接访问
 public:
     BYTE* m_pData;
     size_t m_nLen;
+    size_t m_nNow;
     int m_nMemType;
     IResReader* m_pResReader;
 };

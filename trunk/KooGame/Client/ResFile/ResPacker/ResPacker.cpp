@@ -174,7 +174,8 @@ protected:
         string strLine;  
         while( getline(Reader, strLine) )
         {    
-            if ( strLine.size() == 0 )
+            if ( strLine.size() == 0 ||
+                 strLine[0] == '#' )
             {
                 continue;
             }
@@ -221,8 +222,35 @@ const char* CResPackerCmdExecor::s_CommandName[] =
 
 }
 
+struct TTDataHead
+{
+    DWORD dwRawDataLen;
+    DWORD nEncryptAlgo:3;     // 0-7
+    DWORD nCompressAlgo:3;    // 0-7
+    DWORD nCompressLevel:3;   // 0-7
+    DWORD nDataEncryptLen:23; // Max 8MB-1
+
+    struct TEncryptParam
+    {
+        void operator = (const TEncryptParam& a){memcpy(this, &a, sizeof(TEncryptParam));}
+        union {
+            struct {
+                DWORD dwParam1;
+                DWORD dwParam2;
+            } EncryptParam;
+
+            __int64 qwEncryptParam;
+            char cEncryptParam[8];
+            BYTE ucEncryptParam[8];
+        };
+    } eParam;
+};
+
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+    int nSize = sizeof(TTDataHead);
+
     if ( argc == 2 && argv[1][0] == '?' )
     {
         cout << _Command_Help << endl;
@@ -244,10 +272,11 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     catch (const char* pErrInfo)
     {
-        cout << pErrInfo << _Command_Help_Note << endl;	
+        cout << pErrInfo << _Command_Help_Note << endl;
     }
 
-    ICommand::DestroyCmdParser(pCmdParser);
+    pCmdParser->Release();
+    system("pause");
 	return 0;
 }
 
