@@ -30,7 +30,11 @@ typedef unsigned int size_t;
 typedef unsigned short WORD; 
 typedef unsigned char BYTE;
 
-typedef unsigned long long QWORD;
+#if defined(_MSC_VER) && (_MSC_VER <= 1200)	
+	typedef unsigned __int64 QWORD;
+#else
+	typedef unsigned long long QWORD;
+#endif
 
 #define NULL 0
 

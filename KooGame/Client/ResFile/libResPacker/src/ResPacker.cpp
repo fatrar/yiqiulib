@@ -30,7 +30,7 @@ enum
 
     File_Read_Flag = 3,
 
-    Min_Raw_File_Filter = 512,
+    Min_Raw_File_Filter = 50,
     Default_Encrypt_Len = 32,
     //Invaild_Pointer = -1, // 0xffffffff
 };
@@ -268,6 +268,9 @@ void CResPacker<File_Version_1_0>::Unit()
     CloseHandle(m_hTransThread);
 }
 
+int g_DataCout = 0;
+int g_Index = 0;
+
 template<>
 void CResPacker<File_Version_1_0>::DoRead()
 {
@@ -369,6 +372,11 @@ void CResPacker<File_Version_1_0>::DoWrite(
         Index.Info.dwDataOffset += nHeadSize;
         Writer.Write((void*)&Index, sizeof(DataIndex));
     }
+    cout << "Head size=" 
+         << (sizeof(TFileHeadBase)+sizeof(dwRawDataMem)*2+sizeof(DataIndex)*m_DataIndexList.size())
+         << "\n All Data size = " << nResDataSize 
+         << "\n Data size = " << g_DataCout
+         << endl;
 
     /**
     *@note 3. Write File Data
@@ -418,6 +426,12 @@ void CResPacker<File_Version_1_0>::TransformOne(
     {
         throw "Compress Failed!";
     }
+    cout << "[" << ++g_Index << "] " 
+         << Info.strFileName.c_str() << ": " 
+         << Info.nBufSize << "-->"
+         << nPackLen << "   Ratio=" << endl;
+    g_DataCout += nPackLen;
+         //<< nPackLen*0.1/Info.nBufSize << "%" 
     void* pRawEncryptBuf = m_pResFileBufNow;
     m_pResFileBufNow += nPackLen;
     m_nResFileBufRemain -= nPackLen;

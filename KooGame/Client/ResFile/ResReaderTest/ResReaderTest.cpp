@@ -3,16 +3,30 @@
 
 #include "stdafx.h"
 #include <fstream>
+#include <Windows.h>
 
+struct AA
+{
+    DWORD bFlip:1;
+    DWORD nPicID:31;
+};
 int _tmain(int argc, _TCHAR* argv[])
 {
+    AA a;
+    a.bFlip = 1;
+    a.nPicID = 100;
+
+
+    DWORD dwID = a.nPicID;
+
+DWORD* c = (DWORD*)&a;
     __int64 i = 0x5546;
     __int64 j = 5264;
 
     j ^= i;
     j ^= i;
 
-
+/*
     ResFile::IResReader* pResReader = 
         ResFile::CreateResFileReader("F:\\yiqiulib\\KooGame\\Client\\ResFile\\ResPacker\\ResPacker.pak");
     
@@ -24,6 +38,7 @@ int _tmain(int argc, _TCHAR* argv[])
     std::ofstream Writer("1.jpg");
     Writer.write(DataInfo, DataInfo.Length());
     Writer.close();
+    */
 	return 0;
 }
 

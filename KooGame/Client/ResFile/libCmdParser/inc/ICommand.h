@@ -34,8 +34,8 @@ struct ICmdExecor
     *@param	dwParam 用户自定义的命令码  
     *@param pParam1 命令解析者解析的之后命令参数
             参数类型取决于用在AddParamRule的ValueType，他遵循下面规则
-            T_Bool -> bool*   T_String -> char*
-            T_Int  -> int*    T_Uint   -> unsinged int*
+            T_Bool -> bool   T_String -> char*
+            T_Int  -> int    T_Uint   -> unsinged int
     *@param pParam2 意思同pParam1，不过指第二个参数，如果为NULL代表这个参数没有
     *@return 是否设置成功，这个返回值会影响ICmdParser::ParseExec的执行，
              他会以它是否忽略这些错误
@@ -71,6 +71,8 @@ struct ICmdParserBase
     *@param	pCmdExecor 命令执行者对象
     */
     virtual void AddCmdString(const char* pCmdString)=0;
+
+    void Release();
 };
 
 /**
@@ -141,13 +143,12 @@ struct ICmdParser2 :
     */
     virtual bool GetValue(
         const char* pCmdName, 
-        ValueType t = T_String,
+        ValueType t,
         void*& pValue )=0;
-}
+};
 
 ICmdParser* CreateCmdParser(ICmdExecor* pCmdExecor);
-void DestroyCmdParser(ICmdParser*& pCmdParser);
-
+ICmdParser2* CreateCmdParser2();
 
 
 };

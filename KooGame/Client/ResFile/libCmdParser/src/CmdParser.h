@@ -30,23 +30,54 @@ namespace ICommand
 
 typedef void* (*Str2XXFn)(const char*);
 
-class CCmdParser :
-    public ICmdParser
+template<typename T>
+class CCmdParserBase :
+    public T
 {
 public:
-    CCmdParser(ICmdExecor* pCmdExecor);
-       // : m_pDefCmdExecor(pCmdExecor){}
-public:
+    CCmdParserBase();
     virtual void AddCmdString(const char* pCmdString);
+
+    // must Impl Interface
+public:
+    virtual void ParsePass(
+        const char* pCmdName,
+        const char* pCmdValue,
+        bool bIgnoreErr  ) = 0;
+
+protected:
+    void Parse(bool bIgnoreErr = false);
+    
+protected:
+    typedef list<string> CmdList;
+    CmdList m_CmdList;
+    Str2XXFn m_Str2XXFn[ICmdParserBase::T_Value_Type_Max];
+    string m_strErr;
+};
+
+
+class CCmdParser :
+    public CCmdParserBase<ICmdParser>
+{
+public:
+    CCmdParser(ICmdExecor* pCmdExecor)
+        : m_pCmdExecor(pCmdExecor){}
+
+    // ICmdParser
+public:
     virtual bool AddParamRule(
         UINT dwParam, 
         const char* pParam,
         ValueType t = T_String );
 
     virtual bool ParseExec(bool bIgnoreErr = false);
-
+ 
+    // CCmdParserBase
 protected:
-    void ConvertMyType(const char* pValue, void* );
+    virtual void ParsePass(
+        const char* pCmdName,
+        const char* pCmdValue,
+        bool bIgnoreErr  );
 
 protected:
     struct ParamInfo
@@ -55,16 +86,34 @@ protected:
         ValueType t;
         string strValue;
     };
-
-    typedef map<string, ParamInfo> CmdParmMap;
-    typedef list<string> CmdList;
+  
 private:
+    typedef map<string, ParamInfo> CmdParmMap;
+    CmdParmMap m_CmdParmMap; 
     ICmdExecor* m_pCmdExecor;
-    CmdParmMap m_CmdParmMap;
-    CmdList m_CmdList;
-    Str2XXFn m_Str2XXFn[T_Value_Type_Max];
 };
 
+class CCmdParser2 :
+    public CCmdParserBase<ICmdParser2>
+{
+    // CCmdParserBase
+public:
+    virtual void ParsePass(
+        const char* pCmdName,
+        const char* pCmdValue,
+        bool bIgnoreErr );
+
+    // ICmdParser2
+public:
+    virtual bool GetValue(
+        const char* pCmdName, 
+        ValueType t,
+        void*& pValue );
+
+private:
+    typedef map<string, string> CmdParmMap;
+    CmdParmMap m_CmdParmMap;
+};
 
 }
 
