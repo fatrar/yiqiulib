@@ -103,6 +103,8 @@ enum eFileNamePos
     File_Tail,
 };
 
+#define _FileName_FileExt ".Name"
+
 namespace Util
 {
 template<DWORD Version>
