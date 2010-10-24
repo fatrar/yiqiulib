@@ -26,6 +26,7 @@
 using namespace std;
 #include <Windows.h>
 
+namespace FileSystem{class CFile;} 
 
 namespace ResFile
 {
@@ -67,8 +68,9 @@ protected:
     struct FileInfo
     {
         inline FileInfo() 
-            : pBuf(NULL)
-            , nBufSize(0) {}
+            : pRawDataBuf(NULL)
+            , nRawDataSize(0)
+            , nCompressDataSize(0){}
 
         string strFileName;
         eEncryptAlgo eAlgo;
@@ -77,8 +79,9 @@ protected:
         TCompressParam<Version> cParam;
 
         // ´æÊý¾Ý
-        BYTE* pBuf;
-        size_t nBufSize;
+        BYTE* pRawDataBuf;
+        size_t nRawDataSize;
+        size_t nCompressDataSize;
 
         FileInfo(const FileInfo& a)
         {
@@ -88,8 +91,9 @@ protected:
             cAlgo = a.cAlgo;
             cParam = a.cParam;
 
-            pBuf = a.pBuf;
-            nBufSize = a.nBufSize;
+            pRawDataBuf = a.pRawDataBuf;
+            nRawDataSize = a.nRawDataSize;
+            nCompressDataSize = a.nCompressDataSize;
         }
     };
 
@@ -116,6 +120,11 @@ protected:
     void DoWrite(
         const char* pPackFilePath,
         eFileNamePos FileNamePos);
+
+    void DoWriteFileName(
+        FileSystem::CFile& Writer );
+
+    DWORD GetFileNameDataLen();
 
     void TransformOne(FileInfo& Info);
 
@@ -163,7 +172,7 @@ private:
     // Thread
     //
     HANDLE m_hTransThread;
-    enum eReadEvent{
+    enum eReadEvent {
         ReadSome_Event,
         ReadFinsih_Event,
         ReadEvent_Count,

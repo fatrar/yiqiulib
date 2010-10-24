@@ -211,7 +211,7 @@ DWORD CResPacker<File_Version_1_0>::DataTransform()
 
         case WAIT_OBJECT_0 + ReadSome_Event:
         case WAIT_OBJECT_0 + ReadFinsih_Event:
-            for ( ; iter!= m_FileInfoList.end() && iter->pBuf != NULL; ++iter )
+            for ( ; iter!= m_FileInfoList.end() && iter->pRawDataBuf != NULL; ++iter )
             {
                 TransformOne(*iter);
             }
@@ -307,8 +307,8 @@ void CResPacker<File_Version_1_0>::DoRead()
             throw strErr.c_str();
         }
 
-        TmpFileInfo.pBuf = pRawFileBufNow;
-        TmpFileInfo.nBufSize = nFileSize;
+        TmpFileInfo.pRawDataBuf = pRawFileBufNow;
+        TmpFileInfo.nRawDataSize = nFileSize;
 
         pRawFileBufNow += nFileSize;
         nRawFileBufRemain -= nFileSize;
@@ -328,7 +328,6 @@ void CResPacker<File_Version_1_0>::DoWrite(
     const char* pPackFilePath,
     eFileNamePos FileNamePos )
 {
-    FileNamePos = Not_Exist;  //(暂时不考虑写文件名)
     /**
     *@note 1. Create File
     */
@@ -336,7 +335,7 @@ void CResPacker<File_Version_1_0>::DoWrite(
     Writer.OpenByWrite(pPackFilePath);
     if ( !Writer.IsOpen() )
     {
-        string strErr = "Can`t Open ";
+        static string strErr = "Can`t Open ";
         strErr += pPackFilePath;
         throw strErr.c_str();
     }
@@ -362,14 +361,18 @@ void CResPacker<File_Version_1_0>::DoWrite(
     Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
 
     typedef TFileHead<File_Version_1_0>::TDataIndex DataIndex;
-    
+    DWORD dwDataOffset = nHeadSize;
+    if ( FileNamePos == Bebind_Head )
+    {
+        dwDataOffset += GetFileNameDataLen();
+    }
     DataIndexList<File_Version_1_0>::iterator iter;
     for ( iter = m_DataIndexList.begin();
           iter!= m_DataIndexList.end();
           ++iter )
     {
         DataIndex& Index = *iter;
-        Index.Info.dwDataOffset += nHeadSize;
+        Index.Info.dwDataOffset += dwDataOffset;
         Writer.Write((void*)&Index, sizeof(DataIndex));
     }
     cout << "Head size=" 
@@ -379,10 +382,70 @@ void CResPacker<File_Version_1_0>::DoWrite(
          << endl;
 
     /**
-    *@note 3. Write File Data
+    *@note 3. Test is Write FileName Bebind Head
+    */
+    if ( FileNamePos == Bebind_Head )
+    {
+        DoWriteFileName(Writer);
+    }
+
+    /**
+    *@note 4. Write File Data
     */
     Writer.Write(m_pResFileBuf, nResDataSize);
+
+    /**
+    *@note 5. Test is Write FileName In File Tail or Outside
+    */
+    if ( FileNamePos == File_Tail )
+    {
+        DoWriteFileName(Writer);
+    }
+    else if ( FileNamePos == In_Out )
+    {
+        FileSystem::CFile File;
+        string strFilePath = pPackFilePath;
+        strFilePath += _FileName_FileExt;
+        File.OpenByWrite(strFilePath.c_str());
+        if ( !File.IsOpen() )
+        {
+            static string strErr = "Can`t Open ";
+            strErr += strFilePath;
+            throw strErr.c_str();
+        }
+
+        DoWriteFileName(File);
+        File.Close();
+    }
+
     Writer.Close();
+}
+
+template<>
+void ResFile::CResPacker<File_Version_1_0>::DoWriteFileName(
+    FileSystem::CFile& Writer )
+{
+    FileInfoList::iterator iter = m_FileInfoList.begin();
+    for ( ; iter!= m_FileInfoList.end(); ++iter )
+    {
+        string& strFileName = iter->strFileName;
+        Writer.Write(strFileName.c_str(), strFileName.length());
+        Writer.Write("\n",1);
+    }
+}
+
+template<>
+DWORD ResFile::CResPacker<File_Version_1_0>::GetFileNameDataLen()
+{
+    DWORD dwLen = 0;
+    FileInfoList::iterator iter = m_FileInfoList.begin();
+    for ( ; iter!= m_FileInfoList.end(); ++iter )
+    {
+        string& strFileName = iter->strFileName;
+        dwLen += strFileName.length();
+        ++dwLen;
+    }
+    return dwLen;
 }
 
 template<>
@@ -395,7 +458,7 @@ void CResPacker<File_Version_1_0>::TransformOne(
     /**
     *@note 1. 处理Filter
     */
-    if ( Min_Raw_File_Filter > Info.nBufSize )
+    if ( Min_Raw_File_Filter > Info.nRawDataSize )
     {
         Info.cAlgo = Raw_C_Algo;
     }
@@ -404,7 +467,7 @@ void CResPacker<File_Version_1_0>::TransformOne(
     *@note 2. 填数据头
     */
     DataHead* pDataHead = (DataHead*)m_pResFileBufNow;
-    pDataHead->dwRawDataLen = Info.nBufSize;
+    pDataHead->dwRawDataLen = Info.nRawDataSize;
     //pDataHead->nEncryptAlgo = Info.eAlgo;
     pDataHead->nCompressAlgo = Info.cAlgo;
     pDataHead->nCompressLevel = Info.cParam.cParam;
@@ -419,7 +482,7 @@ void CResPacker<File_Version_1_0>::TransformOne(
     CompressFn pCompressFn = m_CompressFn[Info.cAlgo];
     size_t nPackLen = m_nResFileBufRemain;
     int nRc = (this->*pCompressFn)(
-        Info.pBuf, Info.nBufSize,
+        Info.pRawDataBuf, Info.nRawDataSize,
         (void*)m_pResFileBufNow, nPackLen, Info.cParam);
     assert(nRc == 0);
     if ( nRc != 0 )
@@ -428,10 +491,11 @@ void CResPacker<File_Version_1_0>::TransformOne(
     }
     cout << "[" << ++g_Index << "] " 
          << Info.strFileName.c_str() << ": " 
-         << Info.nBufSize << "-->"
+         << Info.nRawDataSize << "-->"
          << nPackLen << "   Ratio=" << endl;
     g_DataCout += nPackLen;
-         //<< nPackLen*0.1/Info.nBufSize << "%" 
+         //<< nPackLen*0.1/Info.nBufSize << "%"
+    Info.nCompressDataSize = nPackLen;
     void* pRawEncryptBuf = m_pResFileBufNow;
     m_pResFileBufNow += nPackLen;
     m_nResFileBufRemain -= nPackLen;
@@ -497,23 +561,6 @@ void CResPacker<File_Version_1_0>::XorEncrypt(
 }
 
 }
-
-
-
-//namespace GG
-//{
-//    typedef unsigned int size_t; 
-//
-//    typedef unsigned char size_t; 
-//}
-//
-//class JJ
-//{
-//
-//};
-
-
-
 
 
 
