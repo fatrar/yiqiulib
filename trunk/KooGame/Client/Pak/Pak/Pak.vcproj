@@ -195,6 +195,26 @@
 			<File
 				RelativePath=".\RecFileReader.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ResFileReader_1_0.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp"
@@ -236,6 +256,10 @@
 			</File>
 			<File
 				RelativePath=".\IResFileReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IResFileWriter.h"
 				>
 			</File>
 			<File

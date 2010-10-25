@@ -84,7 +84,10 @@ protected:
 protected:
     typedef void (CResReaderBase<Version>::*UnPackFn)(
         void*, size_t, void*, size_t&, size_t);
-    void RawUnPack(void* pIn, size_t nIn, void* pOut, size_t& nOut,size_t){}
+    void RawUnPack(void* pIn, size_t nIn, void* pOut, size_t& nOut,size_t)
+    {
+        memcpy(pOut, pIn, nIn);
+    }
     void ZipUnPack(
         void* pIn, size_t nIn,
         void* pOut, size_t& nOut, size_t nLevel){}

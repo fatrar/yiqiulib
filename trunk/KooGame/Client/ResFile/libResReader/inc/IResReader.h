@@ -17,6 +17,7 @@
 ***************************************************************************H*/
 #ifndef _IRECREADER_H_2010_10
 #define _IRECREADER_H_2010_10
+#include "Common.h"
 #include "ResCommon.h"
 
 
@@ -100,11 +101,13 @@ public:
         : m_pData(NULL)
         , m_nLen(0)
         , m_nNow(0)
+        , m_pResReader(NULL)
         , m_nMemType(Mem_Unknown) {}
     inline CUnPackDataInfo(
         BYTE* pData,
         size_t nLen )
         : m_nNow(0)
+        , m_pResReader(NULL)
     {
         if ( pData == NULL )
         {
@@ -117,7 +120,7 @@ public:
             m_nMemType = User_Allocate;
         }
     }
-    inline ~CUnPackDataInfo(){m_pResReader->Release(this);}
+    inline ~CUnPackDataInfo(){if(m_pResReader) m_pResReader->Release(this);}
 
 public:
     inline operator const BYTE*()const{return m_pData;}
@@ -140,7 +143,7 @@ public:
     IResReader* m_pResReader;
 };
 
-IResReader* CreateResFileReader(const char* pResFilePath);
+API_EXPORT IResReader* CreateResFileReader(const char* pResFilePath);
 
 /**
 *@note 从内存数据创建资源包读取对象
@@ -149,14 +152,14 @@ IResReader* CreateResFileReader(const char* pResFilePath);
 *@param bRef 是否直接引用数据 
 *@param bDelete 如果是引用，是否在析构delete pData
 */
-IResReader* CreateMemResReader(
+API_EXPORT IResReader* CreateMemResReader(
     BYTE* pData, size_t nSize,
     bool bRef, bool bDelete );
 
 /**
 *@note 干掉对象且会将pResReader赋空
 */
-void DestroyResReader(IResReader*& pResReader);
+API_EXPORT void DestroyResReader(IResReader*& pResReader);
 
 /** IResReader
 *@ } 

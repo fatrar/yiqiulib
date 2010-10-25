@@ -18,6 +18,9 @@ Copyright (c) Shenzhen KooGame Co.,Ltd.
 #define _RESPATCHGENERATOR_H_2010_10
 
 
+namespace ResFile
+{
+
 
 class CResPatchGenerator
 {
@@ -28,18 +31,19 @@ public:
     ~CResPatchGenerator(void);
 
 public:
-    bool Generator(const char* pPatchPath);
+    bool Generate(const char* pPatchPath);
 
 protected:
-
+     GetDataIndex();
 
 protected:
     string m_strOldPath;
     string m_strNewPath;
 
-    ifstream m_Reader;
+    //ifstream m_Reader;
 };
 
+}
 
 
 
