@@ -37,7 +37,7 @@ ICmdParser* CreateCmdParser(ICmdExecor* pCmdExecor)
 
 ICmdParser2* CreateCmdParser2()
 {
-    new CCmdParser2();
+    return new CCmdParser2();
 }
 
 
@@ -93,10 +93,10 @@ void CCmdParserBase<T>::Parse(
     }
     
     CmdList::iterator iter = m_CmdList.begin();
-    const string& strCmd = *iter;
     string strCmdName, strValue;
     for (; iter!= m_CmdList.end(); ++iter)
     {
+        const string& strCmd = *iter;
         size_t nPos = strCmd.find('=');
         TryThrow ( nPos == string::npos || 0 == nPos );  //防止没有=或者=在第一个
   

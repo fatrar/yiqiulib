@@ -54,6 +54,14 @@ struct TFileHeadBase
     DWORD nFileNameFlag:8;  // 可以在外部，也可以在文件最后面，或者在文件头后
 };
 
+struct TResPatchFileHead
+{
+    DWORD FormatFlag;
+    DWORD Version;
+    DWORD dwAddFileCount;
+    DWORD dwRemoveFileCount;
+};
+
 union UHashValue
 {
     struct {

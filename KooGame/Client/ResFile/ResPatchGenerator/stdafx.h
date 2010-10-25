@@ -13,8 +13,12 @@
 #include <tchar.h>
 
 
-#include <ifstream>
-#include <ofstream>
+//#include <ifstream>
+//#include <ofstream>
 #include <string>
 using namespace std;
+
+#include "Common.h"
+#include "FileSystem.h"
+
 // TODO: reference additional headers your program requires here
