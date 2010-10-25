@@ -17,8 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCmdParser", "libCmdParse
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LzmaTest", "LzmaTest\LzmaTest.vcproj", "{051374EB-B8C3-4790-A59B-29D12CADDE70}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KooGameStation2", "D:\dev\KooGame\trunk\win32\KooGameStation2\KooGameStation2.vcproj", "{A9960052-98FB-436C-896A-A437D2D2A4BF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -57,10 +55,6 @@ Global
 		{051374EB-B8C3-4790-A59B-29D12CADDE70}.Debug|Win32.Build.0 = Debug|Win32
 		{051374EB-B8C3-4790-A59B-29D12CADDE70}.Release|Win32.ActiveCfg = Release|Win32
 		{051374EB-B8C3-4790-A59B-29D12CADDE70}.Release|Win32.Build.0 = Release|Win32
-		{A9960052-98FB-436C-896A-A437D2D2A4BF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A9960052-98FB-436C-896A-A437D2D2A4BF}.Debug|Win32.Build.0 = Debug|Win32
-		{A9960052-98FB-436C-896A-A437D2D2A4BF}.Release|Win32.ActiveCfg = Release|Win32
-		{A9960052-98FB-436C-896A-A437D2D2A4BF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
