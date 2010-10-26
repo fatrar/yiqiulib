@@ -479,12 +479,15 @@ void CResPacker<File_Version_1_0>::TransformOne(
     /**
     *@note 3. Ñ¹Ëõ
     */
+    cout << "cAlgo" << Info.cAlgo << endl;
     CompressFn pCompressFn = m_CompressFn[Info.cAlgo];
     size_t nPackLen = m_nResFileBufRemain;
+    //cout << "Call Compress S" << endl;
     int nRc = (this->*pCompressFn)(
         Info.pRawDataBuf, Info.nRawDataSize,
         (void*)m_pResFileBufNow, nPackLen, Info.cParam);
     assert(nRc == 0);
+    //cout << "Call Compress E" << endl;
     if ( nRc != 0 )
     {
         throw "Compress Failed!";
@@ -532,9 +535,12 @@ int CResPacker<File_Version_1_0>::LzmaCompress(
     void* pOut, size_t& nOut,
     const CResPacker<File_Version_1_0>::CompressParam& p )
 {
-    return LzmaUtil::LzmaCompress(
+    cout << "Call LzmaCompress S" << endl;
+    int nRc = LzmaUtil::LzmaCompress(
         (unsigned char*)pOut, &nOut,
         (const unsigned char*)pIn, nIn, p.cParam);
+    cout << "Call LzmaCompress E" << endl;
+    return nRc;
 }
 
 template<>

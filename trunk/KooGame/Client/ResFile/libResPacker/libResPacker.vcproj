@@ -105,7 +105,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_COMPRESS_"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
