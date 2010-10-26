@@ -105,7 +105,7 @@ void CCmdParserBase<T>::Parse(
         // [] 需要处理路径带""的异常
         //
         strValue = strCmd.substr(nPos+1, string::npos);
-        std::size_t nSize = strValue.size();
+        size_t nSize = strValue.size();
         TryThrow( nSize == 0 );
 
         if ( (strValue[0] == '\"' && strValue[nSize-1] == '\"')||

@@ -42,7 +42,7 @@ template<DWORD Version> struct TDataInfo;
 template<DWORD Version> struct TFileHead;
 template<DWORD Version> struct TDataHead;
 template<DWORD Version> struct TDataMemInfo;
-template<DWORD Version> struct TEncryptParam;
+template<DWORD Version> class TEncryptParam;
 template<DWORD Version> struct TCompressParam;
 
 struct TFileHeadBase

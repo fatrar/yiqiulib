@@ -21,7 +21,7 @@
 #include <string>
 #include <fstream>
 using namespace std;
-using namespace ResFile;
+//using namespace ResFile;
 
 #pragma warning(disable: 4996)
 // TODO: reference additional headers your program requires here
@@ -34,3 +34,4 @@ using namespace ResFile;
 #pragma comment(lib, "..\\release\\libCmdParser.lib")
 #pragma comment(lib, "..\\release\\libResPacker.lib")
 #endif // _DEBUG
+

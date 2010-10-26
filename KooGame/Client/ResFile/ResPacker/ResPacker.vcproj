@@ -119,10 +119,10 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\libCmdParser\inc\;..\libResPacker\inc\;..\Common\inc\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -136,20 +136,21 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkLibraryDependencies="false"
-				LinkIncremental="1"
+				LinkIncremental="0"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="0"
 				EnableCOMDATFolding="0"
+				OptimizeForWindows98="1"
 				TargetMachine="1"
-				CLRThreadAttribute="1"
+				CLRThreadAttribute="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
 			/>
 			<Tool
 				Name="VCManifestTool"
+				UseFAT32Workaround="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
