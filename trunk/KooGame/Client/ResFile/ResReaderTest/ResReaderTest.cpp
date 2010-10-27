@@ -5,26 +5,30 @@
 #include <fstream>
 #include <Windows.h>
 
-struct AA
+#include <iostream>
+using namespace std;
+
+class A
 {
-    DWORD bFlip:1;
-    DWORD nPicID:31;
+public:
+    int a;
+public:
+    A()
+    {
+        a = 1;
+    }
+    ~A()
+    {
+        cout << a << endl;
+        //if (a) {delete a; a = NULL;}
+    }
 };
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-    AA a;
-    a.bFlip = 1;
-    a.nPicID = 100;
+    A* a = new A[3];
+    delete a;
 
-
-    DWORD dwID = a.nPicID;
-
-DWORD* c = (DWORD*)&a;
-    __int64 i = 0x5546;
-    __int64 j = 5264;
-
-    j ^= i;
-    j ^= i;
 
 /*
     ResFile::IResReader* pResReader = 

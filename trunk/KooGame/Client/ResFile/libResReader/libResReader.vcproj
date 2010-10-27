@@ -189,6 +189,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\src\ResUpdater.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -209,6 +213,10 @@
 			</File>
 			<File
 				RelativePath=".\src\ResReaderBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ResUpdater.h"
 				>
 			</File>
 		</Filter>

@@ -43,7 +43,7 @@ public:
             szprops[1 + i] = (Byte)(Now.dictSize >> (8 * i));
     }
 
-    static void InitLzmaProps(
+   static void InitLzmaProps(
         unsigned int nLevel, 
         CLzmaEncProps& props )
     {
@@ -60,7 +60,7 @@ public:
         props.pb = Now.pb;
         props.fb = Now.fb;
         props.numThreads = 1;
-    }
+    }  
 protected:
     static struct LzmaProps
     {
@@ -98,8 +98,8 @@ int LzmaCompress(
 {
     CLzmaEncProps props;
     CLzmaPropsDic::InitLzmaProps(nlevel, props);
-    Byte outProps[LZMA_PROPS_SIZE];
-    size_t outPropsSize;
+    Byte outProps[LZMA_PROPS_SIZE] = {0};
+    size_t outPropsSize = LZMA_PROPS_SIZE;
     return LzmaEncode(
         dest, destLen, src, srcLen,
         &props, outProps, &outPropsSize,
@@ -114,7 +114,7 @@ int LzmaUncompress(
     unsigned int nlevel )
 {
     ELzmaStatus status;
-    Byte props[LZMA_PROPS_SIZE];
+    Byte props[LZMA_PROPS_SIZE] = {0};
     CLzmaPropsDic::GetLzmaProps(nlevel, props);
     return LzmaDecode(
         dest, destLen, src, &srcLen,

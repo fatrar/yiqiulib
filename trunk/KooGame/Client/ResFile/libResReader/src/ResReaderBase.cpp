@@ -218,8 +218,8 @@ void ResFile::CResReaderBase<Version>::XorDecrypt(
 {
     assert(nIn == 32);
     QWORD pKey = p.qwEncryptParam;
-    QWORD* pStart = (QWORD*)pIn;
-    for ( int i = 0 ; i < (32>>2); ++i )
+    QWORD* pStart = (QWORD*)pIn;  
+    for ( int i = 0 ; i < 4; ++i )  // 4 = 32 / sizeof(QWORD)
     {
         *pStart ^= pKey;
         ++pStart;

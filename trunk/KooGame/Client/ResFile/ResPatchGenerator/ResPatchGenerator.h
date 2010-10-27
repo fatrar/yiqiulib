@@ -22,25 +22,12 @@ namespace ResFile
 {
 
 
-class CResPatchGenerator
+namespace ResPatchGenerator
 {
-public:
-    CResPatchGenerator(
-        const char* pOld,
-        const char* pNew );
-    ~CResPatchGenerator(void);
-
-public:
-    bool Generate(const char* pPatchPath);
-
-protected:
-     GetDataIndex();
-
-protected:
-    string m_strOldPath;
-    string m_strNewPath;
-
-    //ifstream m_Reader;
+void Generate(
+    const char* pOld,
+    const char* pNew, 
+    const char* pPatchPath);
 };
 
 }

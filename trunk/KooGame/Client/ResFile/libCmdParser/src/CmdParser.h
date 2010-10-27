@@ -51,7 +51,7 @@ protected:
 protected:
     typedef list<string> CmdList;
     CmdList m_CmdList;
-    Str2XXFn m_Str2XXFn[ICmdParserBase::T_Value_Type_Max];
+    Str2XXFn m_Str2XXFn[T_Value_Type_Max];
     string m_strErr;
 };
 
@@ -105,6 +105,11 @@ public:
 
     // ICmdParser2
 public:
+    virtual void Parse(bool bIgnoreErr = false)
+    {
+        CCmdParserBase<ICmdParser2>::Parse(bIgnoreErr);
+    }
+
     virtual bool GetValue(
         const char* pCmdName, 
         ValueType t,

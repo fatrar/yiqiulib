@@ -107,16 +107,17 @@ protected:
         public set<TFileHead<File_Version_1_0>::TDataIndex >{};
 
 protected:
-    static ::DWORD WINAPI DataTransform(void* p)
+    static unsigned int WINAPI DataTransform(void* p)
     {
         CResPacker* pThis = (CResPacker*)p;
         return pThis->DataTransform();
     }
-    DWORD DataTransform();
+    unsigned int DataTransform();
 
     void Init();
     void Unit();
     void DoRead();
+    void ShowLog();
     void DoWrite(
         const char* pPackFilePath,
         eFileNamePos FileNamePos);

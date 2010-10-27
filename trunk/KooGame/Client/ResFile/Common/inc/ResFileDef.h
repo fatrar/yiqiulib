@@ -27,7 +27,8 @@ namespace ResFile
 
 enum
 {
-	File_Format_Flag = _MakeDWORD('R','e','c','P'),
+	Res_File_Format_Flag = _MakeDWORD('R','e','c','P'),
+    Patch_File_Format_Flag = _MakeDWORD('R','P','a','t'),
 	File_Version_1_0 = _MakeFileVersion(2010,9,28),
    
     // example:
@@ -182,9 +183,11 @@ struct TDataHead<File_Version_1_0>
     DWORD nCompressLevel:3;   // 0-7
     DWORD nDataEncryptLen:23; // Max 8MB-1
 
-    struct TEncryptParam
+    struct TEParam
     {
-        void operator = (const TEncryptParam& a){memcpy(this, &a, sizeof(TEncryptParam));}
+        inline TEParam(){}
+        inline TEParam(const TEParam& a){memcpy(this, &a, sizeof(TEParam));}
+        inline void operator = (const TEParam& a){memcpy(this, &a, sizeof(TEParam));}
         union {
             struct {
                 DWORD dwParam1;
@@ -200,7 +203,7 @@ struct TDataHead<File_Version_1_0>
 
 
 template<> class TEncryptParam<File_Version_1_0> :
-    public TDataHead<File_Version_1_0>::TEncryptParam {};
+    public TDataHead<File_Version_1_0>::TEParam {};
 
 template<> struct TCompressParam<File_Version_1_0>
 {   

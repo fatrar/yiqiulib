@@ -189,11 +189,12 @@ void CResPacker<File_Version_1_0>::MakeFile(
     DoRead();
     WaitForSingleObject(m_hTransThread, INFINITE);
     DoWrite(pPackFilePath, eFileNamePos);
+    ShowLog();
     Unit();
 }
 
 template<>
-DWORD CResPacker<File_Version_1_0>::DataTransform()
+unsigned int CResPacker<File_Version_1_0>::DataTransform()
 {
     //DWORD dwFileHeadSize = Util::GetFileHeadSize<File_Version_1_0>(m_FileInfoList.size());
     FileInfoList::iterator iter = m_FileInfoList.begin();
@@ -249,7 +250,7 @@ void CResPacker<File_Version_1_0>::Init()
     {
         m_hReadEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
     }
-    m_hTransThread = CreateThread(
+    m_hTransThread = (HANDLE)_beginthreadex(
         NULL, 0, 
         &CResPacker<File_Version_1_0>::DataTransform, this,
         0, NULL );
@@ -269,7 +270,6 @@ void CResPacker<File_Version_1_0>::Unit()
 }
 
 int g_DataCout = 0;
-int g_Index = 0;
 
 template<>
 void CResPacker<File_Version_1_0>::DoRead()
@@ -284,7 +284,22 @@ void CResPacker<File_Version_1_0>::DoRead()
     for ( ; iter!= m_FileInfoList.end(); ++iter )
     {
         FileInfo& TmpFileInfo = *iter;
-        string strFilePath = m_strResFold + TmpFileInfo.strFileName;
+
+        string strFilePath;
+        if ( m_strResFold.size() == 0 )
+        {
+            strFilePath = TmpFileInfo.strFileName;
+        }
+        else if ( m_strResFold[m_strResFold.size()-1] == '\\' ||
+                  m_strResFold[m_strResFold.size()-1] == '/' )
+        {
+            strFilePath = m_strResFold + TmpFileInfo.strFileName;
+        }
+        else
+        {
+            strFilePath = m_strResFold + "/" + TmpFileInfo.strFileName;
+        }
+        
         FileSystem::CFile Reader;
         if ( ! Reader.OpenByRead(strFilePath.c_str()) )
         {
@@ -348,7 +363,7 @@ void CResPacker<File_Version_1_0>::DoWrite(
     size_t nHeadSize = Util::GetFileHeadSize<File_Version_1_0>(m_FileInfoList.size());
     TFileHeadBase HeadBase;
     HeadBase.dwSize = nHeadSize;// 加了就为文件大小 + nResDataSize;
-    HeadBase.FormatFlag = File_Format_Flag;
+    HeadBase.FormatFlag = Res_File_Format_Flag;
     HeadBase.Version = File_Version_1_0;
     HeadBase.dwFileCount = m_FileInfoList.size();
     HeadBase.nFileNameFlag = FileNamePos;
@@ -361,26 +376,20 @@ void CResPacker<File_Version_1_0>::DoWrite(
     Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
 
     typedef TFileHead<File_Version_1_0>::TDataIndex DataIndex;
-    DWORD dwDataOffset = nHeadSize;
-    if ( FileNamePos == Bebind_Head )
-    {
-        dwDataOffset += GetFileNameDataLen();
-    }
+    DWORD dwDataOffset = FileNamePos == Bebind_Head ? (nHeadSize+GetFileNameDataLen()) : nHeadSize;
     DataIndexList<File_Version_1_0>::iterator iter;
     for ( iter = m_DataIndexList.begin();
           iter!= m_DataIndexList.end();
           ++iter )
     {
+        /**
+        *@note 原先记录只是数据本身之间的，实际的需要加文件头
+        */
         DataIndex& Index = *iter;
         Index.Info.dwDataOffset += dwDataOffset;
         Writer.Write((void*)&Index, sizeof(DataIndex));
     }
-    cout << "Head size=" 
-         << (sizeof(TFileHeadBase)+sizeof(dwRawDataMem)*2+sizeof(DataIndex)*m_DataIndexList.size())
-         << "\n All Data size = " << nResDataSize 
-         << "\n Data size = " << g_DataCout
-         << endl;
-
+   
     /**
     *@note 3. Test is Write FileName Bebind Head
     */
@@ -422,7 +431,26 @@ void CResPacker<File_Version_1_0>::DoWrite(
 }
 
 template<>
-void ResFile::CResPacker<File_Version_1_0>::DoWriteFileName(
+void CResPacker<File_Version_1_0>::ShowLog()
+{
+    FileInfoList::iterator iter = m_FileInfoList.begin();
+    for ( int i = 1; iter!= m_FileInfoList.end(); ++iter,++i )
+    {
+        const FileInfo& Info = *iter;
+        cout << '[' << i << "] " 
+             << Info.strFileName.c_str() << " : " 
+             << Info.nRawDataSize << "-->"
+             << Info.nCompressDataSize << "   Ratio=" 
+             << Info.nCompressDataSize*100.0/Info.nRawDataSize << '%' << endl;
+    }
+    cout << "File Head size=" 
+        << Util::GetFileHeadSize<File_Version_1_0>(m_DataIndexList.size())
+        << "\n All Data size = " << DWORD(m_pResFileBufNow- m_pResFileBuf)
+        << "\n Data size = " << g_DataCout << endl;  
+}
+
+template<>
+void CResPacker<File_Version_1_0>::DoWriteFileName(
     FileSystem::CFile& Writer )
 {
     FileInfoList::iterator iter = m_FileInfoList.begin();
@@ -435,7 +463,7 @@ void ResFile::CResPacker<File_Version_1_0>::DoWriteFileName(
 }
 
 template<>
-DWORD ResFile::CResPacker<File_Version_1_0>::GetFileNameDataLen()
+DWORD CResPacker<File_Version_1_0>::GetFileNameDataLen()
 {
     DWORD dwLen = 0;
     FileInfoList::iterator iter = m_FileInfoList.begin();
@@ -479,7 +507,7 @@ void CResPacker<File_Version_1_0>::TransformOne(
     /**
     *@note 3. 压缩
     */
-    cout << "cAlgo" << Info.cAlgo << endl;
+    //cout << "cAlgo" << Info.cAlgo << endl;
     CompressFn pCompressFn = m_CompressFn[Info.cAlgo];
     size_t nPackLen = m_nResFileBufRemain;
     //cout << "Call Compress S" << endl;
@@ -492,16 +520,12 @@ void CResPacker<File_Version_1_0>::TransformOne(
     {
         throw "Compress Failed!";
     }
-    cout << "[" << ++g_Index << "] " 
-         << Info.strFileName.c_str() << ": " 
-         << Info.nRawDataSize << "-->"
-         << nPackLen << "   Ratio=" << endl;
-    g_DataCout += nPackLen;
-         //<< nPackLen*0.1/Info.nBufSize << "%"
+
     Info.nCompressDataSize = nPackLen;
     void* pRawEncryptBuf = m_pResFileBufNow;
     m_pResFileBufNow += nPackLen;
     m_nResFileBufRemain -= nPackLen;
+    g_DataCout += nPackLen;
 
     /**
     *@note 4. 加密
@@ -535,11 +559,11 @@ int CResPacker<File_Version_1_0>::LzmaCompress(
     void* pOut, size_t& nOut,
     const CResPacker<File_Version_1_0>::CompressParam& p )
 {
-    cout << "Call LzmaCompress S" << endl;
+    //cout << "Call LzmaCompress S" << endl;
     int nRc = LzmaUtil::LzmaCompress(
         (unsigned char*)pOut, &nOut,
         (const unsigned char*)pIn, nIn, p.cParam);
-    cout << "Call LzmaCompress E" << endl;
+    //cout << "Call LzmaCompress E" << endl;
     return nRc;
 }
 
