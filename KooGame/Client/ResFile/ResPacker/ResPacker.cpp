@@ -51,7 +51,7 @@ public:
         for ( int i = 0; i< CmdList_Count; ++i )
         {
             pCmdParser->AddParamRule(
-                i, s_CommandName[i], ICmdParser::T_String);
+                i, s_CommandName[i], T_String);
         }
     }   
 
@@ -223,8 +223,10 @@ const char* CResPackerCmdExecor::s_CommandName[] =
 
 }
 
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+
     //__asm {int 3}
     if ( argc == 2 && argv[1][0] == '?' )
     {

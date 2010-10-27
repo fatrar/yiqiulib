@@ -117,7 +117,6 @@ void CCmdParserBase<T>::Parse(
 
         ParsePass(strCmdName.c_str(), strValue.c_str(), bIgnoreErr);
     }
-
 }
 
 bool CCmdParser::AddParamRule(

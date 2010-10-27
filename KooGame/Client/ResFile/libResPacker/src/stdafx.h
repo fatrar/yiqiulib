@@ -16,6 +16,7 @@
 #include <assert.h>
 #include <iostream>
 #include <string>
+#include <process.h>
 using namespace std;
 
 #include "ResFileDef.h"

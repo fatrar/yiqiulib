@@ -18,7 +18,6 @@
 #ifndef _ICOMMAND_H_2010_9
 #define _ICOMMAND_H_2010_9
 
-
 namespace ICommand
 {
 
@@ -51,18 +50,18 @@ struct ICmdExecor
     virtual bool Run() = 0;
 };
 
+enum ValueType
+{
+    T_Bool,
+    T_String,
+    T_Int,
+    T_Uint,
+    T_Value_Type_Max,
+};
+
 struct ICmdParserBase
 {
     virtual ~ICmdParserBase(){}
-
-    enum ValueType
-    {
-        T_Bool,
-        T_String,
-        T_Int,
-        T_Uint,
-        T_Value_Type_Max,
-    };
 
     /**
     *@note 添加命令，可以重复添加不同的命令，有时候命令以空格分隔，
@@ -133,6 +132,7 @@ struct ICmdParser :
 struct ICmdParser2 :
     ICmdParserBase
 {
+    virtual void Parse(bool bIgnoreErr = false) = 0;
 
     /**
     *@note 得到对应命令的值

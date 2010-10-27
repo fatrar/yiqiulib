@@ -12,13 +12,21 @@
 #include <stdio.h>
 #include <tchar.h>
 
-
+#include <iostream>
+using namespace std;
 //#include <ifstream>
 //#include <ofstream>
-#include <string>
-using namespace std;
 
 #include "Common.h"
 #include "FileSystem.h"
 
+#include "..\libCmdParser\inc\ICommand.h"
+
+
 // TODO: reference additional headers your program requires here
+
+#ifdef _DEBUG
+#pragma comment(lib, "..\\debug\\libCmdParser.lib")
+#else
+#pragma comment(lib, "..\\release\\libCmdParser.lib")
+#endif // _DEBUG

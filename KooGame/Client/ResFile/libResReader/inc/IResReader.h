@@ -178,19 +178,7 @@ API_EXPORT void DestroyResReader(IResReader*& pResReader);
 */
 struct IResUpdater
 {
-    //bool RemoveFile(const UHashValue& V)=0;
-
-    //bool AddFile(
-    //    const char* pFilePath,
-    //    CompressAlgo cAlgo,
-    //    EncryptAlgo aAlgo,
-    //    void* pParam ) = 0;
-
-    //bool AddFile(
-    //    const UHashValue& V,
-    //    CompressAlgo cAlgo,
-    //    EncryptAlgo aAlgo,
-    //    void* pParam ) = 0;
+    virtual ~IResUpdater(){}
 
     /**
     *@note 解析更新包，用户界面可以提示为正在校验更新包
