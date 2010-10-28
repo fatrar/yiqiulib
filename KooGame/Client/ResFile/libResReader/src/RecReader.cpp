@@ -20,6 +20,7 @@
 #include <string.h>
 #include "Common.h"
 #include "FileSystem.h"
+#include "ResFileUtil.h"
 //template ResFile::CResFileReader<ResFile::File_Version_1_0>;
 
 namespace ResFile
@@ -51,7 +52,7 @@ IResReader* CreateResFileReader( const char* pResFilePath )
         return false;
     }
 
-    if ( HeadBase.FormatFlag != File_Format_Flag )
+    if ( HeadBase.FormatFlag != Res_File_Format_Flag )
     {
         delete pResFile;
         return false;

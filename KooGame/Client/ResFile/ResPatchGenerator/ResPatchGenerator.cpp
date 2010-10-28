@@ -17,6 +17,7 @@ Copyright (c) Shenzhen KooGame Tech Co.,Ltd.
 #include "stdafx.h"
 #include "ResPatchGenerator.h"
 #include "ResFileDef.h"
+#include "ResFileUtil.h"
 
 
 namespace ResFile
@@ -28,39 +29,8 @@ typedef TFileHead<File_Version_1_0> FileHead;
 typedef FileHead::TDataIndex DataIndex;
 typedef TDataInfo<File_Version_1_0> DataInfo;
 
-FileHead* GetFileHead(FileSystem::CFile& File)
-{
-    TFileHeadBase HeadBase;
-    FileSystem::size_t nRead = File.Read(
-        &HeadBase, sizeof(TFileHeadBase));
-    if ( nRead != sizeof(TFileHeadBase) )
-    {
-        return NULL;
-    }
-
-    if ( HeadBase.FormatFlag != Res_File_Format_Flag ||
-         HeadBase.Version != File_Version_1_0 ||
-         HeadBase.dwFileCount == 0 ||
-         HeadBase.dwSize != Util::GetFileHeadSize<File_Version_1_0>(HeadBase.dwFileCount) )
-    {
-        return NULL;
-    }
-
-    char* pHead = new char[HeadBase.dwSize];
-    memcpy(pHead, &HeadBase, sizeof(HeadBase));
-    char* pBuf = pHead + sizeof(TFileHeadBase);
-    File.Read(pBuf, HeadBase.dwSize-sizeof(TFileHeadBase));
-    return (FileHead*)pHead;
-}
-
-void DestroyFileHead(FileHead*& Head)
-{
-    if ( Head )
-    {
-        delete[] ((char*)Head);
-        Head = NULL;
-    } 
-}   
+#define GetFileHead(f) Util::GetFileHead<File_Version_1_0>(f)
+#define DestroyFileHead(h) Util::DestroyFileHead<File_Version_1_0>(h)
 
 /**
 *@note 将A中元素，B中没有的，放进DiffBuf

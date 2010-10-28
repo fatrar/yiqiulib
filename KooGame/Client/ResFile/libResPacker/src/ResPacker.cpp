@@ -360,15 +360,9 @@ void CResPacker<File_Version_1_0>::DoWrite(
     /**
     *@note 2. Write File Head 
     */
-    size_t nHeadSize = Util::GetFileHeadSize<File_Version_1_0>(m_FileInfoList.size());
-    TFileHeadBase HeadBase;
-    HeadBase.dwSize = nHeadSize;// 加了就为文件大小 + nResDataSize;
-    HeadBase.FormatFlag = Res_File_Format_Flag;
-    HeadBase.Version = File_Version_1_0;
-    HeadBase.dwFileCount = m_FileInfoList.size();
-    HeadBase.nFileNameFlag = FileNamePos;
-    Writer.Write(&HeadBase, sizeof(TFileHeadBase));
-
+    size_t nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
+        Writer, m_FileInfoList.size(), FileNamePos);   
+        
     typedef TDataMemInfo<File_Version_1_0> DataMemInfo;
     DWORD dwRawDataMem[DataMemInfo::Max_Num];          
     DWORD dwCompressDataMem[DataMemInfo::Max_Num];
