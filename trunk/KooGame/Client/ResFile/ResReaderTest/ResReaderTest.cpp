@@ -26,6 +26,7 @@ public:
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    int i = 1<< 2;
     A* a = new A[3];
     delete a;
 

@@ -19,10 +19,7 @@
 #define _RESFILEREADER_H_2010_10
 
 #include "ResReaderBase.h"
-namespace FileSystem
-{
-    class CFile;
-}
+namespace FileSystem{class CFile;}
 
 namespace ResFile
 {

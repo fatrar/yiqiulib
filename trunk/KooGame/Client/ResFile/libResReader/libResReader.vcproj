@@ -192,6 +192,14 @@
 			<File
 				RelativePath=".\src\ResUpdater.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -295,6 +303,10 @@
 			</File>
 			<File
 				RelativePath="..\Common\inc\HashHelper.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\inc\ResFileUtil.h"
 				>
 			</File>
 		</Filter>

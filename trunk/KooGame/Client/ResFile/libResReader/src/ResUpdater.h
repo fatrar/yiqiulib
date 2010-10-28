@@ -17,9 +17,12 @@
 ***************************************************************************H*/
 #ifndef _RESUPDATER_H_2010_10
 #define _RESUPDATER_H_2010_10
-
+#include <string.h>
 #include "FileSystem.h"
 #include "ResFileDef.h"
+#include "IResReader.h"
+#include <set>
+using namespace std;
 
 namespace ResFile
 {
@@ -29,34 +32,47 @@ class CResUpdater :
 {
 public:
     CResUpdater(
-        const char* pFilepath,
-        BYTE* pData,
+        BYTE* pPatchData,
         size_t nSize,
         bool bAutoDel = true );
     ~CResUpdater(void);
 
     // IResUpdater
 public:
-    bool ParsePatchData();
+    bool Update(const char* pFilepath);
 
-    bool Update();
-
+protected:
     typedef TFileHead<File_Version_1_0> FileHead;
     typedef FileHead::TDataIndex DataIndex;
     typedef TDataInfo<File_Version_1_0> DataInfo;
 
 protected:
-    bool RemoveOld(
+    void GetReserveDataIndexFromOldFile(
         const UHashValue* pRemoveList,
         DWORD dwRemoveFileCount );
 
-    FileHead* GetResFileHead();
+    bool WriteOldData(
+        DWORD dwFileCount,
+        const UHashValue* pRemoveList,
+        DWORD dwRemoveFileCount );
+
+    void WriteNewData(
+        DataIndex* pAddDataIndex,
+        DWORD dwAddFileCount );
+
+    void WriteFileHead();
 
 protected:
     bool m_bAutoDel;
-    FileSystem::CFile m_ResFile;
+    FileSystem::CFile m_OldResFile;
+    FileSystem::CFile m_NewResFile;
+    DWORD m_dwPosNow;
     BYTE* m_pPatchData;
     size_t m_nSize;
+
+    FileHead* m_OldFileHead;
+
+    set<DataIndex> m_NewFileDataIndex;
 };
 
 

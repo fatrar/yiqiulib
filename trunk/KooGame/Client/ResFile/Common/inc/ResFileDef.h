@@ -114,12 +114,6 @@ enum eFileNamePos
 
 #define _FileName_FileExt ".Name"
 
-namespace Util
-{
-template<DWORD Version>
-inline size_t GetFileHeadSize(size_t nFileNum);
-}
-
 /**
 *@note File Version 1.0 Define
 *@ {
@@ -213,17 +207,6 @@ template<> struct TCompressParam<File_Version_1_0>
     eCompressParam cParam;
 };
 
-namespace Util
-{
-
-template<>
-inline size_t GetFileHeadSize<File_Version_1_0>(DWORD dwFileCount)
-{
-    //TFileHead<File_Version_1_0> xx;
-    typedef TFileHead<File_Version_1_0> FileHead;
-    return sizeof(FileHead) + sizeof(FileHead::TDataIndex)*(dwFileCount-1);
-}
-}
 /** File Version 1.0 Define
 *@ } 
 */

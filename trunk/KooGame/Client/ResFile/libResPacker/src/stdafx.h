@@ -20,6 +20,7 @@
 using namespace std;
 
 #include "ResFileDef.h"
+#include "ResFileUtil.h"
 #include "Common.h"
 
 //using namespace FileSystem;
