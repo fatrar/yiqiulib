@@ -13,7 +13,7 @@
 #include <tchar.h>
 
 
-/*
+
 
 // TODO: reference additional headers your program requires here
 #include "..\libResReader\inc\IResReader.h"
@@ -26,4 +26,4 @@
 #pragma comment(lib, "..\\release\\libResReader.lib")
 #endif // _DEBUG
 
-*/
+

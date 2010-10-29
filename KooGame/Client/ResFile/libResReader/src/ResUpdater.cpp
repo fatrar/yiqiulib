@@ -25,24 +25,24 @@ namespace ResFile
 {
 //using namespace FileSystem;
 
-
-CResUpdater::CResUpdater(
-    BYTE* pPatchData,
-    size_t nSize,
+IResUpdater* CreateResUpdater( 
+//    const char* pFilepath,
+    BYTE* pData, size_t nSize,
     bool bAutoDel )
-    : m_bAutoDel(bAutoDel)
-    , m_pPatchData(pPatchData)
-    , m_nSize(nSize)
-    , m_OldFileHead(NULL)
-{}
-
-CResUpdater::~CResUpdater(void)
 {
-    if ( m_bAutoDel )
-    {
-        safeDeleteArray(m_pPatchData);
-    }
+    return new CResUpdaterByPatchData(pData, nSize, bAutoDel);
 }
+
+IResUpdater* CreateResUpdater(
+//    const char* pFilepath,
+    const char* pPatchFilePath )
+{
+    return new CResUpdaterByPatchFile(pPatchFilePath);
+}
+
+/**
+*@{ ******************** CResUpdater ********************
+*/
 
 bool CResUpdater::Update(
     const char* pFilepath )
@@ -57,13 +57,13 @@ bool CResUpdater::Update(
         return false;
     }
 
-    m_OldFileHead = Util::GetFileHead<File_Version_1_0>(m_OldResFile);
-    if ( NULL == m_OldFileHead )
+    FileHead* OldFileHead = Util::GetFileHead<File_Version_1_0>(m_OldResFile);
+    if ( NULL == OldFileHead )
     {
         return false;
     }
 
-    TResPatchFileHead* pPatchFileHead = (TResPatchFileHead*)m_pPatchData;
+    TResPatchFileHead* pPatchFileHead = GetPatchFileHead();
     DWORD dwRemoveFileCount = pPatchFileHead->dwRemoveFileCount;
     DWORD dwAddFileCount = pPatchFileHead->dwAddFileCount;
     UHashValue* pRemoveList = (UHashValue*)(pPatchFileHead + 1);
@@ -72,33 +72,47 @@ bool CResUpdater::Update(
     /**
     *@note 将老文件中的保留的数据存进文件，并保存好新的索引
     */
-    DWORD dwFileCount = m_OldFileHead->dwFileCount + dwAddFileCount - dwRemoveFileCount;
-    bool bRc = WriteOldData(dwFileCount, pRemoveList, dwRemoveFileCount);
+    DWORD dwFileCount = OldFileHead->dwFileCount + dwAddFileCount - dwRemoveFileCount;
+    bool bRc = WriteOldData(
+        OldFileHead, dwFileCount, pRemoveList, dwRemoveFileCount);
     m_OldResFile.Close();
-    Util::DestroyFileHead(m_OldFileHead);
+    Util::DestroyFileHead(OldFileHead);
     if ( !bRc )
     {
+        DestroyPatchFileHead(pPatchFileHead);
         return false;
     }
 
     /**
     *@note 将新加的数据写进新文件
     */
-    WriteNewData(pAddDataIndex, dwAddFileCount);
-    
+    bRc = !!WriteNewData(pAddDataIndex, dwAddFileCount);
+    DestroyPatchFileHead(pPatchFileHead);
+    if ( !bRc )
+    {
+        return false;
+    }
+
     WriteFileHead();
     m_NewResFile.Close();
 
-    FileSystem::CFile::Remove(pFilepath);
-    FileSystem::CFile::Rename(szNewPath, pFilepath);
+    bRc = !!FileSystem::CFile::Remove(pFilepath);
+    if ( !bRc )
+    {
+        return false;
+    }
+
+    bRc = !!FileSystem::CFile::Rename(szNewPath, pFilepath);
+    return bRc;
 }
 
 void CResUpdater::GetReserveDataIndexFromOldFile(
+    FileHead* OldFileHead,
     const UHashValue* pRemoveList, 
     DWORD dwRemoveFileCount )
 {
-    const DataIndex* OldDataIndex = m_OldFileHead->DataIndex;
-    DWORD dwOldFileCount = m_OldFileHead->dwFileCount;
+    const DataIndex* OldDataIndex = OldFileHead->DataIndex;
+    DWORD dwOldFileCount = OldFileHead->dwFileCount;
     for ( DWORD i = 0, j = 0; i<dwOldFileCount; ++i )
     {
         const UHashValue& OldHash = OldDataIndex[i].HashValue;
@@ -117,7 +131,7 @@ void CResUpdater::GetReserveDataIndexFromOldFile(
                 }
                 
                 StlHelper::Array2STL(
-                    OldDataIndex+i,
+                    (DataIndex*)(OldDataIndex+i+1),
                     dwOldFileCount-i-1,
                     m_NewFileDataIndex );
                 return;
@@ -130,7 +144,7 @@ void CResUpdater::GetReserveDataIndexFromOldFile(
                 }
    
                 StlHelper::Array2STL(
-                    OldDataIndex+i,
+                    (DataIndex*)(OldDataIndex+i+1),
                     dwOldFileCount-i-1,
                     m_NewFileDataIndex );
                 return;     
@@ -140,6 +154,7 @@ void CResUpdater::GetReserveDataIndexFromOldFile(
 }
 
 bool CResUpdater::WriteOldData(
+    FileHead* OldFileHead,
     DWORD dwFileCount,
     const UHashValue* pRemoveList,
     DWORD dwRemoveFileCount )
@@ -154,7 +169,8 @@ bool CResUpdater::WriteOldData(
     /**
     *@note 将老文件中保留的数据索引放进m_NewFileDataIndex
     */
-    GetReserveDataIndexFromOldFile(pRemoveList, dwRemoveFileCount);
+    GetReserveDataIndexFromOldFile(
+        OldFileHead, pRemoveList, dwRemoveFileCount);
 
     /**
     *@note 将需要保留的数据从老文件中读出，并保存新文件
@@ -198,11 +214,53 @@ bool CResUpdater::WriteOldData(
         m_dwPosNow += dwDataLen;
     }
 
+    //m_NewResFile.Flush();
     safeDeleteArray(pBuf);
     return bRc;
 }
 
-void CResUpdater::WriteNewData(
+
+void CResUpdater::WriteFileHead()
+{
+    m_NewResFile.Seek(0);
+
+    DWORD nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
+        m_NewResFile, m_NewFileDataIndex.size(), Not_Exist);
+
+    typedef TDataMemInfo<File_Version_1_0> DataMemInfo;
+    DWORD dwRawDataMem[DataMemInfo::Max_Num] = {0};          
+    DWORD dwCompressDataMem[DataMemInfo::Max_Num] = {0};
+    m_NewResFile.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
+    m_NewResFile.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
+
+    set<DataIndex>::iterator iter = m_NewFileDataIndex.begin();
+    for ( ; iter != m_NewFileDataIndex.end(); ++iter )
+    {
+        DataIndex& Index = *iter;
+        m_NewResFile.Write((void*)&Index, sizeof(DataIndex));
+    }
+}
+
+/** CResUpdater
+*@ }
+*/
+
+
+/**
+*@{ ******************** CResUpdaterByPatchData ********************
+*/
+CResUpdaterByPatchData::CResUpdaterByPatchData(
+    BYTE* pPatchData, size_t nSize, bool bAutoDel )
+    : m_bAutoDel(bAutoDel)
+    , m_pPatchData(pPatchData)
+    , m_nSize(nSize) {}
+
+CResUpdaterByPatchData::~CResUpdaterByPatchData()
+{
+    if ( m_bAutoDel ){safeDeleteArray(m_pPatchData);}
+}
+
+bool CResUpdaterByPatchData::WriteNewData(
     DataIndex* pAddDataIndex,
     DWORD dwAddFileCount )
 {
@@ -225,28 +283,110 @@ void CResUpdater::WriteNewData(
         m_dwPosNow += dwDataLen;
         m_NewFileDataIndex.insert(TmpDataIndex);
     }
+    //m_NewResFile.Flush();
+    return true;
 }
 
-void CResUpdater::WriteFileHead()
+/** CResUpdaterByPatchData
+*@ }
+*/
+
+
+/**
+*@{ ******************** CResUpdaterByPatchFile ********************
+*/
+CResUpdaterByPatchFile::CResUpdaterByPatchFile(
+    const char* pPatchFilePath )
 {
-    m_NewResFile.Seek(0);
+    m_PatchFile.OpenByRead(pPatchFilePath);
+}
 
-    DWORD nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
-        m_NewResFile, m_NewFileDataIndex.size(), Not_Exist);
-
-    typedef TDataMemInfo<File_Version_1_0> DataMemInfo;
-    DWORD dwRawDataMem[DataMemInfo::Max_Num];          
-    DWORD dwCompressDataMem[DataMemInfo::Max_Num];
-    m_NewResFile.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
-    m_NewResFile.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
-
-    set<DataIndex>::iterator iter = m_NewFileDataIndex.begin();
-    for ( ; iter != m_NewFileDataIndex.end(); ++iter )
+TResPatchFileHead* CResUpdaterByPatchFile::GetPatchFileHead()
+{
+    if ( !m_PatchFile.IsOpen() )
     {
-        DataIndex& Index = *iter;
-        m_NewResFile.Write((void*)&Index, sizeof(DataIndex));
+        return NULL;
+    }
+
+    TResPatchFileHead Head;
+    m_PatchFile.Read(&Head, sizeof(Head));
+
+    if ( Head.FormatFlag != Patch_File_Format_Flag ||
+         Head.Version != File_Version_1_0 )
+    {
+        return NULL;
+    }
+
+#define GetPatchFileHeadSize() (sizeof(Head)+ \
+    Head.dwRemoveFileCount*sizeof(UHashValue) + Head.dwAddFileCount*sizeof(DataIndex)) 
+
+    size_t nPatchFileHeadSize = GetPatchFileHeadSize();
+    char* pBuf = new char[nPatchFileHeadSize];
+    memcpy(pBuf, &Head, sizeof(Head));
+    m_PatchFile.Read(pBuf+sizeof(Head), nPatchFileHeadSize-sizeof(Head));
+
+    return (TResPatchFileHead*)pBuf;
+}
+
+void CResUpdaterByPatchFile::DestroyPatchFileHead( TResPatchFileHead*& Head )
+{
+    if ( Head )
+    {
+        delete[] (char*)Head; 
+        Head  = NULL;
     }
 }
+
+bool CResUpdaterByPatchFile::WriteNewData(
+    DataIndex* pAddDataIndex,
+    DWORD dwAddFileCount )
+{
+    bool bRc = true;
+    char* pBuf = NULL;
+    size_t nBufSize = 0;
+    for (DWORD i=0; i<dwAddFileCount; ++i)
+    {
+        DataIndex& TmpDataIndex = pAddDataIndex[i];
+        DWORD& dwDataOffset = TmpDataIndex.Info.dwDataOffset;
+        const DWORD& dwDataLen = TmpDataIndex.Info.dwDataLen;
+        
+        /**
+        *@note 看上次的buf是否够这个读文件，不够就重新new一个
+        *      这样设计的目的，减少对内存的new，delete，提高效率
+        */
+        if ( nBufSize < dwDataLen )
+        {
+            safeDeleteArray(pBuf);
+            pBuf = new char[dwDataLen];
+            nBufSize = dwDataLen;
+        }
+
+        /**
+        *@note 从老文件读数据，并写进新文件
+        */
+        m_PatchFile.Seek(dwDataOffset);
+        if ( dwDataLen != m_PatchFile.Read(pBuf, dwDataLen) )
+        {
+            bRc = false;
+            break;
+        }
+        m_NewResFile.Write(pBuf, dwDataLen);
+
+        /**
+        *@note 改写新的文件索引，刷新文件位置，并将索引插进队列。
+        */
+        dwDataOffset = m_dwPosNow; //  重新设定数据在新文件的位置
+        m_dwPosNow += dwDataLen;
+        m_NewFileDataIndex.insert(TmpDataIndex);
+    }
+    //m_NewResFile.Flush();
+    safeDeleteArray(pBuf);
+    return bRc;
+}
+
+/** CResUpdaterByPatchFile
+*@ }
+*/
 
 }
 

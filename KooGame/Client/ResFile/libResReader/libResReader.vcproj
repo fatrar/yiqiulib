@@ -193,6 +193,14 @@
 				RelativePath=".\src\ResUpdater.cpp"
 				>
 				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -307,6 +315,10 @@
 			</File>
 			<File
 				RelativePath="..\Common\inc\ResFileUtil.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\inc\StlHelper.h"
 				>
 			</File>
 		</Filter>
