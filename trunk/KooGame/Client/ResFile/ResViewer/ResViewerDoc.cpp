@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "ResViewer.h"
-
 #include "ResViewerDoc.h"
 
 #ifdef _DEBUG

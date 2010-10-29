@@ -45,12 +45,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
-	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT | TBSTYLE_TRANSPARENT) ||
-		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
-	{
-		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
-	}
+	//if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT | TBSTYLE_TRANSPARENT) ||
+	//	!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+	//{
+	//	TRACE0("Failed to create toolbar\n");
+	//	return -1;      // fail to create
+	//}
 	if (!m_wndDlgBar.Create(this, IDR_MAINFRAME, 
 		CBRS_ALIGN_TOP, AFX_IDW_DIALOGBAR))
 	{
@@ -59,7 +59,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	if (!m_wndReBar.Create(this) ||
-		!m_wndReBar.AddBar(&m_wndToolBar) ||
+		/*!m_wndReBar.AddBar(&m_wndToolBar) ||*/
 		!m_wndReBar.AddBar(&m_wndDlgBar))
 	{
 		TRACE0("Failed to create rebar\n");
@@ -104,7 +104,6 @@ void CMainFrame::Dump(CDumpContext& dc) const
 {
 	CFrameWnd::Dump(dc);
 }
-
 #endif //_DEBUG
 
 

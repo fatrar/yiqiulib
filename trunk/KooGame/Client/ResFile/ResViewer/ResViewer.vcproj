@@ -21,7 +21,7 @@
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
-			CharacterSet="1"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -194,6 +194,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ResListView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResToolBarDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ResViewer.cpp"
 				>
 			</File>
@@ -204,6 +212,14 @@
 			<File
 				RelativePath=".\ResViewerView.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp"
@@ -236,7 +252,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ResListView.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResToolBarDlg.h"
 				>
 			</File>
 			<File
@@ -250,6 +274,14 @@
 			<File
 				RelativePath=".\ResViewerView.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
@@ -261,6 +293,22 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\res\Add.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bitmap1.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Delete.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Open.bmp"
+				>
+			</File>
 			<File
 				RelativePath=".\res\ResViewer.ico"
 				>
@@ -281,6 +329,10 @@
 				RelativePath=".\res\Toolbar.bmp"
 				>
 			</File>
+			<File
+				RelativePath=".\res\Unpack.bmp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
@@ -292,5 +344,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="ResViewer.rc"
+		/>
 	</Globals>
 </VisualStudioProject>
