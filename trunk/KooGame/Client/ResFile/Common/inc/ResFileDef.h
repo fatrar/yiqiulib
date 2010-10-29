@@ -155,6 +155,8 @@ struct TFileHead<File_Version_1_0> :
                          // 要检验hash碰撞，包增量更新及时处理出一个新最适应的模式
     //BYTE nHashPart;
     //BYTE nHashKey;
+
+    // 这个部分原先打算给客户端做解压内存池，暂时没实现，预留
     DWORD dwRawDataMem[DataMemInfo::Max_Num];          
     DWORD dwCompressDataMem[DataMemInfo::Max_Num];
 

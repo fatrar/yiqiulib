@@ -127,9 +127,12 @@ void Array2STL(const T (&Array)[nSize], set<T>& Q)
     }
 }
 
-
+/**
+*@note 为解决，VC6在模板部分特化支持问题，将下面const去掉，以致于
+*      编译器认为不是特化，而是重写
+*/
 template<class T>
-void Array2STL(const T *Array, size_t nSize, set<T>& Q)
+void Array2STL(/*const*/ T *Array, size_t nSize, set<T>& Q)
 {
     for (size_t i = 0; i<nSize; ++i)
     {

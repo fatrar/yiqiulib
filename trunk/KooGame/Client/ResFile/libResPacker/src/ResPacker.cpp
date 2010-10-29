@@ -363,9 +363,10 @@ void CResPacker<File_Version_1_0>::DoWrite(
     size_t nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
         Writer, m_FileInfoList.size(), FileNamePos);   
         
+    // 这个部分我暂时不用
     typedef TDataMemInfo<File_Version_1_0> DataMemInfo;
-    DWORD dwRawDataMem[DataMemInfo::Max_Num];          
-    DWORD dwCompressDataMem[DataMemInfo::Max_Num];
+    DWORD dwRawDataMem[DataMemInfo::Max_Num] = {0};          
+    DWORD dwCompressDataMem[DataMemInfo::Max_Num] = {0};
     Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
     Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
 

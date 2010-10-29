@@ -24,8 +24,17 @@ public:
     }
 };
 
+#define PatchFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Patch.pat"
+#define OldFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\data1.pak"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+    ResFile::IResUpdater* pResUpdater = 
+        ResFile::CreateResUpdater(PatchFile);
+    pResUpdater->Update(OldFile);
+
+    delete pResUpdater;
+
     int i = 1<< 2;
     A* a = new A[3];
     delete a;

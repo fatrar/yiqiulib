@@ -181,17 +181,11 @@ struct IResUpdater
     virtual ~IResUpdater(){}
 
     /**
-    *@note 解析更新包，用户界面可以提示为正在校验更新包
-    *@return 
-    */
-    bool ParsePatchData();
-
-    /**
     *@note 更新，原本想法是可以由用户去选择是节约内存模式和最快模式
     *@param	nMode 更新模式
     *@return 
     */
-    bool Update(int nMode);
+    virtual bool Update(const char* pFilepath) = 0;
 };
 
 /**
@@ -200,7 +194,7 @@ struct IResUpdater
 *@param pPatchFilePath 补丁文件路径
 */
 IResUpdater* CreateResUpdater(
-    const char* pFilepath,
+    //const char* pFilepath,
     const char* pPatchFilePath );
 
 /**
@@ -210,9 +204,10 @@ IResUpdater* CreateResUpdater(
 *@param nSize 数据长度
 */
 IResUpdater* CreateResUpdater(
-    const char* pFilepath,
+    //const char* pFilepath,
     BYTE* pData,
-    size_t nSize );
+    size_t nSize,
+    bool bAutoDel = true);
 
 /** IResUpdater
 *@ } 

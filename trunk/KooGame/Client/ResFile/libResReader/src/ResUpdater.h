@@ -30,16 +30,9 @@ namespace ResFile
 class CResUpdater :
     public IResUpdater
 {
-public:
-    CResUpdater(
-        BYTE* pPatchData,
-        size_t nSize,
-        bool bAutoDel = true );
-    ~CResUpdater(void);
-
     // IResUpdater
 public:
-    bool Update(const char* pFilepath);
+    virtual bool Update(const char* pFilepath);
 
 protected:
     typedef TFileHead<File_Version_1_0> FileHead;
@@ -48,33 +41,82 @@ protected:
 
 protected:
     void GetReserveDataIndexFromOldFile(
+        FileHead* OldFileHead,
         const UHashValue* pRemoveList,
         DWORD dwRemoveFileCount );
 
     bool WriteOldData(
+        FileHead* OldFileHead,
         DWORD dwFileCount,
         const UHashValue* pRemoveList,
         DWORD dwRemoveFileCount );
 
-    void WriteNewData(
-        DataIndex* pAddDataIndex,
-        DWORD dwAddFileCount );
+     void WriteFileHead();
 
-    void WriteFileHead();
+    // Must Impl 
+protected:
+    virtual TResPatchFileHead* GetPatchFileHead() = 0;
+
+    virtual void DestroyPatchFileHead(
+        TResPatchFileHead*& Head){};
+
+    virtual bool WriteNewData(
+        DataIndex* pAddDataIndex,
+        DWORD dwAddFileCount ) = 0;
 
 protected:
-    bool m_bAutoDel;
     FileSystem::CFile m_OldResFile;
     FileSystem::CFile m_NewResFile;
     DWORD m_dwPosNow;
-    BYTE* m_pPatchData;
-    size_t m_nSize;
-
-    FileHead* m_OldFileHead;
 
     set<DataIndex> m_NewFileDataIndex;
 };
 
+
+class CResUpdaterByPatchFile :
+    public CResUpdater
+{
+public:
+    CResUpdaterByPatchFile(
+        const char* pPatchFilePath );
+
+protected:
+    virtual TResPatchFileHead* GetPatchFileHead();
+
+    virtual void DestroyPatchFileHead(
+        TResPatchFileHead*& Head);
+
+    virtual bool WriteNewData(
+        DataIndex* pAddDataIndex,
+        DWORD dwAddFileCount ); 
+
+private:
+    FileSystem::CFile m_PatchFile;
+};
+
+class CResUpdaterByPatchData:
+    public CResUpdater
+{
+public:
+    inline CResUpdaterByPatchData(
+        BYTE* pPatchData, size_t nSize, bool bAutoDel = true );
+    ~CResUpdaterByPatchData();
+
+protected:
+    virtual TResPatchFileHead* GetPatchFileHead()
+    {
+        return (TResPatchFileHead*)m_pPatchData;
+    }
+
+    virtual bool WriteNewData(
+        DataIndex* pAddDataIndex,
+        DWORD dwAddFileCount );
+
+private:
+    bool m_bAutoDel;
+    BYTE* m_pPatchData;
+    size_t m_nSize;
+};
 
 
 }
