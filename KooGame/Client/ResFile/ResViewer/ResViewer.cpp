@@ -6,7 +6,7 @@
 #include "MainFrm.h"
 
 #include "ResViewerDoc.h"
-#include "ResViewerView.h"
+#include "ResListView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,7 +76,7 @@ BOOL CResViewerApp::InitInstance()
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CResViewerDoc),
 		RUNTIME_CLASS(CMainFrame),       // main SDI frame window
-		RUNTIME_CLASS(CResViewerView));
+		RUNTIME_CLASS(CResListView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
