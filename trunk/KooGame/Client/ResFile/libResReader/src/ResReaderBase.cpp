@@ -21,6 +21,11 @@
 #include <assert.h>
 #include "LzmaUtil.h"
 
+#ifdef _USE_IRESREADEREX_
+#include <process.h>
+#include <Windows.h>
+#endif
+
 
 namespace ResFile
 {
@@ -225,6 +230,72 @@ void ResFile::CResReaderBase<Version>::XorDecrypt(
         ++pStart;
     }
 }
+
+#ifdef _USE_IRESREADEREX_
+template<>
+size_t CResReaderBase<File_Version_1_0>::Count()
+{
+    return m_pFileHead->dwFileCount;
+}
+
+template<>
+bool CResReaderBase<File_Version_1_0>::GetSomeInfo(
+    size_t i, CResIterator& iter )
+{
+    if ( i >= m_pFileHead->dwFileCount )
+    {
+        return false;
+    }
+
+    const FileHead::TDataIndex& DataIndex = 
+        m_pFileHead->DataIndex[i];
+    iter.m_nIndex = i;
+    iter.m_HashValue = DataIndex.HashValue;
+    iter.m_dwPackDataLen = DataIndex.Info.dwDataLen;
+    iter.m_dwDataOffset = DataIndex.Info.dwDataOffset;
+    return true;
+}
+
+template<>
+bool CResReaderBase<File_Version_1_0>::StartGetAllInfo(
+    IInfoReadCallback* p)
+{
+    m_hThead = _beginthreadex(
+        NULL, 0 , ReadInfoThread, this, 0, NULL);
+    return 0;
+}
+
+template<>
+bool CResReaderBase<File_Version_1_0>::EndGetAllInfo()
+{
+    m_bEndThread = true;
+    WaitForSingleObject((HANDLE)m_hThead, INFINITE);
+    CloseHandle((HANDLE)m_hThead);
+    return true;
+}
+
+template<>
+unsigned int CResReaderBase<File_Version_1_0>::ReadInfoThread()
+{
+    DataHead Head;
+    for ( size_t i = 0; 
+          i < m_pFileHead->dwFileCount && !m_bEndThread;
+          ++i )
+    {
+        const FileHead::TDataIndex& DataIndex = m_pFileHead->DataIndex[i];
+        DWORD dwDataPos = DataIndex.Info.dwDataOffset;
+        GetDataHead(dwDataPos, Head); 
+        m_pInfoReadCallback->OnInfoRead(
+            i, 
+            (eEncryptAlgo)Head.nEncryptAlgo,
+            (eCompressAlgo)Head.nCompressAlgo,
+            (eCompressParam)Head.nCompressLevel,
+            Head.dwRawDataLen );
+    }
+    return 0;
+}
+
+#endif
 
 }
 

@@ -58,6 +58,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;		// fail to create
 	}
 
+
 	if (!m_wndReBar.Create(this) ||
 		/*!m_wndReBar.AddBar(&m_wndToolBar) ||*/
 		!m_wndReBar.AddBar(&m_wndDlgBar))
@@ -75,8 +76,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	// TODO: Remove this if you don't want tool tips
-	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
-		CBRS_TOOLTIPS | CBRS_FLYBY);
+	//m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
+	//	CBRS_TOOLTIPS | CBRS_FLYBY);
+
+    m_wndDlgBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
+        CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+    m_wndDlgBar.EnableDocking(CBRS_ALIGN_ANY);
+    //DockControlBar(&m_wndDlgBar);
 
 	return 0;
 }

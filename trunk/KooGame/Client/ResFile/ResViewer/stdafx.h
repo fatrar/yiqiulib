@@ -54,9 +54,18 @@
 
 
 
+#include "ResToolBarDlg.h"
 
+#include "..\libResReader\inc\IResReaderEx.h"
 
+#ifdef _DEBUG
+//#pragma comment(lib, "..\\debug\\libCmdParser.lib")
+#pragma comment(lib, "..\\debug\\libResReader.lib")
+#else
+//#pragma comment(lib, "..\\release\\libCmdParser.lib")
+#pragma comment(lib, "..\\release\\libResReader.lib")
 
+static IResReaderEx* g_pResReaderEx = NULL;
 
 
 #ifdef _UNICODE

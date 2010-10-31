@@ -452,8 +452,9 @@ void CResPacker<File_Version_1_0>::DoWriteFileName(
     for ( ; iter!= m_FileInfoList.end(); ++iter )
     {
         string& strFileName = iter->strFileName;
-        Writer.Write(strFileName.c_str(), strFileName.length());
-        Writer.Write("\n",1);
+        // д\0
+        Writer.Write(strFileName.c_str(), strFileName.length() + 1);
+        //Writer.Write("\0",1);
     }
 }
 

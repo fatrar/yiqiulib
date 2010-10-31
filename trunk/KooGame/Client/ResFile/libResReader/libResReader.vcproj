@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\Common\lzma\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_UNCOMPRESS_"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_UNCOMPRESS_;_USE_IRESREADEREX_"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -105,7 +105,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\Common\lzma\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_UNCOMPRESS_"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_UNCOMPRESS_;_USE_IRESREADEREX_"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -217,6 +217,10 @@
 			>
 			<File
 				RelativePath=".\inc\IResReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\IResReaderEx.h"
 				>
 			</File>
 			<File

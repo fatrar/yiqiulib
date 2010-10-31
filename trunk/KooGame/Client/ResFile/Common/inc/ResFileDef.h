@@ -102,6 +102,7 @@ enum eCompressParam
     Compress_Normal,
     Compress_High,
     Compress_Auto,
+    CompressParam_Count,
 };
 
 enum eFileNamePos

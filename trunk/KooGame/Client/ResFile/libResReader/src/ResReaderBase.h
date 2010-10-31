@@ -19,14 +19,21 @@
 #define _RESREADERBASE_H_2010_10
 #include <string.h>
 #include "ResFileDef.h"
-#include "IResReader.h"
+
+#ifdef _USE_IRESREADEREX_
+    #include "IResReaderEx.h"
+    #define IReaderBase IResReaderEx
+#else
+    #include "IResReader.h"
+    #define IReaderBase IResReader
+#endif
 
 namespace ResFile
 {
 
 template<DWORD Version>
 class CResReaderBase:
-    public IResReader
+    public IReaderBase
 {
 protected:
     typedef TFileHead<Version> FileHead;
@@ -58,6 +65,15 @@ public:
     virtual bool GetData(
         size_t nPos,
         CUnPackDataInfo& UnPackDataInfo );
+
+#ifdef _USE_IRESREADEREX_
+    // IResReaderEx
+public:
+    virtual size_t Count();
+    virtual bool GetSomeInfo(size_t i, CResIterator& iter);
+    virtual bool StartGetAllInfo(IInfoReadCallback* p);
+    virtual bool EndGetAllInfo();
+#endif
 
 protected:
     CResReaderBase()
@@ -112,6 +128,19 @@ protected:
     FileHead* m_pFileHead;
     DecryptFn m_DecryptFn[Encrypt_Count];
     UnPackFn  m_UnPackFn[Compress_Count];
+
+
+#ifdef _USE_IRESREADEREX_
+    unsigned int m_hThead;
+    IInfoReadCallback* m_pInfoReadCallback;
+    bool m_bEndThread;
+    unsigned int ReadInfoThread();
+    static  unsigned int __stdcall ReadInfoThread(void* p)
+    {
+        return ((CResReaderBase*)p)->ReadInfoThread();
+    }
+    
+#endif
 };
 
 
