@@ -47,12 +47,6 @@ struct IResReader
     virtual ~IResReader() {};
 
     /**
-    *@note 解析数据，建立索引
-    *@return 成功失败
-    */
-    //virtual bool Parse()=0;
-
-    /**
     *@note 得到资源包中某个文件的原始数据的长度
     *@param	pFileName 文件名 
     *@return 返回文件的原始数据的长度，如果为0则文件不存在
