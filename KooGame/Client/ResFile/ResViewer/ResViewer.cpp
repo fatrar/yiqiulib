@@ -148,3 +148,9 @@ void CResViewerApp::OnAppAbout()
 
 // CResViewerApp message handlers
 
+
+CDocument* CResViewerApp::OpenDocumentFile(LPCTSTR lpszFileName)
+{
+    // TODO: Add your specialized code here and/or call the base class
+    return CWinApp::OpenDocumentFile(lpszFileName);
+}
