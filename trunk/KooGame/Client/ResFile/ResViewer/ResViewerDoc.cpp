@@ -75,3 +75,24 @@ void CResViewerDoc::Dump(CDumpContext& dc) const
 
 
 // CResViewerDoc commands
+
+BOOL CResViewerDoc::OnOpenDocument(LPCTSTR lpszPathName)
+{
+    if (!CDocument::OnOpenDocument(lpszPathName))
+        return FALSE;
+
+    // TODO:  Add your specialized creation code here
+
+    if ( g_pResReaderEx )
+    {
+        ResFile::DestroyResReaderEx(g_pResReaderEx);
+    }
+
+    void* pBuf = NULL;
+    FileSystem::size_t nSize = FileSystem::CFile::Read(
+        lpszPathName, pBuf );
+    g_pResReaderEx = ResFile::CreateMemResReaderEx(
+        (BYTE*)pBuf, nSize, true, true);
+
+    return TRUE;
+}

@@ -44,6 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\Common\inc\;..\libResReader\inc\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USE_IRESREADEREX_"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -126,6 +127,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\Common\inc\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USE_IRESREADEREX_"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
