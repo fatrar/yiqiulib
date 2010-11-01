@@ -1,9 +1,13 @@
 #pragma once
-
+#include "IResReaderEx.h"
 
 // CResListView view
 
-class CResListView : public CListView
+//namespace ResFile{class CResIterator;}
+
+class CResListView 
+    : public CListView
+    , public ResFile::IInfoReadCallback
 {
 	DECLARE_DYNCREATE(CResListView)
 
@@ -21,6 +25,24 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
     virtual void OnInitialUpdate();
+    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg void OnDestroy();
+
+protected:
+    void AddAllData();
+    void RemoveAllData();
+
+protected:
+    //ResFile::CResIterator* m_IterList;
+
+    // IInfoReadCallback
+protected:
+    virtual void OnInfoRead(
+        ResFile::DWORD nIndex,
+        ResFile::eEncryptAlgo eAlgo,
+        ResFile::eCompressAlgo cAlgo,
+        ResFile::eCompressParam cParam,
+        ResFile::DWORD dwRawDataLen );
 };
 
 

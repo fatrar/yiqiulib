@@ -4,8 +4,9 @@
 #include "stdafx.h"
 #include <fstream>
 #include <Windows.h>
-
+#include <string>
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 class A
@@ -29,6 +30,33 @@ public:
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    ifstream Reader;
+    Reader.open("D:\\dev\\KYOL_1.0\\tools\\AnimationEditor\\pak\\list_main.txt");
+    if ( !Reader.is_open() )
+    {
+        return false;
+    }
+
+    string strBasePath = "D:\\dev\\KYOL_1.0\\tools\\AnimationEditor\\pak\\";
+    string strDstBasePath = "C:\\Documents and Settings\\orochi\\×ÀÃæ\\Test File\\";
+    string strLine;  
+    while( getline(Reader, strLine) )
+    {    
+        if ( strLine.size() == 0 ||
+             strLine[0] == '#' )
+        {
+            continue;
+        }
+        string strSrc = strBasePath + strLine;
+        string strDst = strDstBasePath + strLine;
+        BOOL bRc = CopyFileA(strSrc.c_str(), strDst.c_str(), FALSE);
+        if ( !bRc )
+        {
+            DWORD dwErr = GetLastError();
+            cout << dwErr <<endl;
+        }
+    }
+
     ResFile::IResUpdater* pResUpdater = 
         ResFile::CreateResUpdater(PatchFile);
     pResUpdater->Update(OldFile);

@@ -260,6 +260,8 @@ template<>
 bool CResReaderBase<File_Version_1_0>::StartGetAllInfo(
     IInfoReadCallback* p)
 {
+    m_pInfoReadCallback = p;
+    m_bEndThread = false;
     m_hThead = _beginthreadex(
         NULL, 0 , ReadInfoThread, this, 0, NULL);
     return 0;
