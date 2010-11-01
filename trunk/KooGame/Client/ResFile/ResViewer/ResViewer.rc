@@ -215,13 +215,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
-            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "CompanyName", "Copyright (c) Shenzhen KooGame Co.,Ltd."
+            VALUE "FileDescription", "Game Res Viewer"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "ResViewer.exe"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "LegalCopyright", "Shenzhen KooGame Co.,Ltd. All rights reserved."
             VALUE "OriginalFilename", "ResViewer.exe"
-            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductName", "Game Res Viewer"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END

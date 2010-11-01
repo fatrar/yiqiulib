@@ -69,7 +69,7 @@
 #pragma comment(lib, "..\\release\\libResReader.lib")
 #endif
 
-static ResFile::IResReaderEx* g_pResReaderEx = NULL;
+extern ResFile::IResReaderEx* g_pResReaderEx;
 
 
 #ifdef _UNICODE

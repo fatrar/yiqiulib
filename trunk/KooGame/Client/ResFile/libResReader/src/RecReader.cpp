@@ -156,6 +156,7 @@ CMemResReader<File_Version_1_0>::CMemResReader(
         memcpy(m_pData, pData, nSize);
         m_bDelete = true;
     }
+    m_pFileHead = (FileHead*)m_pData;
 }
 
 template<>

@@ -104,7 +104,7 @@
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
-			CharacterSet="1"
+			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\Common\inc\"
+				AdditionalIncludeDirectories="..\Common\inc\;..\libResReader\inc\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USE_IRESREADEREX_"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
