@@ -69,16 +69,13 @@ inline void DestroyFileHead(TFileHead<Version>*& Head)
 template<DWORD Version>
 inline DWORD WriteBaseHead(
     FileSystem::CFile& File,
-    DWORD dwFileCount,
-    eFileNamePos FileNamePos )
+    DWORD dwFileCount )
 {
     size_t nHeadSize = Util::GetFileHeadSize<Version>(dwFileCount);
     TFileHeadBase HeadBase;
-    HeadBase.dwSize = nHeadSize;  // 加了就为文件大小 + nResDataSize;
     HeadBase.FormatFlag = Res_File_Format_Flag;
     HeadBase.Version = Version;
     HeadBase.dwFileCount = dwFileCount;
-    HeadBase.nFileNameFlag = FileNamePos;
     File.Write(&HeadBase, sizeof(TFileHeadBase));
     return nHeadSize;   // 返回实际头的大小
 }

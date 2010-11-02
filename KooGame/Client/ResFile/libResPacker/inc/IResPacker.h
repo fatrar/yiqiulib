@@ -22,8 +22,6 @@
 namespace ResFile
 {
 
-#define Res_Verion File_Version_1_0
-
 /**
 *@note 资源打包者接口定义
 */
@@ -37,35 +35,14 @@ struct IResPacker
         const char* pFileName ) = 0;
 
     /**
-    *@note 添加要打包进资源包的文件，能指定打包的压缩加密参数
-    *@param	pFileName 同上  
-    *@param cAlgo 压缩算法类型 
-    *@param pcParam 压缩算法参数 
-    *@param eAlgo 加密算法类型
-    *@param ecParam 加密算法参数
-    */
-    virtual void AddFile(
-        const char* pFileName,
-        eCompressAlgo cAlgo,
-        void* pcParam,
-        eEncryptAlgo eAlgo,    
-        void* peParam ) = 0;
-
-    /**
     *@note 打包,该函数如果遇到错误会抛异常throw (const char*)
     *@param	pPackFilePath 资源包存放路径
     *@param eFileNamePos 资源文件名的存放方式
     */
     virtual void MakeFile(
         const char* pPackFilePath,
-        eFileNamePos eFileNamePos) = 0;
+        eFileNamePos eFileNamePos ) = 0;
 };
-
-#if Res_Verion == File_Version_1_0
-    static TCompressParam<File_Version_1_0> g_DefcParam;
-    //TEncryptParam<File_Version_1_0> g_DefeParam;
-#else
-#endif
 
 /**
 *@note 创建资源打包对象 
@@ -77,10 +54,9 @@ struct IResPacker
 */
 IResPacker* CreateResPacker(
     const char* pResFlodPath, 
-    eCompressAlgo cAlgo = Lzma_C_Algo,
-    void* pcParam = (void*)&g_DefcParam,
-    eEncryptAlgo eAlgo = Raw_E_Algo,
-    void* peParam  = NULL );
+    eEncryptAlgo eAlgo,
+    BYTE (&szKey)[8],
+    eCompressAlgo cAlgo = Lzma_C_Algo );
 
 void DestroyResPacker(IResPacker*& pResPacker);
 
