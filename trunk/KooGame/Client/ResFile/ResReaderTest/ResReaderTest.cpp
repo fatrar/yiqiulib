@@ -28,8 +28,19 @@ public:
 #define PatchFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Patch.pat"
 #define OldFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\data1.pak"
 
+
+union UHash
+{
+    DWORD dwValue[2];
+    ResFile::QWORD qwValue;
+};
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+    UHash hash;
+    hash.dwValue[0] = 0;
+    hash.dwValue[1] = 0;
+
     ifstream Reader;
     Reader.open("D:\\dev\\KYOL_1.0\\tools\\AnimationEditor\\pak\\list_main.txt");
     if ( !Reader.is_open() )

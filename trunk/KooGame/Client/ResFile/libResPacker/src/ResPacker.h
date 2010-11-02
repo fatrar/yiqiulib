@@ -17,47 +17,41 @@
 ***************************************************************************H*/
 #ifndef _RESPACKER_H_2010_10
 #define _RESPACKER_H_2010_10
-
-
 #include "IResPacker.h"
 #include <string>
 #include <list>
 #include <set>
 using namespace std;
-#include <Windows.h>
 
 namespace FileSystem{class CFile;} 
 
 namespace ResFile
 {
 
+template<DWORD Version> class DataIndexList;
+
+template<> class DataIndexList<File_Version_1_0> :
+    public set<TFileHead<File_Version_1_0>::TDataIndex>{};
+template<> class DataIndexList<File_Version_1_1> :
+    public set<TFileHead<File_Version_1_1>::TDataIndex>{};
+
+
 template<DWORD Version>
 class CResPacker :
     public IResPacker
 {
 public:
-    typedef TEncryptParam<Version> EncryptParam;
-    typedef TCompressParam<Version> CompressParam;
-
     CResPacker( 
-        const char* pResFlodPath, 
-        eCompressAlgo cAlgo,
-        const CompressParam& pcParam,
+        const char* pResFlodPath,
         eEncryptAlgo eAlgo,
-        const EncryptParam& peParam );
+        BYTE (&szKey)[8],
+        eCompressAlgo cAlgo );
     ~CResPacker(void);
 
     // IResPacker
 public:
     virtual void AddFile(
         const char* pFileName );
-
-    virtual void AddFile(
-        const char* pFileName,
-        eCompressAlgo cAlgo,
-        void* pcParam,
-        eEncryptAlgo eAlgo,    
-        void* peParam );
 
     virtual void MakeFile(
         const char* pPackFilePath,
@@ -70,47 +64,31 @@ protected:
         inline FileInfo() 
             : pRawDataBuf(NULL)
             , nRawDataSize(0)
-            , nCompressDataSize(0){}
+            , nPackDataSize(0){}
 
         string strFileName;
-        eEncryptAlgo eAlgo;
-        TEncryptParam<Version> eParam;
-        eCompressAlgo cAlgo;
-        TCompressParam<Version> cParam;
 
         // 存数据
         BYTE* pRawDataBuf;
         size_t nRawDataSize;
-        size_t nCompressDataSize;
+        size_t nPackDataSize;
 
         FileInfo(const FileInfo& a)
         {
             strFileName = a.strFileName;
-            eAlgo = a.eAlgo;
-            eParam = a.eParam;
-            cAlgo = a.cAlgo;
-            cParam = a.cParam;
-
             pRawDataBuf = a.pRawDataBuf;
             nRawDataSize = a.nRawDataSize;
-            nCompressDataSize = a.nCompressDataSize;
+            nPackDataSize = a.nPackDataSize;
         }
     };
 
     typedef list<FileInfo> FileInfoList;
     typedef TFileHead<Version> FileHead;
-    template<DWORD Version> class DataIndexList;
-
-    // Version 1.0 Define
-protected:
-    template<> class DataIndexList<File_Version_1_0> :
-        public set<TFileHead<File_Version_1_0>::TDataIndex >{};
 
 protected:
     static unsigned int WINAPI DataTransform(void* p)
     {
-        CResPacker* pThis = (CResPacker*)p;
-        return pThis->DataTransform();
+        return ((CResPacker*)p)->DataTransform();
     }
     unsigned int DataTransform();
 
@@ -129,21 +107,20 @@ protected:
 
     void TransformOne(FileInfo& Info);
 
-    // Encrypt 
+    // Encrypt
 protected:
     typedef void (CResPacker<Version>::*EncryptFn)(
-        void*, size_t, const EncryptParam&);
-    void RawEncrypt(void* pIn, size_t nInLen, const EncryptParam&){}
-    void XorEncrypt(void* pIn, size_t nInLen, const EncryptParam& p);
-    void BlowFishEncrypt(void* pIn, size_t nInLen, const EncryptParam& p);
+        void*, size_t);
+    void RawEncrypt(void* pIn, size_t nInLen){}
+    void XorEncrypt(void* pIn, size_t nInLen);
+    void BlowFishEncrypt(void* pIn, size_t nInLen);
 
     // Compress
 protected:
     typedef int (CResPacker<Version>::*CompressFn)(
-        void*, size_t, void*, size_t&, const CompressParam&);
+        void*, size_t, void*, size_t&);
     int RawCompress(
-        void* pIn, size_t nIn, void* pOut, size_t& nOut,
-        const CompressParam& p)
+        void* pIn, size_t nIn, void* pOut, size_t& nOut)
     {  
         memcpy(pOut,pIn,nIn);
         nOut = nIn;
@@ -151,18 +128,19 @@ protected:
     }
     int ZipCompress(
         void* pIn, size_t nIn,
-        void* pOut, size_t& nOut,
-        const CompressParam& p){return 0;};
+        void* pOut, size_t& nOut){return 0;};
     int LzmaCompress(
         void* pIn, size_t nIn,
-        void* pOut, size_t& nOut,
-        const CompressParam& p);
+        void* pOut, size_t& nOut );
 private:
-    eEncryptAlgo m_DefeAlgo;
-    EncryptParam m_DefeParam;
+    eEncryptAlgo m_eAlgo;
 
-    eCompressAlgo m_DefcAlgo;
-    CompressParam m_DefcParam;
+    union
+    {
+        BYTE m_szKey[8];  // 最大密钥8个字节
+        QWORD m_dwKey;    // 如果是XOR加密用这个
+    };
+    eCompressAlgo m_cAlgo;
 
     string m_strResFold;
 

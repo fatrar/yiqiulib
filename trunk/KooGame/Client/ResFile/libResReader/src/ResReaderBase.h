@@ -37,9 +37,7 @@ class CResReaderBase:
 {
 protected:
     typedef TFileHead<Version> FileHead;
-    typedef TDataInfo<Version> DataInfo;
     typedef TDataHead<Version> DataHead;
-    typedef TEncryptParam<Version> EncryptParam;
 
     // 上层需要实现的
 public:

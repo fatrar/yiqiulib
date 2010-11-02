@@ -29,46 +29,57 @@ enum
 {
 	Res_File_Format_Flag = _MakeDWORD('R','e','c','P'),
     Patch_File_Format_Flag = _MakeDWORD('R','P','a','t'),
-	File_Version_1_0 = _MakeFileVersion(2010,9,28),
+	File_Version_1_0 = _MakeFileVersion(2010,9,28),  // 手机原生支持的格式
+    File_Version_1_1 = _MakeFileVersion(2010,11,1),  // 加入数据分卷方式，主要用于程序，
+                                                     // 在安装到手机后，手机需要转成File_Version_1_0
    
     // example:
     // File_Version_2_0 = _MakeFileVersion(2011,9,28),
 
-    Max_File_Head_1_0 = 1 << 20,  // 1MB
-
     Invaild_Pos = -1,
+    Default_Encrypt_Len = 32,
 };
 
-template<DWORD Version> struct TDataInfo;
 template<DWORD Version> struct TFileHead;
 template<DWORD Version> struct TDataHead;
-template<DWORD Version> struct TDataMemInfo;
-template<DWORD Version> class TEncryptParam;
-template<DWORD Version> struct TCompressParam;
+
+
+struct TDataMemInfo
+{
+    enum {Max_Num = 12};
+    static const BYTE s_RawPercent[Max_Num];      // x%的原始数据是内存xxByte以下，
+                                                  // 100为最大的数据文件大小，0则最小
+    static const BYTE s_CompressPercent[Max_Num]; // x%的压缩数据是内存xxByte以下
+};
+__declspec(selectany) const BYTE TDataMemInfo::s_RawPercent[] = 
+{
+    100,95,90,85,80,75,
+    70,65,60,55,50,0
+};
+__declspec(selectany) const BYTE TDataMemInfo::s_CompressPercent[] = 
+{
+    100,95,90,85,80,75,
+    70,65,60,55,50,0
+};
 
 struct TFileHeadBase
 {
-    DWORD dwSize;
     DWORD FormatFlag;
     DWORD Version;
-    DWORD dwFileCount:24;
-    DWORD nFileNameFlag:8;  // 可以在外部，也可以在文件最后面，或者在文件头后
+    DWORD dwFileCount;
 };
 
-struct TResPatchFileHead
+struct TPatchFileHeadBase
 {
     DWORD FormatFlag;
     DWORD Version;
-    DWORD dwAddFileCount;
-    DWORD dwRemoveFileCount;
+    DWORD dwAddFileCount:16;
+    DWORD dwRemoveFileCount:16;
 };
 
 union UHashValue
 {
-    struct {
-        DWORD dwValue[2];
-    } TValue;
-
+    DWORD dwValue[2];
     QWORD qwValue;
 
     inline bool operator ==(const UHashValue& a) const {return qwValue==a.qwValue;}
@@ -119,47 +130,22 @@ enum eFileNamePos
 *@note File Version 1.0 Define
 *@ {
 */
-
-template<>
-struct TDataInfo<File_Version_1_0>
-{
-    DWORD dwDataOffset;
-    DWORD dwDataLen;
-};
-
-template<>
-struct TDataMemInfo<File_Version_1_0>
-{
-    enum {Max_Num = 12};
-    static const BYTE s_RawPercent[Max_Num];
-    static const BYTE s_CompressPercent[Max_Num];
-};
-__declspec(selectany) const BYTE TDataMemInfo<File_Version_1_0>::s_RawPercent[] = 
-{
-    100,95,90,85,80,
-     75,70,65,60,55,
-     50,0
-};
-__declspec(selectany) const BYTE TDataMemInfo<File_Version_1_0>::s_CompressPercent[] = 
-{
-    100,95,90,85,80,
-     75,70,65,60,55,
-     50,0
-};
-
 template<>
 struct TFileHead<File_Version_1_0> :
-    public TFileHeadBase
+    TFileHeadBase
 {
-    typedef TDataMemInfo<File_Version_1_0> DataMemInfo;
-    //BYTE nHashBits;    // 16位，32位，64位
-                         // 要检验hash碰撞，包增量更新及时处理出一个新最适应的模式
-    //BYTE nHashPart;
-    //BYTE nHashKey;
+    DWORD nFileNameFlag:16;  // 可以在外部，也可以在文件最后面，或者在文件头后
+    DWORD eAlgo:16;
+    
+    union
+    {
+        BYTE szKey[8];  // 最大密钥8个字节
+        QWORD dwKey;    // 如果是XOR加密用这个
+    };
 
     // 这个部分原先打算给客户端做解压内存池，暂时没实现，预留
-    DWORD dwRawDataMem[DataMemInfo::Max_Num];          
-    DWORD dwCompressDataMem[DataMemInfo::Max_Num];
+    DWORD dwRawDataMem[TDataMemInfo::Max_Num];          
+    DWORD dwCompressDataMem[TDataMemInfo::Max_Num];
 
     struct TDataIndex
     {
@@ -167,50 +153,46 @@ struct TFileHead<File_Version_1_0> :
         bool operator > (const TDataIndex& a) const {return HashValue > a.HashValue;}
         bool operator ==(const TDataIndex& a) const {return HashValue ==a.HashValue;}
         UHashValue HashValue;
-        TDataInfo<File_Version_1_0> Info;
+        DWORD dwOffset, dwLen;
+    }DataIndex[1];
+};
+
+/**
+*@note 这部分本可以放入文件头的TDataIndex，但因为文件头一般是常驻与内存
+*      这部分数据不是读取数据必须的，考虑节约内存就放在这
+*/
+template<>
+struct TDataHead<File_Version_1_0>
+{
+    DWORD dwRawDataLen:26;  // 64MB-1
+    DWORD nCompressAlgo:3;  // 0-7
+    DWORD nCompressLevel:3; // 0-7
+};
+/** File Version 1.0 Define
+*@ } 
+*/
+
+/**
+*@note File Version 1.1 Define
+*@ {
+*/
+template<>
+struct TFileHead<File_Version_1_1> :
+    TFileHeadBase
+{
+    DWORD dwRealFileCount;  // 如果不分包，文件的个数，dwFileCount为分卷之后的卷数
+    DWORD dwMxVolumeSize;   // 分卷，单卷的最大值
+
+    struct TDataIndex
+    {
+        DWORD dwOffset, dwLen;
+        DWORD dwRawDataLen;
     }DataIndex[1];
 };
 
 template<>
-struct TDataHead<File_Version_1_0>
-{
-    DWORD dwRawDataLen;
-    DWORD nEncryptAlgo:3;     // 0-7
-    DWORD nCompressAlgo:3;    // 0-7
-    DWORD nCompressLevel:3;   // 0-7
-    DWORD nDataEncryptLen:23; // Max 8MB-1
-
-    struct TEParam
-    {
-        inline TEParam(){}
-        inline TEParam(const TEParam& a){memcpy(this, &a, sizeof(TEParam));}
-        inline void operator = (const TEParam& a){memcpy(this, &a, sizeof(TEParam));}
-        union {
-            struct {
-                DWORD dwParam1;
-                DWORD dwParam2;
-            } EncryptParam;
-
-            QWORD qwEncryptParam;
-            char cEncryptParam[8];
-            BYTE ucEncryptParam[8];
-        };
-    } eParam;
-};
-
-
-template<> class TEncryptParam<File_Version_1_0> :
-    public TDataHead<File_Version_1_0>::TEParam {};
-
-template<> struct TCompressParam<File_Version_1_0>
-{   
-    TCompressParam(eCompressParam e = Compress_High):cParam(e){}
-    typedef TCompressParam<File_Version_1_0> CompressParam;
-    void operator = (const CompressParam& a){cParam = a.cParam;}
-    eCompressParam cParam;
-};
-
-/** File Version 1.0 Define
+struct TDataHead<File_Version_1_1>{};
+/** File Version 1.1 Define
 *@ } 
 */
 
