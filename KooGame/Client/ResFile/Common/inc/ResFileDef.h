@@ -54,19 +54,28 @@ struct TDataMemInfo
 __declspec(selectany) const BYTE TDataMemInfo::s_RawPercent[] = 
 {
     100,95,90,85,80,75,
-    70,65,60,55,50,0
+     70,65,60,55,50,0
 };
 __declspec(selectany) const BYTE TDataMemInfo::s_CompressPercent[] = 
 {
     100,95,90,85,80,75,
-    70,65,60,55,50,0
+     70,65,60,55,50,0
 };
 
 struct TFileHeadBase
 {
+    DWORD dwSize;
     DWORD FormatFlag;
     DWORD Version;
-    DWORD dwFileCount;
+    DWORD dwFileCount:28;
+    DWORD bIsExistFileName:1;
+    DWORD eAlgo:3;
+
+    union
+    {
+        BYTE szKey[8];  // 最大密钥8个字节
+        QWORD dwKey;    // 如果是XOR加密用这个
+    };
 };
 
 struct TPatchFileHeadBase
@@ -94,7 +103,7 @@ enum eEncryptAlgo
 {
     Raw_E_Algo,
     Xor_E_Algo,
-    BlowFish_E_Algo,  // 这个算法快，但是如果经常变换密码，生成密钥表很浪费时间
+    BlowFish_E_Algo, // 这个算法快，但是如果经常变换密码，生成密钥表很浪费时间
     Encrypt_Count,
 };
 
@@ -116,15 +125,15 @@ enum eCompressParam
     CompressParam_Count,
 };
 
-enum eFileNamePos
-{
-    Not_Exist,
-    In_Out,
-    Bebind_Head,
-    File_Tail,
-};
+//enum eFileNamePos
+//{
+//    Not_Exist,
+//    Bebind_Head,
+//    File_Tail,
+//    // In_Out,  暂时不支持这个
+//};
 
-#define _FileName_FileExt ".Name"
+//#define _FileName_FileExt ".Name"
 
 /**
 *@note File Version 1.0 Define
@@ -134,15 +143,6 @@ template<>
 struct TFileHead<File_Version_1_0> :
     TFileHeadBase
 {
-    DWORD nFileNameFlag:16;  // 可以在外部，也可以在文件最后面，或者在文件头后
-    DWORD eAlgo:16;
-    
-    union
-    {
-        BYTE szKey[8];  // 最大密钥8个字节
-        QWORD dwKey;    // 如果是XOR加密用这个
-    };
-
     // 这个部分原先打算给客户端做解压内存池，暂时没实现，预留
     DWORD dwRawDataMem[TDataMemInfo::Max_Num];          
     DWORD dwCompressDataMem[TDataMemInfo::Max_Num];
@@ -181,17 +181,21 @@ struct TFileHead<File_Version_1_1> :
     TFileHeadBase
 {
     DWORD dwRealFileCount;  // 如果不分包，文件的个数，dwFileCount为分卷之后的卷数
-    DWORD dwMxVolumeSize;   // 分卷，单卷的最大值
+    DWORD dwMaxVolumeSize;  // 分卷，单卷的最大值
 
     struct TDataIndex
     {
         DWORD dwOffset, dwLen;
-        DWORD dwRawDataLen;
+        DWORD dwRawVolumeDataLen;
     }DataIndex[1];
 };
 
 template<>
-struct TDataHead<File_Version_1_1>{};
+struct TDataHead<File_Version_1_1>
+{
+     UHashValue HashValue;
+     DWORD dwRawDataLen;
+};
 /** File Version 1.1 Define
 *@ } 
 */

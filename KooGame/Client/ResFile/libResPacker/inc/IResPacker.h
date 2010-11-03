@@ -41,7 +41,8 @@ struct IResPacker
     */
     virtual void MakeFile(
         const char* pPackFilePath,
-        eFileNamePos eFileNamePos ) = 0;
+        size_t nVolumeSize,
+        bool bIsExistFileName ) = 0;
 };
 
 /**

@@ -35,7 +35,7 @@ inline TFileHead<Version>* GetFileHead(FileSystem::CFile& File)
 {
     TFileHeadBase HeadBase;
     FileSystem::size_t nRead = File.Read(
-        &HeadBase, sizeof(TFileHeadBase));
+        &HeadBase, sizeof(TFileHeadBase) );
     if ( nRead != sizeof(TFileHeadBase) )
     {
         return NULL;
@@ -43,8 +43,7 @@ inline TFileHead<Version>* GetFileHead(FileSystem::CFile& File)
 
     if ( HeadBase.FormatFlag != Res_File_Format_Flag ||
          HeadBase.Version != Version ||
-         HeadBase.dwFileCount == 0 ||
-         HeadBase.dwSize != Util::GetFileHeadSize<Version>(HeadBase.dwFileCount) )
+         HeadBase.dwFileCount == 0  )
     {
         return NULL;
     }
@@ -67,17 +66,23 @@ inline void DestroyFileHead(TFileHead<Version>*& Head)
 }
 
 template<DWORD Version>
-inline DWORD WriteBaseHead(
+inline size_t WriteBaseHead(
     FileSystem::CFile& File,
-    DWORD dwFileCount )
+    size_t nFileCount,
+    bool bIsExistFileName,
+    DWORD eAlgo,
+    BYTE (&szKey)[8] )
 {
-    size_t nHeadSize = Util::GetFileHeadSize<Version>(dwFileCount);
     TFileHeadBase HeadBase;
+    HeadBase.dwSize = GetFileHeadSize<Version>(nFileCount);
     HeadBase.FormatFlag = Res_File_Format_Flag;
     HeadBase.Version = Version;
-    HeadBase.dwFileCount = dwFileCount;
+    HeadBase.dwFileCount = nFileCount;
+    HeadBase.bIsExistFileName = bIsExistFileName;
+    HeadBase.eAlgo = eAlgo;
+    memcpy(HeadBase.szKey, szKey, 8);
     File.Write(&HeadBase, sizeof(TFileHeadBase));
-    return nHeadSize;   // 返回实际头的大小
+    return HeadBase.dwSize;
 }
 
 template<>

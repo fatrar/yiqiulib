@@ -46,7 +46,6 @@ public:
         eEncryptAlgo eAlgo,
         BYTE (&szKey)[8],
         eCompressAlgo cAlgo );
-    ~CResPacker(void);
 
     // IResPacker
 public:
@@ -55,7 +54,8 @@ public:
 
     virtual void MakeFile(
         const char* pPackFilePath,
-        eFileNamePos eFileNamePos);
+        size_t nVolumeSize,
+        bool bIsExistFileName );
 
     // Struct Define
 protected:
@@ -73,13 +73,13 @@ protected:
         size_t nRawDataSize;
         size_t nPackDataSize;
 
-        FileInfo(const FileInfo& a)
-        {
-            strFileName = a.strFileName;
-            pRawDataBuf = a.pRawDataBuf;
-            nRawDataSize = a.nRawDataSize;
-            nPackDataSize = a.nPackDataSize;
-        }
+        //FileInfo(const FileInfo& a)
+        //{
+        //    strFileName = a.strFileName;
+        //    pRawDataBuf = a.pRawDataBuf;
+        //    nRawDataSize = a.nRawDataSize;
+        //    nPackDataSize = a.nPackDataSize;
+        //}
     };
 
     typedef list<FileInfo> FileInfoList;
@@ -93,17 +93,11 @@ protected:
     unsigned int DataTransform();
 
     void Init();
+    void InitFileName();
     void Unit();
     void DoRead();
     void ShowLog();
-    void DoWrite(
-        const char* pPackFilePath,
-        eFileNamePos FileNamePos);
-
-    void DoWriteFileName(
-        FileSystem::CFile& Writer );
-
-    DWORD GetFileNameDataLen();
+    void DoWrite(const char* pPackFilePath);
 
     void TransformOne(FileInfo& Info);
 
@@ -132,6 +126,18 @@ protected:
     int LzmaCompress(
         void* pIn, size_t nIn,
         void* pOut, size_t& nOut );
+
+protected:
+    enum
+    {
+        Raw_File_Buf = 64*1024*1024,  // 64MB
+        Res_File_Buf = 32*1024*1024,  // 32MB
+
+        File_Read_Flag = 1,
+
+        Invaild_Pointer = -1, // 0xffffffff
+    };
+
 private:
     eEncryptAlgo m_eAlgo;
 
@@ -165,9 +171,18 @@ private:
     BYTE* m_pResFileBufNow;
     size_t m_nResFileBufRemain;
 
+    size_t m_nRawAllDataSize;
+
+    size_t m_nVolumeSize;
+    bool m_bIsExistFileName;
+    size_t m_nFileNameSize;
+    BYTE* m_pFileNameBuf;
+
     CompressFn m_CompressFn[Compress_Count];
     EncryptFn m_EncryptFn[Encrypt_Count];
 };
+
+extern string g_strErr;
 
 }
 
