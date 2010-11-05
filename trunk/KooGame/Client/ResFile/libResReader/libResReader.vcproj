@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\Common\lzma\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_UNCOMPRESS_;_USE_IRESREADEREX_"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_UNCOMPRESS_"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -150,7 +150,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\RecReader.cpp"
+				RelativePath=".\src\ResReader.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -194,6 +194,7 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

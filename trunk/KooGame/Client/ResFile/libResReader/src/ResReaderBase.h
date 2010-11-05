@@ -89,10 +89,10 @@ protected:
     // Decrypt function
 protected:
     typedef void (CResReaderBase<Version>::*DecryptFn)(
-        void*, size_t, const EncryptParam&);
-    void RawDecrypt(void* pIn, size_t nIn,const EncryptParam&){}
-    void XorDecrypt(void* pIn, size_t nIn,const EncryptParam& p);
-    void BlowFishDecrypt(void* pIn, size_t nIn,const EncryptParam& p){};
+        void*, size_t);
+    void RawDecrypt(void* pIn, size_t nIn){}
+    void XorDecrypt(void* pIn, size_t nIn);
+    void BlowFishDecrypt(void* pIn, size_t nIn){};
 
     // UnPack function
 protected:

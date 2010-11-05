@@ -45,7 +45,6 @@ void CResPacker<File_Version_1_0>::DoRead()
 {
     BYTE* pRawFileBufNow = m_pRawFileBuf;
     size_t nRawFileBufRemain = Raw_File_Buf;
-    int nReadCount = 0;
     string strFilePath;
 
     FileInfoList::iterator iter = m_FileInfoList.begin();
@@ -60,20 +59,8 @@ void CResPacker<File_Version_1_0>::DoRead()
         /**
         *@note 1. Get Raw Res File Path
         */
-        string& strTmpPath = TmpFileInfo.strFileName;
-        if ( m_strResFold.size() == 0 )
-        {
-            strFilePath = strTmpPath;
-        }
-        else if ( m_strResFold[m_strResFold.size()-1] == '\\' ||
-                  m_strResFold[m_strResFold.size()-1] == '/' )
-        {
-            strFilePath = m_strResFold + strTmpPath;
-        }
-        else
-        {
-            strFilePath = m_strResFold + "/" + strTmpPath;
-        }
+        string& strFileName = TmpFileInfo.strFileName;
+        MakePath(strFileName, strFilePath);
         
         /**
         *@note 2. Open File And Test File Exist And Buffer is enough
@@ -89,7 +76,7 @@ void CResPacker<File_Version_1_0>::DoRead()
         if ( nFileSize == 0 ||
              nFileSize > nRawFileBufRemain )
         {
-            throw "Tatal File Size obove 128MB or File Size is 0";
+            throw "Total File Size above 64MB or File Size is 0";
         }
 
         /**
@@ -117,18 +104,16 @@ void CResPacker<File_Version_1_0>::DoRead()
         /**
         *@note 6. Test is Notify DataTransform Thread of Compress Data
         */
-        ++nReadCount;
-        if ( nReadCount == File_Read_Flag )
-        {
-            SetEvent(m_hReadEvent[ReadSome_Event]);
-            nReadCount = 0;
-        }
+        PostThreadMessage(
+            m_nThreadID, Msg_Read_Some, 
+            (WPARAM)&TmpFileInfo, 0); 
     }
 
     /**
     *@note Notify DataTransform Thread of Raw Res File Data Read Finish
     */
-    SetEvent(m_hReadEvent[ReadFinsih_Event]);
+    PostThreadMessage(
+        m_nThreadID, Msg_Read_Finsih, 0, 0); 
 }
 
 template<>
@@ -215,7 +200,7 @@ void CResPacker<File_Version_1_0>::TransformOne(
     void* pRawEncryptBuf = m_pResFileBufNow;
     m_pResFileBufNow += nPackLen;
     m_nResFileBufRemain -= nPackLen;
-    m_nRawAllDataSize += nPackLen;
+    m_nFileAllDataSize += nPackLen;
     Info.nPackDataSize = nPackLen;
 
     /**
@@ -232,6 +217,27 @@ void CResPacker<File_Version_1_0>::TransformOne(
     Index.dwOffset = dwDataOffset;
     Index.dwLen = nPackLen + sizeof(DataHead);
     m_DataIndexList.insert(Index);
+}
+
+template<>
+void CResPacker<File_Version_1_0>::ShowLog()
+{
+    FileInfoList::iterator iter = m_FileInfoList.begin();
+    for ( int i = 1; iter!= m_FileInfoList.end(); ++iter, ++i )
+    {
+        const FileInfo& Info = *iter;
+        cout << '[' << i << "] " 
+            << Info.strFileName.c_str() << " : "
+            << Info.nRawDataSize << "-->"
+            << Info.nPackDataSize << "   Ratio=" 
+            << Info.nPackDataSize*100.0/Info.nRawDataSize
+            << '%' << endl;
+            
+    }
+    cout << "File Head size=" 
+        << Util::GetFileHeadSize<File_Version_1_0>(m_DataIndexList.size())
+        << "\n All Data size = " << DWORD(m_pResFileBufNow- m_pResFileBuf)
+        << "\n Data size = " << m_nFileAllDataSize << endl;  
 }
 
 }

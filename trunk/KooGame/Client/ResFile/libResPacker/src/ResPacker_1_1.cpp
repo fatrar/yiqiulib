@@ -45,77 +45,88 @@ void CResPacker<File_Version_1_1>::InitFileName()
 template<>
 void CResPacker<File_Version_1_1>::DoRead()
 {
+    // RawFileBufNow最终的数据格式为 一个头一个数据这样的循环
     BYTE* pRawFileBufNow = m_pRawFileBuf;
     size_t nRawFileBufRemain = Raw_File_Buf;
-    int nReadCount = 0;
+
     string strFilePath;
-    size_t nVolumeSizeNow = 0;
-    BYTE* pVolume = pRawFileBufNow;
+   
+    //BYTE* pVolume = pRawFileBufNow;  // 记录一卷的头指针
+    //bool bFirstData = true;
 
     FileInfoList::iterator iter = m_FileInfoList.begin();
+    FileInfo* pSendInfo = NULL;
+    size_t* pnVolumeSizeNow = NULL; // &pSendInfo->nRawDataSize; // 记录一卷的实际大小
+    //pSendInfo->pRawDataBuf = pRawFileBufNow;
     for ( ; iter!= m_FileInfoList.end(); ++iter )
     {
         FileInfo& TmpFileInfo = *iter;
-
         /**
         *@note 1. Get Raw Res File Path
         */
-        string& strTmpPath = TmpFileInfo.strFileName;
-        if ( m_strResFold.size() == 0 )
-        {
-            strFilePath = strTmpPath;
-        }
-        else if ( m_strResFold[m_strResFold.size()-1] == '\\' ||
-                  m_strResFold[m_strResFold.size()-1] == '/' )
-        {
-            strFilePath = m_strResFold + strTmpPath;
-        }
-        else
-        {
-            strFilePath = m_strResFold + "/" + strTmpPath;
-        }
+        string& strFileName = TmpFileInfo.strFileName;
+        MakePath(strFileName, strFilePath);
         
         /**
         *@note 2. Open File And Test File Exist And Buffer is enough
         */
         FileSystem::CFile Reader;
-        if ( ! Reader.OpenByRead(strFilePath.c_str()) )
+        if ( !Reader.OpenByRead(strFilePath.c_str()) )
         {
-            g_strErr =  "Can`t Open File:";
-            g_strErr += strFilePath;
+            g_strErr = "Can`t Open File: " + strFilePath;
             throw g_strErr.c_str();
         }
         FileSystem::size_t nFileSize = Reader.GetLength();
-        size_t nGroupSize = nFileSize + sizeof(DataHead);
+        size_t nGroupSize = nFileSize + sizeof(DataHead); // Head+Data
         if ( nFileSize == 0 ||
              nGroupSize > nRawFileBufRemain )
         {
-            throw "Tatal File Size obove 128MB or File Size is 0";
+            throw "Total File Size above 64MB or File Size is 0";
         }
 
-        size_t nNewVolumeSize = nVolumeSizeNow + nGroupSize;
-
-        TmpFileInfo.pRawDataBuf = pRawFileBufNow 
-        if ( nNewVolumeSize > m_nVolumeSize )
+        /**
+        *@note 3. Do Volume something
+        */
+        // 如果还没有设置一个数据，就不做卷大小判断
+        if ( pSendInfo == 0 )
         {
-            TmpFileInfo.pRawDataBuf = pRawFileBufNow;
-            TmpFileInfo.nRawDataSize = nVolumeSizeNow;
+            pSendInfo = &TmpFileInfo;
+            pSendInfo->pRawDataBuf = pRawFileBufNow;
+            pnVolumeSizeNow = &pSendInfo->nRawDataSize;
+            *pnVolumeSizeNow = nGroupSize;
         }
         else
         {
-            TmpFileInfo.pRawDataBuf = (BYTE*)Invaild_Pointer; 
-            nVolumeSizeNow = nNewVolumeSize;
-            pVolume;
+            size_t nNewVolumeSize = *pnVolumeSizeNow + nGroupSize;
+            if ( nNewVolumeSize > m_nVolumeSize ) // 大于卷大小，需要换卷
+            {
+                PostThreadMessage(
+                    m_nThreadID, Msg_Read_Some,(WPARAM)pSendInfo, 0);
+                
+                pSendInfo = &TmpFileInfo;
+                pSendInfo->pRawDataBuf = pRawFileBufNow;
+                pnVolumeSizeNow = &pSendInfo->nRawDataSize;
+                *pnVolumeSizeNow = nGroupSize;
+            }
+            else
+            {
+                // 设置Iter的数据为无效，并累加当前卷大小
+                TmpFileInfo.pRawDataBuf = (BYTE*)Invaild_Pointer; 
+                *pnVolumeSizeNow = nNewVolumeSize;
+            }
         }
 
+        /**
+        *@note 填数据头，再Buf偏移
+        */
         DataHead* pDataHead = (DataHead*)pRawFileBufNow;
-        pDataHead->HashValue = OCI::HashStringEx(strTmpPath.c_str());
+        pDataHead->HashValue = OCI::HashStringEx(strFileName.c_str());
         pDataHead->dwRawDataLen = nFileSize;
-        pRawFileBufNow += sizeof(DataHead);
-        nVolumeSizeNow += sizeof(DataHead) + nFileSize;
+        pRawFileBufNow = (BYTE*)(pDataHead + 1);
+        nRawFileBufRemain -= sizeof(DataHead);
 
         /**
-        *@note 3. Read All File Data To Buffer 
+        *@note 4. Read All File Data To Buffer，填数据 
         */
         FileSystem::size_t nFileBufSize = nRawFileBufRemain;
         if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileBufSize) )
@@ -125,32 +136,25 @@ void CResPacker<File_Version_1_1>::DoRead()
         }
 
         /**
-        *@note 4. Set Info for Data Compress and Save To File
-        */
-        TmpFileInfo.pRawDataBuf = pRawFileBufNow;
-        TmpFileInfo.nRawDataSize = nFileSize;
-
-        /**
         *@note 5. Refresh Buffer Point and Buffer Remain size
         */
         pRawFileBufNow += nFileSize;
-        nRawFileBufRemain -= nFileSize;
-
-        /**
-        *@note 6. Test is Notify DataTransform Thread of Compress Data
-        */
-        ++nReadCount;
-        if ( nReadCount == File_Read_Flag )
-        {
-            SetEvent(m_hReadEvent[ReadSome_Event]);
-            nReadCount = 0;
-        }
+        nRawFileBufRemain -= nFileSize;     
     }
+
+    PostThreadMessage(
+        m_nThreadID, Msg_Read_Some, (WPARAM)pSendInfo, 0);
+
+    // 达到1卷的大小，用此时的iter保存数据
+    //FileInfo& TmpFileInfo = *(m_FileInfoList.rbegin());
+    //TmpFileInfo.pRawDataBuf = pVolume;
+    //TmpFileInfo.nRawDataSize = nVolumeSizeNow;
 
     /**
     *@note Notify DataTransform Thread of Raw Res File Data Read Finish
     */
-    SetEvent(m_hReadEvent[ReadFinsih_Event]);
+    PostThreadMessage(
+        m_nThreadID, Msg_Read_Finsih, 0, 0);
 }
 
 template<>
@@ -172,15 +176,12 @@ void CResPacker<File_Version_1_1>::DoWrite(
     *@note 2. Write File Head 
     */
     size_t nHeadSize = Util::WriteBaseHead<File_Version_1_1>(
-        Writer, m_FileInfoList.size(),
-        m_bIsExistFileName, m_eAlgo, m_szKey );
+        Writer, m_nIndexCount, m_bIsExistFileName, 
+        m_eAlgo, m_szKey );
+    size_t nRealFileCount  = m_FileInfoList.size();
+    Writer.Write(&nRealFileCount, sizeof(size_t));
+    Writer.Write(&m_nVolumeSize, sizeof(size_t));
        
-    // 这个部分我暂时不用
-    DWORD dwRawDataMem[TDataMemInfo::Max_Num] = {0};
-    DWORD dwCompressDataMem[TDataMemInfo::Max_Num] = {0};
-    Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
-    Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
-
     typedef TFileHead<File_Version_1_1>::TDataIndex DataIndex;
     DataIndexList<File_Version_1_1>::iterator iter;
     for ( iter = m_DataIndexList.begin();
@@ -208,19 +209,17 @@ template<>
 void CResPacker<File_Version_1_1>::TransformOne(
     FileInfo& Info )
 {
-    typedef TDataHead<File_Version_1_1> DataHead;
+    if ( Info.pRawDataBuf == (BYTE*)Invaild_Pointer )
+    {
+        return;
+    }
+
+    ++m_nIndexCount;
+    // 计算数据已经写到那个位置
     DWORD dwDataOffset = m_pResFileBufNow - m_pResFileBuf;
-    
-    /**
-    *@note 1. 填数据头
-    */
-    DataHead* pDataHead = (DataHead*)m_pResFileBufNow;
-    pDataHead->dwRawDataLen = Info.nRawDataSize;
-    m_pResFileBufNow += sizeof(DataHead);
-    m_nResFileBufRemain -= sizeof(DataHead);
 
     /**
-    *@note 2. 压缩
+    *@note 1. 直接压缩
     */
     CompressFn pCompressFn = m_CompressFn[m_cAlgo];
     size_t nPackLen = m_nResFileBufRemain;
@@ -232,11 +231,14 @@ void CResPacker<File_Version_1_1>::TransformOne(
         throw "Compress Failed!";
     }
 
+    /**
+    *@note 2. 刷新数据
+    */
     void* pRawEncryptBuf = m_pResFileBufNow;
-    m_pResFileBufNow += nPackLen;
-    m_nResFileBufRemain -= nPackLen;
-    m_nRawAllDataSize += nPackLen;
-    Info.nPackDataSize = nPackLen;
+    m_pResFileBufNow += nPackLen;    // 偏移资源文件Buf指针
+    m_nResFileBufRemain -= nPackLen; // 更新还剩多少资源文件Buf
+    m_nFileAllDataSize += nPackLen;  // 累加有多少数据，用于Log，显示文件总共有那么是数据，多少是头
+    Info.nPackDataSize = nPackLen;   // 记录该块的压缩后有大小，用于Log
 
     /**
     *@note 3. 加密
@@ -248,10 +250,61 @@ void CResPacker<File_Version_1_1>::TransformOne(
     *@note 4. 添加数据索引
     */
     TFileHead<File_Version_1_1>::TDataIndex Index;
-    Index.HashValue = OCI::HashStringEx(Info.strFileName.c_str());
     Index.dwOffset = dwDataOffset;
-    Index.dwLen = nPackLen + sizeof(DataHead);
-    m_DataIndexList.insert(Index);
+    Index.dwLen = nPackLen;
+    Index.dwRawVolumeDataLen = Info.nRawDataSize;
+    m_DataIndexList.push_back(Index);
+}
+
+template<>
+void CResPacker<File_Version_1_1>::ShowLog()
+{
+    FileInfoList::iterator Iter = m_FileInfoList.begin();
+    bool bFlag = true;
+    size_t nGroupSize = 0;
+    for ( int i = 0; Iter!= m_FileInfoList.end(); ++Iter )
+    {
+        const FileInfo& Info = *Iter;
+        if ( Info.pRawDataBuf && Info.pRawDataBuf != (BYTE*)Invaild_Pointer )
+        { 
+            ++i;
+            if ( i != 1 )
+            {
+                cout << "}\nGroupSize = " 
+                    << nGroupSize + Info.nRawDataSize << endl;
+                nGroupSize = 0;
+            }
+
+            nGroupSize = Info.nRawDataSize;
+            cout << '[' << i << "] = {" 
+                 << Info.strFileName.c_str() << "; ";
+           
+            bFlag = true;
+        }
+        else
+        {
+            nGroupSize += Info.nRawDataSize;
+            cout << Info.strFileName.c_str() << "; ";
+        }
+    }
+    cout << "}\nGroupSize = " << nGroupSize << endl;
+
+    typedef FileHead::TDataIndex DataIndex;
+    DataIndexList<File_Version_1_1>::iterator iter = m_DataIndexList.begin();
+    for ( int i = 1; iter!= m_DataIndexList.end(); ++iter,++i )
+    {
+        const DataIndex& Index = *iter;
+        cout << '[' << i << "] " 
+             << Index.dwRawVolumeDataLen << "-->"
+             << Index.dwLen << "   Ratio=" 
+             << Index.dwLen*100.0/Index.dwRawVolumeDataLen
+             << '%' << endl;
+        
+    }
+    cout << "File Head size=" 
+         << Util::GetFileHeadSize<File_Version_1_1>(m_DataIndexList.size())
+         << "\n All Data size = " << DWORD(m_pResFileBufNow- m_pResFileBuf)
+         << "\n Data size = " << m_nFileAllDataSize << endl;  
 }
 
 }

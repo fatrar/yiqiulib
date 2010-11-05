@@ -155,6 +155,10 @@ API_EXPORT IResReader* CreateMemResReader(
 */
 API_EXPORT void DestroyResReader(IResReader*& pResReader);
 
+
+API_EXPORT int IsNeedUnpack(const char* pResFilePath);
+API_EXPORT bool UnpackFile(const char* pResFilePath);
+
 /** IResReader
 *@ } 
 */

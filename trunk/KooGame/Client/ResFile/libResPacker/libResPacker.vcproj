@@ -235,6 +235,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Common\inc\ResFileUtil.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\ResPacker.h"
 				>
 			</File>

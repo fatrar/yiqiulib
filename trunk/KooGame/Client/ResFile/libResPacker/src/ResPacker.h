@@ -33,7 +33,7 @@ template<DWORD Version> class DataIndexList;
 template<> class DataIndexList<File_Version_1_0> :
     public set<TFileHead<File_Version_1_0>::TDataIndex>{};
 template<> class DataIndexList<File_Version_1_1> :
-    public set<TFileHead<File_Version_1_1>::TDataIndex>{};
+    public list<TFileHead<File_Version_1_1>::TDataIndex>{};
 
 
 template<DWORD Version>
@@ -84,6 +84,7 @@ protected:
 
     typedef list<FileInfo> FileInfoList;
     typedef TFileHead<Version> FileHead;
+    typedef TDataHead<Version> DataHead;
 
 protected:
     static unsigned int WINAPI DataTransform(void* p)
@@ -100,6 +101,9 @@ protected:
     void DoWrite(const char* pPackFilePath);
 
     void TransformOne(FileInfo& Info);
+    inline void MakePath(
+        const string& strFileName,
+        string& strFilePath);
 
     // Encrypt
 protected:
@@ -157,13 +161,13 @@ private:
     // Thread
     //
     HANDLE m_hTransThread;
-    enum eReadEvent {
-        ReadSome_Event,
-        ReadFinsih_Event,
-        ReadEvent_Count,
+    size_t m_nThreadID;
+    enum Thread_Msg_Def {
+        Msg_Read_Some = WM_USER + 1,
+        Msg_Just_Test,  
+        Msg_Read_Finsih,
     };
-    HANDLE m_hReadEvent[ReadEvent_Count];
-
+    
     BYTE* m_pRawFileBuf;
     size_t m_nRawFileBufUse;
 
@@ -171,8 +175,9 @@ private:
     BYTE* m_pResFileBufNow;
     size_t m_nResFileBufRemain;
 
-    size_t m_nRawAllDataSize;
+    size_t m_nFileAllDataSize;  // 记录压缩之后的数据总大小
 
+    size_t m_nIndexCount;
     size_t m_nVolumeSize;
     bool m_bIsExistFileName;
     size_t m_nFileNameSize;

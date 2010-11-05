@@ -118,7 +118,7 @@ public:
 
     BOOL OpenByWrite(
         FString pFileName,
-        CreateFlags nCreateFlags = modeOpenAlway,
+        CreateFlags nCreateFlags = modeCreate,
         ShareFlags nShareFlags = shareDenyAll );
 	
     inline BOOL IsOpen(){return NULL != m_hFile;}

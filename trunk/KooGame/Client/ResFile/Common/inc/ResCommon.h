@@ -38,11 +38,40 @@ typedef unsigned char BYTE;
 
 #define NULL 0
 
-namespace Util
-{
+namespace Util{};
 
+#define _MakeDWORD(a,b,c,d) ((a<<24)|(b<<16)|(c<<8)|(d))
+#define _MakeFileVersion(year,month,day) ((year<<16)|(month<<8)|(day))
+
+enum
+{
+    Res_File_Format_Flag = _MakeDWORD('R','e','c','P'),
+    Patch_File_Format_Flag = _MakeDWORD('R','P','a','t'),
+    File_Version_1_0 = _MakeFileVersion(2010,9,28),  // 手机原生支持的格式
+    File_Version_1_1 = _MakeFileVersion(2010,11,1),  // 加入数据分卷方式，主要用于程序，
+    // 在安装到手机后，手机需要转成File_Version_1_0
+
+    // example:
+    // File_Version_2_0 = _MakeFileVersion(2011,9,28),
+
+    Invaild_Pos = -1,
+    Default_Encrypt_Len = 32,
 };
 
+enum ResCodeDef
+{
+    No_Error = 0,
+    Input_Param_Error,
+    File_Can_Not_Open,
+    File_Read_Failed,
+    File_Format_Error,
+
+
+    Is_Version_1_0 = File_Version_1_0,
+    Is_Version_1_1 = File_Version_1_1,
+    Is_Unpacked_File = Is_Version_1_0,
+    Is_Packed_File = Is_Version_1_1,
+};
 
 };
 
