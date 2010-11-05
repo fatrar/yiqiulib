@@ -27,6 +27,60 @@ namespace ResFile
 {
 
 template class CResFileReader<File_Version_1_0>;
+template class CResFileReader<File_Version_1_1>;
+
+int IsNeedUnpack(const char* pResFilePath)
+{
+    TFileHeadBase HeadBase;
+    ResCodeDef Code = Util::GetFileBaseHead(pResFilePath, HeadBase);
+    if ( Code != No_Error )
+    {
+        return Code;
+    }
+    
+    switch (HeadBase.Version)
+    {
+    case File_Version_1_0:
+        return Is_Unpacked_File;
+    case File_Version_1_1:
+        return Is_Packed_File;
+    default:
+        return File_Format_Error;
+    }
+}
+
+bool UnpackFile(const char* pResFilePath)
+{
+    TFileHeadBase HeadBase;
+    FileSystem::CFile File;
+    ResCodeDef Code = Util::GetFileBaseHead(pResFilePath, HeadBase, File);
+    if ( Code != No_Error ||
+         HeadBase.dwFileCount == 0)
+    {
+        return false;
+    }
+
+    switch (HeadBase.Version)
+    {
+    case File_Version_1_0:
+        return true;
+    case File_Version_1_1:
+        break;
+    default:
+        return false;
+    }
+
+    typedef TFileHead<File_Version_1_0> FileHead0;
+    typedef TFileHead<File_Version_1_1> FileHead1;
+
+    FileHead1* pHead1 = (FileHead1*)new char[HeadBase.dwSize];
+    memcpy(pHead1, &HeadBase, sizeof(HeadBase));
+    char* pBuf = (char*)pHead1 + sizeof(TFileHeadBase);
+    File.Read(pBuf, HeadBase.dwSize-sizeof(TFileHeadBase));
+
+    return true;
+}
+
 
 IResReader* CreateResFileReader( const char* pResFilePath )
 {
