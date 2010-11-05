@@ -18,8 +18,7 @@
 #include "StdAfx.h"
 #include "ResPacker.h"
 //#include <assert.h>
-#include "ResPacker_1_0.cpp"
-#include "ResPacker_1_1.cpp"
+
 
 namespace ResFile
 {
@@ -37,7 +36,8 @@ inline void CopyParam(T& TParam, void* pParam)
 }
 
 IResPacker* CreateResPacker( 
-   const char* pResFlodPath, 
+    DWORD Version,
+    const char* pResFlodPath, 
     eEncryptAlgo eAlgo,
     BYTE (&szKey)[8],
     eCompressAlgo cAlgo )
@@ -47,9 +47,19 @@ IResPacker* CreateResPacker(
         pResFlodPath = "";
     }
     
-    return new CResPacker<File_Version_1_0>(
-        pResFlodPath, 
-        eAlgo,szKey, cAlgo );
+    switch ( Version )
+    {
+    case File_Version_1_0:
+        return new CResPacker<File_Version_1_0>(
+            pResFlodPath, 
+            eAlgo,szKey, cAlgo );
+    case File_Version_1_1:
+        return new CResPacker<File_Version_1_1>(
+            pResFlodPath, 
+            eAlgo,szKey, cAlgo );
+    default:
+    	return NULL;
+    }
 }
 
 void DestroyResPacker( IResPacker*& pResPacker )
@@ -66,9 +76,10 @@ CResPacker<Version>::CResPacker(
     : m_strResFold(pResFlodPath)
     , m_eAlgo(eAlgo)
     , m_cAlgo(cAlgo)
-    , m_nRawAllDataSize(0)
+    , m_nFileAllDataSize(0)
     , m_nFileNameSize(0)
     , m_pFileNameBuf(NULL)
+    , m_nIndexCount(0)
 {
     memcpy(m_szKey, szKey, 8);
 }
@@ -113,38 +124,32 @@ void CResPacker<Version>::MakeFile(
 template<DWORD Version>
 unsigned int CResPacker<Version>::DataTransform()
 {
-    FileInfoList::iterator iter = m_FileInfoList.begin();
-    volatile BOOL bLoop = TRUE;
-    while(bLoop)
-    {
-        DWORD dwRc = WaitForMultipleObjects(
-            ReadEvent_Count, m_hReadEvent, FALSE, INFINITE);
-        switch (dwRc)
+    MSG msg;
+    PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+    while(1)
+    {     
+        BOOL bRc = GetMessage(
+            &msg, HWND(-1), 
+            Msg_Read_Some, Msg_Read_Finsih);
+        if ( !bRc )
         {
-        case WAIT_ABANDONED: 
-        case WAIT_FAILED:
-        case WAIT_TIMEOUT:
-            break;	
-
-        case WAIT_OBJECT_0 + ReadSome_Event:
-        case WAIT_OBJECT_0 + ReadFinsih_Event:
-            for ( ; iter!= m_FileInfoList.end() && iter->pRawDataBuf != NULL; ++iter )
-            {
-                if ( iter->pRawDataBuf != Invaild_Pointer )
-                {
-                    TransformOne(*iter);
-                }
-            }
-    	   
-            if ( dwRc == WAIT_OBJECT_0 + ReadFinsih_Event )
-            {
-                bLoop = FALSE;
-            }
+            DWORD dwError = GetLastError();
+            goto end; // 是发WM_QUIT
+        }
+   
+        switch(msg.message)
+        { 
+        case Msg_Read_Some:
+            TransformOne(*(FileInfo*)msg.wParam);
             break;
-        default:
-    	    break;
+        case Msg_Just_Test:
+            break;   
+        case Msg_Read_Finsih:
+            goto end;
         }
     }
+
+end:
     return 0;
 }
 
@@ -170,14 +175,20 @@ void CResPacker<Version>::Init()
         InitFileName();
     }
 
-    for ( int i = 0; i< ReadEvent_Count; ++i )
-    {
-        m_hReadEvent[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
-    }
     m_hTransThread = (HANDLE)_beginthreadex(
         NULL, 0, 
         &CResPacker<Version>::DataTransform, this,
-        0, NULL );
+        0, &m_nThreadID );
+
+    while (1)
+    {
+        if ( PostThreadMessage(m_nThreadID, Msg_Just_Test, 0, 0) )
+        {
+            break;
+        }
+
+        Sleep(1);
+    }
 }
 
 template<DWORD Version>
@@ -187,154 +198,28 @@ void CResPacker<Version>::Unit()
     safeDeleteArray(m_pResFileBuf);
     safeDeleteArray(m_pFileNameBuf);
 
-    for ( int i = 0; i< ReadEvent_Count; ++i )
-    {
-        CloseHandle(m_hReadEvent[i]);
-    }
     CloseHandle(m_hTransThread);
 }
 
-//template<>
-//void CResPacker<File_Version_1_0>::DoRead()
-//{
-//    BYTE* pRawFileBufNow = m_pRawFileBuf;
-//    size_t nRawFileBufRemain = Raw_File_Buf;
-//    int nReadCount = 0;
-//    string strFilePath;
-//
-//    FileInfoList::iterator iter = m_FileInfoList.begin();
-//    if ( m_bIsExistFileName )
-//    {
-//        ++iter; // 第一个为已经读好数据的文件名
-//    }
-//    for ( ; iter!= m_FileInfoList.end(); ++iter )
-//    {
-//        FileInfo& TmpFileInfo = *iter;
-//
-//        /**
-//        *@note 1. Get Raw Res File Path
-//        */
-//        string& strTmpPath = TmpFileInfo.strFileName;
-//        if ( m_strResFold.size() == 0 )
-//        {
-//            strFilePath = strTmpPath;
-//        }
-//        else if ( m_strResFold[m_strResFold.size()-1] == '\\' ||
-//                  m_strResFold[m_strResFold.size()-1] == '/' )
-//        {
-//            strFilePath = m_strResFold + strTmpPath;
-//        }
-//        else
-//        {
-//            strFilePath = m_strResFold + "/" + strTmpPath;
-//        }
-//        
-//        /**
-//        *@note 2. Open File And Test File Exist And Buffer is enough
-//        */
-//        FileSystem::CFile Reader;
-//        if ( ! Reader.OpenByRead(strFilePath.c_str()) )
-//        {
-//            g_strErr =  "Can`t Open File:";
-//            g_strErr += strFilePath;
-//            throw g_strErr.c_str();
-//        }
-//        FileSystem::size_t nFileSize = Reader.GetLength();
-//        if ( nFileSize == 0 ||
-//             nFileSize > nRawFileBufRemain )
-//        {
-//            throw "Tatal File Size obove 128MB or File Size is 0";
-//        }
-//
-//        /**
-//        *@note 3. Read All File Data To Buffer 
-//        */
-//        FileSystem::size_t nFileBufSize = nRawFileBufRemain;
-//        if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileBufSize) )
-//        {
-//            g_strErr = "Read File Failed at File " + strFilePath;
-//            throw g_strErr.c_str();
-//        }
-//
-//        /**
-//        *@note 4. Set Info for Data Compress and Save To File
-//        */
-//        TmpFileInfo.pRawDataBuf = pRawFileBufNow;
-//        TmpFileInfo.nRawDataSize = nFileSize;
-//
-//        /**
-//        *@note 5. Refresh Buffer Point and Buffer Remain size
-//        */
-//        pRawFileBufNow += nFileSize;
-//        nRawFileBufRemain -= nFileSize;
-//
-//        /**
-//        *@note 6. Test is Notify DataTransform Thread of Compress Data
-//        */
-//        ++nReadCount;
-//        if ( nReadCount == File_Read_Flag )
-//        {
-//            SetEvent(m_hReadEvent[ReadSome_Event]);
-//            nReadCount = 0;
-//        }
-//    }
-//
-//    /**
-//    *@note Notify DataTransform Thread of Raw Res File Data Read Finish
-//    */
-//    SetEvent(m_hReadEvent[ReadFinsih_Event]);
-//}
-//
-//template<>
-//void CResPacker<File_Version_1_0>::DoWrite(
-//    const char* pPackFilePath )
-//{
-//    /**
-//    *@note 1. Create File
-//    */
-//    FileSystem::CFile Writer;
-//    Writer.OpenByWrite(pPackFilePath);
-//    if ( !Writer.IsOpen() )
-//    {
-//        g_strErr = string("Can`t Open ") + pPackFilePath;
-//        throw g_strErr.c_str();
-//    }
-//
-//    /**
-//    *@note 2. Write File Head 
-//    */
-//    size_t nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
-//        Writer, m_FileInfoList.size(),
-//        m_bIsExistFileName, m_eAlgo, m_szKey );
-//       
-//    // 这个部分我暂时不用
-//    DWORD dwRawDataMem[TDataMemInfo::Max_Num] = {0};
-//    DWORD dwCompressDataMem[TDataMemInfo::Max_Num] = {0};
-//    Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
-//    Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
-//
-//    typedef TFileHead<File_Version_1_0>::TDataIndex DataIndex;
-//    DataIndexList<File_Version_1_0>::iterator iter;
-//    for ( iter = m_DataIndexList.begin();
-//          iter!= m_DataIndexList.end();
-//          ++iter )
-//    {
-//        /**
-//        *@note 原先记录只是数据本身之间的，实际的需要加文件头
-//        */
-//        DataIndex& Index = *iter;
-//        Index.dwOffset += nHeadSize;
-//        Writer.Write((void*)&Index, sizeof(DataIndex));
-//    }
-//
-//    /**
-//    *@note 3. Write File Data
-//    */
-//    size_t nResDataSize = Res_File_Buf - m_nResFileBufRemain;
-//    Writer.Write(m_pResFileBuf, nResDataSize);
-//
-//    Writer.Close();
-//}
+template<DWORD Version>
+void CResPacker<Version>::MakePath(
+    const string& strFileName,
+    string& strFilePath)
+{
+    if ( m_strResFold.size() == 0 )
+    {
+        strFilePath = strFileName;
+    }
+    else if ( m_strResFold[m_strResFold.size()-1] == '\\' ||
+        m_strResFold[m_strResFold.size()-1] == '/' )
+    {
+        strFilePath = m_strResFold + strFileName;
+    }
+    else
+    {
+        strFilePath = m_strResFold + "/" + strFileName;
+    }
+}
 
 template<DWORD Version>
 int CResPacker<Version>::LzmaCompress(
@@ -373,27 +258,12 @@ void CResPacker<Version>::XorEncrypt(
     }
 }
 
-template<DWORD Version>
-void CResPacker<Version>::ShowLog()
-{
-    FileInfoList::iterator iter = m_FileInfoList.begin();
-    for ( int i = 1; iter!= m_FileInfoList.end(); ++iter,++i )
-    {
-        const FileInfo& Info = *iter;
-        cout << '[' << i << "] " 
-            << Info.strFileName.c_str() << " : " 
-            << Info.nRawDataSize << "-->"
-            << Info.nPackDataSize << "   Ratio=" 
-            << Info.nPackDataSize*100.0/Info.nRawDataSize << '%' << endl;
-    }
-    cout << "File Head size=" 
-        << Util::GetFileHeadSize<File_Version_1_0>(m_DataIndexList.size())
-        << "\n All Data size = " << DWORD(m_pResFileBufNow- m_pResFileBuf)
-        << "\n Data size = " << m_nRawAllDataSize << endl;  
-}
+
 
 }
 
+#include "ResPacker_1_0.cpp"
+#include "ResPacker_1_1.cpp"
 
 
 // End of file

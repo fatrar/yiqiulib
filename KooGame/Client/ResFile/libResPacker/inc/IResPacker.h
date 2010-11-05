@@ -23,7 +23,7 @@ namespace ResFile
 {
 
 /**
-*@note 资源打包者接口定义
+*@note 资源打包者接口定义GetFileHeadSize
 */
 struct IResPacker
 {
@@ -54,6 +54,7 @@ struct IResPacker
 *@param ecParam 默认加密算法参数
 */
 IResPacker* CreateResPacker(
+    DWORD Version,
     const char* pResFlodPath, 
     eEncryptAlgo eAlgo,
     BYTE (&szKey)[8],

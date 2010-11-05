@@ -22,24 +22,6 @@
 namespace ResFile
 {
 
-#define _MakeDWORD(a,b,c,d) ((a<<24)|(b<<16)|(c<<8)|(d))
-#define _MakeFileVersion(year,month,day) ((year<<16)|(month<<8)|(day))
-
-enum
-{
-	Res_File_Format_Flag = _MakeDWORD('R','e','c','P'),
-    Patch_File_Format_Flag = _MakeDWORD('R','P','a','t'),
-	File_Version_1_0 = _MakeFileVersion(2010,9,28),  // 手机原生支持的格式
-    File_Version_1_1 = _MakeFileVersion(2010,11,1),  // 加入数据分卷方式，主要用于程序，
-                                                     // 在安装到手机后，手机需要转成File_Version_1_0
-   
-    // example:
-    // File_Version_2_0 = _MakeFileVersion(2011,9,28),
-
-    Invaild_Pos = -1,
-    Default_Encrypt_Len = 32,
-};
-
 template<DWORD Version> struct TFileHead;
 template<DWORD Version> struct TDataHead;
 
@@ -164,9 +146,10 @@ struct TFileHead<File_Version_1_0> :
 template<>
 struct TDataHead<File_Version_1_0>
 {
-    DWORD dwRawDataLen:26;  // 64MB-1
+    DWORD dwRawDataLen:25;  // 64MB-1
     DWORD nCompressAlgo:3;  // 0-7
     DWORD nCompressLevel:3; // 0-7
+    DWORD nIsDecrypt:1;
 };
 /** File Version 1.0 Define
 *@ } 
@@ -190,6 +173,9 @@ struct TFileHead<File_Version_1_1> :
     }DataIndex[1];
 };
 
+/**
+*@note 这个头是指1卷中，每个数据前的头，本身一卷的数据是没有头的
+*/
 template<>
 struct TDataHead<File_Version_1_1>
 {

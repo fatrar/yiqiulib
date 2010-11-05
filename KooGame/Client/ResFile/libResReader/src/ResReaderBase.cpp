@@ -61,8 +61,8 @@ ResFile::size_t CResReaderBase<File_Version_1_0>::GetDataLen(
         return 0;
     }
 
-    const FileHead::TDataIndex* DataIndex = &m_pFileHead->DataIndex[0];
-    DWORD dwDataPos = DataIndex[nPos].Info.dwDataOffset;
+    const FileHead::TDataIndex& DataIndex = m_pFileHead->DataIndex[nPos];
+    DWORD dwDataPos = DataIndex.dwOffset;
 
     DataHead Head;
     GetDataHead(dwDataPos, Head); 
@@ -94,9 +94,9 @@ bool CResReaderBase<File_Version_1_0>::GetData(
     /**
     *@note 取文件的位置及数据大小
     */
-    const FileHead::TDataIndex* DataIndex = &m_pFileHead->DataIndex[0];
-    DWORD dwDataOffset = DataIndex[nPos].Info.dwDataOffset;
-    DWORD dwDataLen = DataIndex[nPos].Info.dwDataLen;
+    const FileHead::TDataIndex& DataIndex = m_pFileHead->DataIndex[nPos];
+    DWORD dwDataOffset = DataIndex.dwOffset;
+    DWORD dwDataLen = DataIndex.dwLen;
 
     /**
     *@note 移动文件指针并读取数据（包括文件头及文件数据）
@@ -104,24 +104,23 @@ bool CResReaderBase<File_Version_1_0>::GetData(
     void* pBuf = NULL;
     bool bisRef;
     ReadData(dwDataOffset, pBuf, dwDataLen, bisRef);
-    //m_ResFile->Seek(dwDataOffset);
-    //void* pBuf = GetFileReadBuf(dwDataLen);
-    //m_ResFile->Read(pBuf, dwDataLen);
 
     /**
     *@note 解密数据,解密的数据我是放在头后面
     */
     DataHead* pTmpDataHead = (DataHead*)pBuf;
     void* pEncryptBuf = (void*)(pTmpDataHead + 1);
-    assert(pTmpDataHead->nEncryptAlgo < Encrypt_Count);
-    DecryptFn pDecryptFn = m_DecryptFn[pTmpDataHead->nEncryptAlgo];
-    (this->*pDecryptFn)(
-        pEncryptBuf, pTmpDataHead->nDataEncryptLen,
-        (EncryptParam&)pTmpDataHead->eParam );
-    if ( bisRef )
+    if ( 0 == pTmpDataHead->nIsDecrypt )
     {
-        pTmpDataHead->nEncryptAlgo = Raw_E_Algo;
-    }
+        DecryptFn pDecryptFn = m_DecryptFn[m_pFileHead->eAlgo];
+        (this->*pDecryptFn)(
+            pEncryptBuf, dwDataLen-sizeof(DataHead) );
+        if ( bisRef )
+        {
+            // 这个地方有问题，当数据被解密，会被再解密
+            pTmpDataHead->nIsDecrypt = 1;
+        }
+    } 
 
     /**
     *@note 解压数据
@@ -219,10 +218,10 @@ void CResReaderBase<Version>::Release(
 
 template<DWORD Version>
 void ResFile::CResReaderBase<Version>::XorDecrypt(
-    void* pIn, size_t nIn,const EncryptParam& p )
+    void* pIn, size_t nIn )
 {
     assert(nIn == 32);
-    QWORD pKey = p.qwEncryptParam;
+    QWORD pKey = m_pFileHead->dwKey;
     QWORD* pStart = (QWORD*)pIn;  
     for ( int i = 0 ; i < 4; ++i )  // 4 = 32 / sizeof(QWORD)
     {

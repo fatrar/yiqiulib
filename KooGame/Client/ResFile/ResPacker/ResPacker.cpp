@@ -4,15 +4,14 @@
 #include "stdafx.h"
 
 #define _Command_Help_Note "\nUse command like: \"ResPacker.exe ?\" can Get help!"
-#define _Command_Help "xx is your set value. '[]' is not must set.\n"\
+#define _Command_Help "\n xx is your set value. '[]' is not must set.\n"\
     "'ResFileList=xx' xx is a Path.\n"\
     "'PackFilePath=xx' xx is a Path.\n"\
     "'[ResFlod=xx]'  xx is a Path.\n"\
-    "'[DefcAlgo=xx]' xx is must Lzma now!\n"\
-    "'[DefcParam=xx]' xx is must between of Fast,Normal,High,Auto.\n"\
-    "'[DefeAlgo=xx]' xx is must Raw Now!\n"\
-    "'[DefeParam=xx]' xx is must <= 8 char.\n"\
-    "'[FileNamePos=xx]' xx is must between of No,Out,BebindHead,FileTail.\n"
+    "'[cAlgo=xx]' xx is must Lzma now!\n"\
+    "'[eAlgo=xx]' xx is must Raw or Xor Now!\n"\
+    "'[eKey=xx]' xx is must <= 8 char.\n"\
+    "'[ExistFileName=xx]' xx is 0 or 1.\n"
 
 namespace ICommand
 {
@@ -26,20 +25,23 @@ public:
         : m_cAlgo(Lzma_C_Algo)
         , m_cParam(Compress_Normal)
         , m_eAlgo(Raw_E_Algo)
-        , m_eFileNamePos(Not_Exist)
-        , m_strResPackFilePath("C:\\ResPacker.pak"){}
+        , m_bIsExistFileName(false)
+        , m_strResPackFilePath("C:\\ResPacker.pak")
+        , m_nVolumeSize(512)  // default 512KB
+    {
+        memcpy(m_szEncryptPsw, "_Fg87+.?", 8);
+    }
 
 protected:
     enum CmdList
     {
         Res_Flod_Path,
         Res_File_List_Path,
-        Def_cAlgo,
-        Def_cParam,
-        Def_eAlgo,
-        Def_eParam,
+        e_cAlgo,
+        e_eAlgo,
+        e_eKey,
         Res_Pack_File_Path,
-        File_Name_Pos,
+        Exist_File_Name,
         CmdList_Count,
     };
 
@@ -79,7 +81,7 @@ public:
             m_strFileListPath = pParam;  
             return true;
         }
-        case Def_cAlgo:
+        case e_cAlgo:
         {	
             if ( 0 == stricmp(pParam, "Raw") ){m_cAlgo = Raw_C_Algo;}
             else if( 0 == stricmp(pParam, "Zip") ){m_cAlgo = Zip_C_Algo;}
@@ -87,16 +89,7 @@ public:
             else {return false;}
             return true;
         }
-        case Def_cParam:
-        {	
-            if ( 0 == stricmp(pParam, "Fast") ){m_cParam = Unpack_Fast;}
-            else if( 0 == stricmp(pParam, "Normal") ){m_cParam = Compress_Normal;}
-            else if( 0 == stricmp(pParam, "High") ){m_cParam = Compress_High;}
-            else if( 0 == stricmp(pParam, "Auto") ){m_cParam = Compress_Auto;}
-            else {return false;}
-            return true;
-        }
-        case Def_eAlgo:
+        case e_eAlgo:
         {	
             if ( 0 == stricmp(pParam, "Raw") ){m_eAlgo = Raw_E_Algo;}
             else if( 0 == stricmp(pParam, "Xor") ){m_eAlgo = Xor_E_Algo;}
@@ -104,14 +97,14 @@ public:
             else {return false;}
             return true;
         }
-        case Def_eParam:
+        case e_eKey:
         {
             if ( strlen(pParam) >= 8 )
             {
                 cout << "Encrypt Psw is Too long, max = 8" << endl;
                 return false;
             }
-            m_strEncryptPsw = pParam;
+            strcpy((char*)m_szEncryptPsw, pParam);
             return true;
         }
         case Res_Pack_File_Path:
@@ -119,12 +112,10 @@ public:
             m_strResPackFilePath = pParam;
             return true;
         }
-        case File_Name_Pos:
+        case Exist_File_Name:
         {
-            if ( 0 == stricmp(pParam, "No") ){m_eFileNamePos = Not_Exist;}
-            else if( 0 == stricmp(pParam, "Out") ){m_eFileNamePos = In_Out;}
-            else if( 0 == stricmp(pParam, "BebindHead") ){m_eFileNamePos = Bebind_Head;}
-            else if( 0 == stricmp(pParam, "FileTail") ){m_eFileNamePos = File_Tail;}
+            if ( 0 == stricmp(pParam, "0") ){m_bIsExistFileName = false;}
+            else if( 0 == stricmp(pParam, "1") ){m_bIsExistFileName = true;}
             else {return false;}
         }
         default:
@@ -141,12 +132,9 @@ public:
             return false;
         }
 
-        TCompressParam<File_Version_1_0> cParam(m_cParam);
-        TEncryptParam<File_Version_1_0> eParam;
-        memcpy(eParam.cEncryptParam, m_strEncryptPsw.c_str(), m_strEncryptPsw.length());
         IResPacker* pResPacker = ResFile::CreateResPacker(
-            m_strResFoldPath.c_str(), 
-            m_cAlgo, &cParam, m_eAlgo, &eParam);
+            File_Version_1_1, m_strResFoldPath.c_str(),
+            m_eAlgo, m_szEncryptPsw, m_cAlgo );
         if ( !pResPacker )
         {
             cout << "Can`t Create ResPacker, maybe is some Command Param Invaild!"
@@ -156,7 +144,10 @@ public:
 
         ReadResFileListAndSet(pResPacker);
 
-        pResPacker->MakeFile(m_strResPackFilePath.c_str(), m_eFileNamePos);
+        pResPacker->MakeFile(
+            m_strResPackFilePath.c_str(),
+            m_nVolumeSize<<10,
+            m_bIsExistFileName);
         ResFile::DestroyResPacker(pResPacker);
         return true;
     }
@@ -203,22 +194,22 @@ private:
     eCompressAlgo m_cAlgo;
     eCompressParam m_cParam;
     eEncryptAlgo m_eAlgo;
-    string m_strEncryptPsw;
+    BYTE m_szEncryptPsw[8];
 
     string m_strResPackFilePath;
-    eFileNamePos m_eFileNamePos;
+    bool m_bIsExistFileName;
+    ResFile::size_t m_nVolumeSize;
 };
 
 const char* CResPackerCmdExecor::s_CommandName[] = 
 {
     "ResFlod",
     "ResFileList",
-    "DefcAlgo",
-    "DefcParam",
-    "DefeAlgo",
-    "DefeParam",
+    "cAlgo",
+    "eAlgo",
+    "eKey",
     "PackFilePath",
-    "FileNamePos",
+    "ExistFileName",
 };
 
 }
