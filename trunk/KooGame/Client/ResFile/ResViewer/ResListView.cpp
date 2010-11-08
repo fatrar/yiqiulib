@@ -144,8 +144,8 @@ void CResListView::AddAllData()
         List.InsertItem(i, strName);
 
         strHashValue.Format("%8x-%8x", 
-            Iter->m_HashValue.TValue.dwValue[0],
-            Iter->m_HashValue.TValue.dwValue[1]);
+            Iter->m_HashValue.dwValue[0],
+            Iter->m_HashValue.dwValue[1]);
         List.SetItemText(i, Col_HashValue, strHashValue);
 
         strDataPackLen.Format("%d", Iter->m_dwPackDataLen);

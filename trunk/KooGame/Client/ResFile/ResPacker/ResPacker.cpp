@@ -133,7 +133,7 @@ public:
         }
 
         IResPacker* pResPacker = ResFile::CreateResPacker(
-            File_Version_1_1, m_strResFoldPath.c_str(),
+            File_Version_1_0, m_strResFoldPath.c_str(),
             m_eAlgo, m_szEncryptPsw, m_cAlgo );
         if ( !pResPacker )
         {
@@ -214,10 +214,33 @@ const char* CResPackerCmdExecor::s_CommandName[] =
 
 }
 
+typedef unsigned int DWORD;
+typedef unsigned __int64 QWORD;
+
+union UHashValue
+{
+    DWORD dwValue[2];
+    QWORD qwValue;
+
+    inline bool operator ==(const UHashValue& a) const {return qwValue==a.qwValue;}
+    inline bool operator > (const UHashValue& a) const {return qwValue>a.qwValue;}
+    inline bool operator < (const UHashValue& a) const {return qwValue<a.qwValue;}
+    inline void operator = (const QWORD& V){qwValue = V;}
+    UHashValue(QWORD V = 0){qwValue = V;}
+};
+
+#pragma pack(push)
+#pragma pack(4)
+struct TDataHead
+{
+    UHashValue HashValue;
+    DWORD dwRawDataLen;
+};
+#pragma pack(pop)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
+    int i = sizeof(TDataHead);
     //__asm {int 3}
     if ( argc == 2 && argv[1][0] == '?' )
     {

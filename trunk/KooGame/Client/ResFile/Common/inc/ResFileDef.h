@@ -17,7 +17,11 @@
 ***************************************************************************H*/
 #ifndef _RESFILEDEF_H_2010_9
 #define _RESFILEDEF_H_2010_9
+#pragma pack(push)
+#pragma pack(4)
 #include "ResCommon.h"
+
+
 
 namespace ResFile
 {
@@ -165,6 +169,7 @@ struct TFileHead<File_Version_1_1> :
 {
     DWORD dwRealFileCount;  // 如果不分包，文件的个数，dwFileCount为分卷之后的卷数
     DWORD dwMaxVolumeSize;  // 分卷，单卷的最大值
+    //DWORD nCompressLevel:3;
 
     struct TDataIndex
     {
@@ -188,6 +193,7 @@ struct TDataHead<File_Version_1_1>
 
 }
 
+#pragma pack(pop)
 
 #endif  // _RESFILEDEF_H_2010_
 

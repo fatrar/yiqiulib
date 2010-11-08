@@ -82,8 +82,8 @@ void CResPacker<File_Version_1_0>::DoRead()
         /**
         *@note 3. Read All File Data To Buffer 
         */
-        FileSystem::size_t nFileBufSize = nRawFileBufRemain;
-        if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileBufSize) )
+        //FileSystem::size_t nFileBufSize = nRawFileBufRemain;
+        if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileSize) )
         {
             g_strErr = "Read File Failed at File " + strFilePath;
             throw g_strErr.c_str();

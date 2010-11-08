@@ -78,6 +78,7 @@ void CResPacker<File_Version_1_1>::DoRead()
         }
         FileSystem::size_t nFileSize = Reader.GetLength();
         size_t nGroupSize = nFileSize + sizeof(DataHead); // Head+Data
+        size_t nDataHeadLen = sizeof(TDataHead<File_Version_1_1>);
         if ( nFileSize == 0 ||
              nGroupSize > nRawFileBufRemain )
         {
@@ -128,8 +129,8 @@ void CResPacker<File_Version_1_1>::DoRead()
         /**
         *@note 4. Read All File Data To Buffer，填数据 
         */
-        FileSystem::size_t nFileBufSize = nRawFileBufRemain;
-        if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileBufSize) )
+        //FileSystem::size_t nFileBufSize = nRawFileBufRemain;
+        if ( nFileSize != Reader.Read((void*)pRawFileBufNow, nFileSize) )
         {
             g_strErr = "Read File Failed at File " + strFilePath;
             throw g_strErr.c_str();
@@ -144,11 +145,6 @@ void CResPacker<File_Version_1_1>::DoRead()
 
     PostThreadMessage(
         m_nThreadID, Msg_Read_Some, (WPARAM)pSendInfo, 0);
-
-    // 达到1卷的大小，用此时的iter保存数据
-    //FileInfo& TmpFileInfo = *(m_FileInfoList.rbegin());
-    //TmpFileInfo.pRawDataBuf = pVolume;
-    //TmpFileInfo.nRawDataSize = nVolumeSizeNow;
 
     /**
     *@note Notify DataTransform Thread of Raw Res File Data Read Finish
