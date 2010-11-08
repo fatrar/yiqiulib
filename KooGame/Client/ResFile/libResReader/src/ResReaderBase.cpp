@@ -209,7 +209,7 @@ void CResReaderBase<Version>::Release(
         break;
     case Reader_Static_Buf:
     case Reader_Allocate:
-        delete[] (char*)pUnPackDataInfo->Ptr();
+        safeDeleteArray(pUnPackDataInfo->m_pData);
     default:
         break;
     }

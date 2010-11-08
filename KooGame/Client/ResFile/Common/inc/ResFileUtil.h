@@ -17,6 +17,7 @@
 ***************************************************************************H*/
 #ifndef _RESFILEUTIL_H_2010_10
 #define _RESFILEUTIL_H_2010_10
+#include "Common.h"
 #include "ResFileDef.h"
 #include "FileSystem.h"
 

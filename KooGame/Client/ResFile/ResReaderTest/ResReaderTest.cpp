@@ -9,38 +9,16 @@
 #include <fstream>
 using namespace std;
 
-class A
-{
-public:
-    int a;
-public:
-    A()
-    {
-        a = 1;
-    }
-    ~A()
-    {
-        cout << a << endl;
-        //if (a) {delete a; a = NULL;}
-    }
-};
 
 #define PatchFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Patch.pat"
 #define OldFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\data1.pak"
 
 
-union UHash
-{
-    DWORD dwValue[2];
-    ResFile::QWORD qwValue;
-};
-
 int _tmain(int argc, _TCHAR* argv[])
 {
-    UHash hash;
-    hash.dwValue[0] = 0;
-    hash.dwValue[1] = 0;
+    ResFile::UnpackFile("D:\\PackTest\\anim.pak");
 
+    /*
     ifstream Reader;
     Reader.open("D:\\dev\\KYOL_1.0\\tools\\AnimationEditor\\pak\\list_main.txt");
     if ( !Reader.is_open() )
@@ -73,11 +51,7 @@ int _tmain(int argc, _TCHAR* argv[])
     pResUpdater->Update(OldFile);
 
     delete pResUpdater;
-
-    int i = 1<< 2;
-    A* a = new A[3];
-    delete a;
-
+    */
 
 /*
     ResFile::IResReader* pResReader = 
