@@ -105,7 +105,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\Common\lzma\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_UNCOMPRESS_;_USE_IRESREADEREX_"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_UNCOMPRESS_;_USE_IRESREADEREX2_"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -203,6 +203,7 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

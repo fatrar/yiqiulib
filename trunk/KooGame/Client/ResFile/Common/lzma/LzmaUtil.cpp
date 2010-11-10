@@ -94,10 +94,10 @@ ISzAlloc CLzmaAlloc::g_Alloc = { CLzmaAlloc::SzAlloc, CLzmaAlloc::SzFree };
 int LzmaCompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t srcLen, 
-    unsigned int nlevel )
+    unsigned int nLevel )
 {
     CLzmaEncProps props;
-    CLzmaPropsDic::InitLzmaProps(nlevel, props);
+    CLzmaPropsDic::InitLzmaProps(nLevel, props);
     Byte outProps[LZMA_PROPS_SIZE] = {0};
     size_t outPropsSize = LZMA_PROPS_SIZE;
     return LzmaEncode(
@@ -111,16 +111,17 @@ int LzmaCompress(
 int LzmaUncompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t srcLen,
-    unsigned int nlevel )
+    unsigned int nLevel )
 {
     ELzmaStatus status;
     Byte props[LZMA_PROPS_SIZE] = {0};
-    CLzmaPropsDic::GetLzmaProps(nlevel, props);
+    CLzmaPropsDic::GetLzmaProps(nLevel, props);
     return LzmaDecode(
         dest, destLen, src, &srcLen,
         props, LZMA_PROPS_SIZE,
         LZMA_FINISH_ANY, &status, &CLzmaAlloc::g_Alloc);
 }
+
 #endif
 /*
 int Lzma2Compress(
@@ -141,5 +142,36 @@ int Lzma2Uncompress(
 */
 }
 
+#if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
+namespace ResFile
+{
 
+int Decode7z(
+    void* oData, size_t* oSize, 
+    const void* zData, size_t* zSize,
+    const BYTE* props)
+{
+    ELzmaStatus status;
+    return LzmaDecode(
+        (BYTE*)oData, oSize, (BYTE*)zData, zSize,
+        props, LZMA_PROPS_SIZE,
+        LZMA_FINISH_ANY, &status, &LzmaUtil::CLzmaAlloc::g_Alloc);
+}
+
+int Decode7z(
+    void* oData, size_t* oSize, 
+    const void* zData, size_t* zSize,
+    unsigned int nLevel )
+{
+    ELzmaStatus status;
+    Byte props[LZMA_PROPS_SIZE] = {0};
+    LzmaUtil::CLzmaPropsDic::GetLzmaProps(nLevel, props);
+    return LzmaDecode(
+        (BYTE*)oData, oSize, (BYTE*)zData, zSize,
+        props, LZMA_PROPS_SIZE,
+        LZMA_FINISH_ANY, &status, &LzmaUtil::CLzmaAlloc::g_Alloc);
+    return 0;
+}
+}
+#endif
 // End of file

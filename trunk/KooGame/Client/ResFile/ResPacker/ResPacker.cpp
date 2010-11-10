@@ -11,7 +11,8 @@
     "'[cAlgo=xx]' xx is must Lzma now!\n"\
     "'[eAlgo=xx]' xx is must Raw or Xor Now!\n"\
     "'[eKey=xx]' xx is must <= 8 char.\n"\
-    "'[ExistFileName=xx]' xx is 0 or 1.\n"
+    "'[ExistFileName=xx]' xx is 0 or 1.\n"\
+    "'[Version=xx]' xx is 1.0 or 1.1"
 
 namespace ICommand
 {
@@ -26,8 +27,9 @@ public:
         , m_cParam(Compress_Normal)
         , m_eAlgo(Raw_E_Algo)
         , m_bIsExistFileName(false)
-        , m_strResPackFilePath("C:\\ResPacker.pak")
+        , m_strResPackFilePath("ResPacker.pak")
         , m_nVolumeSize(512)  // default 512KB
+        , m_dwVersion(File_Version_1_1)
     {
         memcpy(m_szEncryptPsw, "_Fg87+.?", 8);
     }
@@ -42,6 +44,7 @@ protected:
         e_eKey,
         Res_Pack_File_Path,
         Exist_File_Name,
+        Pack_Version,
         CmdList_Count,
     };
 
@@ -117,6 +120,14 @@ public:
             if ( 0 == stricmp(pParam, "0") ){m_bIsExistFileName = false;}
             else if( 0 == stricmp(pParam, "1") ){m_bIsExistFileName = true;}
             else {return false;}
+            return true;
+        }
+        case Pack_Version:
+        {
+            if ( 0 == stricmp(pParam, "1.0") ){m_dwVersion = File_Version_1_0;}
+            else if( 0 == stricmp(pParam, "1.1") ){m_dwVersion = File_Version_1_1;}
+            else {return false;}
+            return true;
         }
         default:
         	return false;
@@ -133,7 +144,7 @@ public:
         }
 
         IResPacker* pResPacker = ResFile::CreateResPacker(
-            File_Version_1_0, m_strResFoldPath.c_str(),
+            m_dwVersion, m_strResFoldPath.c_str(),
             m_eAlgo, m_szEncryptPsw, m_cAlgo );
         if ( !pResPacker )
         {
@@ -195,6 +206,7 @@ private:
     eCompressParam m_cParam;
     eEncryptAlgo m_eAlgo;
     BYTE m_szEncryptPsw[8];
+    DWORD m_dwVersion;
 
     string m_strResPackFilePath;
     bool m_bIsExistFileName;
@@ -210,6 +222,7 @@ const char* CResPackerCmdExecor::s_CommandName[] =
     "eKey",
     "PackFilePath",
     "ExistFileName",
+    "Version",
 };
 
 }

@@ -107,7 +107,6 @@ enum eCompressParam
     Unpack_Fast,
     Compress_Normal,
     Compress_High,
-    Compress_Auto,
     CompressParam_Count,
 };
 
