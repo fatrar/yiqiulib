@@ -207,12 +207,22 @@ IResUpdater* CreateResUpdater(
     size_t nSize,
     bool bAutoDel = true);
 
+CLASS_EXPORT int Decode7z(
+    void* oData, size_t* oSize, 
+    const void* zData, size_t* zSize,
+    const BYTE* props);
+
+CLASS_EXPORT int Decode7z(
+    void* oData, size_t* oSize, 
+    const void* zData, size_t* zSize,
+    unsigned int nLevel );
+
+
 /** IResUpdater
 *@ } 
 */
 
 }
-
 
 
 

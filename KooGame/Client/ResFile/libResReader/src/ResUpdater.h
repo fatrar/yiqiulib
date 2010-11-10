@@ -37,7 +37,7 @@ public:
 protected:
     typedef TFileHead<File_Version_1_0> FileHead;
     typedef FileHead::TDataIndex DataIndex;
-    typedef TDataInfo<File_Version_1_0> DataInfo;
+    //typedef TDataInfo<File_Version_1_0> DataInfo;
 
 protected:
     void GetReserveDataIndexFromOldFile(

@@ -190,7 +190,7 @@ bool UnpackFile(const char* pResFilePath)
             DataHead0 TmpDataHead0;
             TmpDataHead0.dwRawDataLen = pDataHead1->dwRawDataLen;
             TmpDataHead0.nCompressAlgo = Raw_C_Algo;
-            TmpDataHead0.nCompressLevel = Compress_Auto;
+            TmpDataHead0.nCompressLevel = Compress_High;
             TmpDataHead0.nIsDecrypt = 0;
             File0.Write(&TmpDataHead0, sizeof(DataHead0));
             File0.Write(pData1, pDataHead1->dwRawDataLen);

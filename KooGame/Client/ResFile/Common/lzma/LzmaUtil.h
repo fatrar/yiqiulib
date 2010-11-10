@@ -19,14 +19,6 @@
 #define _LZMAUTIL_H_2010_10
 
 
-/**
-*@note  
-*@param	nLevel ²Î¿¼  
-*@param   
-*@param  
-*@param  
-*@return 
-*/
 namespace LzmaUtil
 {
 
@@ -42,14 +34,14 @@ enum
 int LzmaCompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t srcLen,
-    unsigned int nlevel );
+    unsigned int nLevel );
 #endif
 
 #if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
 int  LzmaUncompress(
     unsigned char *dest, size_t *destLen, 
     const unsigned char *src, size_t srcLen,
-    unsigned int nlevel );
+    unsigned int nLevel );
 #endif
 
 /*

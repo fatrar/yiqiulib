@@ -13,9 +13,63 @@ using namespace std;
 #define PatchFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Patch.pat"
 #define OldFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\data1.pak"
 
+template<typename T, typename T2, T2 T::*P>
+struct Operator :
+    public T
+{
+    inline bool operator ==(const T& a) const 
+    {
+        return /*__super::*/this->*P == a.*P;
+    }
+   /* inline bool operator > (const T& a) const
+    {return qwValue>a.qwValue;}
+    inline bool operator < (const T& a) const
+    {return qwValue<a.qwValue;}*/
+};
 
+// struct CTest;
+// int CTest::i;
+// 
+struct CTest {
+    int i;
+};
+
+namespace CA
+{
+enum 
+{
+    AS = 0,
+};
+
+int i = AS;
+};
+
+namespace CB
+{
+    enum 
+    {
+        AS = 1,
+    };
+
+    int i = AS;
+}
 int _tmain(int argc, _TCHAR* argv[])
 {
+
+    Operator<CTest, int, &CTest::i> t, t2;
+    t.i = 1;
+    t2.i = 2;
+    if ( t == t2 )
+    {
+        cout << "";
+    }
+
+     t2.i = 1;
+    if ( t == t2 )
+    {
+        cout << "";
+    }
+
     ResFile::UnpackFile("D:\\PackTest\\anim.pak");
 
     /*

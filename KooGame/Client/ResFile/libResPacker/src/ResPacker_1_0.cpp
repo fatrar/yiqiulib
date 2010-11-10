@@ -181,6 +181,7 @@ void CResPacker<File_Version_1_0>::TransformOne(
     pDataHead->dwRawDataLen = Info.nRawDataSize;
     pDataHead->nCompressAlgo = m_cAlgo;
     pDataHead->nCompressLevel = Compress_High;
+    pDataHead->nIsDecrypt = 0;
     m_pResFileBufNow += sizeof(DataHead);
     m_nResFileBufRemain -= sizeof(DataHead);
 
