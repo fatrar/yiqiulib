@@ -16,21 +16,15 @@ Copyright (c) Shenzhen KooGame Tech Co.,Ltd.
 *************************************************************************CPP*/
 #include "stdafx.h"
 #include "ResPatchGenerator.h"
-#include "ResFileDef.h"
 #include "ResFileUtil.h"
-
+#include "StlHelper.h"
 
 namespace ResFile
 {
 
-namespace ResPatchGenerator
-{
-typedef TFileHead<File_Version_1_0> FileHead;
-typedef FileHead::TDataIndex DataIndex;
-typedef TDataInfo<File_Version_1_0> DataInfo;
 
-#define GetFileHead(f) Util::GetFileHead<File_Version_1_0>(f)
-#define DestroyFileHead(h) Util::DestroyFileHead<File_Version_1_0>(h)
+#define GetFileHead(f) Util::GetFileHead<File_Version_1_1>(f)
+#define DestroyFileHead(h) Util::DestroyFileHead<File_Version_1_1>(h)
 
 /**
 *@note 将A中元素，B中没有的，放进DiffBuf
@@ -126,13 +120,44 @@ void DestroyPatchData(void*& pPatchData)
     } 
 }
 
-void Generate(
+void CResPatchGenerator::Generate(
+    const char* pOld,
+    const char* pNew, 
+    const char* pPatch )
+{
+    /**
+    *@note 1. Check
+    */
+    Check(pOld, pNew, pPatch);
+
+    /**
+    *@note 2. Unpack Compare File
+    */
+    UnpackFile();
+
+    /**
+    *@note 3. Parse, Get Reserse Data And new Add Data Info
+    */
+    Parse();
+
+    /**
+    *@note 4. Write Patch File
+    */
+    WritePatchFile(pPatch);
+
+    /**
+    *@note 5. Do end
+    */
+    
+}
+
+void CResPatchGenerator::Check( 
     const char* pOld,
     const char* pNew, 
     const char* pPatchPath )
 {
     /**
-    *@note 1. Check 
+    *@note 1. Input param
     */
     if ( !isValidString(pOld) ||
          !isValidString(pNew) ||
@@ -141,69 +166,58 @@ void Generate(
         throw "Input Param Error!";
     }
 
-    FileSystem::CFile OldFile, NewFile, PatchFile;
-    if ( !OldFile.OpenByRead(pOld) ||
-         !NewFile.OpenByRead(pNew) )
+    /**
+    *@note 2. File Can Open? 
+    */
+    
+    if ( !m_OldFile.OpenByRead(pOld) ||
+         !m_NewFile.OpenByRead(pNew) )
     {
         throw "Can`t Open Your Compare File!";
     }
-
-    bool bRc = false;
-    FileHead* pOldFileHead = NULL, *pNewFileHead = NULL;
-    DataIndex* AddDataIndex = NULL, *RemoveDataIndex = NULL;
    
-    if ( NULL == (pOldFileHead=GetFileHead(OldFile)) || 
-         NULL == (pNewFileHead=GetFileHead(NewFile)) )
+    /**
+    *@note 3. File Format Correct? 
+    */
+    if ( NULL == (m_pOldFileHead=GetFileHead(m_OldFile)) || 
+         NULL == (m_pNewFileHead=GetFileHead(m_NewFile)) )
     {
-        throw "File is not correct: is Not Our Res File!";
+        throw "File is not correct, Is Not Our Res File Format!";
     }
+}
 
+void CResPatchGenerator::WritePatchFile(const char* pPatch)
+{
     /**
-    *@note 2. 得到需要删除和添加的数据信息
+    *@note 1. open Patch file 
     */
-    const DataIndex* OldDataIndex = pOldFileHead->DataIndex;
-    const DataIndex* NewDataIndex = pNewFileHead->DataIndex;
-    size_t nOldCount = pOldFileHead->dwFileCount;
-    size_t nNewCount = pNewFileHead->dwFileCount;
-    AddDataIndex = new DataIndex[nNewCount];   // 最大将新的最加上
-    RemoveDataIndex = new DataIndex[nOldCount]; // 最大将老的全部移除
-
-    size_t nRemoveCount = 0, nAddCount = 0;
-    FillRemoveDataIndex(
-        OldDataIndex, nOldCount,
-        NewDataIndex, nNewCount,
-        RemoveDataIndex, nRemoveCount);
-    FillAddDataIndex(
-        NewDataIndex, nNewCount,
-        OldDataIndex, nOldCount,
-        AddDataIndex, nAddCount );
-
-    /**
-    *@note 3. open Patch file and Write Base Head
-    */
-    if ( !PatchFile.OpenByWrite(pPatchPath) )
+    if ( !m_PatchFile.OpenByWrite(pPatch) )
     {
         throw "Can`t Open Patch File!";
     }
  
-    TResPatchFileHead PatchFileHead;
-    PatchFileHead.FormatFlag = Patch_File_Format_Flag;
-    PatchFileHead.Version = File_Version_1_0;
-    PatchFileHead.dwAddFileCount = nAddCount;
-    PatchFileHead.dwRemoveFileCount = nRemoveCount;
-    PatchFile.Write(&PatchFileHead, sizeof(TResPatchFileHead));
+    /**
+    *@note 2. Write Base Head
+    */
+    TPatchFileHeadBase PatchFileHeadBase;
+    PatchFileHeadBase.FormatFlag = Patch_File_Format_Flag;
+    PatchFileHeadBase.Version = File_Version_1_0;
+    PatchFileHeadBase.dwAddFileCount = m_NewData.size();
+    PatchFileHeadBase.dwRemoveFileCount = m_Remove.size();
+    m_PatchFile.Write(&PatchFileHeadBase, sizeof(TPatchFileHeadBase));
 
     /**
-    *@note 4. Write Remove Data Index(Only Hash)
+    *@note 3. Write Remove Data Index(Only Hash)
     */
-    for ( size_t i = 0; i< nRemoveCount; ++i )
+    UnapckDataMap::iterator RemoveIter = m_Remove.begin();
+    for ( ; RemoveIter!= m_Remove.end(); ++RemoveIter )
     {
-        UHashValue& HashValue = RemoveDataIndex[i].HashValue;
-        PatchFile.Write(&HashValue, sizeof(UHashValue));
+        UHashValue& HashValue = RemoveIter->first.HashValue;
+        m_PatchFile.Write(&HashValue, sizeof(UHashValue));
     }
 
     /**
-    *@note 5. 将新的数据从新文件读出当今Buf，并建立好索引
+    *@note 4. 将新的数据从新文件读出当今Buf，并建立好索引
     */
 #define PatchFileHeadSize(nAdd,nRemove) \
 (sizeof(TResPatchFileHead)+sizeof(UHashValue)*nRemove+sizeof(DataIndex)*nAdd)
@@ -216,18 +230,87 @@ void Generate(
         pPatchData, nPatchDataSize );
 
     /**
-    *@note 6. Write Add Data Index(Hash+Datasize+DataOffset)
+    *@note 5. Write Add Data Index(Hash+Datasize+DataOffset)
               and Write New Add Data
     */
-    PatchFile.Write(AddDataIndex, sizeof(DataIndex)*nAddCount);
-    PatchFile.Write(pPatchData, nPatchDataSize);
+    m_PatchFile.Write(AddDataIndex, sizeof(DataIndex)*nAddCount);
+    m_PatchFile.Write(pPatchData, nPatchDataSize);
     DestroyPatchData(pPatchData);
-    
-    DestroyFileHead(pOldFileHead);
-    DestroyFileHead(pNewFileHead);
-    safeDeleteArray(AddDataIndex);
-    safeDeleteArray(RemoveDataIndex);
 }
 
-}  // namespace ResPatchGenerator
+void CResPatchGenerator::UnpackFile()
+{
+    if ( !UpackFileData(m_OldFile, m_pOldFileHead, OnDataReadCallBack, &m_OldData) )
+    {
+        throw "Unpack Old File Failed!";
+    }
+    if ( !UpackFileData(m_NewFile, m_pNewFileHead, OnDataReadCallBack, &m_NewData) )
+    {
+        throw "Unpack New File Failed!";
+    }
+}
+
+void CResPatchGenerator::OnDataReadCallBack(
+    void* pParam,
+    DataHead1* pHead,
+    BYTE* pData )
+{
+    UnapckDataMap& Data = *(UnapckDataMap*)pParam;
+    TDataIndex0 Index;
+    Index.dwLen = pHead->dwRawDataLen;
+    Index.HashValue = pHead->HashValue;
+    char* pTmp = new char[Index.dwLen];
+    memcpy(pTmp, pData, Index.dwLen);
+    Data[Index] = pTmp;
+}
+
+void CResPatchGenerator::Parse()
+{
+    /**
+    *@note 具体算法为：
+    *  遍历老文件的所有数据，在新的里面找. 如果没找到，
+    *  那么老的那个是需要丢弃，保存到m_Remove中.
+    *  如果找到，那么就比较数据，首先数据的大小应该一样，然后比较实际数据
+    *  如果发现数据也是一样的，m_NewData删除同样的。不一样就将老的那个保存到m_Reserve中
+    *  这样循环的结果是：m_Remove里面保存了要删除的数据，m_NewData保存新加的数据
+    */
+    UnapckDataMap::iterator OldIter = m_OldData.begin();
+    for ( ; OldIter!= m_OldData.end(); ++OldIter )
+    {
+        const TDataIndex0& TmpKey = OldIter->first;
+        UnapckDataMap::iterator NewIter = m_NewData.find(TmpKey);
+        if ( NewIter == m_NewData.end() )
+        {
+            m_Remove[TmpKey] = pOldData;
+            continue;
+        }
+
+        const DWORD& NewDataLen = NewIter->first.dwLen;
+        if ( TmpKey.dwLen != NewDataLen )
+        {
+            m_Remove[TmpKey] = pOldData;
+            continue;
+        }
+
+        char* pOldData = OldIter->second;
+        char* pNewData = NewIter->second;
+        if ( memcmp(pOldData, pNewData, NewDataLen) != 0 )
+        {
+            m_Remove[TmpKey] = pOldData;
+            continue;
+        }
+       
+        delete[] pNewData;
+        m_NewData.erase(NewIter);
+    }
+}
+
+CResPatchGenerator::~CResPatchGenerator()
+{
+    DestroyFileHead(pOldFileHead);
+    DestroyFileHead(pNewFileHead);
+    StlHelper::STLDeleteAssociate(m_OldData);
+    StlHelper::STLDeleteAssociate(m_NewData);
+}
+
 }

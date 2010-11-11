@@ -5,6 +5,7 @@
 #include <fstream>
 #include <Windows.h>
 #include <string>
+#include <map>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -53,8 +54,18 @@ namespace CB
 
     int i = AS;
 }
+struct CTestCom
+{
+    bool operator()(const CTest& _Left, const CTest& _Right) const
+    {	// apply operator< to operands
+        return (_Left.i < _Right.i);
+    }
+};
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+    map<CTest, int, CTestCom> ll;
+
 
     Operator<CTest, int, &CTest::i> t, t2;
     t.i = 1;
