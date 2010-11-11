@@ -32,7 +32,8 @@ template<DWORD Version>
 inline size_t GetFileHeadSize(size_t nFileNum);
 
 template<DWORD Version>
-inline TFileHead<Version>* GetFileHead(FileSystem::CFile& File)
+inline TFileHead<Version>* GetFileHead(
+    FileSystem::CFile& File)
 {
     TFileHeadBase HeadBase;
     FileSystem::size_t nRead = File.Read(
@@ -56,35 +57,11 @@ inline TFileHead<Version>* GetFileHead(FileSystem::CFile& File)
     return (TFileHead<Version>*)pHead;
 }
 
-static ResCodeDef GetFileBaseHead(
+ResCodeDef GetFileBaseHead(
     const char* pResFilePath,
     TFileHeadBase& HeadBase,
-    FileSystem::CFile& File )
-{
-    if ( !isValidString(pResFilePath) )
-    {
-        return Input_Param_Error;
-    }
+    FileSystem::CFile& File );
 
-    FileSystem::BOOL bRc = File.OpenByRead(pResFilePath);
-    if ( !bRc )
-    {
-        return File_Can_Not_Open;
-    }
-
-    FileSystem::size_t nRead = File.Read(
-        &HeadBase, sizeof(TFileHeadBase));
-    if ( nRead != sizeof(TFileHeadBase) )
-    {
-        return File_Read_Failed;
-    }
-
-    if ( HeadBase.FormatFlag != Res_File_Format_Flag )
-    {
-        return File_Format_Error;
-    }
-    return No_Error;
-}
 
 inline ResCodeDef GetFileBaseHead(
     const char* pResFilePath,
@@ -99,9 +76,9 @@ inline void DestroyFileHead(TFileHead<Version>*& Head)
 {
     if ( Head )
     {
-        delete[] ((char*)Head);
+        delete[] (char*)Head;
         Head = NULL;
-    } 
+    }
 }
 
 template<DWORD Version>
@@ -127,10 +104,18 @@ inline size_t WriteBaseHead(
 template<DWORD Version>
 inline size_t GetFileHeadSize<Version>(DWORD dwFileCount)
 {
-    //TFileHead<File_Version_1_0> xx;
     typedef TFileHead<Version> FileHead;
     return sizeof(FileHead) + sizeof(FileHead::TDataIndex)*(dwFileCount-1);
 }
+
+typedef void (*DataReadCallBackFn)(void*,DataHead1*,BYTE*);
+
+bool UpackFileData(
+    FileSystem::CFile& File,
+    const FileHead1* pHead,
+    DataReadCallBackFn DataReadCallBack,
+    void* pParam );
+
 
 } // Util
 

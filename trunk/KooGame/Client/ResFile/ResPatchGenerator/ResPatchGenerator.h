@@ -17,17 +17,57 @@ Copyright (c) Shenzhen KooGame Co.,Ltd.
 #ifndef _RESPATCHGENERATOR_H_2010_10
 #define _RESPATCHGENERATOR_H_2010_10
 
+#include "ResFileDef.h"
+#include <map>
 
 namespace ResFile
 {
 
+typedef TFileHead<File_Version_1_0> TFileHead0;
+typedef TFileHead<File_Version_1_1> TFileHead1;
+typedef TFileHead0::TDataIndex TDataIndex0;
+typedef TFileHead1::TDataIndex TDataIndex1;
 
-namespace ResPatchGenerator
+class CResPatchGenerator
 {
-void Generate(
-    const char* pOld,
-    const char* pNew, 
-    const char* pPatchPath);
+public:
+    ~CResPatchGenerator();
+
+    void Generate(
+        const char* pOld,
+        const char* pNew, 
+        const char* pPatch );
+
+protected:
+    void Check(
+        const char* pOld,
+        const char* pNew, 
+        const char* pPatch );
+
+    void UnpackFile();
+
+    void Parse();
+
+    void WritePatchFile(const char* pPatch);
+
+    void MakePatchData();
+
+protected:
+    static void OnDataReadCallBack(
+        void* pParam,
+        DataHead1* pHead,
+        BYTE* pData );
+
+    typedef std::map<TDataIndex0, char*> UnapckDataMap;
+private:
+    FileSystem::CFile m_OldFile, m_NewFile, m_PatchFile;
+    TFileHead1* m_pOldFileHead, *m_pNewFileHead;
+
+    /**
+    *@note 这个数据全是解压且解密后的原始数据
+    *      TDataIndex0放数据大小和以后索引，char*放Raw Data
+    */
+    UnapckDataMap m_OldData, m_NewData, m_Remove;
 };
 
 }

@@ -190,6 +190,13 @@ struct TDataHead<File_Version_1_1>
 *@ } 
 */
 
+typedef TFileHead<File_Version_1_0> FileHead0;
+typedef TFileHead<File_Version_1_1> FileHead1;
+typedef FileHead0::TDataIndex DataIndex0;
+typedef FileHead1::TDataIndex DataIndex1;
+typedef TDataHead<File_Version_1_0> DataHead0;
+typedef TDataHead<File_Version_1_1> DataHead1;
+
 }
 
 #pragma pack(pop)
