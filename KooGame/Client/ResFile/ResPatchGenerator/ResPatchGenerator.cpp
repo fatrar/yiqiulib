@@ -16,114 +16,20 @@ Copyright (c) Shenzhen KooGame Tech Co.,Ltd.
 *************************************************************************CPP*/
 #include "stdafx.h"
 #include "ResPatchGenerator.h"
-#include "ResFileUtil.h"
-#include "StlHelper.h"
+
 
 namespace ResFile
 {
 
-
 #define GetFileHead(f) Util::GetFileHead<File_Version_1_1>(f)
 #define DestroyFileHead(h) Util::DestroyFileHead<File_Version_1_1>(h)
 
-/**
-*@note 将A中元素，B中没有的，放进DiffBuf
-*/
-void FillDiff(
-    const DataIndex* A, size_t nACount,  // 需要查找的出不同的队列
-    const DataIndex* B, size_t nBCount,  // 与源数据比较的数据
-    DataIndex* DiffBuf, size_t& nDiffCount )
-{
-    /**
-    *@note 大体算法：将老的在新的里面找有没有出现，没有那么就是需要移除的
-    *      在具体实现上，我们利用两个比较队列都是升序排列，我们记录上一次的位置
-    */
-    size_t& nDiffPos = nDiffCount = 0;
-    for (size_t i = 0, nPos = 0; i<nACount; ++i)
-    {
-        while (1)
-        {
-            if ( A[i] < B[nPos] )
-            {
-                DiffBuf[nDiffPos++] = A[i];
-                break;
-            }
-            //else if ( A[i] == B[nPos] )
-            //{
-            //    ++nPos;
-            //}
-            //else {} //  OldDataIndex[i] > NewDataIndex[nPos] 
-            
-            if ( ++nPos < nBCount )
-            {
-                continue;
-            }
-            
-            /**
-            *@note 当老的数据全部大于新的，那么老的剩下没有比较的都是需要移除的
-            */
-            void* pDst = DiffBuf + nDiffPos;
-            const void* pSrc = A + i;
-            size_t nCopyNumber = nACount-i-1;
-            memcpy(pDst, pSrc, sizeof(DataIndex)*nCopyNumber);
-            nDiffPos += nCopyNumber;
-            return;
-        }
-    }
-}   
-
-#define FillRemoveDataIndex(OldDataIndex,nOldCount,NewDataIndex,nNewCount,RemoveDataIndex,nRemoveCount) \
-    FillDiff(OldDataIndex,nOldCount,NewDataIndex,nNewCount,RemoveDataIndex,nRemoveCount)
-
-#define FillAddDataIndex(NewDataIndex,nNewCount,OldDataIndex,nOldCount,AddDataIndex,nAddCount)\
-    FillDiff(NewDataIndex,nNewCount,OldDataIndex,nOldCount,AddDataIndex,nAddCount)
-
-void MakePatchData(
-    FileSystem::CFile& File, DWORD dwFileHeadSize,
-    DataIndex* AddDataIndex, size_t nIndexCount,
-    void*& pPatchData, size_t& nPatchDataSize )
-{
-    nPatchDataSize = 0;
-    for (size_t i=0;i<nIndexCount;++i)
-    {
-        nPatchDataSize += AddDataIndex[i].Info.dwDataLen;
-    }
-    pPatchData = new char[nPatchDataSize];
-    
-    DWORD dwOffsetNow = dwFileHeadSize;
-    char* pBuf = (char*)pPatchData;
-    for (size_t i=0;i<nIndexCount;++i)
-    {
-        size_t nRead = AddDataIndex[i].Info.dwDataLen;
-        DWORD& dwDataOffset = AddDataIndex[i].Info.dwDataOffset;
-        File.Seek(dwDataOffset);
-        if ( nRead != File.Read(pBuf, nRead) )
-        {
-            throw "MakePatchData() Read File Failed!";
-        }
-        
-        /**
-        *@note 偏移以后的补丁文件数据索引和文件读取Buf
-        */
-        dwDataOffset = dwOffsetNow;
-        dwOffsetNow += nRead;  // 计算出下一个数据的位置
-        pBuf += nRead;
-    }
-}
-
-void DestroyPatchData(void*& pPatchData)
-{
-    if ( pPatchData )
-    {
-        delete[] ((char*)pPatchData);
-        pPatchData = NULL;
-    } 
-}
 
 void CResPatchGenerator::Generate(
     const char* pOld,
     const char* pNew, 
-    const char* pPatch )
+    const char* pPatch,
+    size_t nMaxVolumeSize )
 {
     /**
     *@note 1. Check
@@ -143,7 +49,7 @@ void CResPatchGenerator::Generate(
     /**
     *@note 4. Write Patch File
     */
-    WritePatchFile(pPatch);
+    WritePatchFile(pPatch, nMaxVolumeSize);
 
     /**
     *@note 5. Do end
@@ -151,6 +57,116 @@ void CResPatchGenerator::Generate(
     
 }
 
+void CResPatchGenerator::DataTransfrom()
+{
+    /**
+    *@note pack
+    */
+    BYTE *dest = m_pPatchData+m_nPatchNow;
+    size_t destLen = Res_File_Buf-m_nPatchNow;
+    int nRc = LzmaUtil::LzmaCompress(
+        dest, &destLen, m_pVolume, m_nVolumeNow, Compress_High);
+    if ( nRc != 0 )
+    {
+        throw "Compress Failed!";
+    }
+ 
+    DataIndex1& Index = m_pAddIndex[m_IndexNow++];
+    Index.dwLen = destLen;
+    Index.dwOffset = m_nPatchNow;
+    Index.dwRawVolumeLen = m_nVolumeNow;
+
+    m_nPatchNow += destLen;
+    m_nVolumeNow = 0;
+    /**
+    *@note Encrypt
+    */
+    // 由于补丁包一般用户得不到，就不加密了
+}
+
+void CResPatchGenerator::FillData(
+    BYTE*& pBuf, BYTE* pData,
+    const TDataIndex0& Index  )
+{
+    DataHead1* pDataHead = (DataHead1*)pBuf;
+    pDataHead->HashValue = Index.HashValue;
+    pDataHead->dwRawDataLen = Index.dwLen;
+    pBuf += sizeof(DataHead1);
+    memcpy(pBuf, pData, Index.dwLen);
+    pBuf += Index.dwLen;
+}
+
+void CResPatchGenerator::MakePatchData(
+    size_t nMaxVolumeSize )
+{
+#define PatchFileHeadSize(nAdd,nRemove) \
+    (sizeof(TResPatchFileHead)+sizeof(UHashValue)*nRemove+sizeof(DataIndex)*nAdd)
+
+    /**
+    *@note 创建最终存文件的数据Buf
+    */
+    size_t nPatchDataSize = Res_File_Buf;
+    m_pPatchData = new BYTE[nPatchDataSize];
+
+    /**
+    *@note 创建创建1卷原始数据卷的Buf
+    */
+    m_nVolumeSize = nMaxVolumeSize ;
+    m_pVolume = new BYTE[m_nVolumeSize];
+
+    /**
+    *@note 创建数据索引Buf，索引数据偏移先用文件Buf的偏移，在最终存文件时修正
+    */
+    m_pAddIndex = new DataIndex1[m_NewData.size()];
+    
+    /**
+    *@note 临时创建原始卷的数据指针
+    */
+    BYTE* pRawBuf = m_pVolume;
+    UnapckDataMap::iterator iter = m_NewData.begin();
+    const TDataIndex0& Index = iter->first;
+    size_t nDataSize = sizeof(DataHead1) + Index.dwLen;
+    if ( nDataSize > nMaxVolumeSize )
+    {
+        // 第一个数据大于卷最大值，那么就直接打开卷，且处理该卷
+        Util::TryResetBuf(m_pVolume, m_nVolumeSize, nDataSize);
+        pRawBuf = m_pVolume;
+        FillData(pRawBuf, iter->second, Index);
+
+        // pack And Encrypt
+        m_nVolumeNow = nDataSize;
+        DataTransfrom();
+        pRawBuf = m_pVolume;
+    }
+    else
+    {
+        FillData(pRawBuf, iter->second, Index);
+        m_nVolumeNow = nDataSize;
+    }
+
+    for ( ++iter; iter!= m_NewData.end(); ++iter )
+    {
+        const TDataIndex0& Index = iter->first;
+        nDataSize = sizeof(DataHead1) + Index.dwLen;
+        size_t nTmpSize = m_nVolumeNow + nDataSize;
+        if ( nTmpSize > nMaxVolumeSize )
+        {
+            // pack And Encrypt
+            DataTransfrom();
+
+            // 第一个数据大于卷最大值，那么就直接打开卷，且处理该卷
+            Util::TryResetBuf(m_pVolume, m_nVolumeSize, nDataSize);
+            pRawBuf = m_pVolume;
+            FillData(pRawBuf, iter->second, Index);
+            m_nVolumeNow = nTmpSize;
+        }
+        else
+        {
+            FillData(pRawBuf, iter->second, Index);
+            m_nVolumeNow = nTmpSize;
+        }
+    }
+}
 void CResPatchGenerator::Check( 
     const char* pOld,
     const char* pNew, 
@@ -168,8 +184,7 @@ void CResPatchGenerator::Check(
 
     /**
     *@note 2. File Can Open? 
-    */
-    
+    */   
     if ( !m_OldFile.OpenByRead(pOld) ||
          !m_NewFile.OpenByRead(pNew) )
     {
@@ -186,7 +201,9 @@ void CResPatchGenerator::Check(
     }
 }
 
-void CResPatchGenerator::WritePatchFile(const char* pPatch)
+void CResPatchGenerator::WritePatchFile(
+    const char* pPatch,
+    size_t nMaxVolumeSize )
 {
     /**
     *@note 1. open Patch file 
@@ -204,6 +221,7 @@ void CResPatchGenerator::WritePatchFile(const char* pPatch)
     PatchFileHeadBase.Version = File_Version_1_0;
     PatchFileHeadBase.dwAddFileCount = m_NewData.size();
     PatchFileHeadBase.dwRemoveFileCount = m_Remove.size();
+    PatchFileHeadBase.dwMaxVolumeSize = nMaxVolumeSize;
     m_PatchFile.Write(&PatchFileHeadBase, sizeof(TPatchFileHeadBase));
 
     /**
@@ -212,39 +230,31 @@ void CResPatchGenerator::WritePatchFile(const char* pPatch)
     UnapckDataMap::iterator RemoveIter = m_Remove.begin();
     for ( ; RemoveIter!= m_Remove.end(); ++RemoveIter )
     {
-        UHashValue& HashValue = RemoveIter->first.HashValue;
+        const UHashValue& HashValue = RemoveIter->first.HashValue;
         m_PatchFile.Write(&HashValue, sizeof(UHashValue));
     }
 
     /**
     *@note 4. 将新的数据从新文件读出当今Buf，并建立好索引
     */
-#define PatchFileHeadSize(nAdd,nRemove) \
-(sizeof(TResPatchFileHead)+sizeof(UHashValue)*nRemove+sizeof(DataIndex)*nAdd)
-
-    void* pPatchData = NULL;
-    size_t nPatchDataSize = 0;
-    MakePatchData(
-        NewFile, PatchFileHeadSize(nAddCount,nRemoveCount),
-        AddDataIndex, nAddCount, 
-        pPatchData, nPatchDataSize );
+    MakePatchData(nMaxVolumeSize);
 
     /**
     *@note 5. Write Add Data Index(Hash+Datasize+DataOffset)
               and Write New Add Data
     */
-    m_PatchFile.Write(AddDataIndex, sizeof(DataIndex)*nAddCount);
-    m_PatchFile.Write(pPatchData, nPatchDataSize);
-    DestroyPatchData(pPatchData);
+    //m_PatchFile.Write(AddDataIndex, sizeof(DataIndex)*nAddCount);
+    //m_PatchFile.Write(pPatchData, nPatchDataSize);
+    DestroyPatchData(m_pPatchData);
 }
 
 void CResPatchGenerator::UnpackFile()
 {
-    if ( !UpackFileData(m_OldFile, m_pOldFileHead, OnDataReadCallBack, &m_OldData) )
+    if ( !Util::UpackFileData(m_OldFile, m_pOldFileHead, OnDataReadCallBack, &m_OldData) )
     {
         throw "Unpack Old File Failed!";
     }
-    if ( !UpackFileData(m_NewFile, m_pNewFileHead, OnDataReadCallBack, &m_NewData) )
+    if ( !Util::UpackFileData(m_NewFile, m_pNewFileHead, OnDataReadCallBack, &m_NewData) )
     {
         throw "Unpack New File Failed!";
     }
@@ -259,7 +269,7 @@ void CResPatchGenerator::OnDataReadCallBack(
     TDataIndex0 Index;
     Index.dwLen = pHead->dwRawDataLen;
     Index.HashValue = pHead->HashValue;
-    char* pTmp = new char[Index.dwLen];
+    BYTE* pTmp = new BYTE[Index.dwLen];
     memcpy(pTmp, pData, Index.dwLen);
     Data[Index] = pTmp;
 }
@@ -279,6 +289,7 @@ void CResPatchGenerator::Parse()
     {
         const TDataIndex0& TmpKey = OldIter->first;
         UnapckDataMap::iterator NewIter = m_NewData.find(TmpKey);
+        BYTE* pOldData = OldIter->second;
         if ( NewIter == m_NewData.end() )
         {
             m_Remove[TmpKey] = pOldData;
@@ -291,9 +302,7 @@ void CResPatchGenerator::Parse()
             m_Remove[TmpKey] = pOldData;
             continue;
         }
-
-        char* pOldData = OldIter->second;
-        char* pNewData = NewIter->second;
+        BYTE* pNewData = NewIter->second;
         if ( memcmp(pOldData, pNewData, NewDataLen) != 0 )
         {
             m_Remove[TmpKey] = pOldData;
@@ -305,12 +314,26 @@ void CResPatchGenerator::Parse()
     }
 }
 
+CResPatchGenerator::CResPatchGenerator()
+    : m_pPatchData(NULL)
+    , m_nPatchNow(0)
+    , m_pVolume(NULL)
+    , m_nVolumeSize(0)
+    , m_IndexNow(0)
+    , m_pAddIndex(NULL)
+    , m_nVolumeNow(0)
+{
+}
+
 CResPatchGenerator::~CResPatchGenerator()
 {
-    DestroyFileHead(pOldFileHead);
-    DestroyFileHead(pNewFileHead);
+    safeDeleteArray(m_pPatchData);
+    safeDeleteArray(m_pVolume);
+    safeDeleteArray(m_pAddIndex);
+    DestroyFileHead(m_pOldFileHead);
+    DestroyFileHead(m_pNewFileHead);
     StlHelper::STLDeleteAssociate(m_OldData);
     StlHelper::STLDeleteAssociate(m_NewData);
 }
 
-}
+}  

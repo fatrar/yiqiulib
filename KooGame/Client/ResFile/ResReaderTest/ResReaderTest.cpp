@@ -53,6 +53,14 @@ namespace CB
     };
 
     int i = AS;
+
+#define TryResetBuf(pBuf, nBufSize, nNewSize) \
+    if ((nNewSize) > (nBufSize))\
+    {\
+    delete[] (pBuf);\
+    (nBufSize) = (nNewSize);\
+    (pBuf) = new BYTE[(nBufSize)];\
+    }
 }
 struct CTestCom
 {
@@ -64,8 +72,11 @@ struct CTestCom
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-    map<CTest, int, CTestCom> ll;
+    BYTE* pTmp = new BYTE[10];
+    int nTmpSize = 10;
+    TryResetBuf(pTmp, nTmpSize, 20);
 
+    map<CTest, int, CTestCom> ll;
 
     Operator<CTest, int, &CTest::i> t, t2;
     t.i = 1;
@@ -81,7 +92,7 @@ int _tmain(int argc, _TCHAR* argv[])
         cout << "";
     }
 
-    ResFile::UnpackFile("D:\\PackTest\\anim.pak");
+   // ResFile::UnpackFile("D:\\PackTest\\anim.pak");
 
     /*
     ifstream Reader;

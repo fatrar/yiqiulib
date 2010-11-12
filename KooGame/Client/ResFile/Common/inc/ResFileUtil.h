@@ -116,6 +116,17 @@ bool UpackFileData(
     DataReadCallBackFn DataReadCallBack,
     void* pParam );
 
+template<typename T, typename S>
+inline void TryResetBuf(T* pBuf, S nBufSize, S nNewSize)
+{
+    if (nNewSize > nBufSize)
+    {
+        delete[] pBuf;
+        nBufSize = nNewSize;
+        pBuf = new T[nBufSize];
+    }
+}
+
 
 } // Util
 
