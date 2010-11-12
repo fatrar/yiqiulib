@@ -248,7 +248,7 @@ void CResPacker<File_Version_1_1>::TransformOne(
     TFileHead<File_Version_1_1>::TDataIndex Index;
     Index.dwOffset = dwDataOffset;
     Index.dwLen = nPackLen;
-    Index.dwRawVolumeDataLen = Info.nRawDataSize;
+    Index.dwRawVolumeLen = Info.nRawDataSize;
     m_DataIndexList.push_back(Index);
 }
 
@@ -291,9 +291,9 @@ void CResPacker<File_Version_1_1>::ShowLog()
     {
         const DataIndex& Index = *iter;
         cout << '[' << i << "] " 
-             << Index.dwRawVolumeDataLen << "-->"
+             << Index.dwRawVolumeLen << "-->"
              << Index.dwLen << "   Ratio=" 
-             << Index.dwLen*100.0/Index.dwRawVolumeDataLen
+             << Index.dwLen*100.0/Index.dwRawVolumeLen
              << '%' << endl;
         
     }

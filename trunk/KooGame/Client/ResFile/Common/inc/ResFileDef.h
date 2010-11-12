@@ -70,6 +70,7 @@ struct TPatchFileHeadBase
     DWORD Version;
     DWORD dwAddFileCount:16;
     DWORD dwRemoveFileCount:16;
+    DWORD dwMaxVolumeSize;
 };
 
 union UHashValue
@@ -109,16 +110,6 @@ enum eCompressParam
     Compress_High,
     CompressParam_Count,
 };
-
-//enum eFileNamePos
-//{
-//    Not_Exist,
-//    Bebind_Head,
-//    File_Tail,
-//    // In_Out,  暂时不支持这个
-//};
-
-//#define _FileName_FileExt ".Name"
 
 /**
 *@note File Version 1.0 Define
@@ -173,7 +164,7 @@ struct TFileHead<File_Version_1_1> :
     struct TDataIndex
     {
         DWORD dwOffset, dwLen;
-        DWORD dwRawVolumeDataLen;
+        DWORD dwRawVolumeLen;
     }DataIndex[1];
 };
 

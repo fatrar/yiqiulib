@@ -22,6 +22,10 @@ using namespace std;
 
 #include "..\libCmdParser\inc\ICommand.h"
 
+#include "ResFileUtil.h"
+#include "StlHelper.h"
+#include "..\..\Common\lzma\LzmaUtil.h"
+
 
 // TODO: reference additional headers your program requires here
 

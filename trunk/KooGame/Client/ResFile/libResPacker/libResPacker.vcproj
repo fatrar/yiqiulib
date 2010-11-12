@@ -235,10 +235,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Common\inc\ResFileUtil.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\ResPacker.h"
 				>
 			</File>
@@ -415,6 +411,10 @@
 			</File>
 			<File
 				RelativePath="..\Common\inc\HashHelper.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Common\inc\ResFileUtil.h"
 				>
 			</File>
 			<File
