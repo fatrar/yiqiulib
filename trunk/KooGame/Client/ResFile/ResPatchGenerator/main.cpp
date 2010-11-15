@@ -22,10 +22,16 @@ Copyright (c) Shenzhen Sunline Tech Co.,Ltd.
     "'OldFile=xx' xx is a Path.\n"\
     "'NewFile=xx' xx is a Path.\n"\
     "'PatchFile=xx'  xx is a Path.\n"\
+    "'VolumeSize=xx' xx KB.\n"
 
+enum
+{
+    Default_Volume_Size = 1 << 19, // 512KB
+};
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    __asm {int 3}
     if ( argc == 2 && argv[1][0] == '?' )
     {
         cout << _Command_Help << endl;
@@ -59,7 +65,15 @@ int _tmain(int argc, _TCHAR* argv[])
             throw "Must Set Patch File";
         }
 
-        ResFile::ResPatchGenerator::Generate(pOldFile,pNewFile,pPatchFile);
+        size_t nVolumeSize = Default_Volume_Size;
+        if ( pCmdParser2->GetValue("VolumeSize", T_Uint, (void*&)nVolumeSize)) 
+        {
+            nVolumeSize <<= 10;
+            // throw "Must Set Patch File";
+        }
+
+        ResFile::CResPatchGenerator G;
+        G.Generate(pOldFile,pNewFile,pPatchFile, nVolumeSize);
     }
     catch (const char* pErrInfo)
     {

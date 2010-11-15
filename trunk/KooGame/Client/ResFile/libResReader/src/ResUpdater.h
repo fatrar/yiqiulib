@@ -35,41 +35,47 @@ public:
     virtual bool Update(const char* pFilepath);
 
 protected:
-    typedef TFileHead<File_Version_1_0> FileHead;
-    typedef FileHead::TDataIndex DataIndex;
-    //typedef TDataInfo<File_Version_1_0> DataInfo;
+    inline void GetOldFileHead(const char* pFilepath);
 
-protected:
     void GetReserveDataIndexFromOldFile(
-        FileHead* OldFileHead,
+        FileHead0* OldFileHead,
         const UHashValue* pRemoveList,
         DWORD dwRemoveFileCount );
 
     bool WriteOldData(
-        FileHead* OldFileHead,
         DWORD dwFileCount,
         const UHashValue* pRemoveList,
         DWORD dwRemoveFileCount );
 
      void WriteFileHead();
 
+protected:
+    inline CResUpdater()
+        : m_pPatchFileHead(NULL)
+        , m_pOldFileHead(NULL){}
+    inline ~CResUpdater();
+
     // Must Impl 
 protected:
-    virtual TResPatchFileHead* GetPatchFileHead() = 0;
+    virtual TPatchFileHeadBase* GetPatchFileHead() = 0;
 
     virtual void DestroyPatchFileHead(
-        TResPatchFileHead*& Head){};
+        TPatchFileHeadBase*& Head){};
 
     virtual bool WriteNewData(
-        DataIndex* pAddDataIndex,
-        DWORD dwAddFileCount ) = 0;
+        DataIndex1* pVolumeIndex,
+        DWORD dwVolumeCount ) = 0;
 
 protected:
     FileSystem::CFile m_OldResFile;
     FileSystem::CFile m_NewResFile;
     DWORD m_dwPosNow;
 
-    set<DataIndex> m_NewFileDataIndex;
+    set<DataIndex0> m_NewFileDataIndex;
+
+    // new Add
+    TPatchFileHeadBase* m_pPatchFileHead;
+    FileHead0* m_pOldFileHead;
 };
 
 
@@ -81,14 +87,14 @@ public:
         const char* pPatchFilePath );
 
 protected:
-    virtual TResPatchFileHead* GetPatchFileHead();
+    virtual TPatchFileHeadBase* GetPatchFileHead();
 
     virtual void DestroyPatchFileHead(
-        TResPatchFileHead*& Head);
+        TPatchFileHeadBase*& Head);
 
     virtual bool WriteNewData(
-        DataIndex* pAddDataIndex,
-        DWORD dwAddFileCount ); 
+        DataIndex1* pVolumeIndex,
+        DWORD dwVolumeCount ); 
 
 private:
     FileSystem::CFile m_PatchFile;
@@ -103,14 +109,14 @@ public:
     ~CResUpdaterByPatchData();
 
 protected:
-    virtual TResPatchFileHead* GetPatchFileHead()
+    virtual TPatchFileHeadBase* GetPatchFileHead()
     {
-        return (TResPatchFileHead*)m_pPatchData;
+        return (TPatchFileHeadBase*)m_pPatchData;
     }
 
     virtual bool WriteNewData(
-        DataIndex* pAddDataIndex,
-        DWORD dwAddFileCount );
+        DataIndex1* pVolumeIndex,
+        DWORD dwVolumeCount );
 
 private:
     bool m_bAutoDel;
