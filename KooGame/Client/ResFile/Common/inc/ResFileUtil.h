@@ -71,8 +71,8 @@ inline ResCodeDef GetFileBaseHead(
     return GetFileBaseHead(pResFilePath, HeadBase, File);
 }
 
-template<DWORD Version>
-inline void DestroyFileHead(TFileHead<Version>*& Head)
+template<typename T>
+inline void DestroyFileHead(T*& Head)
 {
     if ( Head )
     {
@@ -116,8 +116,20 @@ bool UpackFileData(
     DataReadCallBackFn DataReadCallBack,
     void* pParam );
 
+class CUnpackVolumeUtil
+{
+protected:
+    virtual void DataReadCallBack(
+        DataHead1* pHead, BYTE* pData) = 0;
+
+    virtual DWORD Read(
+        DWORD dwOffset, BYTE* pBuf, DWORD dwLen) = 0;
+
+    bool Unpack(const FileHead1* pHead);
+};
+
 template<typename T, typename S>
-inline void TryResetBuf(T* pBuf, S nBufSize, S nNewSize)
+inline void TryResetBuf(T*& pBuf, S nBufSize, S nNewSize)
 {
     if (nNewSize > nBufSize)
     {

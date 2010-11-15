@@ -70,6 +70,7 @@ struct TPatchFileHeadBase
     DWORD Version;
     DWORD dwAddFileCount:16;
     DWORD dwRemoveFileCount:16;
+    DWORD dwVolumeCount;
     DWORD dwMaxVolumeSize;
 };
 

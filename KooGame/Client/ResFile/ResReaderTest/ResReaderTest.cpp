@@ -69,9 +69,26 @@ struct CTestCom
         return (_Left.i < _Right.i);
     }
 };
+class CHH
+{
+protected:
+    void a(){}
+};
 
+class  CHHex:
+    public CHH
+{
+public:
+    void aaa()
+    {
+        a();
+    }
+};
 int _tmain(int argc, _TCHAR* argv[])
 {
+    CHHex al;
+    al.aaa();
+
     BYTE* pTmp = new BYTE[10];
     int nTmpSize = 10;
     TryResetBuf(pTmp, nTmpSize, 20);

@@ -22,7 +22,7 @@ namespace ResFile
 {
 
 #define GetFileHead(f) Util::GetFileHead<File_Version_1_1>(f)
-#define DestroyFileHead(h) Util::DestroyFileHead<File_Version_1_1>(h)
+#define DestroyFileHead(h) Util::DestroyFileHead(h)
 
 
 void CResPatchGenerator::Generate(
@@ -71,7 +71,7 @@ void CResPatchGenerator::DataTransfrom()
         throw "Compress Failed!";
     }
  
-    DataIndex1& Index = m_pAddIndex[m_IndexNow++];
+    DataIndex1& Index = m_pAddIndex[m_nIndexNow++];
     Index.dwLen = destLen;
     Index.dwOffset = m_nPatchNow;
     Index.dwRawVolumeLen = m_nVolumeNow;
@@ -166,7 +166,16 @@ void CResPatchGenerator::MakePatchData(
             m_nVolumeNow = nTmpSize;
         }
     }
+
+    /**
+    *@note 处理最后一个数据
+    */
+    if ( pRawBuf != m_pVolume )
+    {
+        DataTransfrom();
+    }
 }
+
 void CResPatchGenerator::Check( 
     const char* pOld,
     const char* pNew, 
@@ -214,18 +223,24 @@ void CResPatchGenerator::WritePatchFile(
     }
  
     /**
-    *@note 2. Write Base Head
+    *@note 2. 将新的数据从新文件读出当今Buf，并建立好索引
+    */
+    MakePatchData(nMaxVolumeSize);
+
+    /**
+    *@note 3. Write Base Head
     */
     TPatchFileHeadBase PatchFileHeadBase;
     PatchFileHeadBase.FormatFlag = Patch_File_Format_Flag;
     PatchFileHeadBase.Version = File_Version_1_0;
     PatchFileHeadBase.dwAddFileCount = m_NewData.size();
     PatchFileHeadBase.dwRemoveFileCount = m_Remove.size();
+    PatchFileHeadBase.dwVolumeCount = m_nIndexNow;
     PatchFileHeadBase.dwMaxVolumeSize = nMaxVolumeSize;
     m_PatchFile.Write(&PatchFileHeadBase, sizeof(TPatchFileHeadBase));
 
     /**
-    *@note 3. Write Remove Data Index(Only Hash)
+    *@note 4. Write Remove Data Index(Only Hash)
     */
     UnapckDataMap::iterator RemoveIter = m_Remove.begin();
     for ( ; RemoveIter!= m_Remove.end(); ++RemoveIter )
@@ -235,16 +250,12 @@ void CResPatchGenerator::WritePatchFile(
     }
 
     /**
-    *@note 4. 将新的数据从新文件读出当今Buf，并建立好索引
-    */
-    MakePatchData(nMaxVolumeSize);
-
-    /**
     *@note 5. Write Add Data Index(Hash+Datasize+DataOffset)
               and Write New Add Data
     */
-    //m_PatchFile.Write(AddDataIndex, sizeof(DataIndex)*nAddCount);
-    //m_PatchFile.Write(pPatchData, nPatchDataSize);
+    m_PatchFile.Write(m_pAddIndex, sizeof(DataIndex1)*m_nIndexNow);
+    safeDeleteArray(m_pAddIndex);
+    m_PatchFile.Write(m_pPatchData, m_nPatchNow);
     DestroyPatchData(m_pPatchData);
 }
 
@@ -319,7 +330,7 @@ CResPatchGenerator::CResPatchGenerator()
     , m_nPatchNow(0)
     , m_pVolume(NULL)
     , m_nVolumeSize(0)
-    , m_IndexNow(0)
+    , m_nIndexNow(0)
     , m_pAddIndex(NULL)
     , m_nVolumeNow(0)
 {

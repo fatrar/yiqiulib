@@ -95,7 +95,7 @@ private:
     size_t m_nVolumeNow;
 
     DataIndex1* m_pAddIndex;
-    size_t m_IndexNow;
+    size_t m_nIndexNow;
 };
 
 }
