@@ -20,6 +20,7 @@
 #include <string.h>
 #include "FileSystem.h"
 #include "ResFileDef.h"
+#include "ResFileUtil.h"
 #include "IResReader.h"
 #include <set>
 using namespace std;
@@ -28,11 +29,17 @@ namespace ResFile
 {
 
 class CResUpdater :
-    public IResUpdater
+    public IResUpdater,
+    public Util::CUnpackVolumeUtil
 {
     // IResUpdater
 public:
     virtual bool Update(const char* pFilepath);
+
+    // CUnpackVolumeUtil
+protected:
+    virtual void DataReadCallBack(
+        DataHead1* pHead, BYTE* pData);
 
 protected:
     inline void GetOldFileHead(const char* pFilepath);
@@ -62,9 +69,9 @@ protected:
     virtual void DestroyPatchFileHead(
         TPatchFileHeadBase*& Head){};
 
-    virtual bool WriteNewData(
-        DataIndex1* pVolumeIndex,
-        DWORD dwVolumeCount ) = 0;
+//     virtual bool WriteNewData(
+//         DataIndex1* pVolumeIndex,
+//         DWORD dwVolumeCount ) = 0;
 
 protected:
     FileSystem::CFile m_OldResFile;
@@ -86,15 +93,25 @@ public:
     CResUpdaterByPatchFile(
         const char* pPatchFilePath );
 
+    // CUnpackVolumeUtil
+protected:
+    virtual DWORD Read(
+        DWORD dwOffset, BYTE* pBuf, DWORD dwLen)
+    {
+        m_PatchFile.Seek(dwOffset);
+        return m_PatchFile.Read(pBuf, dwLen);
+    }
+
+    // CResUpdater
 protected:
     virtual TPatchFileHeadBase* GetPatchFileHead();
 
     virtual void DestroyPatchFileHead(
         TPatchFileHeadBase*& Head);
 
-    virtual bool WriteNewData(
-        DataIndex1* pVolumeIndex,
-        DWORD dwVolumeCount ); 
+//     virtual bool WriteNewData(
+//         DataIndex1* pVolumeIndex,
+//         DWORD dwVolumeCount ); 
 
 private:
     FileSystem::CFile m_PatchFile;
@@ -108,15 +125,21 @@ public:
         BYTE* pPatchData, size_t nSize, bool bAutoDel = true );
     ~CResUpdaterByPatchData();
 
+    // CUnpackVolumeUtil
+protected:
+    virtual DWORD Read(
+        DWORD dwOffset, BYTE* pBuf, DWORD dwLen);
+
+    // CResUpdater
 protected:
     virtual TPatchFileHeadBase* GetPatchFileHead()
     {
         return (TPatchFileHeadBase*)m_pPatchData;
     }
 
-    virtual bool WriteNewData(
-        DataIndex1* pVolumeIndex,
-        DWORD dwVolumeCount );
+//     virtual bool WriteNewData(
+//         DataIndex1* pVolumeIndex,
+//         DWORD dwVolumeCount );
 
 private:
     bool m_bAutoDel;

@@ -25,7 +25,8 @@
 namespace ResFile
 {
 
-class CResUnpack
+class CResUnpack :
+    public Util::CUnpackVolumeUtil
 {
 public:
     inline CResUnpack();
@@ -36,19 +37,18 @@ public:
     void SortIndex();
     void WriteIndex();
 
+    // CUnpackVolumeUtil
+protected:
+    virtual void DataReadCallBack(
+        DataHead1* pHead, BYTE* pData);
+
+    virtual DWORD Read(
+        DWORD dwOffset, BYTE* pBuf, DWORD dwLen);
+
 protected:
     inline void CreateTmpFile(char* pTmpFilePath);
     inline void WriteBaseHead();
     inline void ReserveIndexSpace();
-
-    static void OnDataReadCallBack(
-        void* pParam,
-        DataHead1* pHead,
-        BYTE* pData );
-
-    void OnDataReadCallBack(
-        DataHead1* pHead,
-        BYTE* pData );
 
 private:
     TFileHeadBase m_HeadBase1;
@@ -196,21 +196,19 @@ void CResUnpack::ReserveIndexSpace()
 
 void CResUnpack::UnPackData()
 {
-    Util::UpackFileData(
-        m_File1, m_pHead1, OnDataReadCallBack, this);
+    CUnpackVolumeUtil::Unpack(m_pHead1);
+    //    m_File1, OnDataReadCallBack, this);
     m_File1.Close();
 }
 
-void CResUnpack::OnDataReadCallBack(
-    void* pParam,
-    DataHead1* pHead,
-    BYTE* pData )
+DWORD CResUnpack::Read(
+    DWORD dwOffset, BYTE* pBuf, DWORD dwLen)
 {
-    CResUnpack* pThis = (CResUnpack*)pParam;
-    pThis->OnDataReadCallBack(pHead, pData);
+    m_File1.Seek(dwOffset);
+    return m_File1.Read(pBuf, dwLen);
 }
 
-void CResUnpack::OnDataReadCallBack(
+void CResUnpack::DataReadCallBack(
     DataHead1* pHead,
     BYTE* pData )
 {

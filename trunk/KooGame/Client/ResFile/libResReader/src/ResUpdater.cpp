@@ -90,7 +90,13 @@ bool CResUpdater::Update(
     /**
     *@note 将新加的数据写进新文件
     */
-    bRc = !!WriteNewData(pVolumeIndex, dwVolumeCount);
+    BYTE szKey[8];
+    bRc = Unpack(
+        m_pPatchFileHead->dwMaxVolumeSize,
+        m_pPatchFileHead->dwVolumeCount,
+        Raw_E_Algo, szKey,
+        pVolumeIndex);
+    //bRc = !!WriteNewData(pVolumeIndex, dwVolumeCount);
     DestroyPatchFileHead(m_pPatchFileHead);
     if ( !bRc )
     {
@@ -108,6 +114,35 @@ bool CResUpdater::Update(
 
     bRc = !!FileSystem::CFile::Rename(szNewPath, pFilepath);
     return bRc;
+}
+
+void CResUpdater::DataReadCallBack(
+    DataHead1* pHead, BYTE* pData)
+{
+    /**
+    *@note 写数据头和数据
+    *     []暂时不加密和不压缩压缩数据
+    */
+    const DWORD& dwDataLen = pHead->dwRawDataLen;
+    DataHead0 Head0;
+    Head0.dwRawDataLen = dwDataLen;
+    Head0.nCompressAlgo = Raw_C_Algo;
+    Head0.nCompressLevel = Compress_Normal;
+    Head0.nIsDecrypt = 0;
+    m_NewResFile.Write(&Head0, sizeof(DataHead0));
+
+
+    m_NewResFile.Write(pData, dwDataLen);
+
+    /**
+    *@note 改写新的文件索引，刷新文件位置，并将索引插进队列。
+    */
+    DataIndex0 Index;
+    Index.dwOffset = m_dwPosNow;
+    Index.dwLen = dwDataLen;
+    Index.HashValue = pHead->HashValue;
+    m_NewFileDataIndex.insert(Index);
+    m_dwPosNow += dwDataLen;
 }
 
 void CResUpdater::GetReserveDataIndexFromOldFile(
@@ -260,31 +295,39 @@ CResUpdaterByPatchData::~CResUpdaterByPatchData()
     if ( m_bAutoDel ){safeDeleteArray(m_pPatchData);}
 }
 
-bool CResUpdaterByPatchData::WriteNewData(
-    DataIndex1* pVolumeIndex,
-    DWORD dwVolumeCount )
+DWORD CResUpdaterByPatchData::Read( 
+    DWORD dwOffset, BYTE* pBuf, DWORD dwLen )
 {
-    for (DWORD i=0; i<dwAddFileCount; ++i)
-    {
-        DataIndex1& TmpDataIndex = pAddDataIndex[i];
-        DWORD& dwDataOffset = TmpDataIndex.dwOffset;
-        const DWORD& dwDataLen = TmpDataIndex.dwLen;
-        
-        /**
-        *@note 取数据的指针，并写进新文件
-        */
-        void* pBuf = m_pPatchData + dwDataOffset;
-        m_NewResFile.Write(pBuf, dwDataLen);
-
-        /**
-        *@note 改写新的文件索引，刷新文件位置，并将索引插进队列。
-        */
-        dwDataOffset = m_dwPosNow; //  重新设定数据在新文件的位置
-        m_dwPosNow += dwDataLen;
-        m_NewFileDataIndex.insert(TmpDataIndex);
-    }
-    return true;
+    BYTE* pNow = m_pPatchData + dwOffset;
+    memcpy(pBuf, pNow, dwLen);
 }
+// bool CResUpdaterByPatchData::WriteNewData(
+//     DataIndex1* pVolumeIndex,
+//     DWORD dwVolumeCount )
+// {
+//     Unpack();
+//
+//     for (DWORD i=0; i<dwAddFileCount; ++i)
+//     {
+//         DataIndex1& TmpDataIndex = pAddDataIndex[i];
+//         DWORD& dwDataOffset = TmpDataIndex.dwOffset;
+//         const DWORD& dwDataLen = TmpDataIndex.dwLen;
+//         
+//         /**
+//         *@note 取数据的指针，并写进新文件
+//         */
+//         void* pBuf = m_pPatchData + dwDataOffset;
+//         m_NewResFile.Write(pBuf, dwDataLen);
+// 
+//         /**
+//         *@note 改写新的文件索引，刷新文件位置，并将索引插进队列。
+//         */
+//         dwDataOffset = m_dwPosNow; //  重新设定数据在新文件的位置
+//         m_dwPosNow += dwDataLen;
+//         m_NewFileDataIndex.insert(TmpDataIndex);
+//     }
+//     return true;
+// }
 
 /** CResUpdaterByPatchData
 *@ }
@@ -337,52 +380,50 @@ void CResUpdaterByPatchFile::DestroyPatchFileHead( TPatchFileHeadBase*& Head )
 //     }
 }
 
-bool CResUpdaterByPatchFile::WriteNewData(
-    DataIndex1* pVolumeIndex,
-    DWORD dwVolumeCount )
-{
-    bool bRc = true;
-    char* pBuf = NULL;
-    size_t nBufSize = 0;
-    for (DWORD i=0; i<dwAddFileCount; ++i)
-    {
-        DataIndex0& TmpDataIndex = pAddDataIndex[i];
-        DWORD& dwDataOffset = TmpDataIndex.dwOffset;
-        const DWORD& dwDataLen = TmpDataIndex.dwLen;
-        
-        /**
-        *@note 看上次的buf是否够这个读文件，不够就重新new一个
-        *      这样设计的目的，减少对内存的new，delete，提高效率
-        */
-        if ( nBufSize < dwDataLen )
-        {
-            safeDeleteArray(pBuf);
-            pBuf = new char[dwDataLen];
-            nBufSize = dwDataLen;
-        }
-
-        /**
-        *@note 从老文件读数据，并写进新文件
-        */
-        m_PatchFile.Seek(dwDataOffset);
-        if ( dwDataLen != m_PatchFile.Read(pBuf, dwDataLen) )
-        {
-            bRc = false;
-            break;
-        }
-        m_NewResFile.Write(pBuf, dwDataLen);
-
-        /**
-        *@note 改写新的文件索引，刷新文件位置，并将索引插进队列。
-        */
-        dwDataOffset = m_dwPosNow; //  重新设定数据在新文件的位置
-        m_dwPosNow += dwDataLen;
-        m_NewFileDataIndex.insert(TmpDataIndex);
-    }
-    //m_NewResFile.Flush();
-    safeDeleteArray(pBuf);
-    return bRc;
-}
+// bool CResUpdaterByPatchFile::WriteNewData(
+//     DataIndex1* pVolumeIndex,
+//     DWORD dwVolumeCount )
+// {
+//     bool bRc = true;
+//     char* pBuf = NULL;
+//     size_t nBufSize = 0;
+//     for (DWORD i=0; i<dwAddFileCount; ++i)
+//     {
+//         DataIndex0& TmpDataIndex = pAddDataIndex[i];
+//         DWORD& dwDataOffset = TmpDataIndex.dwOffset;
+//         const DWORD& dwDataLen = TmpDataIndex.dwLen;
+//         
+//         /**
+//         *@note 看上次的buf是否够这个读文件，不够就重新new一个
+//         *      这样设计的目的，减少对内存的new，delete，提高效率
+//         */
+//         if ( nBufSize < dwDataLen )
+//         {
+//             safeDeleteArray(pBuf);
+//             pBuf = new char[dwDataLen];
+//             nBufSize = dwDataLen;
+//         }
+// 
+//         /**
+//         *@note 从老文件读数据，并写进新文件
+//         */
+//         m_PatchFile.Seek(dwDataOffset);
+//         if ( dwDataLen != m_PatchFile.Read(pBuf, dwDataLen) )
+//         {
+//             bRc = false;
+//             break;
+//         }
+//         m_NewResFile.Write(pBuf, dwDataLen);
+// 
+//         /**
+//         *@note 改写新的文件索引，刷新文件位置，并将索引插进队列。
+//         */
+//         dwDataOffset = m_dwPosNow; //  重新设定数据在新文件的位置
+//         m_dwPosNow += dwDataLen;
+//         m_NewFileDataIndex.insert(TmpDataIndex);
+//     }
+//     return bRc;
+// }
 
 /** CResUpdaterByPatchFile
 *@ }
