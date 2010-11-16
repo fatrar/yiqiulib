@@ -108,26 +108,6 @@ inline size_t GetFileHeadSize<Version>(DWORD dwFileCount)
     return sizeof(FileHead) + sizeof(FileHead::TDataIndex)*(dwFileCount-1);
 }
 
-typedef void (*DataReadCallBackFn)(void*,DataHead1*,BYTE*);
-
-bool UpackFileData(
-    FileSystem::CFile& File,
-    const FileHead1* pHead,
-    DataReadCallBackFn DataReadCallBack,
-    void* pParam );
-
-class CUnpackVolumeUtil
-{
-protected:
-    virtual void DataReadCallBack(
-        DataHead1* pHead, BYTE* pData) = 0;
-
-    virtual DWORD Read(
-        DWORD dwOffset, BYTE* pBuf, DWORD dwLen) = 0;
-
-    bool Unpack(const FileHead1* pHead);
-};
-
 template<typename T, typename S>
 inline void TryResetBuf(T*& pBuf, S nBufSize, S nNewSize)
 {
@@ -138,7 +118,66 @@ inline void TryResetBuf(T*& pBuf, S nBufSize, S nNewSize)
         pBuf = new T[nBufSize];
     }
 }
+// typedef void (*DataReadCallBackFn)(void*,DataHead1*,BYTE*);
+// 
+// bool UpackFileData(
+//     FileSystem::CFile& File,
+//     const FileHead1* pHead,
+//     DataReadCallBackFn DataReadCallBack,
+//     void* pParam );
 
+class CUnpackVolumeUtil
+{
+protected:
+    virtual void DataReadCallBack(
+        DataHead1* pHead, BYTE* pData) = 0;
+
+    virtual DWORD Read(
+        DWORD dwOffset, BYTE* pBuf, DWORD dwLen) = 0;
+
+    bool Unpack(
+        DWORD dwMaxVolumeSize, 
+        DWORD dwVolumeCount,
+        DWORD eAlgo,
+        const BYTE (&szKey)[8],
+        const DataIndex1* pIndex );
+
+    inline bool Unpack(const FileHead1* pHead);
+};
+
+class CEncryptFn
+{
+private:
+    typedef void (CEncryptFn::*EncryptFn)(
+        BYTE (&)[8], void*, size_t);
+    void RawEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn){}
+    void XorEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
+    void BlowFishEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
+protected:
+    CEncryptFn();
+    EncryptFn m_EncryptFn[Encrypt_Count];
+};
+
+class CDecryptFn
+{
+private:
+    typedef void (CDecryptFn::*EncryptFn)(
+        BYTE (&)[8], void*, size_t);
+    void RawEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn){}
+    void XorEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
+    void BlowFishEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
+protected:
+    CEncryptFn();
+    EncryptFn m_EncryptFn[Encrypt_Count];
+};
+
+struct IResCrypto
+{
+   static IResCrypto* CreateResCrypto(
+       eEncryptAlgo eAlgo, BYTE (&szKey)[8]);
+   virtual Encrypt(void* pIn, size_t nIn) = 0;
+   virtual Decrypt(void* pIn, size_t nIn) = 0;
+};
 
 } // Util
 
