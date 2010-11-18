@@ -105,14 +105,6 @@ protected:
         const string& strFileName,
         string& strFilePath);
 
-    // Encrypt
-protected:
-    typedef void (CResPacker<Version>::*EncryptFn)(
-        void*, size_t);
-    void RawEncrypt(void* pIn, size_t nInLen){}
-    void XorEncrypt(void* pIn, size_t nInLen);
-    void BlowFishEncrypt(void* pIn, size_t nInLen);
-
     // Compress
 protected:
     typedef int (CResPacker<Version>::*CompressFn)(
@@ -148,7 +140,7 @@ private:
     union
     {
         BYTE m_szKey[8];  // 最大密钥8个字节
-        QWORD m_dwKey;    // 如果是XOR加密用这个
+        QWORD m_qwKey;    // 如果是XOR加密用这个
     };
     eCompressAlgo m_cAlgo;
 
@@ -184,7 +176,7 @@ private:
     BYTE* m_pFileNameBuf;
 
     CompressFn m_CompressFn[Compress_Count];
-    EncryptFn m_EncryptFn[Encrypt_Count];
+    Util::IResCrypto* m_pResCrypto;
 };
 
 extern string g_strErr;

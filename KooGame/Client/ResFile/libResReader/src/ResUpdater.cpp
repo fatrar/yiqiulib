@@ -42,6 +42,7 @@ IResUpdater* CreateResUpdater(
 */
 CResUpdater::~CResUpdater()
 {
+    safeRelease(m_pResCrypto);
     Util::DestroyFileHead(m_pOldFileHead);
     DestroyPatchFileHead(m_pPatchFileHead);
 }
@@ -59,6 +60,10 @@ void CResUpdater::GetOldFileHead(const char* pFilepath)
     {
         throw File_Format_Error;
     }
+
+    m_pResCrypto = Util::IResCrypto::CreateResCrypto(
+        (eEncryptAlgo)m_pOldFileHead->eAlgo,
+        m_pOldFileHead->szKey );
 }
 
 bool CResUpdater::Update(
@@ -121,7 +126,7 @@ void CResUpdater::DataReadCallBack(
 {
     /**
     *@note 写数据头和数据
-    *     []暂时不加密和不压缩压缩数据
+    *     []暂时不压缩压缩数据
     */
     const DWORD& dwDataLen = pHead->dwRawDataLen;
     DataHead0 Head0;
@@ -131,7 +136,10 @@ void CResUpdater::DataReadCallBack(
     Head0.nIsDecrypt = 0;
     m_NewResFile.Write(&Head0, sizeof(DataHead0));
 
-
+    /**
+    *@note 加密数据
+    */
+    m_pResCrypto->Encrypt(pData, dwDataLen);
     m_NewResFile.Write(pData, dwDataLen);
 
     /**
@@ -139,10 +147,10 @@ void CResUpdater::DataReadCallBack(
     */
     DataIndex0 Index;
     Index.dwOffset = m_dwPosNow;
-    Index.dwLen = dwDataLen;
+    Index.dwLen = dwDataLen + sizeof(DataHead0);
     Index.HashValue = pHead->HashValue;
     m_NewFileDataIndex.insert(Index);
-    m_dwPosNow += dwDataLen;
+    m_dwPosNow += dwDataLen + sizeof(DataHead0);
 }
 
 void CResUpdater::GetReserveDataIndexFromOldFile(
@@ -249,7 +257,6 @@ bool CResUpdater::WriteOldData(
 
     safeDeleteArray(pBuf);
     m_OldResFile.Close();
-    Util::DestroyFileHead(m_pOldFileHead);
     return bRc;
 }
 
@@ -300,6 +307,7 @@ DWORD CResUpdaterByPatchData::Read(
 {
     BYTE* pNow = m_pPatchData + dwOffset;
     memcpy(pBuf, pNow, dwLen);
+    return dwLen;
 }
 // bool CResUpdaterByPatchData::WriteNewData(
 //     DataIndex1* pVolumeIndex,

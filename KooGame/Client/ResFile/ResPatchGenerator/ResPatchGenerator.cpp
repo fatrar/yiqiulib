@@ -65,7 +65,7 @@ void CResPatchGenerator::DataTransfrom()
     BYTE *dest = m_pPatchData+m_nPatchNow;
     size_t destLen = Res_File_Buf-m_nPatchNow;
     int nRc = LzmaUtil::LzmaCompress(
-        dest, &destLen, m_pVolume, m_nVolumeNow, Compress_High);
+        dest, &destLen, m_pVolume, m_nVolumeNow, Compress_Normal);
     if ( nRc != 0 )
     {
         throw "Compress Failed!";
@@ -99,9 +99,6 @@ void CResPatchGenerator::FillData(
 void CResPatchGenerator::MakePatchData(
     size_t nMaxVolumeSize )
 {
-#define PatchFileHeadSize(nAdd,nRemove) \
-    (sizeof(TResPatchFileHead)+sizeof(UHashValue)*nRemove+sizeof(DataIndex)*nAdd)
-
     /**
     *@note 创建最终存文件的数据Buf
     */
@@ -253,6 +250,15 @@ void CResPatchGenerator::WritePatchFile(
     *@note 5. Write Add Data Index(Hash+Datasize+DataOffset)
               and Write New Add Data
     */
+#define PatchFileHeadSize(nAdd,nRemove) \
+    (sizeof(TPatchFileHeadBase)+sizeof(UHashValue)*nRemove+sizeof(DataIndex1)*nAdd)
+
+    DWORD dwOffset = PatchFileHeadSize(m_nIndexNow, m_Remove.size());
+    for (size_t i=0; i<m_nIndexNow; ++i)
+    {
+        DataIndex1& Index = m_pAddIndex[i];
+        Index.dwOffset += dwOffset;
+    }
     m_PatchFile.Write(m_pAddIndex, sizeof(DataIndex1)*m_nIndexNow);
     safeDeleteArray(m_pAddIndex);
     m_PatchFile.Write(m_pPatchData, m_nPatchNow);
@@ -261,28 +267,18 @@ void CResPatchGenerator::WritePatchFile(
 
 void CResPatchGenerator::UnpackFile()
 {
-    if ( !Util::UpackFileData(m_OldFile, m_pOldFileHead, OnDataReadCallBack, &m_OldData) )
+    m_nState = Unpack_Old;
+    if ( !Unpack(m_pOldFileHead) )
     {
         throw "Unpack Old File Failed!";
     }
-    if ( !Util::UpackFileData(m_NewFile, m_pNewFileHead, OnDataReadCallBack, &m_NewData) )
+
+    m_nState = Unpack_New;
+    if ( !Unpack(m_pNewFileHead) )
     {
         throw "Unpack New File Failed!";
     }
-}
-
-void CResPatchGenerator::OnDataReadCallBack(
-    void* pParam,
-    DataHead1* pHead,
-    BYTE* pData )
-{
-    UnapckDataMap& Data = *(UnapckDataMap*)pParam;
-    TDataIndex0 Index;
-    Index.dwLen = pHead->dwRawDataLen;
-    Index.HashValue = pHead->HashValue;
-    BYTE* pTmp = new BYTE[Index.dwLen];
-    memcpy(pTmp, pData, Index.dwLen);
-    Data[Index] = pTmp;
+    m_nState = -1;
 }
 
 void CResPatchGenerator::Parse()
@@ -332,9 +328,7 @@ CResPatchGenerator::CResPatchGenerator()
     , m_nVolumeSize(0)
     , m_nIndexNow(0)
     , m_pAddIndex(NULL)
-    , m_nVolumeNow(0)
-{
-}
+    , m_nVolumeNow(0){}
 
 CResPatchGenerator::~CResPatchGenerator()
 {
@@ -345,6 +339,45 @@ CResPatchGenerator::~CResPatchGenerator()
     DestroyFileHead(m_pNewFileHead);
     StlHelper::STLDeleteAssociate(m_OldData);
     StlHelper::STLDeleteAssociate(m_NewData);
+}
+
+void CResPatchGenerator::DataReadCallBack(
+    DataHead1* pHead, BYTE* pData )
+{
+    TDataIndex0 Index;
+    Index.dwLen = pHead->dwRawDataLen;
+    Index.HashValue = pHead->HashValue;
+    BYTE* pTmp = new BYTE[Index.dwLen];
+    memcpy(pTmp, pData, Index.dwLen);
+
+    if ( m_nState == Unpack_Old )
+    {
+        m_OldData[Index] = pTmp;
+    }
+    else if ( m_nState == Unpack_New )
+    {
+        m_NewData[Index] = pTmp;
+    }
+    else{}
+    
+}
+
+DWORD CResPatchGenerator::Read(
+    DWORD dwOffset, BYTE* pBuf, DWORD dwLen )
+{
+    FileSystem::CFile* pFile = NULL;
+    if ( m_nState == Unpack_Old )
+    {
+        pFile = &m_OldFile;
+    }
+    else if ( m_nState == Unpack_New )
+    {
+        pFile = &m_NewFile;
+    }
+    else{return 0;}
+
+    pFile->Seek(dwOffset);
+    return pFile->Read(pBuf, dwLen);
 }
 
 }  

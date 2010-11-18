@@ -28,7 +28,8 @@ typedef TFileHead<File_Version_1_1> TFileHead1;
 typedef TFileHead0::TDataIndex TDataIndex0;
 typedef TFileHead1::TDataIndex TDataIndex1;
 
-class CResPatchGenerator
+class CResPatchGenerator :
+    public Util::CUnpackVolumeUtil
 {
 public:
     CResPatchGenerator();
@@ -39,6 +40,13 @@ public:
         const char* pNew, 
         const char* pPatch,
         size_t nMaxVolumeSize );
+
+protected:
+    virtual void DataReadCallBack(
+        DataHead1* pHead, BYTE* pData);
+
+    virtual DWORD Read(
+        DWORD dwOffset, BYTE* pBuf, DWORD dwLen);
 
 protected:
     void Check(
@@ -65,16 +73,13 @@ protected:
         const TDataIndex0& Index );
 
 protected:
-    static void OnDataReadCallBack(
-        void* pParam,
-        DataHead1* pHead,
-        BYTE* pData );
-
     typedef std::map<TDataIndex0, BYTE*> UnapckDataMap;
 
     enum
     {
         Res_File_Buf = 32*1024*1024,  // 32MB
+        Unpack_Old,
+        Unpack_New,
     };
 
 private:
@@ -86,6 +91,7 @@ private:
     *      TDataIndex0放数据大小和以后索引，BYTE*放Raw Data
     */
     UnapckDataMap m_OldData, m_NewData, m_Remove;
+    int m_nState;
 
     BYTE* m_pPatchData;
     size_t m_nPatchNow;

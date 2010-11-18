@@ -80,6 +80,7 @@ CResPacker<Version>::CResPacker(
     , m_nFileNameSize(0)
     , m_pFileNameBuf(NULL)
     , m_nIndexCount(0)
+    , m_pResCrypto(NULL)
 {
     memcpy(m_szKey, szKey, 8);
 }
@@ -160,9 +161,7 @@ void CResPacker<Version>::Init()
     m_CompressFn[Zip_C_Algo] = &CResPacker<Version>::ZipCompress;
     m_CompressFn[Lzma_C_Algo] = &CResPacker<Version>::LzmaCompress;
 
-    m_EncryptFn[Raw_E_Algo] = &CResPacker<Version>::RawEncrypt;
-    m_EncryptFn[Xor_E_Algo] = &CResPacker<Version>::XorEncrypt;
-    m_EncryptFn[BlowFish_E_Algo] = &CResPacker<Version>::BlowFishEncrypt;
+    m_pResCrypto = Util::IResCrypto::CreateResCrypto(m_eAlgo, m_szKey);
 
     m_pRawFileBuf = new BYTE[Raw_File_Buf];
     m_nRawFileBufUse = 0;
@@ -194,6 +193,7 @@ void CResPacker<Version>::Init()
 template<DWORD Version>
 void CResPacker<Version>::Unit()
 {
+    m_pResCrypto->Release();
     safeDeleteArray(m_pRawFileBuf);
     safeDeleteArray(m_pResFileBuf);
     safeDeleteArray(m_pFileNameBuf);
@@ -228,37 +228,8 @@ int CResPacker<Version>::LzmaCompress(
 {
     return LzmaUtil::LzmaCompress(
         (unsigned char*)pOut, &nOut,
-        (const unsigned char*)pIn, nIn, Compress_High);
+        (const unsigned char*)pIn, nIn, Compress_Normal);
 }
-
-template<DWORD Version>
-void CResPacker<Version>::BlowFishEncrypt(
-    void* pIn, size_t nIn )
-{
-    if ( nIn < Default_Encrypt_Len )
-    {
-        return;
-    }
-}
-
-template<DWORD Version>
-void CResPacker<Version>::XorEncrypt(
-    void* pIn, size_t nIn )
-{
-    if ( nIn < Default_Encrypt_Len )
-    {
-        return;
-    }
-
-    QWORD* pStart = (QWORD*)pIn;
-    for ( int i = 0 ; i < 4; ++i ) // 4 == 32 / 8
-    {
-        *pStart ^= m_dwKey;
-        ++pStart;
-    }
-}
-
-
 
 }
 

@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\..\xSystem\inc"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_COMPRESS_"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_COMPRESS_;_No_Use_UnpackVolumeUtil"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -103,8 +103,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\inc;..\common\inc\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_COMPRESS_"
+				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\common\lzma\"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_LZMA_COMPRESS_;_No_Use_UnpackVolumeUtil"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -277,6 +277,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Common\lzma\LzmaDec.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Common\lzma\LzmaDec.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Common\lzma\LzmaEnc.c"
 				>
 				<FileConfiguration
@@ -412,6 +428,18 @@
 			<File
 				RelativePath="..\Common\inc\HashHelper.h"
 				>
+			</File>
+			<File
+				RelativePath="..\Common\src\ResFileUtil.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\Common\inc\ResFileUtil.h"

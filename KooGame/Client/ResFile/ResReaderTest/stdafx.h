@@ -12,7 +12,13 @@
 #include <stdio.h>
 #include <tchar.h>
 
-
+#include <fstream>
+#include <Windows.h>
+#include <string>
+#include <map>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 
 // TODO: reference additional headers your program requires here

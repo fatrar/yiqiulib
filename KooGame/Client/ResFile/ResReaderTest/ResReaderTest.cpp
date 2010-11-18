@@ -2,17 +2,10 @@
 //
 
 #include "stdafx.h"
-#include <fstream>
-#include <Windows.h>
-#include <string>
-#include <map>
-#include <iostream>
-#include <fstream>
-using namespace std;
 
 
-#define PatchFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Patch.pat"
-#define OldFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\data1.pak"
+// #define PatchFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Patch.pat"
+// #define OldFile  "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\data1.pak"
 
 template<typename T, typename T2, T2 T::*P>
 struct Operator :
@@ -28,40 +21,9 @@ struct Operator :
     {return qwValue<a.qwValue;}*/
 };
 
-// struct CTest;
-// int CTest::i;
-// 
 struct CTest {
     int i;
 };
-
-namespace CA
-{
-enum 
-{
-    AS = 0,
-};
-
-int i = AS;
-};
-
-namespace CB
-{
-    enum 
-    {
-        AS = 1,
-    };
-
-    int i = AS;
-
-#define TryResetBuf(pBuf, nBufSize, nNewSize) \
-    if ((nNewSize) > (nBufSize))\
-    {\
-    delete[] (pBuf);\
-    (nBufSize) = (nNewSize);\
-    (pBuf) = new BYTE[(nBufSize)];\
-    }
-}
 struct CTestCom
 {
     bool operator()(const CTest& _Left, const CTest& _Right) const
@@ -69,45 +31,23 @@ struct CTestCom
         return (_Left.i < _Right.i);
     }
 };
-class CHH
-{
-protected:
-    void a(){}
-};
 
-class  CHHex:
-    public CHH
-{
-public:
-    void aaa()
-    {
-        a();
-    }
-};
+#define NewFile "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Data_New_Version_1_0.pak"
+#define OldFile "F:\\yiqiulib\\KooGame\\Client\\ResFile\\release\\Data_Old_Version_1_0.pak"
+                                                                  
+#include "ResFileUtil.h"
+#include "FileSystem.h"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-    CHHex al;
-    al.aaa();
+    FileSystem::CFile Old, New;
+    Old.OpenByRead(OldFile);
+    New.OpenByRead(NewFile);
 
-    BYTE* pTmp = new BYTE[10];
-    int nTmpSize = 10;
-    TryResetBuf(pTmp, nTmpSize, 20);
-
-    map<CTest, int, CTestCom> ll;
-
-    Operator<CTest, int, &CTest::i> t, t2;
-    t.i = 1;
-    t2.i = 2;
-    if ( t == t2 )
-    {
-        cout << "";
-    }
-
-     t2.i = 1;
-    if ( t == t2 )
-    {
-        cout << "";
-    }
+    ResFile::FileHead0* pOldHead = 
+        ResFile::Util::GetFileHead<ResFile::File_Version_1_0>(Old);
+    ResFile::FileHead0* pNewHead = 
+        ResFile::Util::GetFileHead<ResFile::File_Version_1_0>(New);
 
    // ResFile::UnpackFile("D:\\PackTest\\anim.pak");
 

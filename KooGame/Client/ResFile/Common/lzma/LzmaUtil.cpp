@@ -90,7 +90,7 @@ struct CLzmaAlloc
 
 ISzAlloc CLzmaAlloc::g_Alloc = { CLzmaAlloc::SzAlloc, CLzmaAlloc::SzFree };
 
-#if defined(_USE_LZMA_COMPRESS_) || defined(_USE_LZMA_ALL)
+//#if defined(_USE_LZMA_COMPRESS_) || defined(_USE_LZMA_ALL)
 int LzmaCompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t srcLen, 
@@ -105,9 +105,9 @@ int LzmaCompress(
         &props, outProps, &outPropsSize,
         0, NULL, &CLzmaAlloc::g_Alloc, &CLzmaAlloc::g_Alloc);
 }
-#endif
+//#endif
 
-#if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
+//#if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
 int LzmaUncompress(
     unsigned char *dest, size_t *destLen,
     const unsigned char *src, size_t srcLen,
@@ -122,7 +122,7 @@ int LzmaUncompress(
         LZMA_FINISH_ANY, &status, &CLzmaAlloc::g_Alloc);
 }
 
-#endif
+//#endif
 /*
 int Lzma2Compress(
     unsigned char *dest, size_t *destLen,
@@ -142,9 +142,7 @@ int Lzma2Uncompress(
 */
 }
 
-#if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
-namespace ResFile
-{
+//#if defined(_USE_LZMA_UNCOMPRESS_) || defined(_USE_LZMA_ALL)
 
 int Decode7z(
     void* oData, size_t* oSize, 
@@ -172,6 +170,6 @@ int Decode7z(
         LZMA_FINISH_ANY, &status, &LzmaUtil::CLzmaAlloc::g_Alloc);
     return 0;
 }
-}
-#endif
+
+//#endif
 // End of file

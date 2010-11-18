@@ -83,6 +83,8 @@ protected:
     // new Add
     TPatchFileHeadBase* m_pPatchFileHead;
     FileHead0* m_pOldFileHead;
+
+    Util::IResCrypto* m_pResCrypto;
 };
 
 

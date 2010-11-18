@@ -173,6 +173,10 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{51112808-0930-4640-B642-D68C5DF1CEB2}"
+			RelativePathToProject=".\libResPacker\libResPacker.vcproj"
+		/>
 	</References>
 	<Files>
 		<Filter
