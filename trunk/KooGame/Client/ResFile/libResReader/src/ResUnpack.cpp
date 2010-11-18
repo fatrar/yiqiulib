@@ -93,6 +93,7 @@ bool UnpackFile(const char* pResFilePath)
 
         ResUnpack.UnPackData();
         ResUnpack.SortIndex();
+        ResUnpack.WriteIndex();
 
         bool bRc = !!FileSystem::CFile::Remove(pResFilePath);
         if ( !bRc )
@@ -218,7 +219,7 @@ void CResUnpack::DataReadCallBack(
     DataHead0 TmpDataHead0;
     TmpDataHead0.dwRawDataLen = pHead->dwRawDataLen;
     TmpDataHead0.nCompressAlgo = Raw_C_Algo;
-    TmpDataHead0.nCompressLevel = Compress_High;
+    TmpDataHead0.nCompressLevel = Compress_Normal;
     TmpDataHead0.nIsDecrypt = 0;
     m_File0.Write(&TmpDataHead0, sizeof(DataHead0));
     m_File0.Write(pData, pHead->dwRawDataLen);

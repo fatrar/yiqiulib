@@ -118,14 +118,8 @@ inline void TryResetBuf(T*& pBuf, S nBufSize, S nNewSize)
         pBuf = new T[nBufSize];
     }
 }
-// typedef void (*DataReadCallBackFn)(void*,DataHead1*,BYTE*);
-// 
-// bool UpackFileData(
-//     FileSystem::CFile& File,
-//     const FileHead1* pHead,
-//     DataReadCallBackFn DataReadCallBack,
-//     void* pParam );
 
+//#ifndef _No_Use_UnpackVolumeUtil
 class CUnpackVolumeUtil
 {
 protected:
@@ -142,41 +136,27 @@ protected:
         const BYTE (&szKey)[8],
         const DataIndex1* pIndex );
 
-    inline bool Unpack(const FileHead1* pHead);
+    bool Unpack(const FileHead1* pHead);
 };
-
-class CEncryptFn
-{
-private:
-    typedef void (CEncryptFn::*EncryptFn)(
-        BYTE (&)[8], void*, size_t);
-    void RawEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn){}
-    void XorEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
-    void BlowFishEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
-protected:
-    CEncryptFn();
-    EncryptFn m_EncryptFn[Encrypt_Count];
-};
-
-class CDecryptFn
-{
-private:
-    typedef void (CDecryptFn::*EncryptFn)(
-        BYTE (&)[8], void*, size_t);
-    void RawEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn){}
-    void XorEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
-    void BlowFishEncrypt(BYTE (&szKey)[8], void* pIn, size_t nIn);
-protected:
-    CEncryptFn();
-    EncryptFn m_EncryptFn[Encrypt_Count];
-};
+//#endif // _No_Use_UnpackVolumeUtil
 
 struct IResCrypto
 {
-   static IResCrypto* CreateResCrypto(
-       eEncryptAlgo eAlgo, BYTE (&szKey)[8]);
-   virtual Encrypt(void* pIn, size_t nIn) = 0;
-   virtual Decrypt(void* pIn, size_t nIn) = 0;
+    static IResCrypto* CreateResCrypto(
+        eEncryptAlgo eAlgo,
+        const BYTE (&szKey)[8]);
+
+    virtual bool Encrypt(void* pIn, size_t nIn) = 0;
+    virtual bool Decrypt(void* pIn, size_t nIn) = 0;
+    virtual void Release()=0;
+    virtual ~IResCrypto(){};
+    //    virtual bool Encrypt(
+    //        void* pIn, size_t nIn,
+    //        void* pOut, size_t& nOut) = 0;
+    //    virtual bool Decrypt(
+    //        void* pIn, size_t nIn,
+    //        void* pOut, size_t& nOut) = 0;
+
 };
 
 } // Util

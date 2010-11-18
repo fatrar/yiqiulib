@@ -306,6 +306,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\Common\inc\ResFileUtil.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="lzma"

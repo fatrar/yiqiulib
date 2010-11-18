@@ -239,8 +239,9 @@ void CResPacker<File_Version_1_1>::TransformOne(
     /**
     *@note 3. 加密
     */
-    EncryptFn pEncryptFn = m_EncryptFn[m_eAlgo];
-    (this->*pEncryptFn)(pRawEncryptBuf, nPackLen);
+    //EncryptFn pEncryptFn = m_EncryptFn[m_eAlgo];
+    //(this->*pEncryptFn)(pRawEncryptBuf, nPackLen);
+    m_pResCrypto->Encrypt(pRawEncryptBuf, nPackLen);
  
     /**
     *@note 4. 添加数据索引

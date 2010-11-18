@@ -188,34 +188,21 @@ struct IResUpdater
 
 /**
 *@note 补丁包放在内存中更新某个文件
-*@param	pFilepath 需要更新的文件路径 
 *@param pPatchFilePath 补丁文件路径
 */
 IResUpdater* CreateResUpdater(
-    //const char* pFilepath,
     const char* pPatchFilePath );
 
 /**
 *@note 补丁包放在内存中更新某个文件
-*@param	pFilepath 需要更新的文件路径
-*@param pData 放在内存中的补丁文件
+*@param pData 放在内存中的补丁文件，数据会直接引用
 *@param nSize 数据长度
+*@param bAutoDel 是在析构是删除引用数据
 */
 IResUpdater* CreateResUpdater(
-    //const char* pFilepath,
-    BYTE* pData,
+    BYTE* pData,  
     size_t nSize,
     bool bAutoDel = true);
-
-CLASS_EXPORT int Decode7z(
-    void* oData, size_t* oSize, 
-    const void* zData, size_t* zSize,
-    const BYTE* props);
-
-CLASS_EXPORT int Decode7z(
-    void* oData, size_t* oSize, 
-    const void* zData, size_t* zSize,
-    unsigned int nLevel );
 
 
 /** IResUpdater
