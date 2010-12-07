@@ -55,6 +55,13 @@ protected:
     string m_strErr;
 };
 
+struct StringCmp
+{
+    bool operator()(const string& a, const string& b) const
+    {
+        return stricmp(a.c_str(), b.c_str()) == 0;
+    }
+};
 
 class CCmdParser :
     public CCmdParserBase<ICmdParser>
@@ -88,7 +95,7 @@ protected:
     };
   
 private:
-    typedef map<string, ParamInfo> CmdParmMap;
+    typedef map<string, ParamInfo, StringCmp> CmdParmMap;
     CmdParmMap m_CmdParmMap; 
     ICmdExecor* m_pCmdExecor;
 };
@@ -116,7 +123,7 @@ public:
         void*& pValue );
 
 private:
-    typedef map<string, string> CmdParmMap;
+    typedef map<string, string, StringCmp> CmdParmMap;
     CmdParmMap m_CmdParmMap;
 };
 
