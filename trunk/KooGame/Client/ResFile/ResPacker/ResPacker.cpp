@@ -12,7 +12,8 @@
     "'[eAlgo=xx]' xx is must Raw or Xor Now!\n"\
     "'[eKey=xx]' xx is must <= 8 char.\n"\
     "'[ExistFileName=xx]' xx is 0 or 1.\n"\
-    "'[Version=xx]' xx is 1.0 or 1.1"
+    "'[Version=xx]' xx is 1.0 or 1.1"\
+    "'[VolumeSize=xx]' xx is 1-2048, xx KB"
 
 namespace ICommand
 {
@@ -45,6 +46,7 @@ protected:
         Res_Pack_File_Path,
         Exist_File_Name,
         Pack_Version,
+        Volume_Size,
         CmdList_Count,
     };
 
@@ -128,6 +130,17 @@ public:
             else if( 0 == stricmp(pParam, "1.1") ){m_dwVersion = File_Version_1_1;}
             else {return false;}
             return true;
+        }
+        case Volume_Size:
+        {
+            long nVolumeSize = atol(pParam);
+            if ( nVolumeSize > 2048 || nVolumeSize <= 1 )
+            {
+                cout << "Volume Size Must 1 <= xx <= 2048" << endl;
+                return false;
+            }
+            m_nVolumeSize = nVolumeSize;
+            return true; 
         }
         default:
         	return false;
@@ -223,6 +236,7 @@ const char* CResPackerCmdExecor::s_CommandName[] =
     "PackFilePath",
     "ExistFileName",
     "Version",
+    "VolumeSize",
 };
 
 }
