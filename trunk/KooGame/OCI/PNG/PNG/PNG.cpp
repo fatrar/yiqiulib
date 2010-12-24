@@ -52,6 +52,12 @@ public:
         m_nWidth = bmSrc.GetWidth();
 
         Gdiplus::PixelFormat eSrcPixelFormat = bmSrc.GetPixelFormat();
+        if ( eSrcPixelFormat != PixelFormat24bppRGB && 
+            eSrcPixelFormat != PixelFormat32bppARGB )
+        {
+            throw "Unport Image Format!";
+        }
+
         UINT nBPP = 32;
         DWORD dwFlags = 0;
         Gdiplus::PixelFormat eDestPixelFormat = PixelFormat32bppRGB;
@@ -201,15 +207,11 @@ int _tmain(int argc, _TCHAR* argv[])
     AA a;
 
     Set<int, &AA::hh>(a, 1);
-        
-
-    int  p;
-    Max(p);
 
     CImageFile2RawFile K;
-    K.Convert("C:\\1.jpg", "C:\\2.bmp");
+    K.Convert("C:\\1.png", "C:\\2.bmp");
     ATL::CAtlFile Write;
-    Write.Create(_T("C:\\3.bmp"), GENERIC_WRITE, FILE_SHARE_READ,
+    Write.Create(_T("C:\\png.bmp"), GENERIC_WRITE, FILE_SHARE_READ,
         CREATE_ALWAYS );
     DWORD dwErr= GetLastError();
     HRESULT hr = Write.Write(K.m_pDst, K.m_nHeight*K.m_nWidth*3);
