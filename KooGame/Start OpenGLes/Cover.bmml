@@ -1,0 +1,32 @@
+<mockup version="1.0" skin="sketch" measuredW="1427" measuredH="768" mockupW="1024" mockupH="768">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::iPhone" x="403" y="0" w="1024" h="768" measuredW="510" measuredH="282" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bgPattern>allBlack</bgPattern>
+        <orientation>landscape</orientation>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="1149" y="572" w="89" h="-1" measuredW="50" measuredH="27" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>40463</color>
+        <href>Menu%26bm%3BMenu.bmml%26bm%3BMenu.bmml%26bm%3BMenu.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22746%2C572%2C835%2C599%22%20href%3D%22Menu.bmml%22%20alt%3D%22Menu%22%20id%3D%221%22/%3E</map>
+        <text>Next</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="577" y="311" w="-1" h="-1" measuredW="675" measuredH="73" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>13369344</color>
+        <size>60</size>
+        <text>OpenGL%20ES%20Quick%20Guide</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="577" y="565" w="181" h="39" measuredW="179" measuredH="33" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>0</color>
+        <size>24</size>
+        <text>Author%uFF1Aheliang</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

@@ -1,0 +1,48 @@
+<mockup version="1.0" skin="sketch" measuredW="1427" measuredH="768" mockupW="1024" mockupH="768">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::iPhone" x="403" y="0" w="1024" h="768" measuredW="510" measuredH="282" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bgPattern>allBlack</bgPattern>
+        <orientation>landscape</orientation>
+        <topBar>false</topBar>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Paragraph" x="636" y="247" w="524" h="322" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <color>40463</color>
+        <href>Cover%26bm%3BCover.bmml%26bm%3BCover.bmml%26bm%3BCover.bmml</href>
+        <italic>false</italic>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22233%2C247%2C757%2C569%22%20href%3D%22Cover.bmml%22%20alt%3D%22Cover%22%20id%3D%224%22/%3E</map>
+        <size>28</size>
+        <text>1.%20OpenGl%20ES%u662FOpenGL%u9609%u5272%u540E%u7684%u7CBE%u534E%0A%20%20%20%20%u4E3B%u8981%u53BB%u6389%u6027%u80FD%u4E0D%u597D%u548C%u8017%u8D44%u6E90%u7684%0A%20%0A2.%20%u7248%u672C%u4E4B%u95F4%u7684%u5173%u7CFB%0A%20%20%20%20OpenGL%20ES%201.0%20%20%20------%3E%20%20OpenGL%201.3%0A%20%20%20%20OpenGL%20ES%201.1%20%20%20------%3E%20%20OpenGL%201.5%0A%20%20%20%20OpenGL%20ES%202.0%20%20%20------%3E%20%20OpenGL%202.0%0A%20%0A3.%20OpenGL%28ES%29%u4E0D%u662F2D</text>
+        <underline>false</underline>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::PointyButton" x="1149" y="572" w="89" h="-1" measuredW="50" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>40463</color>
+        <href>OpenGL%28ES%29D3D%26Window%26bm%3BOpenGL%28ES%29D3D%26Window.bmml%26bm%3BOpenGL%28ES%29D3D%26Window.bmml%26bm%3BOpenGL%28ES%29D3D%26Window.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22746%2C572%2C835%2C599%22%20href%3D%22OpenGL%28ES%29D3D%26Window.bmml%22%20alt%3D%22OpenGL%28ES%29D3D%26Window%22%20id%3D%225%22/%3E</map>
+        <text>Next</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::PointyButton" x="1031" y="571" w="89" h="-1" measuredW="76" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>40463</color>
+        <direction>left</direction>
+        <href>Menu%26bm%3BMenu.bmml%26bm%3BMenu.bmml%26bm%3BMenu.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22628%2C571%2C717%2C598%22%20href%3D%22Menu.bmml%22%20alt%3D%22Menu%22%20id%3D%226%22/%3E</map>
+        <text>Previous</text>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::SubTitle" x="679" y="177" w="-1" h="-1" measuredW="497" measuredH="52" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <color>13369344</color>
+        <size>40</size>
+        <text>1.1%20OpenGL%20ES%20%26%20OpenGL</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
