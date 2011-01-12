@@ -217,6 +217,97 @@ sx:
 剩下：
 合并1.0的代码
 
+---------------------------------------------------------
+22:52 2010-8-15
+我们经常在读写一个类的成员时，经常会写针对该成员的读写函数，这样就比较符合面向对象的思想。
+但是照这个方式，如果需要读写多个类成员，相应的读写函数会写很多个。会非常麻烦。
+导致整个类体好多简单的类函数，增加该类的复杂性。
+这种情况有个常用的简单方法，用友元或者直接把需要读写成员直接public。
+唯一的缺陷就是破坏了面向对象的封装。
+
+在游戏里有些数据管理的类，有非常多的数据是需要读写的。
+所以他们的做法，用两个函数一个读，一个写。函数定义为下：
+class CMgr
+{
+public:
+    enum Attribute
+    {
+        Height,
+        Width,
+        Age,
+    };
+ 
+   void GetValue(Attributet a, int &v)
+    {
+         switch(a)
+        {
+        case Height: v = m_Height;break;
+        case Width: v=m_Width;break;
+        case Age: v= m_age;break;
+        }
+    }
+int m_Height, m_Width, m_age;
+}
+
+貌似这个方式解决了这个问题，但是却带了一个问题。
+不知道你有没有看出，我觉得性能太差，为了获取一个数据判断那么多次。
+特别属性很多时，性能呈几何下降， jmp指令在汇编是很慢的，且打断CPU的流水线。
+
+
+所以我今天突然想出一个针对这个方法的改进办法。
+
+class CMgr
+{
+public:
+    CMgr()
+    {
+        memset(this, 0, sizeof(CMgr));
+        a[2] = 1;
+    }
+    enum Int_Type
+    {
+        One,
+        Two,
+        Three,
+    };
+
+    enum Point_Type
+    {
+        Name,
+    };
+
+    void GetValue(Int_Type t, int &v)
+    {
+        v = a[t];
+    }
+private:
+    union
+    {
+        int a[4];
+        struct
+        {
+            int a1;
+            int a2;
+            int a3;
+            int a4;
+        } aa;
+    };
+};
+
+实际这个GetValue可以写成一个模板，去针对不类型
+但是实现我还没想到一个很好的方法。莫非要模板特化所以的类型？
+即：
+   template<typename T>
+    void GetValue(T t, int &v)
+    {
+        v = a[t];
+    }
+
+第一个参数获取那个属性，然后返回值。
+
+这个方法似乎解决了前者问题，但是却带来类函数自己读写成员的麻烦。
+毕竟还是要加aa。 虽然用默认联合减少了一层
+
 
 ---------------------------------------------------------
 17:02 2010-8-23
