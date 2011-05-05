@@ -96,9 +96,9 @@ private:
     BYTE* m_pPatchData;
     size_t m_nPatchNow;
 
-    BYTE* m_pVolume;
-    size_t m_nVolumeSize;
-    size_t m_nVolumeNow;
+    BYTE* m_pVolume;      // Volume Buf指针
+    size_t m_nVolumeSize; // 当前Volume Buf的大小
+    size_t m_nVolumeNow;  // 当前Volume的大小
 
     DataIndex1* m_pAddIndex;
     size_t m_nIndexNow;

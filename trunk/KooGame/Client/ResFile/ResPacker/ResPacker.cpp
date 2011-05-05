@@ -268,7 +268,7 @@ struct TDataHead
 int _tmain(int argc, _TCHAR* argv[])
 {
     int i = sizeof(TDataHead);
-    //__asm {int 3}
+    __asm {int 3}
     if ( argc == 2 && argv[1][0] == '?' )
     {
         cout << _Command_Help << endl;

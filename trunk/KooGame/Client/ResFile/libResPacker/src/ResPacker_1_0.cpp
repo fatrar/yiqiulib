@@ -135,7 +135,7 @@ void CResPacker<File_Version_1_0>::DoWrite(
     *@note 2. Write File Head 
     */
     size_t nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
-        Writer, m_FileInfoList.size(),
+        Writer, m_DataIndexList.size(),
         m_bIsExistFileName, m_eAlgo, m_szKey );
        
     // 这个部分我暂时不用
@@ -218,7 +218,15 @@ void CResPacker<File_Version_1_0>::TransformOne(
     Index.HashValue = OCI::HashStringEx(Info.strFileName.c_str());
     Index.dwOffset = dwDataOffset;
     Index.dwLen = nPackLen + sizeof(DataHead);
-    m_DataIndexList.insert(Index);
+    DataIndexList<File_Version_1_0>::iterator iter = m_DataIndexList.find(Index);
+    if ( iter != m_DataIndexList.end() )
+    {
+        printf("Find Some File: %s\n", Info.strFileName.c_str());
+    }
+    else
+    {
+        m_DataIndexList.insert(Index);
+    }
 }
 
 template<>
