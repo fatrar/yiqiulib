@@ -15,6 +15,8 @@ int _tmain(int argc, _TCHAR* argv[])
         cout << "argc Invaild!" << endl;
         return 0;
     }
+    //const char* pOldFile = "F:\\yiqiulib\\KooGame\\Client\\ResFile\\debug\\anim.pak";
+    //const char* pPatchFile = "F:\\yiqiulib\\KooGame\\Client\\ResFile\\debug\\anim.pat";
     const char* pOldFile = argv[1];
     const char* pPatchFile = argv[2];
 

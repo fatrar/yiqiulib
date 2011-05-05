@@ -177,6 +177,13 @@ void CResUpdater::GetReserveDataIndexFromOldFile(
                     break;
                 }
                 
+                /**
+                *@note 把OldDataIndex下一个到最后一个放进m_NewFileDataIndex
+                */
+                //StlHelper::Array2STL(
+                //    (DataIndex0*)(OldDataIndex+i+1),
+                //    dwOldFileCount-i-1,
+                //    m_NewFileDataIndex );
                 StlHelper::Array2STL(
                     (DataIndex0*)(OldDataIndex+i+1),
                     dwOldFileCount-i-1,
@@ -191,9 +198,13 @@ void CResUpdater::GetReserveDataIndexFromOldFile(
                 }
    
                 StlHelper::Array2STL(
-                    (DataIndex0*)(OldDataIndex+i+1),
-                    dwOldFileCount-i-1,
+                    (DataIndex0*)(OldDataIndex+i),
+                    dwOldFileCount-i,
                     m_NewFileDataIndex );
+                //StlHelper::Array2STL(
+                //    (DataIndex0*)(OldDataIndex+i+1),
+                //    dwOldFileCount-i-1,
+                //    m_NewFileDataIndex );
                 return;     
             }
         }

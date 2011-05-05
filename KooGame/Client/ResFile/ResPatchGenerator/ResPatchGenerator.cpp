@@ -78,6 +78,8 @@ void CResPatchGenerator::DataTransfrom()
 
     m_nPatchNow += destLen;
     m_nVolumeNow = 0;
+
+    printf("m_nPatchNow=%d\n", m_nPatchNow);
     /**
     *@note Encrypt
     */
@@ -110,6 +112,7 @@ void CResPatchGenerator::MakePatchData(
     */
     m_nVolumeSize = nMaxVolumeSize ;
     m_pVolume = new BYTE[m_nVolumeSize];
+    //m_pVolume = new BYTE[10*1024*1024];
 
     /**
     *@note 创建数据索引Buf，索引数据偏移先用文件Buf的偏移，在最终存文件时修正
@@ -133,6 +136,9 @@ void CResPatchGenerator::MakePatchData(
         // pack And Encrypt
         m_nVolumeNow = nDataSize;
         DataTransfrom();
+
+        // Reset To Default
+        //m_nVolumeNow = 0;
         pRawBuf = m_pVolume;
     }
     else
@@ -141,27 +147,33 @@ void CResPatchGenerator::MakePatchData(
         m_nVolumeNow = nDataSize;
     }
 
+    int i = 0;
     for ( ++iter; iter!= m_NewData.end(); ++iter )
     {
         const TDataIndex0& Index = iter->first;
         nDataSize = sizeof(DataHead1) + Index.dwLen;
         size_t nTmpSize = m_nVolumeNow + nDataSize;
-        if ( nTmpSize > nMaxVolumeSize )
+        if ( nTmpSize > m_nVolumeSize )
         {
             // pack And Encrypt
             DataTransfrom();
 
-            // 第一个数据大于卷最大值，那么就直接打开卷，且处理该卷
+            // Reset To Default
+            //m_nVolumeNow = 0;
+            //pRawBuf = m_pVolume;
+
+            // 当卷的第一个数据卷Buf
             Util::TryResetBuf(m_pVolume, m_nVolumeSize, nDataSize);
             pRawBuf = m_pVolume;
             FillData(pRawBuf, iter->second, Index);
-            m_nVolumeNow = nTmpSize;
+            m_nVolumeNow = nDataSize;
         }
         else
         {
             FillData(pRawBuf, iter->second, Index);
             m_nVolumeNow = nTmpSize;
         }
+        ++i;
     }
 
     /**
@@ -236,6 +248,11 @@ void CResPatchGenerator::WritePatchFile(
     PatchFileHeadBase.dwMaxVolumeSize = nMaxVolumeSize;
     m_PatchFile.Write(&PatchFileHeadBase, sizeof(TPatchFileHeadBase));
 
+    printf(
+        "Remove %d File!\nAdd %d File!\n",
+        m_Remove.size(), 
+        m_NewData.size());
+
     /**
     *@note 4. Write Remove Data Index(Only Hash)
     */
@@ -243,9 +260,9 @@ void CResPatchGenerator::WritePatchFile(
     for ( ; RemoveIter!= m_Remove.end(); ++RemoveIter )
     {
         const UHashValue& HashValue = RemoveIter->first.HashValue;
-        m_PatchFile.Write(&HashValue, sizeof(UHashValue));
+        m_PatchFile.Write(&HashValue, sizeof(UHashValue));    
     }
-
+   
     /**
     *@note 5. Write Add Data Index(Hash+Datasize+DataOffset)
               and Write New Add Data
@@ -259,6 +276,8 @@ void CResPatchGenerator::WritePatchFile(
         DataIndex1& Index = m_pAddIndex[i];
         Index.dwOffset += dwOffset;
     }
+   
+
     m_PatchFile.Write(m_pAddIndex, sizeof(DataIndex1)*m_nIndexNow);
     safeDeleteArray(m_pAddIndex);
     m_PatchFile.Write(m_pPatchData, m_nPatchNow);

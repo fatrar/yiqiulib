@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\..\xSystem\inc"
+				AdditionalIncludeDirectories=".\inc;..\common\inc\;..\common\lzma\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_LZMA_COMPRESS_;_No_Use_UnpackVolumeUtil"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -280,6 +280,14 @@
 				RelativePath="..\Common\lzma\LzmaDec.c"
 				>
 				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -432,6 +440,14 @@
 			<File
 				RelativePath="..\Common\src\ResFileUtil.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
 					>

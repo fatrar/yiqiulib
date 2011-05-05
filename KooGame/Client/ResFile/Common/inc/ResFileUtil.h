@@ -109,7 +109,7 @@ inline size_t GetFileHeadSize<Version>(DWORD dwFileCount)
 }
 
 template<typename T, typename S>
-inline void TryResetBuf(T*& pBuf, S nBufSize, S nNewSize)
+inline void TryResetBuf(T*& pBuf, S& nBufSize, S nNewSize)
 {
     if (nNewSize > nBufSize)
     {

@@ -59,7 +59,7 @@ struct StringCmp
 {
     bool operator()(const string& a, const string& b) const
     {
-        return stricmp(a.c_str(), b.c_str()) == 0;
+        return stricmp(a.c_str(), b.c_str()) < 0;
     }
 };
 
