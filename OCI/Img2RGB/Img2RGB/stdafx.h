@@ -31,7 +31,12 @@
 
 #include <atlbase.h>
 #include <atlstr.h>
+#include <atlfile.h>
+#include <atlimage.h>
 #include <assert.h>
 
 #include "Img2RGB.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 // TODO: reference additional headers your program requires here

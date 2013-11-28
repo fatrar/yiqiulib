@@ -33,13 +33,18 @@ public:
 public:
     void Convert(
         const char* pSrc,
+        const char* pDst = NULL,
         RawImgFormat eImgFormat = Raw_RGB_Unknown);
 
-    void Save(const char* pDst);
+    //void Save(const char* pDst);
 
 protected:
     bool OptimAlpha(unsigned char* pData);
-
+    void Convert2RGB(
+        const char* pSrc,
+        const char* pDst,
+        Gdiplus::Bitmap& bmSrc,
+        bool bNeedConvert, bool bIsHasAlpha );
 public:
     unsigned char* m_pDst;
     RawImgFormat m_eImgFormat;
