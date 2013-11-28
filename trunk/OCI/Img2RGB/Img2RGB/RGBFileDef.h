@@ -22,14 +22,19 @@
 namespace RGBFile
 {
 
-    
 enum RawImgFormat
 {
     Raw_RGB_Unknown = -1,
     Raw_RGB_565,
-    Raw_RGB_5551,
+    Raw_RGBA_5551,
     Raw_RGB_888,
-    Raw_RGB_8888,
+    Raw_RGBA_8888,
+    Raw_RGBA_6666,
+
+    Pack_RGB_PVRTC4,
+    Pack_RGB_PVRTC2,
+    Pack_RGBA_PVRTC4,
+    Pack_RGBA_PVRTC2
 };
 
 struct RawImgHead
@@ -37,9 +42,9 @@ struct RawImgHead
     unsigned int FormatFlag;
     unsigned int nPixelFormat:8;
     unsigned int nSize:8;
+    unsigned int nReserve:16;
     unsigned int nWidth:16;
     unsigned int nHeight:16;
-    unsigned char* pData;
 };
 
 };

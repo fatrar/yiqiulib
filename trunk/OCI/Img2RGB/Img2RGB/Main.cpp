@@ -18,11 +18,42 @@
 #include "stdafx.h"
 #include "Img2RGB.h"
 
-
-
+using namespace std;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    //while(1)
+    //{
+    //    __asm{int 3};
+    //}
+    if ( argc != 2 )
+    {
+        cout << "参数不对";
+        return 0;
+    }
+
+    ifstream Reader;
+    Reader.open(argv[1]);
+    if ( !Reader.is_open() )
+    {
+        cout << "Can`t Open FileList File --> " << argv[1] << endl;
+        return 0;
+    }
+
+    RGBFile::CImg2RGB Convert;
+    string strLine;
+    while( getline(Reader, strLine) )
+    {    
+        if ( strLine.size() == 0 ||
+             strLine[0] == '#' )
+        {
+            continue;
+        }
+        
+        Convert.Convert(strLine.c_str());
+    }
+
+    system("pause");
     return 0;
 }
 
