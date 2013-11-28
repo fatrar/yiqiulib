@@ -17,15 +17,15 @@
 **************************************************************************cpp**/
 #include "StdAfx.h"
 #include "ResPacker.h"
-//#include <assert.h>
-
 
 namespace ResFile
 {
 //template class CResPacker<File_Version_1_0>;
 
-template class CResPacker<File_Version_1_0>;
-template class CResPacker<File_Version_1_1>;
+//template class CResPacker<File_Version_1_0>;
+//template class CResPacker<File_Version_1_1>;
+//template class CResPacker<File_Version_1_2>;
+//template class CResPacker<File_Version_1_3>;
 
 string g_strErr = "";
 
@@ -55,6 +55,14 @@ IResPacker* CreateResPacker(
             eAlgo,szKey, cAlgo );
     case File_Version_1_1:
         return new CResPacker<File_Version_1_1>(
+            pResFlodPath, 
+            eAlgo,szKey, cAlgo );
+    case File_Version_1_2:
+        return new CResPacker<File_Version_1_2>(
+            pResFlodPath, 
+            eAlgo,szKey, cAlgo );
+    case File_Version_1_3:
+        return new CResPacker<File_Version_1_3>(
             pResFlodPath, 
             eAlgo,szKey, cAlgo );
     default:
@@ -231,10 +239,11 @@ int CResPacker<Version>::LzmaCompress(
         (const unsigned char*)pIn, nIn, Compress_Normal);
 }
 
+
 }
 
-#include "ResPacker_1_0.cpp"
 #include "ResPacker_1_1.cpp"
+#include "ResPacker_1_0.cpp"
 
 
 // End of file

@@ -49,7 +49,10 @@ enum
     Patch_File_Format_Flag = _MakeDWORD('R','P','a','t'),
     File_Version_1_0 = _MakeFileVersion(2010,9,28),  // 手机原生支持的格式
     File_Version_1_1 = _MakeFileVersion(2010,11,1),  // 加入数据分卷方式，主要用于程序，
-    // 在安装到手机后，手机需要转成File_Version_1_0
+                                                     // 在安装到手机后，手机需要转成File_Version_1_0
+
+    File_Version_1_2 = _MakeFileVersion(2011,6,11),  // 在1.0基础上更改
+    File_Version_1_3 = _MakeFileVersion(2013,8,23),  // 在1.0基础上更改
 
     // example:
     // File_Version_2_0 = _MakeFileVersion(2011,9,28),

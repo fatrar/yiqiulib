@@ -30,7 +30,7 @@ public:
         , m_bIsExistFileName(false)
         , m_strResPackFilePath("ResPacker.pak")
         , m_nVolumeSize(512)  // default 512KB
-        , m_dwVersion(File_Version_1_1)
+        , m_dwVersion(File_Version_1_3)
     {
         memcpy(m_szEncryptPsw, "_Fg87+.?", 8);
     }
@@ -128,6 +128,8 @@ public:
         {
             if ( 0 == stricmp(pParam, "1.0") ){m_dwVersion = File_Version_1_0;}
             else if( 0 == stricmp(pParam, "1.1") ){m_dwVersion = File_Version_1_1;}
+            else if( 0 == stricmp(pParam, "1.2") ){m_dwVersion = File_Version_1_2;}
+            else if( 0 == stricmp(pParam, "1.3") ){m_dwVersion = File_Version_1_3;}
             else {return false;}
             return true;
         }
@@ -256,19 +258,8 @@ union UHashValue
     UHashValue(QWORD V = 0){qwValue = V;}
 };
 
-#pragma pack(push)
-#pragma pack(4)
-struct TDataHead
-{
-    UHashValue HashValue;
-    DWORD dwRawDataLen;
-};
-#pragma pack(pop)
-
 int _tmain(int argc, _TCHAR* argv[])
 {
-    int i = sizeof(TDataHead);
-    __asm {int 3}
     if ( argc == 2 && argv[1][0] == '?' )
     {
         cout << _Command_Help << endl;

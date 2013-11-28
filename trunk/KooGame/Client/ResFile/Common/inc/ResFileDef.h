@@ -30,22 +30,23 @@ template<DWORD Version> struct TFileHead;
 template<DWORD Version> struct TDataHead;
 
 
-struct TDataMemInfo
+namespace TDataMemInfo
 {
     enum {Max_Num = 12};
-    static const BYTE s_RawPercent[Max_Num];      // x%的原始数据是内存xxByte以下，
+    //static const BYTE s_RawPercent[Max_Num];      // x%的原始数据是内存xxByte以下，
                                                   // 100为最大的数据文件大小，0则最小
-    static const BYTE s_CompressPercent[Max_Num]; // x%的压缩数据是内存xxByte以下
-};
-__declspec(selectany) const BYTE TDataMemInfo::s_RawPercent[] = 
-{
-    100,95,90,85,80,75,
-     70,65,60,55,50,0
-};
-__declspec(selectany) const BYTE TDataMemInfo::s_CompressPercent[] = 
-{
-    100,95,90,85,80,75,
-     70,65,60,55,50,0
+    //static const BYTE s_CompressPercent[Max_Num]; // x%的压缩数据是内存xxByte以下
+    
+    static const BYTE s_RawPercent[] = 
+    {
+        100,95,90,85,80,75,
+        70,65,60,55,50,0
+    };
+    static const BYTE s_CompressPercent[] = 
+    {
+        100,95,90,85,80,75,
+        70,65,60,55,50,0
+    };
 };
 
 struct TFileHeadBase
@@ -82,8 +83,15 @@ union UHashValue
     inline bool operator ==(const UHashValue& a) const {return qwValue==a.qwValue;}
     inline bool operator > (const UHashValue& a) const {return qwValue>a.qwValue;}
     inline bool operator < (const UHashValue& a) const {return qwValue<a.qwValue;}
-    inline void operator = (const QWORD& V){qwValue = V;}
-    UHashValue(QWORD V = 0){qwValue = V;}
+
+    inline explicit UHashValue(const QWORD& V){qwValue = V;}
+    inline explicit UHashValue(const UHashValue& V){qwValue = V.qwValue;}
+    inline UHashValue(){qwValue=0;}
+    
+    // arm or gcc4.1 64 operator bug
+    inline UHashValue& operator=(const QWORD& V){qwValue = V; return *this;}
+    inline UHashValue& operator=(const UHashValue& V)
+    {dwValue[0] = V.dwValue[0];dwValue[1] = V.dwValue[1]; return *this;}
 };
 
 // Encrypt Algorithm 
@@ -121,7 +129,7 @@ struct TFileHead<File_Version_1_0> :
     TFileHeadBase
 {
     // 这个部分原先打算给客户端做解压内存池，暂时没实现，预留
-    DWORD dwRawDataMem[TDataMemInfo::Max_Num];          
+    DWORD dwRawDataMem[TDataMemInfo::Max_Num];
     DWORD dwCompressDataMem[TDataMemInfo::Max_Num];
 
     struct TDataIndex
@@ -179,6 +187,41 @@ struct TDataHead<File_Version_1_1>
      DWORD dwRawDataLen;
 };
 /** File Version 1.1 Define
+*@ } 
+*/
+
+
+/**
+*@note File Version 1.2 Define
+*@ {
+*/
+template<>
+struct TFileHead<File_Version_1_2> :
+    TFileHead<File_Version_1_0>{};
+template<>
+struct TDataHead<File_Version_1_2> :
+    TDataHead<File_Version_1_0>{};
+
+static const BYTE g_Res12Key[] = {0xc3, 0x49, 0x8A, 0xE6};
+
+/** File Version 1.2 Define
+*@ } 
+*/
+
+/**
+*@note File Version 1.3 Define
+*@ {
+*/
+template<>
+struct TFileHead<File_Version_1_3> :
+    TFileHead<File_Version_1_0>{};
+template<>
+struct TDataHead<File_Version_1_3> :
+    TDataHead<File_Version_1_0>{};
+
+static const BYTE g_Res13Key[] = {0xd4, 0x59, 0x8a, 0x76};
+
+/** File Version 1.3 Define
 *@ } 
 */
 
