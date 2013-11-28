@@ -34,7 +34,7 @@ void CResPacker<File_Version_1_1>::InitFileName()
         memcpy(pFileNameBuf, strTmpPath.c_str(), strTmpPath.length()+1);
         pFileNameBuf += strTmpPath.length()+1;
     }
-    
+
     //  [] How ?
     FileInfo TmpFileInfo;
     TmpFileInfo.pRawDataBuf = pFileNameBuf;
@@ -82,6 +82,7 @@ void CResPacker<File_Version_1_1>::DoRead()
         if ( nFileSize == 0 ||
              nGroupSize > nRawFileBufRemain )
         {
+            printf("File = %s\r\n", strFilePath.c_str());
             throw "Total File Size above 64MB or File Size is 0";
         }
 
@@ -303,6 +304,9 @@ void CResPacker<File_Version_1_1>::ShowLog()
          << "\n All Data size = " << DWORD(m_pResFileBufNow- m_pResFileBuf)
          << "\n Data size = " << m_nFileAllDataSize << endl;  
 }
+
+
+
 
 }
 

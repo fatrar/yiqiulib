@@ -35,6 +35,10 @@ template<> class DataIndexList<File_Version_1_0> :
 template<> class DataIndexList<File_Version_1_1> :
     public list<TFileHead<File_Version_1_1>::TDataIndex>{};
 
+template<> class DataIndexList<File_Version_1_2> :
+    public set<TFileHead<File_Version_1_0>::TDataIndex>{};
+template<> class DataIndexList<File_Version_1_3> :
+    public set<TFileHead<File_Version_1_0>::TDataIndex>{};
 
 template<DWORD Version>
 class CResPacker :
@@ -126,7 +130,7 @@ protected:
 protected:
     enum
     {
-        Raw_File_Buf = 64*1024*1024,  // 64MB
+        Raw_File_Buf = 256*1024*1024,  // 64MB
         Res_File_Buf = 32*1024*1024,  // 32MB
 
         File_Read_Flag = 1,
@@ -180,6 +184,7 @@ private:
 };
 
 extern string g_strErr;
+
 
 }
 

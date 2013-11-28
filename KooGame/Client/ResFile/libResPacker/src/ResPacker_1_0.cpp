@@ -21,8 +21,8 @@
 namespace ResFile
 {
 
-template<>
-void CResPacker<File_Version_1_0>::InitFileName()
+template<DWORD Version>
+void CResPacker<Version>::InitFileName()
 {
     m_pFileNameBuf = new BYTE[m_nFileNameSize];
     FileInfoList::iterator iter = m_FileInfoList.begin();
@@ -40,8 +40,8 @@ void CResPacker<File_Version_1_0>::InitFileName()
     m_FileInfoList.push_front(TmpFileInfo);
 }
 
-template<>
-void CResPacker<File_Version_1_0>::DoRead()
+template<DWORD Version>
+void CResPacker<Version>::DoRead()
 {
     BYTE* pRawFileBufNow = m_pRawFileBuf;
     size_t nRawFileBufRemain = Raw_File_Buf;
@@ -76,6 +76,7 @@ void CResPacker<File_Version_1_0>::DoRead()
         if ( nFileSize == 0 ||
              nFileSize > nRawFileBufRemain )
         {
+            printf("File = %s\r\n", strFilePath.c_str());
             throw "Total File Size above 64MB or File Size is 0";
         }
 
@@ -116,62 +117,72 @@ void CResPacker<File_Version_1_0>::DoRead()
         m_nThreadID, Msg_Read_Finsih, 0, 0); 
 }
 
-template<>
-void CResPacker<File_Version_1_0>::DoWrite(
-    const char* pPackFilePath )
-{
-    /**
-    *@note 1. Create File
-    */
-    FileSystem::CFile Writer;
-    Writer.OpenByWrite(pPackFilePath);
-    if ( !Writer.IsOpen() )
-    {
-        g_strErr = string("Can`t Open ") + pPackFilePath;
-        throw g_strErr.c_str();
-    }
+//template<>
+//void CResPacker<File_Version_1_0>::DoWrite(
+//    const char* pPackFilePath )
+//{
+//    /**
+//    *@note 1. Create File
+//    */
+//    FileSystem::CFile Writer;
+//    Writer.OpenByWrite(pPackFilePath);
+//    if ( !Writer.IsOpen() )
+//    {
+//        g_strErr = string("Can`t Open ") + pPackFilePath;
+//        throw g_strErr.c_str();
+//    }
+//
+//    /**
+//    *@note 2. Write File Head 
+//           2.1 Write Base File Head 
+//    */
+//    size_t nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
+//        Writer, m_DataIndexList.size(),
+//        m_bIsExistFileName, m_eAlgo, m_szKey );
+//      
+//    /**
+//    *@note 2.2 Write Version File Head
+//    */
+//    // 这个部分我暂时不用
+//    DWORD dwRawDataMem[TDataMemInfo::Max_Num] = {0};
+//    DWORD dwCompressDataMem[TDataMemInfo::Max_Num] = {0};
+//    Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
+//    Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
+//
+//    typedef TFileHead<File_Version_1_0>::TDataIndex DataIndex;
+//    DataIndex* pDataIndex = new DataIndex[m_DataIndexList.size()];
+//    DataIndex* pDataIndexTmp = pDataIndex;
+//    DataIndexList<File_Version_1_0>::iterator iter;
+//    for ( iter = m_DataIndexList.begin();
+//          iter!= m_DataIndexList.end();
+//          ++iter )
+//    {
+//        /**
+//        *@note 原先记录只是数据本身之间的，实际的需要加文件头
+//        */
+//        DataIndex& Index = *iter;
+//        Index.dwOffset += nHeadSize;
+//
+//        *pDataIndexTmp = Index;
+//        ++pDataIndexTmp;
+//        //Writer.Write((void*)&Index, sizeof(DataIndex));
+//    }
+//    Writer.Write(pDataIndex, sizeof(DataIndex)*m_DataIndexList.size());
+//
+//    /**
+//    *@note 3. Write File Data
+//    */
+//    size_t nResDataSize = Res_File_Buf - m_nResFileBufRemain;
+//    Writer.Write(m_pResFileBuf, nResDataSize);
+//
+//    Writer.Close();
+//}
 
-    /**
-    *@note 2. Write File Head 
-    */
-    size_t nHeadSize = Util::WriteBaseHead<File_Version_1_0>(
-        Writer, m_DataIndexList.size(),
-        m_bIsExistFileName, m_eAlgo, m_szKey );
-       
-    // 这个部分我暂时不用
-    DWORD dwRawDataMem[TDataMemInfo::Max_Num] = {0};
-    DWORD dwCompressDataMem[TDataMemInfo::Max_Num] = {0};
-    Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
-    Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
-
-    typedef TFileHead<File_Version_1_0>::TDataIndex DataIndex;
-    DataIndexList<File_Version_1_0>::iterator iter;
-    for ( iter = m_DataIndexList.begin();
-          iter!= m_DataIndexList.end();
-          ++iter )
-    {
-        /**
-        *@note 原先记录只是数据本身之间的，实际的需要加文件头
-        */
-        DataIndex& Index = *iter;
-        Index.dwOffset += nHeadSize;
-        Writer.Write((void*)&Index, sizeof(DataIndex));
-    }
-
-    /**
-    *@note 3. Write File Data
-    */
-    size_t nResDataSize = Res_File_Buf - m_nResFileBufRemain;
-    Writer.Write(m_pResFileBuf, nResDataSize);
-
-    Writer.Close();
-}
-
-template<>
-void CResPacker<File_Version_1_0>::TransformOne(
+template<DWORD Version>
+void CResPacker<Version>::TransformOne(
     FileInfo& Info )
 {
-    typedef TDataHead<File_Version_1_0> DataHead;
+    typedef TDataHead<Version> DataHead;
     DWORD dwDataOffset = m_pResFileBufNow - m_pResFileBuf;
     
     /**
@@ -214,11 +225,11 @@ void CResPacker<File_Version_1_0>::TransformOne(
     /**
     *@note 4. 添加数据索引
     */
-    TFileHead<File_Version_1_0>::TDataIndex Index;
+    TFileHead<Version>::TDataIndex Index;
     Index.HashValue = OCI::HashStringEx(Info.strFileName.c_str());
     Index.dwOffset = dwDataOffset;
     Index.dwLen = nPackLen + sizeof(DataHead);
-    DataIndexList<File_Version_1_0>::iterator iter = m_DataIndexList.find(Index);
+    DataIndexList<Version>::iterator iter = m_DataIndexList.find(Index);
     if ( iter != m_DataIndexList.end() )
     {
         printf("Find Some File: %s\n", Info.strFileName.c_str());
@@ -229,8 +240,8 @@ void CResPacker<File_Version_1_0>::TransformOne(
     }
 }
 
-template<>
-void CResPacker<File_Version_1_0>::ShowLog()
+template<DWORD Version>
+void CResPacker<Version>::ShowLog()
 {
     FileInfoList::iterator iter = m_FileInfoList.begin();
     for ( int i = 1; iter!= m_FileInfoList.end(); ++iter, ++i )
@@ -245,10 +256,167 @@ void CResPacker<File_Version_1_0>::ShowLog()
             
     }
     cout << "File Head size=" 
-        << Util::GetFileHeadSize<File_Version_1_0>(m_DataIndexList.size())
+        << Util::GetFileHeadSize<Version>(m_DataIndexList.size())
         << "\n All Data size = " << DWORD(m_pResFileBufNow- m_pResFileBuf)
         << "\n Data size = " << m_nFileAllDataSize << endl;  
 }
+
+template<DWORD Version>
+void Res1XFileEncrypt(BYTE* pBuf, size_t nSize)
+{
+    const BYTE* g_Res1XKey = NULL;
+    switch (Version)
+    {
+    case File_Version_1_2: g_Res1XKey = g_Res12Key; break;
+    case File_Version_1_3: g_Res1XKey = g_Res13Key; break;
+    case File_Version_1_0:
+    default:
+    	return;
+    }
+    
+
+    BYTE* pTmp = pBuf;
+    for (size_t i = 0; i<nSize; i+=2, pTmp+=2)
+    {
+        pTmp[0] ^= g_Res1XKey[3];
+        pTmp[0] ^= g_Res1XKey[0];
+        pTmp[0] ^= g_Res1XKey[2];
+        pTmp[0] ^= g_Res1XKey[1];
+
+        pTmp[1] ^= g_Res1XKey[2];
+        pTmp[1] ^= g_Res1XKey[1];
+        pTmp[1] ^= g_Res1XKey[3];
+        pTmp[1] ^= g_Res1XKey[0];
+    }
+}
+
+
+template<DWORD Version>
+void CResPacker<Version>::DoWrite(
+    const char* pPackFilePath )
+{
+    /**
+    *@note 1. Create File
+    */
+    FileSystem::CFile Writer;
+    Writer.OpenByWrite(pPackFilePath);
+    if ( !Writer.IsOpen() )
+    {
+        g_strErr = string("Can`t Open ") + pPackFilePath;
+        throw g_strErr.c_str();
+    }
+
+    /**
+    *@note 2. Write File Head 
+           2.1 Write Base File Head 
+    */
+    size_t nHeadSize = Util::WriteBaseHead<Version>(
+        Writer, m_DataIndexList.size(),
+        m_bIsExistFileName, m_eAlgo, m_szKey );
+      
+    /**
+    *@note 2.2 Write Version File Head
+    */
+    // 这个部分我暂时不用
+    DWORD dwRawDataMem[TDataMemInfo::Max_Num] = {0};
+    DWORD dwCompressDataMem[TDataMemInfo::Max_Num] = {0};
+    Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
+    Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
+
+    typedef TFileHead<Version>::TDataIndex DataIndex;
+    DataIndex* pDataIndex = new DataIndex[m_DataIndexList.size()];
+    DataIndex* pDataIndexTmp = pDataIndex;
+    DataIndexList<Version>::iterator iter;
+    for ( iter = m_DataIndexList.begin();
+          iter!= m_DataIndexList.end();
+          ++iter )
+    {
+        /**
+        *@note 原先记录只是数据本身之间的，实际的需要加文件头
+        */
+        DataIndex& Index = *iter;
+        Index.dwOffset += nHeadSize;
+
+        *pDataIndexTmp = Index;
+        ++pDataIndexTmp;
+        //Writer.Write((void*)&Index, sizeof(DataIndex));
+    }
+
+    size_t nBufSize = sizeof(DataIndex)*m_DataIndexList.size();
+    Res1XFileEncrypt<Version>((BYTE*)pDataIndex, nBufSize);
+    Writer.Write(pDataIndex, nBufSize);
+
+    /**
+    *@note 3. Write File Data
+    */
+    size_t nResDataSize = Res_File_Buf - m_nResFileBufRemain;
+    Writer.Write(m_pResFileBuf, nResDataSize);
+
+    Writer.Close();
+}
+
+//void CResPacker::DoWrite(
+//    const char* pPackFilePath )
+//{
+//    /**
+//    *@note 1. Create File
+//    */
+//    FileSystem::CFile Writer;
+//    Writer.OpenByWrite(pPackFilePath);
+//    if ( !Writer.IsOpen() )
+//    {
+//        g_strErr = string("Can`t Open ") + pPackFilePath;
+//        throw g_strErr.c_str();
+//    }
+//
+//    /**
+//    *@note 2. Write File Head 
+//           2.1 Write Base File Head 
+//    */
+//    size_t nHeadSize = Util::WriteBaseHead<File_Version_1_2>(
+//        Writer, m_DataIndexList.size(),
+//        m_bIsExistFileName, m_eAlgo, m_szKey );
+//      
+//    /**
+//    *@note 2.2 Write Version File Head
+//    */
+//    // 这个部分我暂时不用
+//    DWORD dwRawDataMem[TDataMemInfo::Max_Num] = {0};
+//    DWORD dwCompressDataMem[TDataMemInfo::Max_Num] = {0};
+//    Writer.Write((void*)dwRawDataMem, sizeof(dwRawDataMem));
+//    Writer.Write((void*)dwCompressDataMem, sizeof(dwCompressDataMem));
+//
+//    typedef TFileHead<File_Version_1_2>::TDataIndex DataIndex;
+//    DataIndex* pDataIndex = new DataIndex[m_DataIndexList.size()];
+//    DataIndex* pDataIndexTmp = pDataIndex;
+//    DataIndexList<File_Version_1_2>::iterator iter;
+//    for ( iter = m_DataIndexList.begin();
+//          iter!= m_DataIndexList.end();
+//          ++iter )
+//    {
+//        /**
+//        *@note 原先记录只是数据本身之间的，实际的需要加文件头
+//        */
+//        DataIndex& Index = *iter;
+//        Index.dwOffset += nHeadSize;
+//
+//        *pDataIndexTmp = Index;
+//        ++pDataIndexTmp;
+//        //Writer.Write((void*)&Index, sizeof(DataIndex));
+//    }
+//
+//    size_t nBufSize = sizeof(DataIndex)*m_DataIndexList.size();
+//    Res1XFileEncrypt((BYTE*)pDataIndex, nBufSize);
+//    Writer.Write(pDataIndex, );
+//
+//    /**
+//    *@note 3. Write File Data
+//    */
+//    size_t nResDataSize = Res_File_Buf - m_nResFileBufRemain;
+//    Writer.Write(m_pResFileBuf, nResDataSize);
+//
+//    Writer.Close();
+//}
 
 }
 
